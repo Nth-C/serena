@@ -4,6 +4,8 @@ import './App.css'
 import Nav from './components/nav/Nav';
 import Header from './components/header/Header';
 
+import Menu from './components/menu/Menu';
+
 function Layout({submenu}) {
     const location = useLocation()
 
@@ -41,6 +43,7 @@ function Layout({submenu}) {
     return (
         <>
             <Header submenu={submenu}/>
+            <Menu />
             <main>
                 <Nav />
                 <div className="content">

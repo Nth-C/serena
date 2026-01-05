@@ -21,6 +21,7 @@
   --pink: #F6CAC9;
   --red: #BF443D;
   --gray: #B1B1B1;
+  --bg-black: rgba(37, 37, 37, .2);
   --bezier: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
