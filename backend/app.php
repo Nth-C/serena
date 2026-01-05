@@ -10,6 +10,10 @@ class App
   public array $rapports;
   public Stock $stock;
   public Planning $planning;
+  public ?Personne $personne;
+  public bool $connected; 
+
+
   
 
   public function __construct()
@@ -18,6 +22,16 @@ class App
     $this->parametre = new Parametre();
     $this->stock = new Stock();
     $this->planning = new Planning();
+
+    session_start();
+    $this->connected = $_SESSION['connected'] ?? false;
+    $username = $_SESSION['username'] ?? '';
+    if ($username != '') {
+      $dao = new PersonneDAO();
+      $this->personne = $dao->findByUsername($username);
+    } else {
+      $this->etudiant = null;
+    }
   }
 
   public function __destruct()
@@ -25,10 +39,10 @@ class App
     // Ne conserve que l'id de l'étudiant
     if ($this->connected ) {
       $_SESSION['connected'] = true;
-      $_SESSION['login'] = $this->personne->login;
+      $_SESSION['username'] = $this->personne->username;
     } else {
       $_SESSION['connected'] = false;
-      $_SESSION['login'] = '';
+      $_SESSION['username'] = '';
     }
   }
 
