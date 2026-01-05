@@ -13,7 +13,7 @@ class PersonneDAO{
 
     public function findByUsername(string $username): ?Personne
     {
-        $query = 'SELECT * from personne where username = :username';
+        $query = 'SELECT * from personnes where username = :username';
         $stmt = $this->dal->prepare($query);
         $stmt->execute([':username' => $username]);   
         $result = $stmt->fetch();
@@ -27,7 +27,7 @@ class PersonneDAO{
 
     public function insert(Personne $personne): bool
     {
-        $query = 'INSERT INTO personne (nom, prenom, mail, username, mdp, date_naissance) VALUES (:nom, :prenom, :mail, :username, :mdp, :date_naissance)';
+        $query = 'INSERT INTO personnes (nom, prenom, mail, username, mdp, date_naissance) VALUES (:nom, :prenom, :mail, :username, :mdp, :date_naissance)';
         $stmt = $this->dal->prepare($query);
         return $stmt->execute([
             ':nom' => $personne->nom,
