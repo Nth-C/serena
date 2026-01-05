@@ -7,10 +7,14 @@ class DocumentDAO {
     }
 
 
-
+    public function addDocument($id_doc,$categorie,$nom,$type){
+        $query = 'INSERT INTO DOCUMENT (name, stock) VALUES (:name, :stock)';
+        $stmt = $this->dal->prepare($query);
+        $stmt->execute(['id_doc' => $id_doc, 'categorie' => $categorie, 'nom' => $nom, 'type']);
+    }
     
 
-    public function addMedecine($name, $stock) {
+    public function getOrdonnances($name, $stock) {
         $query = 'INSERT INTO STOCK_MEDICAMENT (name, stock) VALUES (:name, :stock)';
         $stmt = $this->dal->prepare($query);
 

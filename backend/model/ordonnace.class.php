@@ -1,16 +1,11 @@
 <?php
 
-class Ordonnance
+class Ordonnance extends Document
 {
-  public readonly string $nom;
-  private DocumentDAO $dao;
-
   public function __construct(array $data = array())
   {
-    $this->nom = $data['nom'] ?? '';
-    $this->dao = new DocumentDAO();
+    parent::__construct($data);
   }
-
   public function getOrdonnances(): array
   {
     return $this->dao->getOrdonnances($this);
