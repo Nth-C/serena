@@ -13,7 +13,7 @@ class Categorie
 
   public function getCategories(): array
   {
-    return $this->dao->getNbMedicament($this,$nomMedicament);
+    return $this->dao->getCategories($this);
   }
 
 
