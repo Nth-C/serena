@@ -1,0 +1,105 @@
+/* Mobile */
+header {
+    width: 100%;
+    position: fixed;
+    background: var(--white);
+    z-index: 11;
+}
+
+header .banner_container {
+    position: relative;
+    display: flex;
+    height: 5rem;
+    border-bottom: 1px solid var(--gray);
+}
+
+header .hamburger_container {
+    display: flex;
+    align-items: center;
+    padding: 0 0 0 1.5rem;
+}
+
+header .hamburger_btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 3rem;
+    height: 1.7rem;
+    cursor: pointer;
+}
+
+header .hamburger_btn span {
+    display: block;
+    width: 100%;
+    height: .3rem;
+    background: var(--black);
+}
+
+header img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 12rem;
+}
+
+/* submenu */
+
+header .submenu_container {
+    display: flex;
+}
+
+header .submenu_container a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    color: var(--black);
+    font-size: 1.2rem;
+    font-weight: 200;
+    padding: .6rem 0;
+}
+
+header .submenu_container a.active {
+    color: var(--white);
+    background: var(--blue);
+}
+
+/* Tablettes (écrans > 768px) */
+@media (min-width: 768px) {
+    header .banner_container {
+        border-bottom: 0;
+    }
+
+    header .hamburger_container {
+        width: 20rem;
+    }
+
+    header .submenu_container {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+    }
+
+    header .submenu_container a {
+        padding: 1rem 1.4rem;
+    }
+
+    header img {
+        position: relative;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+    }
+
+    header .principal_container {
+        flex-grow: 1;
+        border-bottom: 1px solid var(--gray);
+    }
+}
+
+/* Desktops (écrans > 1024px) */
+@media (min-width: 1024px) {
+
+}

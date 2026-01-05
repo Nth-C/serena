@@ -1,0 +1,67 @@
+/* Mobile */
+nav > div {
+    width: 100%;
+    position: fixed;
+    display: flex;
+    bottom: 0;
+    z-index: 10;
+}
+
+nav a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    font-size: 1.2rem;
+    border-top: .2rem solid var(--gray);
+    padding: 1rem 0 .7rem 0;
+    color: var(--gray);
+    font-weight: 600;
+}
+
+nav a.active {
+    border-top: .2rem solid var(--blue);
+    color: var(--blue);
+}
+
+nav a.active svg {
+    fill: var(--blue);
+}
+
+nav svg {
+    width: 3.5rem;
+    fill: var(--gray);
+}
+
+
+/* Tablettes (écrans > 768px) */
+@media (min-width: 768px) {
+    nav {
+        position: relative;
+        border-right: 1px solid var(--gray);
+    }
+
+    nav > div {
+        position: sticky;
+        top: 10rem;
+        width: 20rem;
+        flex-direction: column;
+        gap: 3rem;
+        padding-left: 1.5rem;
+    }
+
+    nav a {
+        flex-direction: row;
+        flex-grow: 0; 
+        padding: 0;
+    }
+
+    nav :is(a, a.active) {
+        border-top: 0;
+    }
+}
+
+/* Desktops (écrans > 1024px) */
+@media (min-width: 1024px) {
+
+}

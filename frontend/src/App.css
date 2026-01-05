@@ -1,0 +1,104 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  list-style: none;
+  text-decoration: none;
+  box-sizing: border-box;
+
+  /* ---- debug responsive ----   border: 1px solid red !important; */ 
+}
+
+*, ::before, ::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --black: #252525;
+  --white: #FFFBF2;
+  --blue: #91A8D2;
+  --pink: #F6CAC9;
+  --red: #BF443D;
+  --gray: #B1B1B1;
+  --bezier: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html {
+  font-size: 62.5%;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--white); 
+  color: var(--black);
+}
+
+#root {
+  max-width: 100%;
+  line-height: 1.5;
+  height: 300vh;
+}
+
+img {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.content {
+  width: 100%;
+  padding: 10rem 0 0 3rem; 
+}
+
+
+@media (min-width: 768px) {
+  main {
+    display: flex;
+    /*padding: 10rem 0;*/
+    height: 100%;
+  }
+}
+
+
+/* ----------------------------- */
+/* ----------- FONTS ----------- */
+/* ----------------------------- */
+
+/* Extra Light */
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/DM_sans/DMSans-ExtraLight.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+}
+
+/* Regular */
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/DM_sans/DMSans-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* Medium */
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/DM_sans/DMSans-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+/* Semi Bold */
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/DM_sans/DMSans-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+/* Bold */
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/DM_sans/DMSans-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
