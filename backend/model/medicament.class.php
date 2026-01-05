@@ -2,10 +2,10 @@
 
 class Medicament
 {
-  public readonly string $nomMedicament;
-  public readonly string $description;
-  public readonly int $numAutorisationEU;
-  public readonly string $type;
+  public string $nomMedicament;
+  public string $description;
+  public int $numAutorisationEU;
+  public string $type;
   private MedicamentDAO $dao;
 
   public function __construct(array $data = array())
