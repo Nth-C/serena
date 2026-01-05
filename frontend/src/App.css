@@ -49,6 +49,32 @@ img {
   padding: 10rem 0 0 3rem; 
 }
 
+label, p {
+  font-size: 12px;
+}
+
+/*style input*/
+input {
+  border: 1px solid var(--blue);
+  border-radius: 8px;
+  height: 28px;
+}
+
+/*style bouton simple*/
+button {
+  border: 1px solid var(--blue);
+  border-radius: 4px;
+  cursor: pointer;
+  height: 23px;
+  color: var(--blue);
+}
+
+/*style bouton rempli*/
+.fill {
+  background-color: var(--blue);
+  color: var(--white);
+}
+
 
 @media (min-width: 768px) {
   main {
@@ -110,4 +136,56 @@ img {
 .login {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.login img:first-child {
+  max-width: 200px;
+  padding-top: 5%;
+  padding-bottom: 20%;
+}
+
+.login img:last-child {
+  max-width: 300px;
+  position: absolute;
+  bottom: -29px;
+  right: -18px;
+  transform : translate(50% 50%)
+}
+
+.login h1 {
+  color: var(--blue);
+}
+
+.login > div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 90%;
+}
+
+.login > div p {
+  color: var(--blue);
+  text-decoration: underline;
+  text-align: end;
+}
+
+.login > div > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5px;
+}
+
+.login label {
+  color: var(--blue);
+}
+
+.login button {
+  width: 150px;
+}
+
+.login hr {
+  border: 0.5px solid var(--bg-black);
+  width: 70%;
 }
