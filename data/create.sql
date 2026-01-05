@@ -42,7 +42,6 @@ CREATE TABLE EVENEMENTS (
     id_famille INT REFERENCES FAMS(id_famille)
 );
 
--- Table de liaison Many-to-Many
 CREATE TABLE ACCOMPAGNE (
     id_personne INT REFERENCES PERSONNES(id_personne),
     id_event INT REFERENCES EVENEMENTS(id_event),
@@ -66,7 +65,7 @@ CREATE TABLE FORMS (
     aide_fournit VARCHAR(255),
     resultat VARCHAR(255),
     age_aidant INT,
-    age_aide INT, -- Correction: accent retiré (age_aidé -> age_aide)
+    age_aide INT, 
     id_famille INT REFERENCES FAMS(id_famille)
 );
 
