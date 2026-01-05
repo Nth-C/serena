@@ -6,10 +6,10 @@ class Personne {
     private readonly string $role;
 
     public function __construct(array $data = array()) {
-        $this->prenom = $data['prenom'];
-        $this->nom = $data['nom'];
-        $this->age = $data['age'];
-        $this->role = $data['role'];
+        $this->prenom = $data['prenom'] ?? "";
+        $this->nom = $data['nom'] ?? "";
+        $this->age = $data['age'] ?? -1;
+        $this->role = $data['role'] ?? "";
         }
     }
 ?>
