@@ -1,4 +1,6 @@
-import { Routes, Route, Link, useLocation, Navigate, Outlet } from 'react-router-dom';
+import { useLocation, Outlet } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+
 import './App.css'
 
 import Nav from './components/nav/Nav';
@@ -8,6 +10,8 @@ import Menu from './components/menu/Menu';
 
 function Layout({submenu}) {
     const location = useLocation()
+
+    const [isMenuOpen , setIsMenuOpen] = useState(false)
 
     const breadcrumbList = [
         // home
@@ -22,8 +26,6 @@ function Layout({submenu}) {
         // document
         { path : "/document/explorateur", breadcrumb: "Document > Explorateur" },
         { path : "/document/aides", breadcrumb: "Document > Aides" }
-
-        
     ]
 
     // recupere le bon file d'ariane en fonction le l'url
@@ -40,10 +42,23 @@ function Layout({submenu}) {
         return ""
     }
 
+    // fonction pour ouvrir/fermer le menu
+    const toggleMenu = () => {
+        setIsMenuOpen(!isMenuOpen)
+    }
+
+    useEffect(() => {
+        if (isMenuOpen) {
+            document.documentElement.classList.add('menu-active');
+        } else {
+            document.documentElement.classList.remove('menu-active');
+        }
+    }, [isMenuOpen]);
+
     return (
         <>
-            <Header submenu={submenu}/>
-            <Menu />
+            <Header submenu={submenu} onHamburgerClick={toggleMenu} /> {/*  on passe la focntion toggleMenu pour pouvoir l'utiliser dans le header */}
+            <Menu isOpen={isMenuOpen} onHamburgerClick={toggleMenu}/>
             <main>
                 <Nav />
                 <div className="content">

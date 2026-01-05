@@ -1,13 +1,14 @@
-html {
-    overflow : hidden;
-}
-
 .menu {
     position: fixed;
     top: 0;
     width: 100vw;
     height: 100vh;
     z-index: 999;
+    transform: translateX(-100%);
+}
+
+.menu.active {
+    transform: translateX(0);
 }
 
 .menu .main_container {
@@ -19,6 +20,92 @@ html {
     height: 100%;
     background-color: var(--white);
     border-radius: 0 15px 15px 0;
+    padding-right: 15px;
+}
+
+.menu .hamburger_btn {
+    position: relative;
+    width: 3rem;
+    height: 1.7rem;
+    cursor: pointer;
+}
+
+.menu .hamburger_btn span {
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: .3rem;
+    background: var(--black);
+    top: 50%;
+    left: 50%;
+}
+
+.menu .header_container div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 5rem;
+}
+
+.menu .hamburger_btn span:nth-child(1) {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.menu .hamburger_btn span:nth-child(2) {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.menu .main_container {
+    display: flex;
+    flex-direction: column;
+}
+
+.menu .logout_container {
+    display: flex;
+    align-items: center;
+    height: 6rem;
+}
+
+.menu .main_container div div {
+    padding-left: 1.5rem;
+}
+
+.menu .legal_container  {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* pour mettre la partie en bas */
+}
+
+.menu h3 {
+    color: var(--gray);
+    font-weight: 400;
+}
+
+.menu .main_container a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--black);
+}
+
+.menu .header_container .border {
+    margin: 0 0 15px 0;
+}
+
+.menu .change_container .border {
+    margin: 15px 0 0 0;
+}
+
+.menu .logout_container a {
+    color: var(--red);
+}
+
+.menu .border {
+    display: block;
+    height: 1px;
+    width: 100%;
+    background: var(--gray);
+    margin: 15px 0 15px 0;
 }
 
 .menu .background {
