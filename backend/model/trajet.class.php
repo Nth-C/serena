@@ -37,11 +37,12 @@ class Trajet {
         }
         }
     public function getNbAccompagnants() {
-        
+        $i = 0;
+        foreach($accompagnants as $accompagnant){
+            $i = $i + 1; 
+        }
     }
         
 
     }
-
-
 ?>

@@ -9,10 +9,9 @@ class Planning {
         $this->description = $data['description'] ?? '';
         // pour chaque evenements de "evenements" on l'ajoute à l'attribut
         foreach ($data['evenements'] as $evenement){
-            $this->evenements[] = $evenemen;
+            $this->evenements[] = $evenement;
         }
     }
 
-    public getEvenementDujour
 }
 ?>
