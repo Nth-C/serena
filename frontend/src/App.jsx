@@ -9,7 +9,8 @@ import VisitReport from './pages/VisitReport'
 import Medecine from './pages/Medecine'
 import FileExplorer from './pages/FileExplorer'
 import Assistance from './pages/Assistance'
-
+import Login from './pages/Login'
+import CreateAccount from './pages/CreateAccount';
 import Layout from './Layout'
 
 function App() {
@@ -21,7 +22,20 @@ function App() {
       <Routes location={location} key={location.pathname}>
         <Route path="">
           {/* quand on est sur / dans l'url on redirige vers home/dashboard */}
-          <Route index element={<Navigate to="home/dashboard" replace />} />
+          <Route index element={<Navigate to="login" replace />} />
+        </Route>
+        
+        
+        {/* SE CONNECTER */}
+        <Route path="login" element={
+          <Login />
+        }>
+        </Route>
+
+        {/* CREER UN COMPTE */}
+        <Route path="create_account" element={
+          <CreateAccount />
+        }>
         </Route>
 
         {/* ACCUEIL */}
