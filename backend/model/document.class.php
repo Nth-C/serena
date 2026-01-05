@@ -2,19 +2,18 @@
 
 class Document
 {
-  public readonly string $nom;
-  private DocumentDAO $dao;
+    public string $nom;
 
-  public function __construct(array $data = array())
-  {
-    $this->nom = $data['nom'] ?? '';
-    $this->dao = new DocumentDAO();
-  }
+    public function __construct(array $data = array())
+    {
+        $this->nom = $data['nom'] ?? '';
+        
+    }
 
-  public function getOrdonnances(): array
-  {
-    return $this->dao->getOrdonnances($this);
-  }
+    public function addDocument(): array
+    {
+        return $this->dao->getOrdonnances($this);
+    }
 
 
 

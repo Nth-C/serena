@@ -3,12 +3,12 @@
 class Categorie
 {
   public readonly string $nom;
-  private CategorieDAO $dao;
+  public array $documents;
 
   public function __construct(array $data = array())
   {
     $this->nom = $data['nom'] ?? '';
-    $this->dao = new CategorieDAO();
+    $this->documents = $data['documents'] ?? array();
   }
 
   public function getCategories(): array

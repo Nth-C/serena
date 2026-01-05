@@ -6,7 +6,6 @@ class Medicament
   public string $description;
   public int $numAutorisationEU;
   public string $type;
-  private MedicamentDAO $dao;
 
   public function __construct(array $data = array())
   {
@@ -14,7 +13,6 @@ class Medicament
     $this->description = $data['description'] ?? '';
     $this->numAutorisationEU = $data['numAutorisationEU'] ?? -1;
     $this->type = $data['type'] ?? -1;
-    $this->dao = new MedicamentDAO();
   }
 
   public function getNbMedicament(string $nomMedicament = ''): int
