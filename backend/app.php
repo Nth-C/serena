@@ -39,7 +39,7 @@ class App
     // Ne conserve que l'id de l'étudiant
     if ($this->connected ) {
       $_SESSION['connected'] = true;
-      $_SESSION['login'] = $this->personne->login;
+      $_SESSION['username'] = $this->personne->username;
     } else {
       $_SESSION['connected'] = false;
       $_SESSION['username'] = '';
