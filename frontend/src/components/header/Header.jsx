@@ -1,7 +1,7 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import styles from './Header.module.css';
 
-function Header({submenu}) {
+function Header({submenu, onHamburgerClick}) {
   const checkActive = ({ isActive }) => (isActive ? `${styles.active}` : "")
 
   return (
@@ -9,7 +9,7 @@ function Header({submenu}) {
     <header>
       <div className={styles.banner_container}>
         <div className={styles.hamburger_container}>
-          <button className={styles.hamburger_btn}>
+          <button className={styles.hamburger_btn} onClick={onHamburgerClick}>
             <span></span>
             <span></span>
             <span></span>

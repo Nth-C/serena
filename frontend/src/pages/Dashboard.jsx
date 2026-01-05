@@ -12,16 +12,20 @@ function Dashboard() {
         return response.json() // recupere les données
       })
       .then((data) => {
-        setMedicaments(data)
-      })
-      .catch((err) => {
-        console.error("Erreur de récupération:", err)
-        setError(err.message)
-      });
-
-    if (error !== null) {
-      return <div style={{ color: 'red' }}>Erreur : {error}</div>
-    } 
+      // on verifie si data est un tableau
+      if (Array.isArray(data)) {
+        setMedicaments(data);
+        setError(null);
+      } else if (data.error) {
+        setError(data.error);
+        setMedicaments([]); // On remet à vide pour éviter le crash du .map()
+      }
+    })
+    .catch((err) => {
+      console.error("Erreur de récupération:", err);
+      setError("Impossible de contacter le serveur");
+      setMedicaments([]);
+    });
   }
 
   const handleDelete = async (id) => {

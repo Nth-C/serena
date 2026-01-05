@@ -32,6 +32,11 @@ html {
   color: var(--black);
 }
 
+/* supprime le scroll quand le menu est ouvert */
+.menu-active {
+  overflow: hidden;
+}
+
 #root {
   max-width: 100%;
   line-height: 1.5;
@@ -47,6 +52,7 @@ img {
 .content {
   width: 100%;
   padding: 10rem 0 0 3rem; 
+  min-height: 300vh;
 }
 
 label, p {
