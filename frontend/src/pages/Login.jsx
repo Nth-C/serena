@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react'
+import { NavLink} from 'react-router-dom';
+import { useEffect, useState } from 'react';
+
 
 function Login() {
 
@@ -7,7 +9,7 @@ function Login() {
             <h1>Se connecter</h1>
 
             <label htmlFor="">E-mail : </label>
-            <input type="email"/>
+            <input type="email" />
 
             <label htmlFor="">Mot de passe : </label>
             <input type="password" />
@@ -18,7 +20,9 @@ function Login() {
 
             <hr />
 
-            <button type="submit">Créer un compte</button>
+            <NavLink to={"/create_account"}>
+                <button>Créer un compte</button>
+            </NavLink>
         </div>
     )
 };
