@@ -7,11 +7,11 @@ frontend/dist/
 frontend/dist-ssr/
 frontend/.local
 frontend/package-lock.json
-.env.development
-.env.production
+#.env.development
+#.env.production
 
 # --- BACKEND ---
-.env
+#.env
 
 # --- LOGS & OS ---
 *.log
