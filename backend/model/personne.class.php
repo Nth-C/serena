@@ -1,5 +1,5 @@
 <?php
-Class Personne{
+class Personne{
     public readonly string $id;
     public readonly string $nom;  
     public readonly string $prenom;   
@@ -17,8 +17,7 @@ Class Personne{
         $this->username = $data['username'] ?? '';
         $this->mdp = $data['mdp'] ?? '';
         $this->date_naissance = $data['date_naissance'] ?? '';
-        
-    }
+}
 
     public function checkPassword(string $password) 
     {

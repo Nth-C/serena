@@ -8,7 +8,7 @@ class CategorieDAO {
 
     public function getCategories(): array
     {
-        $query = 'SELECT disctinct(categorie) FROM DOCUMENT,FAMILLE  WHERE DOCUMENT.id_famille = FAMILLE.id_famille';
+        $query = 'SELECT disctinct(categorie) FROM DOCUMENT, FAMILLE WHERE DOCUMENT.id_famille = FAMILLE.id_famille';
         $stmt = $this->dal->prepare($query);
 
         $stmt->execute();
