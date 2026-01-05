@@ -11,5 +11,6 @@ class Personne {
         $this->age = $data['age'] ?? -1;
         $this->role = $data['role'] ?? "";
         }
-    }
+}
+
 ?>
