@@ -9,6 +9,7 @@ import VisitReport from './pages/VisitReport'
 import Medecine from './pages/Medecine'
 import FileExplorer from './pages/FileExplorer'
 import Assistance from './pages/Assistance'
+import Login from './pages/Login'
 
 import Layout from './Layout'
 
@@ -21,7 +22,12 @@ function App() {
       <Routes location={location} key={location.pathname}>
         <Route path="">
           {/* quand on est sur / dans l'url on redirige vers home/dashboard */}
-          <Route index element={<Navigate to="home/dashboard" replace />} />
+          <Route index element={<Navigate to="login" replace />} />
+        </Route>
+        <Route path="login" element={
+          <Login />
+        }>
+
         </Route>
 
         {/* ACCUEIL */}
