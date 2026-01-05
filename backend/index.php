@@ -16,7 +16,9 @@ $route = $_GET['route'] ?? '';
 const _ROUTES = array(
   'medicament/list' => 'viewMedicament',
   'medicament/add' => 'addMedicament',
-  'medicament/delete' => 'deleteMedicament'
+  'medicament/delete' => 'deleteMedicament',
+  'login' => 'login',
+  'register' => 'register'
 );
 
 if (!array_key_exists($route, _ROUTES)) {
