@@ -9,7 +9,7 @@ function Dashboard() {
   const fetchMedicaments = async () => {
     fetch(`${apiUrl}/?route=medicament/list`)
       .then((response) => {
-        return response.json() // recupere les données
+        return response.json() // recupere les données$
       })
       .then((data) => {
       // on verifie si data est un tableau

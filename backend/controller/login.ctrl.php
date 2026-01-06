@@ -7,6 +7,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 
+// 1. GESTION DU PREFLIGHT (CORS) INDISPENSABLE
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
@@ -24,7 +25,7 @@ if ($username && $mdp) {
     $dao = new PersonneDAO();
     $personne = $dao->findByUsername($username);
 
-    if ($personne && $mdp == 'test') { //password_verify($mdp, $personne->mdp)
+    if ($personne && password_verify($mdp, $personne->mdp)) { //password_verify($mdp, $personne->mdp)
         $app->login($personne);
         echo 'success';
     } else {
