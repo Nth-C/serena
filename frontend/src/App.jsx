@@ -12,6 +12,7 @@ import Assistance from './pages/Assistance'
 import Login from './pages/Login'
 import CreateAccount from './pages/CreateAccount';
 import Layout from './Layout'
+import AcceSuivi from './pages/AcceSuivi';
 
 function App() {
   const location = useLocation();
@@ -35,6 +36,12 @@ function App() {
         {/* CREER UN COMPTE */}
         <Route path="create_account" element={
           <CreateAccount />
+        }>
+        </Route>
+
+        {/* ACCE AU SUIVI DES GROUPES */}
+        <Route path="acce_suivi" element={
+          <AcceSuivi />
         }>
         </Route>
 
