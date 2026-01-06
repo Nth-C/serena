@@ -11,7 +11,7 @@ function Slide({children, title, isOpen, onClickNewMedecine}) {
       <div className={styles.main_container}>
         <div>
           <h1>{title}</h1>
-          <button className={styles.hamburger_btn} >
+          <button className={styles.hamburger_btn} onClick={onClickNewMedecine}>
             <span></span>
             <span></span>
           </button>
@@ -21,7 +21,7 @@ function Slide({children, title, isOpen, onClickNewMedecine}) {
         </div>
       </div>
 
-      <div className={styles.background}  ></div>
+      <div className={styles.background} onClick={onClickNewMedecine}></div>
     </div>
   )
 }
