@@ -1,10 +1,11 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 function Login() {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({ username: '', mdp: '' });
     const [message, setMessage] = useState('');
-    const navigate = useNavigate();
+
     
     const apiUrl = import.meta.env.VITE_API_URL; 
 

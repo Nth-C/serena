@@ -12,12 +12,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 $app = new App();
-
 $json = file_get_contents('php://input');
 $data = json_decode($json, true);
 
 $username = $data['username'] ?? '';
 $mdp = $data['mdp'] ?? '';
+
+$personne = null;
+
+if ($username && $mdp) {
+    $dao = new PersonneDAO();
+    $personne = $dao->findByUsername($username);
+}
 
 if ($personne && password_verify($mdp, $personne->mdp)) {
     $app->login($personne);
