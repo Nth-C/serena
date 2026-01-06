@@ -137,3 +137,10 @@ CREATE TABLE AIDE (
     "desc" TEXT
 );
 
+
+CREATE TABLE APPARTIENT_A (
+    id_famille INT REFERENCES FAMS(id_famille) ON DELETE CASCADE,
+    id_personne INT REFERENCES PERSONNES(id_personne) ON DELETE CASCADE,
+    role VARCHAR(50), -- Optionnel : pour savoir si c'est un 'parent', 'enfant', 'aidant', etc.
+    PRIMARY KEY (id_famille, id_personn, 
+);

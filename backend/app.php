@@ -11,6 +11,7 @@ class App
   public Stock $stock;
   public Planning $planning;
   public ?Personne $personne;
+  public int $id_famille;
   public bool $connected; 
 
 
