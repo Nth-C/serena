@@ -140,6 +140,17 @@ button {
 /* ----------------------------- */
 
 .login {
+  overflow: hidden;
+  position: relative;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.login form {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -157,27 +168,26 @@ button {
   position: absolute;
   bottom: -29px;
   right: -18px;
-  transform : translate(50% 50%)
 }
 
 .login h1 {
   color: var(--blue);
 }
 
-.login > div {
+.login form > div {
   display: flex;
   flex-direction: column;
   gap: 10px;
   width: 90%;
 }
 
-.login > div p {
+.login form > div p {
   color: var(--blue);
   text-decoration: underline;
   text-align: end;
 }
 
-.login > div > div {
+.login form > div > div {
   display: flex;
   flex-direction: column;
   gap: 2.5px;

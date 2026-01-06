@@ -69,28 +69,39 @@ function CreateAccount() {
             )}
 
             <form onSubmit={handleSubmit}>
-                <label>E-mail : </label>
-                <input type="email" name="mail" value={formData.mail} onChange={handleChange} required />
-
-                <label>Mot de passe : </label>
-                <input type="password" name="mdp" value={formData.mdp} onChange={handleChange} required />
-
-                <label>Confirmation : </label>
-                <input type="password" name="confirmMdp" value={formData.confirmMdp} onChange={handleChange} required />
-
-                <label>Nom : </label>
-                <input type="text" name="nom" value={formData.nom} onChange={handleChange} required />
-
-                <label>Prénom : </label>
-                <input type="text" name="prenom" value={formData.prenom} onChange={handleChange} required />
-
-                <label>Nom d'utilisateur : </label>
-                <input type="text" name="username" value={formData.username} onChange={handleChange} required />
-
-                <label>Date de naissance : </label>
-                <input type="date" name="date_naissance" value={formData.date_naissance} onChange={handleChange} required />
-
-                <div style={{ marginTop: '20px' }}>
+                <div>
+                    <div>
+                        <label>E-mail : </label>
+                        <input type="email" name="mail" value={formData.mail} onChange={handleChange} required />
+                    </div>
+                    <div>
+                        <label>Mot de passe : </label>
+                        <input type="password" name="mdp" value={formData.mdp} onChange={handleChange} required />
+                    </div>
+                    <div>
+                        <label>Confirmation de mot de passe : </label>
+                        <input type="password" name="confirmMdp" value={formData.confirmMdp} onChange={handleChange} required />
+                    </div>
+                    <div>
+                        <div>
+                            <label>Nom : </label>
+                            <input type="text" name="nom" value={formData.nom} onChange={handleChange} required />
+                        </div>
+                        <div>
+                            <label>Prénom : </label>
+                            <input type="text" name="prenom" value={formData.prenom} onChange={handleChange} required />
+                        </div>
+                    </div>
+                    <div>
+                        <label>Date de naissance : </label>
+                        <input type="date" name="date_naissance" value={formData.date_naissance} onChange={handleChange} required />
+                    </div>
+                    <div>
+                        <label>Nom d'utilisateur : </label>
+                        <input type="text" name="username" value={formData.username} onChange={handleChange} required />
+                    </div>
+                </div>
+                <div>
                     <NavLink to="/">
                         <button type="button">Retour</button>
                     </NavLink>
