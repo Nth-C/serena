@@ -30,6 +30,30 @@ class EvenementDAO{
 
         return $stmt->execute(['name' => $name, 'stock' => $stock, 'id_famille' => $id_famille]);
     }
+    public function getAllEvenementsSemaine($id_famille, $date_debut, $date_fin): array {
+    $query = 'SELECT * FROM EVENEMENTS 
+              WHERE id_famille = :id_famille 
+              AND date_deb BETWEEN :date_debut AND :date_fin
+              ORDER BY date_deb ASC';
+    
+    $stmt = $this->dal->prepare($query);
+
+    $stmt->execute([
+        'id_famille' => $id_famille,
+        'date_debut' => $date_debut,
+        'date_fin'   => $date_fin
+    ]);
+
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $evenements = [];
+
+    foreach($data as $evenement) {
+        $evenements[] = new Evenement($evenement); 
+    }
+
+    return $evenements;
+}
 
 }
 
