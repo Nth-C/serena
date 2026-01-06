@@ -1,4 +1,6 @@
 <?php
+require_once(__DIR__ . '/medicament.class.php');
+
 class MedicamentDAO {
     private DAL $dal;
 
@@ -20,7 +22,7 @@ class MedicamentDAO {
         return $medicaments;
     }
 
-    public function getAllMedicaments($id_famille = 2): array {
+    public function getAllMedicaments($id_famille): array {
         $query = 'SELECT * FROM STOCK_MEDICS WHERE id_famille = :id_famille';
         $stmt = $this->dal->prepare($query);
 
