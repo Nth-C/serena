@@ -62,7 +62,7 @@ function Layout({submenu}) {
             <main>
                 <Nav />
                 <div className="content">
-                    <p>{breadcrumb()}</p>
+                    <p className="breadcrumb">{breadcrumb()}</p>
                     <Outlet />
                 </div>
             </main>

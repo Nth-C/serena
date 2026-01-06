@@ -49,14 +49,21 @@ img {
   user-select: none;
 }
 
+.breadcrumb {
+  padding: 10rem 3rem 0 3rem; 
+}
+
 .content {
   width: 100%;
-  padding: 10rem 0 0 3rem; 
-  min-height: 300vh;
+  min-height: 100vh;
 }
 
 label, p {
   font-size: 12px;
+}
+
+h1 {
+  padding-left: 3rem; 
 }
 
 /*style input*/
@@ -265,6 +272,55 @@ button.fill {
 }
 
 .acce_suivi .principal_infos div {
+  display: flex;
+}
+/* -------------------------------- */
+/* ----------- Medecine ----------- */
+/* -------------------------------- */
+
+.medecine {
+
+}
+
+.medecine .principal_infos {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.medecine .container_medecine {
+  position: relative;
+  border-width: 1px 0 0 0; 
+  border-color: var(--gray);
+  padding: 0.5rem 3rem;
+  border-style: solid;
+}
+
+.medecine .container_medecine:last-child {
+  border-width: 1px 0 1px 0; 
+}
+
+.medecine .drop {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.medecine .drop::before {
+  content: '';
+  display: block;
+  background: var(--pink);
+  width: 3px;
+  height: 100%;
+}
+
+.medecine .drop > div {
+  display: flex;
+  justify-content: end;
+  gap: 1rem;
+}
+
+.medecine .principal_infos div {
   display: flex;
 }
 
