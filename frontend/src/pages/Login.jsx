@@ -9,31 +9,33 @@ function Login() {
 
             <h1>Se connecter</h1>
 
-            <div>
+            <form action="">
                 <div>
-                    <label htmlFor="">E-mail : </label>
-                    <input type="email" />
+                    <div>
+                        <label htmlFor="">E-mail : </label>
+                        <input type="email" />
+                    </div>
+
+                    <div>
+                        <label htmlFor="">Mot de passe : </label>
+                        <input type="password" />
+                    </div>
+
+                    <NavLink to={"/create_account"}>
+                        <p>Mot de passe oublié ?</p>
+                    </NavLink>
                 </div>
 
-                <div>
-                    <label htmlFor="">Mot de passe : </label>
-                    <input type="password" />
-                </div>
+                <NavLink to={"/"}>
+                    <button type="submit" className="fill">Se connecter</button>
+                </NavLink>
+
+                <hr />
 
                 <NavLink to={"/create_account"}>
-                    <p>Mot de passe oublié ?</p>
+                    <button>Créer un compte</button>
                 </NavLink>
-            </div>
-
-            <NavLink to={"/"}>
-                <button type="submit" className="fill">Se connecter</button>
-            </NavLink>
-
-            <hr />
-
-            <NavLink to={"/create_account"}>
-                <button>Créer un compte</button>
-            </NavLink>
+            </form>
 
             <img src="../../public/img/logo.svg" alt="" />
         </div>
