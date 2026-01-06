@@ -12,6 +12,7 @@ function Menu({isOpen , onHamburgerClick}) {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' }
             });
+            localStorage.removeItem('user');
             navigate('/login');
         } catch (error) {
             console.error('Erreur lors de la déconnexion', error);

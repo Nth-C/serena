@@ -1,10 +1,12 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 function Login() {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({ username: '', mdp: '' });
     const [message, setMessage] = useState('');
 
+    
     const apiUrl = import.meta.env.VITE_API_URL; 
 
     const handleChange = (e) => {
@@ -19,11 +21,12 @@ function Login() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username : formData.username, mdp : formData.mdp  })
             });
-            const text = await response.text();
-            if (text === 'success') {
+            const data = await response.json();
+            if (data.success) {
+                localStorage.setItem('user', JSON.stringify(data.user));
                 window.location.href = '/home/dashboard';
             } else {
-                setMessage(text);
+                setMessage(data.message);
             }
         } catch (error) {
             setMessage('Erreur de connexion');
