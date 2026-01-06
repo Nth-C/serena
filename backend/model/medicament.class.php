@@ -2,6 +2,7 @@
 
 class Medicament
 {
+  public readonly int $id_medicament;
   public string $nomMedicament;
   public string $description;
   public int $numAutorisationEU;
@@ -9,6 +10,7 @@ class Medicament
 
   public function __construct(array $data = array())
   {
+    $this->id_medicament = $data['id_medicament'] ?? -1;
     $this->nomMedicament = $data['nomMedicament'] ?? '';
     $this->description = $data['description'] ?? '';
     $this->numAutorisationEU = $data['numAutorisationEU'] ?? -1;
