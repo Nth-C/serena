@@ -1,8 +1,23 @@
 import { useEffect, useState } from 'react'
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import styles from './Menu.module.css';
 
 function Menu({isOpen , onHamburgerClick}) {
+    const navigate = useNavigate();
+    const apiUrl = import.meta.env.VITE_API_URL;
+
+    const handleLogout = async () => {
+        try {
+            await fetch(`${apiUrl}/?route=logout`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            navigate('/login');
+        } catch (error) {
+            console.error('Erreur lors de la déconnexion', error);
+        }
+    };
+
     return (
         <div className={[
                     styles.menu,
@@ -108,9 +123,9 @@ function Menu({isOpen , onHamburgerClick}) {
 
                 <div className={styles.logout_container}>
                     <div>
-                        <NavLink to={"/"}>
+                        <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer' }}>
                             <p>Déconnexion</p>
-                        </NavLink>
+                        </button>
                     </div>
                 </div>
             </div>
