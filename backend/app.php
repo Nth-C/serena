@@ -37,6 +37,7 @@ class App
       $this->personne = null;
     }
     $this->id_famille = 2;
+    $this->planning = new Planning();
   }
 
   public function __destruct()

@@ -6,8 +6,8 @@ class Evenement
     private ?DateTimeImmutable $fin;
     private string $lieu;
     private string $description;
-    private string $type;
-    private array $evenements = [];
+    private string $titre;
+    private array $accompagnants = [];
     private array $trajets = [];
 
     public function __construct(array $data = array())
@@ -26,10 +26,10 @@ class Evenement
 
         $this->lieu = $data['lieu'];
         $this->description = $data['description'];
-        $this->type = $data['type'];
+        $this->titre = $data['titre'];
 
-        foreach ($data['evenements'] as $evenement){
-            $this->evenements[] = $evenement;
+        foreach ($data['accompagnants'] as $accompagnant){
+            $this->accompagnants[] = $accompagnant;
         }
 
         foreach ($data['trajets'] as $trajet){
