@@ -30,9 +30,16 @@ class CategorieDAO {
     }
 
     public function addCategorie($id_famille, $nom){
-        $query = 'INSERT INTO CAT (id_famille, nom) VALUES (:id_famille, :nom)';
+        $query = 'INSERT INTO CAT (nom, id_famille) VALUES (:nom, :id_famille)';
         $stmt = $this->dal->prepare($query);
-        $stmt->execute(['id_famille' => $id_famille, 'nom' => $nom]);
+        return $stmt->execute(['nom' => $nom,'id_famille' => $id_famille]);
+    }
+
+    public function deleteCategorie($id_famille,$id_categorie) : bool {
+        $query = 'DELETE FROM CAT WHERE id_famille = :id_famille AND id_categorie = :id_categorie';
+        $stmt = $this->dal->prepare($query);
+
+        return $stmt->execute(['id_famille' => $id_famille,'id_categorie' => $id_categorie]);
     }
 
     

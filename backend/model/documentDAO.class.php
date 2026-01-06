@@ -9,21 +9,20 @@ class DocumentDAO {
     }
 
 
-    public function addDocument($id_famille, $id_categorie, $nom, $type){
-        $query = 'INSERT INTO DOCUMENT (id_famille, id_cat, nom, type) VALUES (:id_famille, :id_cat, :nom, :type)';
+    public function addDocument($id_famille, $id_categorie, $nom): bool{
+        $query = 'INSERT INTO DOCUMENT (id_famille, id_cat, nom) VALUES (:id_famille, :id_cat, :nom)';
         $stmt = $this->dal->prepare($query);
         
-        $stmt->execute([
+        return $stmt->execute([
             'id_famille' => $id_famille, 
             'id_cat'     => $id_categorie,
-            'nom'        => $nom, 
-            'type'       => $type
+            'nom'        => $nom
         ]);
     }
-    public function deleteDocument($id_doc){
-        $query = 'DELETE FROM DOCUMENT WHERE id_doc = :id_doc';
+    public function deleteDocument($id_document): bool{
+        $query = 'DELETE FROM DOCUMENT WHERE id_document = :id_document';
         $stmt = $this->dal->prepare($query);
-        $stmt->execute(['id_doc' => $id_doc]);
+        return $stmt->execute(['id_document' => $id_document]);
     }
 
     public function getOrdonnances($id_famille) {
