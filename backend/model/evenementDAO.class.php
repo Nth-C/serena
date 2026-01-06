@@ -24,6 +24,12 @@ class EvenementDAO{
     
         return new Evenement($result);
     }
+    public function addEvenement($id_event, $id_famille,$titre, $debut, $fin, $lieu, $description): bool {
+        $query = 'INSERT INTO STOCK_MEDICS (designation_med, quantite,id_famille) VALUES (:name, :stock, :id_famille)';
+        $stmt = $this->dal->prepare($query);
+
+        return $stmt->execute(['name' => $name, 'stock' => $stock, 'id_famille' => $id_famille]);
+    }
 
 }
 
