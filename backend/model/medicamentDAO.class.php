@@ -20,7 +20,7 @@ class MedicamentDAO {
         return $medicaments;
     }
 
-    public function getAllMedicaments($id_famille): array {
+    public function getAllMedicaments($id_famille = 2): array {
         $query = 'SELECT * FROM STOCK_MEDICS WHERE id_famille = :id_famille';
         $stmt = $this->dal->prepare($query);
 
