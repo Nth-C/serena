@@ -41,7 +41,7 @@ function AcceSuivi() {
                 <button className="simple">Créer un nouveau suivi</button>
             </NavLink>
 
-            <div>
+            <div className="information_suivi">
                 <h1>Créer un nouveau suivi</h1>
 
                 <div>
@@ -58,7 +58,7 @@ function AcceSuivi() {
                 </div>
             </div>
 
-            <div>
+            <div className="information_suivi">
                 <h1>Modifier le suivi de </h1>
 
                 <div>

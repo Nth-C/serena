@@ -226,7 +226,7 @@ button.fill {
   margin-left: auto;
 }
 
-.acce_suivi h1 {
+.acce_suivi > h1 {
   padding-left: 3rem;
 }
 
