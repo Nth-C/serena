@@ -33,7 +33,7 @@ class Evenement
         }
 
         foreach ($data['trajets'] as $trajet){
-            $this->evenements[] = $evenement;
+            $this->trajets[] = $trajet;
         }
     }
 }
