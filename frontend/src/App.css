@@ -184,15 +184,15 @@ button.fill {
 }
 
 .login input[type=text] {
-  background-image: url('../public/icons/account.svg');
+  background-image: url('/icons/account.svg');
 }
 
 .login input[type=password] {
-  background-image: url('../public/icons/lock.svg');
+  background-image: url('/icons/lock.svg');
 }
 
 .login input[type=email] {
-  background-image: url('../public/icons/mail.svg');
+  background-image: url('/icons/mail.svg');
 }
 
 .login::placeholder {

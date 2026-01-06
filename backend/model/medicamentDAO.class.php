@@ -1,4 +1,6 @@
 <?php
+require_once(__DIR__ . '/medicament.class.php');
+
 class MedicamentDAO {
     private DAL $dal;
 
@@ -20,7 +22,7 @@ class MedicamentDAO {
         return $medicaments;
     }
 
-    public function getAllMedicaments($id_famille = 2): array {
+    public function getAllMedicaments($id_famille): array {
         $query = 'SELECT * FROM STOCK_MEDICS WHERE id_famille = :id_famille';
         $stmt = $this->dal->prepare($query);
 
@@ -36,11 +38,11 @@ class MedicamentDAO {
     }
 
     // A MODIFIER PAS ENCORE FONCTIONNELL
-    public function addMedecine($id_famille,$name, $stock) {
-        $query = 'INSERT INTO STOCK_MEDICS (designation_med, stock,id_famille) VALUES (:name, :stock, :id_famille)';
+    public function addMedecine($id_famille,$name, $stock): bool {
+        $query = 'INSERT INTO STOCK_MEDICS (designation_med, quantite,id_famille) VALUES (:name, :stock, :id_famille)';
         $stmt = $this->dal->prepare($query);
 
-        $stmt->execute(['name' => $name, 'stock' => $stock, 'id_famille' => $id_famille]);
+        return $stmt->execute(['name' => $name, 'stock' => $stock, 'id_famille' => $id_famille]);
     }
 
     public function deleteMedecine($id_famille,$id_medicament) {
