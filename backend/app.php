@@ -36,6 +36,7 @@ class App
     } else {
       $this->personne = null;
     }
+    $this->id_famille = 2;
   }
 
   public function __destruct()

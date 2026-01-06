@@ -3,7 +3,7 @@ require_once('model/medicamentDAO.class.php');
 
 try {
     $model = new MedicamentDAO();
-    $medicaments = $model->getAllMedicaments();
+    $medicaments = $model->getAllMedicaments($app->id_famille);
     // echo pour envoyer les données dans la vue
     echo json_encode($medicaments);
 } catch (Exception $e) {

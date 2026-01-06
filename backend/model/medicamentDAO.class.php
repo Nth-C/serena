@@ -37,7 +37,7 @@ class MedicamentDAO {
 
     // A MODIFIER PAS ENCORE FONCTIONNELL
     public function addMedecine($id_famille,$name, $stock) {
-        $query = 'INSERT INTO STOCK_MEDICS (designation_med, stock,id_famille) VALUES (:name, :stock, :id_famille)';
+        $query = 'INSERT INTO STOCK_MEDICS (designation_med, quantite,id_famille) VALUES (:name, :stock, :id_famille)';
         $stmt = $this->dal->prepare($query);
 
         $stmt->execute(['name' => $name, 'stock' => $stock, 'id_famille' => $id_famille]);

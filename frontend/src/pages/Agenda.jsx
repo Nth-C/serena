@@ -32,7 +32,8 @@ function Agenda() {
         setMessage("Erreur: " + result.error);
       }
     } catch (error) {
-      setMessage("Erreur réseau");
+      setMessage("error");
+      console.error(error);
     }
   };
 
