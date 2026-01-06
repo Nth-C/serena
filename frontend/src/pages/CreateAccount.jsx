@@ -59,6 +59,8 @@ function CreateAccount() {
 
     return (
         <div className="login">
+            <img src="/img/logo-name.svg" alt="" />
+
             <h1>Créer un compte</h1>
             
             {/* Affichage du message avec une couleur simple pour la visibilité */}
@@ -72,7 +74,7 @@ function CreateAccount() {
                 <div>
                     <div>
                         <label>E-mail : </label>
-                        <input type="email" name="mail" value={formData.mail} onChange={handleChange} required />
+                        <input type="email" name="mail" value={formData.mail} onChange={handleChange} placeholder="exemple@gmail.com" required />
                     </div>
                     <div>
                         <label>Mot de passe : </label>
@@ -85,11 +87,11 @@ function CreateAccount() {
                     <div>
                         <div>
                             <label>Nom : </label>
-                            <input type="text" name="nom" value={formData.nom} onChange={handleChange} required />
+                            <input type="text" name="nom" value={formData.nom} onChange={handleChange} placeholder="Doe" required />
                         </div>
                         <div>
                             <label>Prénom : </label>
-                            <input type="text" name="prenom" value={formData.prenom} onChange={handleChange} required />
+                            <input type="text" name="prenom" value={formData.prenom} onChange={handleChange} placeholder="John" required />
                         </div>
                     </div>
                     <div>
@@ -98,16 +100,19 @@ function CreateAccount() {
                     </div>
                     <div>
                         <label>Nom d'utilisateur : </label>
-                        <input type="text" name="username" value={formData.username} onChange={handleChange} required />
+                        <input type="text" name="username" value={formData.username} onChange={handleChange} placeholder="John_Doe" required />
                     </div>
                 </div>
                 <div>
                     <NavLink to="/">
-                        <button type="button">Retour</button>
+                        <button type="button" className="simple">Retour</button>
                     </NavLink>
-                    <button type="submit">Valider</button>
+
+                    <button type="submit" className="simple fill">Créer</button>
                 </div>
             </form>
+
+            <img src="/img/logo.svg" alt="" />
         </div>
     );
 }
