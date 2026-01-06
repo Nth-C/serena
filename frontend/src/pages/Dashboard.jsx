@@ -73,13 +73,13 @@ function Dashboard() {
           </thead>
           <tbody>
             {medicaments.map((m) => (
-            <tr key={m.id}>
-              <td>{m.id}</td>
-              <td>{m.name}</td>
+            <tr key={m.id_medicament}>
+              <td>{m.id_medicament}</td>
+              <td>{m.nomMedicament}</td>
               <td>{m.stock}</td>
               <td>
                 <button 
-                  onClick={() => handleDelete(m.id)} 
+                  onClick={() => handleDelete(m.id_medicament)} 
                   style={{ backgroundColor: 'var(--red)', color: 'var(--white)' }}
                 >
                   Supprimer
