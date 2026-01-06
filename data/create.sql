@@ -1,6 +1,8 @@
 CREATE TABLE FAMS (
     id_famille SERIAL PRIMARY KEY,
-    nom VARCHAR(255)
+    nom VARCHAR(255),
+    nom_aide varchar(255),
+    "desc" varchar(255)
 );
 
 CREATE TABLE PERSONNES (

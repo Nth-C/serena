@@ -7690,7 +7690,6 @@ INSERT INTO CAT_MEDICS (nom_medicament) VALUES
 ('ÉVÉROLIMUS'),
 ('ÉZÉTIMIBE');
 
-//peuplement des personnes 
 INSERT INTO personnes VALUES (
     1,
     'Bangladesh',
