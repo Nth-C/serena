@@ -1,4 +1,6 @@
 <?php
+require_once(__DIR__ . '/famille.class.php');
+require_once(__DIR__ . '/dal.class.php');
 class FamilleDAO {
     private DAL $dal;
 

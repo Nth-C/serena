@@ -11,14 +11,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-$nom = $_POST['nom'] ?? '';
-$desc = $_POST['desc'] ?? '';
-$nom_aide = $_POST['nom_aide'] ?? '';
+$json = file_get_contents('php://input');
+$data = json_decode($json, true);
+
+$nom      = $data['nom_groupe'] ?? ''; 
+$desc     = $data['description'] ?? ''; 
+$nom_aide = $data['nom_aide'] ?? '';
 
 if($nom && $desc && $nom_aide){
     $dao = New FamilleDAO();
 
-    if ($dao->findByName($username)) {
+    if ($dao->findByName($nom)) {
         echo json_encode(['success' => false, 'error' => 'Ce nom de famille est déjà pris.']);
         exit();
     }

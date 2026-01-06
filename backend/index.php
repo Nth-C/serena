@@ -20,8 +20,8 @@ const _ROUTES = array(
   'medicament/delete' => 'deleteMedicament',
   'login' => 'login',
   'register' => 'register',
-  'logout' => 'logout'
-
+  'logout' => 'logout',
+  'famille/add' => 'addFamille'
 );
 
 if (!array_key_exists($route, _ROUTES)) {
