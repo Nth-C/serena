@@ -59,7 +59,7 @@ function CreateAccount() {
 
     return (
         <div className="login">
-            <img src="../../public/img/logo-name.svg" alt="" />
+            <img src="/img/logo-name.svg" alt="" />
 
             <h1>Créer un compte</h1>
             
@@ -112,7 +112,7 @@ function CreateAccount() {
                 </div>
             </form>
 
-            <img src="../../public/img/logo.svg" alt="" />
+            <img src="/img/logo.svg" alt="" />
         </div>
     );
 }
