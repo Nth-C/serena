@@ -6,8 +6,4 @@ class Ordonnance extends Document
   {
     parent::__construct($data);
   }
-  public function getOrdonnances(): array
-  {
-    return $this->dao->getOrdonnances($this);
-  }
 }

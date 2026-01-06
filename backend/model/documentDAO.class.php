@@ -7,24 +7,35 @@ class DocumentDAO {
     }
 
 
-    public function addDocument($id_doc,$categorie,$nom,$type){
-        $query = 'INSERT INTO DOCUMENT (id_doc, categorie, nom, type) VALUES (:id_doc, :categorie, :nom, :type)';
+    public function addDocument($id_famille,$id_categorie,$nom,$type){
+        $query = 'INSERT INTO DOCUMENT (id_famille,id_cat, nom, type) VALUES (:id_doc, :categorie, :nom, :type)';
         $stmt = $this->dal->prepare($query);
-        $stmt->execute(['id_doc' => $id_doc, 'categorie' => $categorie, 'nom' => $nom, 'type'=>$type]);
+        $stmt->execute([ 'id_famille' => $id_famille,'id_doc' => $id_doc, 'id_cat' => $id_categorie, 'nom' => $nom, 'type'=>$type]);
     }
 
     public function deleteDocument($id_doc){
-        $query = 'DELETE FROM DOCUMENT WHERE id_doc = :id_doc)';
+        $query = 'DELETE FROM DOCUMENT WHERE id_doc = :id_doc';
         $stmt = $this->dal->prepare($query);
         $stmt->execute(['id_doc' => $id_doc]);
     }
 
     public function getOrdonnances($id_famille) {
-        $query = 'SELECT * FROM DOCUMENT WHERE id_famille = :id_famille AND categorie = "ordonnance" ';
+        
+        $query = 'SELECT * FROM DOCUMENT WHERE id_famille = :id_famille AND  '; //attention
         $stmt = $this->dal->prepare($query);
 
         $stmt->execute(['id_famille' => $id_famille]);
-        return $stmt->fetchAll();
+        $result = $stmt->fetchAll();
+
+        if ($result === false) {
+        return null;
+        }
+        
+        $ordonnances = [];
+        foreach($result as $ordonnance){
+            $ordonnances[] = new Ordonnance($row);
+        }
+        return $ordonnances;
     }
     
 
@@ -32,6 +43,17 @@ class DocumentDAO {
         $query = 'SELECT * FROM DOCUMENT WHERE id_famille = :id_famille';
         $stmt = $this->dal->prepare($query);
 
-        return $stmt->execute(['id_famille' => $id_famille]);
+        $stmt->execute(['id_famille' => $id_famille]);
+        $result = $stmt->fetch();
+
+        if ($result === false) {
+        return null;
+        }
+    
+        $documents = [];
+        foreach($result as $document){
+            $documents[] = new Document($row);
+        }
+        return $documents;
     }
 }
