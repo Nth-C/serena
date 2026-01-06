@@ -1,3 +1,6 @@
+
+//peuplement des medics
+
 INSERT INTO CAT_MEDICS (nom_medicament) VALUES
 ('(S)-LACTATE DE SODIUM'),
 ('(S)-MALATE DE CABOZANTINIB'),
@@ -7686,3 +7689,36 @@ INSERT INTO CAT_MEDICS (nom_medicament) VALUES
 ('ÉVOLOCUMAB'),
 ('ÉVÉROLIMUS'),
 ('ÉZÉTIMIBE');
+
+//peuplement des personnes 
+INSERT INTO personnes VALUES (
+    1,
+    'Bangladesh',
+    'Tomi',
+    'jenexistetoujourspas@gpasdemail.fr',
+    'BangladeshT',
+    crypt('JaimeLesPoires', gen_salt('bf')),
+    DATE '1989-02-05'
+);
+
+
+INSERT INTO personnes VALUES (
+    2,
+    'Jupiter',
+    'Toma',
+    'pasdechance@gpasdemail.fr',
+    'JupiterT',
+    crypt('JaimeLesPoires', gen_salt('bf')),
+    DATE '1989-02-05'
+);
+
+
+INSERT INTO personnes VALUES (
+    3,
+    'Mars',
+    'Tomou',
+    'jenexistepas@gpasdemail.fr',
+    'MarsT',
+    crypt('JaimeLesPoires', gen_salt('bf')),
+    DATE '1989-02-05'
+);
