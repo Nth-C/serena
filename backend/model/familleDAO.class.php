@@ -1,5 +1,5 @@
 <?php
-class familleDAO {
+class FamilleDAO {
     private DAL $dal;
 
     public function __construct() {
@@ -7,16 +7,29 @@ class familleDAO {
     }
 
     public function insert(Famille $famille): bool {
-        $query = 'INSERT INTO fams (nom, "desc", nom_aide,) 
+        $query = 'INSERT INTO fams (nom, "desc", nom_aide) 
                   VALUES (:nom, :desc, :nom_aide)';
         
         $stmt = $this->dal->prepare($query);
 
         return $stmt->execute([
             ':nom'            => $famille->nom,
-            ':prenom'         => $famille->prenom,
-            ':mail'           => $famille->mail 
+            ':desc'         => $famille->desc,
+            ':nom_aide'           => $famille->nom_aide 
         ]);
+    }
+
+        public function findByName(string $nom): ?Famille {
+            $query = 'SELECT * FROM fams WHERE nom = :nom';
+            $stmt = $this->dal->prepare($query);
+            $stmt->execute([':nom' => $nom]);   
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($result === false) {
+                return null;
+            }
+        
+            return new Famille($result);
     }
 
     public function getPersFam($id_famille): array {
@@ -43,24 +56,4 @@ class familleDAO {
             'id_personne' => $id_personne
         ]);
     }
-
-    public function RmPersFam($id_famille,$id_personne): array {
-            $query = 'DELETE FROM appartient_a WHERE id_famille = :id_famille AND id_personne = :id_personne';
-            $stmt = $this->dal->prepare($query);
-            $stmt->execute([
-                        'id_famille'  => $id_famille,
-                        'id_personne' => $id_personne
-                    ]);
-    }
-    public function ChangeRole($id_famille, $id_personne, $role): void {
-            $query = 'UPDATE appartient_a SET role = :role WHERE id_famille = :id_famille AND id_personne = :id_personne';
-            $stmt = $this->dal->prepare($query);
-            $stmt->execute([
-                'id_famille'  => $id_famille,
-                'id_personne' => $id_personne,
-                'role'        => $role
-            ]);
-
-
-
 }
