@@ -1,5 +1,6 @@
 <?php
 class Trajet {
+    private readonly string $id_trajet;
     private string $lieuDepart;
     private string $lieuArrive;
     private ?DateTimeImmutable $heureDepart;
@@ -11,6 +12,7 @@ class Trajet {
 
     public function __construct(array $data = array()) {
         //attention : dans $data accompagnants est un array de personnes
+        $this->id_trajet = $data['id_trajet'] ?? -1;
         $this->lieuDepart = $data['lieuDepart'] ?? "";
         $this->lieuArrive = $data['lieuArrive'] ?? "";
         // --- GESTION DES DATES ---
