@@ -4,7 +4,8 @@ import { useState } from 'react';
 function Login() {
     const [formData, setFormData] = useState({ username: '', mdp: '' });
     const [message, setMessage] = useState('');
-    const apiUrl = 'http://localhost:8080';
+
+    const apiUrl = import.meta.env.VITE_API_URL; 
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -15,8 +16,8 @@ function Login() {
         try {
             const response = await fetch(`${apiUrl}/?route=login`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams(formData)
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username : formData.username, mdp : formData.mdp  })
             });
             const text = await response.text();
             if (text === 'success') {
@@ -36,26 +37,24 @@ function Login() {
             <h1>Se connecter</h1>
             {message && <p>{message}</p>}
 
-            <form action="">
+            <form onSubmit={handleSubmit}>
                 <div>
                     <div>
-                        <label htmlFor="">E-mail : </label>
-                        <input type="email" />
+                        <label>Username : </label>
+                        <input type="text" name="username" value={formData.username} onChange={handleChange} required />
                     </div>
 
                     <div>
-                        <label htmlFor="">Mot de passe : </label>
-                        <input type="password" />
+                        <label>Mot de passe : </label>
+                        <input type="password" name="mdp" value={formData.mdp} onChange={handleChange} required />
                     </div>
 
-                    <NavLink to={"/create_account"}>
+                    <NavLink to="/create_account">
                         <p>Mot de passe oublié ?</p>
                     </NavLink>
                 </div>
 
-                <NavLink to={"/"}>
-                    <button type="submit" className="fill">Se connecter</button>
-                </NavLink>
+                <button type="submit" className="fill">Se connecter</button>
 
                 <hr />
 
