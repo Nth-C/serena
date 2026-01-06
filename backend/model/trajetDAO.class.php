@@ -24,6 +24,22 @@ class TrajetDAO{
     
         return new Trajet($result);
     }
+
+    //renvoie les trajets qui ont true l'attribut de demande de trajet
+    public function demandeDeTrajet(string $id_famille): array
+    {
+        $query = 'SELECT TRAJET.* FROM TRAJET,EVENEMENTS WHERE TRAJET.demande_trajet = TRUE AND TRAJET.id_event = EVENEMENTS.id_event AND EVENEMENTS.id_famille = :id_famille';
+        $stmt = $this->dal->prepare($query);
+
+        $stmt->execute([':id_famille' => $id_famille]);
+        $data = $stmt->fetchAll();
+        
+        foreach($data as $trajet){
+             $trajets[] = new Trajet($trajet);
+        }
+
+        return $trajets;
+    }
 }
 
 ?>

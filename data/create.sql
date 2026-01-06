@@ -105,6 +105,7 @@ CREATE TABLE CAT_MEDICS (
 
 CREATE TABLE TRAJET (
     id_trajet SERIAL PRIMARY KEY,
+    demande_trajet BOOLEAN,
     date_deb DATE,
     date_fin DATE,
     lieu_dep VARCHAR(255),
