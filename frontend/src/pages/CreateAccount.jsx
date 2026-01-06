@@ -53,6 +53,8 @@ function CreateAccount() {
 
     return (
         <div className="login">
+            <img src="../../public/img/logo-name.svg" alt="" />
+
             <h1>Créer un compte</h1>
             {message && <p>{message}</p>}
             <form onSubmit={handleSubmit}>
@@ -90,12 +92,14 @@ function CreateAccount() {
                 </div>
                 <div>
                     <NavLink to="/">
-                        <button type="button">Retour</button>
+                        <button type="button" className="simple">Retour</button>
                     </NavLink>
 
-                    <button type="submit">Valider</button>
+                    <button type="submit" className="simple fill">Créer</button>
                 </div>
             </form>
+
+            <img src="../../public/img/logo.svg" alt="" />
         </div>
     )
 };

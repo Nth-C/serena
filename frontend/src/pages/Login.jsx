@@ -27,13 +27,13 @@ function Login() {
                 </div>
 
                 <NavLink to={"/"}>
-                    <button type="submit" className="fill">Se connecter</button>
+                    <button type="submit" className="simple fill">Se connecter</button>
                 </NavLink>
 
                 <hr />
 
                 <NavLink to={"/create_account"}>
-                    <button>Créer un compte</button>
+                    <button className="simple">Créer un compte</button>
                 </NavLink>
             </form>
 

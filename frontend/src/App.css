@@ -61,13 +61,13 @@ label, p {
 
 /*style input*/
 input {
-  border: 1px solid var(--blue);
+  border: 1px solid var(--black);
   border-radius: 8px;
   height: 28px;
 }
 
 /*style bouton simple*/
-button {
+button.simple {
   border: 1px solid var(--blue);
   border-radius: 4px;
   cursor: pointer;
@@ -76,7 +76,7 @@ button {
 }
 
 /*style bouton rempli*/
-.fill {
+button.fill {
   background-color: var(--blue);
   color: var(--white);
 }
@@ -164,7 +164,8 @@ button {
 }
 
 .login img:last-child {
-  max-width: 300px;
+  max-width: 284px;
+  max-height: 213px;
   position: absolute;
   bottom: -29px;
   right: -18px;
@@ -187,18 +188,36 @@ button {
   text-align: end;
 }
 
-.login form > div > div {
+.login form > div > div, .login form > div > div > div  {
   display: flex;
   flex-direction: column;
   gap: 2.5px;
+}
+
+.login form > div > div:nth-child(4) {
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.login form > div:last-child {
+  flex-direction: row;
+  justify-content: end;
+}
+
+.login form > div:last-child button {
+  width: 93px;
 }
 
 .login label {
   color: var(--blue);
 }
 
+.login input {
+  border-color: var(--blue);
+}
+
 .login button {
-  width: 150px;
+  width: 125px;
 }
 
 .login hr {
