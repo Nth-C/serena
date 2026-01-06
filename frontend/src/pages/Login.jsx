@@ -32,7 +32,7 @@ function Login() {
 
     return (
         <div className="login">
-            <img src="../../public/img/logo-name.svg" alt="" />
+            <img src="/img/logo-name.svg" alt="" />
 
             <h1>Se connecter</h1>
             {message && <p>{message}</p>}
@@ -40,10 +40,8 @@ function Login() {
             <form onSubmit={handleSubmit}>
                 <div>
                     <div>
-                        <label htmlFor="">Login : </label>
-                        <input type="text" placeholder="John_Doe" />
-                        <label>Username : </label>
-                        <input type="text" name="username" value={formData.username} onChange={handleChange} required />
+                        <label>Nom d'utilisateur : </label>
+                        <input type="text" name="username" value={formData.username} onChange={handleChange} placeholder="John_Doe" required />
                     </div>
 
                     <div>
@@ -65,7 +63,7 @@ function Login() {
                 </NavLink>
             </form>
 
-            <img src="../../public/img/logo.svg" alt="" />
+            <img src="/img/logo.svg" alt="" />
         </div>
     )
 };
