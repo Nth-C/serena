@@ -1,7 +1,7 @@
 <?php
 class Planning {
-    private readonly string $description;
-    private readonly array $evenements = [];
+    private string $description;
+    private array $evenements = [];
 
     public function __construct(array $data = array()) {
         //attention : dans data ya description(string) et evenements (array d'evenement)

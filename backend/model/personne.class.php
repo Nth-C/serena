@@ -6,7 +6,7 @@ class Personne{
     public readonly string $mail;
     public readonly string $username;
     public readonly string $mdp;
-    public readonly DateTimeImmutable $date_naissance;
+    public readonly string $date_naissance;
          
     public function __construct(array $data=array())
     {

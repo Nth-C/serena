@@ -28,7 +28,8 @@ if ($nom && $prenom && $mail && $username && $mdp && $date_naissance) {
         header('Location: ?route=login');
         exit();
     } else {
-        $view->assign('message', 'Erreur lors de l\'inscription');
+        echo 'Erreur lors de l\'inscription';
     }
+} else {
+    // Display form or something, but since it's API, perhaps just ok
 }
-$view->display();
