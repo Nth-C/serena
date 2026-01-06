@@ -6,34 +6,46 @@ class MedicamentDAO {
         $this->dal = DAL::get();
     }
 
-     public function getNbMedicament($stock,$nomMedicament) {
-        $query = 'SELECT count(*) FROM STOCK_MEDICAMENT WHERE designation_medicament LIKE :nomMedicament';
+     public function getNbMedicament($id_famille,$nomMedicament): array {
+        $query = 'SELECT quantite FROM STOCK_MEDICS WHERE designation_medicament LIKE :nomMedicament AND id_famille = :id_famille';
         $stmt = $this->dal->prepare($query);
 
-        return $stmt->execute(['nomMedicament' => $nomMedicament]);
-    }
-
-    public function getAll(): array {
-        $query = 'SELECT * FROM STOCK_MEDICAMENT';
-        $stmt = $this->dal->prepare($query);
-
-        $stmt->execute();
+        $stmt->execute(['nomMedicament' => $nomMedicament,'id_famille' => $id_famille]);
         $data = $stmt->fetchAll();
 
-        return $data;
+        foreach($data as $medicament){
+             $medicaments[] = new Medicament($medicament);
+        }
+
+        return $medicaments;
     }
 
-    public function addMedecine($name, $stock) {
-        $query = 'INSERT INTO STOCK_MEDICAMENT (name, stock) VALUES (:name, :stock)';
+    public function getAllMedicaments($id_famille): array {
+        $query = 'SELECT * FROM STOCK_MEDICS WHERE id_famille = :id_famille';
         $stmt = $this->dal->prepare($query);
 
-        return $stmt->execute(['name' => $name, 'stock' => $stock]);
+        $stmt->execute(['id_famille' => $id_famille]);
+        $data = $stmt->fetchAll();
+
+        foreach($data as $medicament){
+             $medicaments[] = new Medicament($medicament);
+        }
+
+        return $medicaments;
     }
 
-    public function deleteMedecine($id) {
-        $query = 'DELETE FROM STOCK_MEDICAMENT WHERE id = :id';
+    // A MODIFIER PAS ENCORE FONCTIONNELL
+    public function addMedecine($id_famille,$name, $stock) {
+        $query = 'INSERT INTO STOCK_MEDICS (name, stock) VALUES (:name, :stock)';
         $stmt = $this->dal->prepare($query);
 
-        return $stmt->execute(['id' => $id]);
+        $stmt->execute(['name' => $name, 'stock' => $stock]);
+    }
+
+    public function deleteMedecine($id_famille,$id_medicament) {
+        $query = 'DELETE FROM STOCK_MEDICS WHERE id_famille = :id_famille AND id_medicament = :id_medicament';
+        $stmt = $this->dal->prepare($query);
+
+        $stmt->execute(['id_famille' => $id_famille,'id_medicament' => $id_medicamentd]);
     }
 }
