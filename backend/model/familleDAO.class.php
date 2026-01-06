@@ -51,8 +51,15 @@ class familleDAO {
                         'id_famille'  => $id_famille,
                         'id_personne' => $id_personne
                     ]);
-        }
-
+    }
+    public function ChangeRole($id_famille, $id_personne, $role): void {
+            $query = 'UPDATE appartient_a SET role = :role WHERE id_famille = :id_famille AND id_personne = :id_personne';
+            $stmt = $this->dal->prepare($query);
+            $stmt->execute([
+                'id_famille'  => $id_famille,
+                'id_personne' => $id_personne,
+                'role'        => $role
+            ]);
 
 
 
