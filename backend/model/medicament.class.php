@@ -19,10 +19,7 @@ class Medicament
     $this->stock = $data['quantite'] ?? 0;
   }
 
-  public function getNbMedicament(string $nomMedicament = ''): int
-  {
-    return $this->dao->getNbMedicament($this,$nomMedicament);
-  }
+  
 
 
 
