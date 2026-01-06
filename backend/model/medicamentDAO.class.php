@@ -45,10 +45,10 @@ class MedicamentDAO {
         return $stmt->execute(['name' => $name, 'stock' => $stock, 'id_famille' => $id_famille]);
     }
 
-    public function deleteMedecine($id_famille,$id_medicament) {
+    public function deleteMedecine($id_famille,$id_medicament) : bool {
         $query = 'DELETE FROM STOCK_MEDICS WHERE id_famille = :id_famille AND id_medicament = :id_medicament';
         $stmt = $this->dal->prepare($query);
 
-        $stmt->execute(['id_famille' => $id_famille,'id_medicament' => $id_medicamentd]);
+        return $stmt->execute(['id_famille' => $id_famille,'id_medicament' => $id_medicament]);
     }
 }
