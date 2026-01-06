@@ -34,6 +34,7 @@ class TrajetDAO{
         $stmt->execute([':id_famille' => $id_famille]);
         $data = $stmt->fetchAll();
         
+         $trajets = [];
         foreach($data as $trajet){
              $trajets[] = new Trajet($trajet);
         }

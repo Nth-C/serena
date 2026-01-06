@@ -6,15 +6,25 @@ class CategorieDAO {
         $this->dal = DAL::get();
     }
 
-    public function getAllCategories(): array
+    public function getAllCategories($id_famille): array
     {
-        $query = 'SELECT CAT.* FROM CAT, FAMILLE WHERE CAT.id_famille = FAMILLE.id_famille';
+        $query = 'SELECT * FROM CAT WHERE id_famille = :id_famille';
         $stmt = $this->dal->prepare($query);
 
-        $stmt->execute();
+        $stmt->execute(['id_famille' => $id_famille]);
         $data = $stmt->fetchAll();
 
-        return $data;
+        if ($data === false) {
+        return null;
+        }
+        
+        $categories = [];
+        foreach($data as $categorie){
+            $categories[] = new Categorie($categorie);
+        }
+        return $categories;
+
+        
     }
 
     public function addCategorie($id_famille, $nom){

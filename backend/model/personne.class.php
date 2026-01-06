@@ -1,12 +1,12 @@
 <?php
 class Personne{
     public readonly string $id;
-    public string $nom;  
-    public string $prenom;   
-    public string $mail;
-    public string $username;
-    public string $mdp;
-    public DateTimeImmutable $date_naissance;
+    public readonly string $nom;  
+    public readonly string $prenom;   
+    public readonly string $mail;
+    public readonly string $username;
+    public readonly string $mdp;
+    public readonly string $date_naissance;
          
     public function __construct(array $data=array())
     {
