@@ -44,6 +44,14 @@ class familleDAO {
         ]);
     }
 
+    public function RmPersFam($id_famille,$id_personne): array {
+            $query = 'DELETE FROM appartient_a WHERE id_famille = :id_famille AND id_personne = :id_personne';
+            $stmt = $this->dal->prepare($query);
+            $stmt->execute([
+                        'id_famille'  => $id_famille,
+                        'id_personne' => $id_personne
+                    ]);
+        }
 
 
 
