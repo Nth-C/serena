@@ -15,12 +15,11 @@ $mdp = $_POST['mdp'] ?? '';
 if ($username && $mdp) {
     $dao = new PersonneDAO();
     $personne = $dao->findByUsername($username);
-    if ($personne && password_verify($mdp, $personne->mdp)) {
+if ($personne && password_verify($mdp, $personne->mdp)) {
         $app->login($personne);
-        header('Location: ?route=main');
-        exit();
+        echo 'success';
     } else {
-        $view->assign('message', 'Login ou mot de passe incorrect');
+        echo 'Login ou mot de passe incorrect';
     }
 }
 $view->display();
