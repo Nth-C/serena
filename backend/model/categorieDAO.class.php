@@ -1,4 +1,6 @@
 <?php
+
+require_once(__DIR__ . '/categorie.class.php');
 class CategorieDAO {
     private DAL $dal;
 
