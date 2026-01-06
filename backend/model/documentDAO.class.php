@@ -7,12 +7,17 @@ class DocumentDAO {
     }
 
 
-    public function addDocument($id_famille,$id_categorie,$nom,$type){
-        $query = 'INSERT INTO DOCUMENT (id_famille,id_cat, nom, type) VALUES (:id_doc, :categorie, :nom, :type)';
+    public function addDocument($id_famille, $id_categorie, $nom, $type){
+        $query = 'INSERT INTO DOCUMENT (id_famille, id_cat, nom, type) VALUES (:id_famille, :id_cat, :nom, :type)';
         $stmt = $this->dal->prepare($query);
-        $stmt->execute([ 'id_famille' => $id_famille,'id_doc' => $id_doc, 'id_cat' => $id_categorie, 'nom' => $nom, 'type'=>$type]);
+        
+        $stmt->execute([
+            'id_famille' => $id_famille, 
+            'id_cat'     => $id_categorie,
+            'nom'        => $nom, 
+            'type'       => $type
+        ]);
     }
-
     public function deleteDocument($id_doc){
         $query = 'DELETE FROM DOCUMENT WHERE id_doc = :id_doc';
         $stmt = $this->dal->prepare($query);
@@ -20,7 +25,7 @@ class DocumentDAO {
     }
 
     public function getOrdonnances($id_famille) {
-        
+
         $query = 'SELECT * FROM DOCUMENT WHERE id_famille = :id_famille AND  '; //attention
         $stmt = $this->dal->prepare($query);
 
@@ -33,7 +38,7 @@ class DocumentDAO {
         
         $ordonnances = [];
         foreach($result as $ordonnance){
-            $ordonnances[] = new Ordonnance($row);
+            $ordonnances[] = new Ordonnance($ordonnance);
         }
         return $ordonnances;
     }
@@ -52,7 +57,7 @@ class DocumentDAO {
     
         $documents = [];
         foreach($result as $document){
-            $documents[] = new Document($row);
+            $documents[] = new Document($document);
         }
         return $documents;
     }
