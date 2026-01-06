@@ -1,4 +1,6 @@
 <?php
+
+require_once(__DIR__ . '/document.class.php');
 class DocumentDAO {
     private DAL $dal;
 
@@ -49,6 +51,25 @@ class DocumentDAO {
         $stmt = $this->dal->prepare($query);
 
         $stmt->execute(['id_famille' => $id_famille]);
+        $result = $stmt->fetch();
+
+        if ($result === false) {
+        return null;
+        }
+    
+        $documents = [];
+        foreach($result as $document){
+            $documents[] = new Document($document);
+        }
+        return $documents;
+    }
+
+
+    public function getDocumentsDeIdCategorie($id_famille, $id_cat) {
+        $query = 'SELECT * FROM DOCUMENT WHERE id_famille = :id_famille AND id_cat = :id_cat';
+        $stmt = $this->dal->prepare($query);
+
+        $stmt->execute(['id_famille' => $id_famille, 'id_cat' => $id_cat]);
         $result = $stmt->fetch();
 
         if ($result === false) {

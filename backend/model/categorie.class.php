@@ -1,4 +1,5 @@
 <?php
+require_once(__DIR__ . '/document.class.php');
 
 class Categorie
 {
@@ -13,10 +14,10 @@ class Categorie
     $this->documents = $data['documents'] ?? array();
   }
 
-  public function getCategories(): array
-  {
-    return $this->dao->getCategories($this);
+  public function ajouterDocument(Document $document){
+    array_push($documents,$document);
   }
+
 
 
 
