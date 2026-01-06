@@ -12,8 +12,8 @@ function Login() {
             <form action="">
                 <div>
                     <div>
-                        <label htmlFor="">E-mail : </label>
-                        <input type="email" />
+                        <label htmlFor="">Login : </label>
+                        <input type="text" placeholder="John_Doe" />
                     </div>
 
                     <div>

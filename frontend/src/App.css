@@ -90,51 +90,6 @@ button.fill {
   }
 }
 
-
-/* ----------------------------- */
-/* ----------- FONTS ----------- */
-/* ----------------------------- */
-
-/* Extra Light */
-@font-face {
-  font-family: 'DM Sans';
-  src: url('/fonts/DM_sans/DMSans-ExtraLight.ttf') format('truetype');
-  font-weight: 200;
-  font-style: normal;
-}
-
-/* Regular */
-@font-face {
-  font-family: 'DM Sans';
-  src: url('/fonts/DM_sans/DMSans-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-}
-
-/* Medium */
-@font-face {
-  font-family: 'DM Sans';
-  src: url('/fonts/DM_sans/DMSans-Medium.ttf') format('truetype');
-  font-weight: 500;
-  font-style: normal;
-}
-
-/* Semi Bold */
-@font-face {
-  font-family: 'DM Sans';
-  src: url('/fonts/DM_sans/DMSans-SemiBold.ttf') format('truetype');
-  font-weight: 600;
-  font-style: normal;
-}
-
-/* Bold */
-@font-face {
-  font-family: 'DM Sans';
-  src: url('/fonts/DM_sans/DMSans-Bold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
-}
-
 /* ----------------------------- */
 /* ----------- LOGIN ----------- */
 /* ----------------------------- */
@@ -197,6 +152,11 @@ button.fill {
 .login form > div > div:nth-child(4) {
   flex-direction: row;
   justify-content: space-between;
+  gap: 20px;
+}
+
+.login form > div > div:nth-child(4) > div {
+  width: 45%;
 }
 
 .login form > div:last-child {
@@ -216,6 +176,29 @@ button.fill {
   border-color: var(--blue);
 }
 
+.login input[type=text], .login input[type=password], .login input[type=email] {
+  background-size: 17px;
+  background-position: 4px 4.5px; 
+  background-repeat: no-repeat;
+  padding-left: 25px;
+}
+
+.login input[type=text] {
+  background-image: url('../public/icons/account.svg');
+}
+
+.login input[type=password] {
+  background-image: url('../public/icons/lock.svg');
+}
+
+.login input[type=email] {
+  background-image: url('../public/icons/mail.svg');
+}
+
+.login::placeholder {
+  color: var(--gray);
+}
+
 .login button {
   width: 125px;
 }
@@ -224,3 +207,48 @@ button.fill {
   border: 0.5px solid var(--bg-black);
   width: 70%;
 }
+
+/* ----------------------------- */
+/* ----------- FONTS ----------- */
+/* ----------------------------- */
+
+/* Extra Light */
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/DM_sans/DMSans-ExtraLight.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+}
+
+/* Regular */
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/DM_sans/DMSans-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* Medium */
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/DM_sans/DMSans-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+/* Semi Bold */
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/DM_sans/DMSans-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+/* Bold */
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/DM_sans/DMSans-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
