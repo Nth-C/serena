@@ -15,11 +15,6 @@ class Famille
         $this->desc = $data['desc'] ?? '';
     }
 
-    public function addPersonne(): array
-    {
-        return $this->dao->getOrdonnances($this);
-    }
-
 
 
 }
