@@ -2,7 +2,7 @@
 
 class Stock
 {
-  public readonly array $medicaments;
+  public array $medicaments;
 
   public function __construct(array $data = array())
   {

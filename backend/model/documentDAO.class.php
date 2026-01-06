@@ -23,7 +23,8 @@ class DocumentDAO {
         $query = 'SELECT * FROM DOCUMENT WHERE id_famille = :id_famille AND categorie = "ordonnance" ';
         $stmt = $this->dal->prepare($query);
 
-        return $stmt->execute(['id_famille' => $id_famille]);
+        $stmt->execute(['id_famille' => $id_famille]);
+        return $stmt->fetchAll();
     }
     
 

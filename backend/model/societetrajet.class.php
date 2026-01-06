@@ -1,7 +1,7 @@
 <?php
 class SocieteTrajet {
     private readonly string $id_societe_trajet;
-    private readonly string $nom;
+    private string $nom;
 
     public function __construct(array $data = array()) 
     {
