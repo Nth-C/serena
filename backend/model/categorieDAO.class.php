@@ -6,9 +6,9 @@ class CategorieDAO {
         $this->dal = DAL::get();
     }
 
-    public function getCategories(): array
+    public function getAllCategories(): array
     {
-        $query = 'SELECT disctinct(categorie) FROM DOCUMENT, FAMILLE WHERE DOCUMENT.id_famille = FAMILLE.id_famille';
+        $query = 'SELECT CAT.* FROM CAT, FAMILLE WHERE CAT.id_famille = FAMILLE.id_famille';
         $stmt = $this->dal->prepare($query);
 
         $stmt->execute();
