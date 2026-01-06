@@ -49,6 +49,10 @@ function AcceSuivi() {
                     <input type="text" />
                 </div>
                 <div>
+                    <label htmlFor="">Nom du groupe : </label>
+                    <input type="text" />
+                </div>
+                <div>
                     <label htmlFor="">Courte description : </label>
                     <textarea name="" id=""></textarea>
                 </div>
@@ -63,6 +67,10 @@ function AcceSuivi() {
 
                 <div>
                     <label htmlFor="">Nom de l'aidé : </label>
+                    <input type="text" />
+                </div>
+                <div>
+                    <label htmlFor="">Nom du groupe : </label>
                     <input type="text" />
                 </div>
                 <div>
