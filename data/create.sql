@@ -1,5 +1,5 @@
 CREATE TABLE FAMS (
-    id_famille INT PRIMARY KEY,
+    id_famille SERIAL PRIMARY KEY,
     nom VARCHAR(255)
 );
 
@@ -14,7 +14,7 @@ CREATE TABLE PERSONNES (
 );
 
 CREATE TABLE ORDONNANCES (
-    id_ordo INT PRIMARY KEY,
+    id_ordo SERIAL PRIMARY KEY,
     url VARCHAR(255),
     med_ref VARCHAR(255),
     date_deb DATE,
@@ -23,17 +23,25 @@ CREATE TABLE ORDONNANCES (
     id_famille INT REFERENCES FAMS(id_famille)
 );
 
+CREATE TABLE CAT(
+    id_cat SERIAL PRIMARY KEY,
+    nom varchar(255),
+    id_famille INT REFERENCES FAMS(id_famille)
+);
+
 CREATE TABLE DOCUMENTS (
-    id_doc INT PRIMARY KEY,
+    id_doc SERIAL PRIMARY KEY,
     url VARCHAR(255),
     cat VARCHAR(100),
     nom_doc VARCHAR(255),
     type VARCHAR(50),
-    id_famille INT REFERENCES FAMS(id_famille)
+    id_famille INT REFERENCES FAMS(id_famille),
+    id_cat INT REFERENCES CAT(id_cat)
+
 );
 
 CREATE TABLE EVENEMENTS (
-    id_event INT PRIMARY KEY,
+    id_event SERIAL PRIMARY KEY,
     nom VARCHAR(255),
     date_deb DATE,
     date_fin DATE,
@@ -42,6 +50,7 @@ CREATE TABLE EVENEMENTS (
     id_famille INT REFERENCES FAMS(id_famille)
 );
 
+-- Table de liaison Many-to-Many
 CREATE TABLE ACCOMPAGNE (
     id_personne INT REFERENCES PERSONNES(id_personne),
     id_event INT REFERENCES EVENEMENTS(id_event),
@@ -49,7 +58,7 @@ CREATE TABLE ACCOMPAGNE (
 );
 
 CREATE TABLE RAPPORTS (
-    id_rapport INT PRIMARY KEY,
+    id_rapport SERIAL PRIMARY KEY,
     "desc" TEXT,
     date DATE,
     id_famille INT REFERENCES FAMS(id_famille),
@@ -65,14 +74,15 @@ CREATE TABLE FORMS (
     aide_fournit VARCHAR(255),
     resultat VARCHAR(255),
     age_aidant INT,
-    age_aide INT, 
+    age_aide INT, -- Correction: accent retiré (age_aidé -> age_aide)
     id_famille INT REFERENCES FAMS(id_famille)
 );
 
 CREATE TABLE STOCK_MEDICS (
-    id_medicament INT PRIMARY KEY,
+    id_medicament SERIAL PRIMARY KEY,
     date_achat DATE,
     designation_med VARCHAR(255),
+    quantite int,
     id_famille INT REFERENCES FAMS(id_famille)
 );
 
@@ -94,7 +104,7 @@ CREATE TABLE CAT_MEDICS (
 );
 
 CREATE TABLE TRAJET (
-    id_trajet INT PRIMARY KEY,
+    id_trajet SERIAL PRIMARY KEY,
     date_deb DATE,
     date_fin DATE,
     lieu_dep VARCHAR(255),
@@ -109,7 +119,7 @@ CREATE TABLE EFFECTUE (
 );
 
 CREATE TABLE SOCIETES (
-    id_societe INT PRIMARY KEY,
+    id_societe SERIAL PRIMARY KEY,
     nom VARCHAR(255),
     adresse VARCHAR(255)
 );
@@ -121,7 +131,8 @@ CREATE TABLE CHARGE (
 );
 
 CREATE TABLE AIDE (
-    id_aide INT PRIMARY KEY,
+    id_aide SERIAL PRIMARY KEY,
     nom VARCHAR(255),
     "desc" TEXT
 );
+
