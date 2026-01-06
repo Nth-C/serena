@@ -1,5 +1,5 @@
 <?php
-
+require_once(__DIR__ . '/model/planning.class.php');
 
 class App
 {
