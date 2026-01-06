@@ -32,7 +32,7 @@ function Login() {
 
     return (
         <div className="login">
-            <img src="../../public/img/logo-name.svg" alt="" />
+            <img src="/img/logo-name.svg" alt="" />
 
             <h1>Se connecter</h1>
             {message && <p>{message}</p>}
@@ -40,8 +40,8 @@ function Login() {
             <form onSubmit={handleSubmit}>
                 <div>
                     <div>
-                        <label>Username : </label>
-                        <input type="text" name="username" value={formData.username} onChange={handleChange} required />
+                        <label>Nom d'utilisateur : </label>
+                        <input type="text" name="username" value={formData.username} onChange={handleChange} placeholder="John_Doe" required />
                     </div>
 
                     <div>
@@ -54,16 +54,16 @@ function Login() {
                     </NavLink>
                 </div>
 
-                <button type="submit" className="fill">Se connecter</button>
+                <button type="submit" className="simple fill">Se connecter</button>
 
                 <hr />
 
                 <NavLink to={"/create_account"}>
-                    <button>Créer un compte</button>
+                    <button className="simple">Créer un compte</button>
                 </NavLink>
             </form>
 
-            <img src="../../public/img/logo.svg" alt="" />
+            <img src="/img/logo.svg" alt="" />
         </div>
     )
 };

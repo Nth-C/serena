@@ -61,13 +61,13 @@ label, p {
 
 /*style input*/
 input {
-  border: 1px solid var(--blue);
+  border: 1px solid var(--black);
   border-radius: 8px;
   height: 28px;
 }
 
 /*style bouton simple*/
-button {
+button.simple {
   border: 1px solid var(--blue);
   border-radius: 4px;
   cursor: pointer;
@@ -76,7 +76,7 @@ button {
 }
 
 /*style bouton rempli*/
-.fill {
+button.fill {
   background-color: var(--blue);
   color: var(--white);
 }
@@ -90,6 +90,123 @@ button {
   }
 }
 
+/* ----------------------------- */
+/* ----------- LOGIN ----------- */
+/* ----------------------------- */
+
+.login {
+  overflow: hidden;
+  position: relative;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.login form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.login img:first-child {
+  max-width: 200px;
+  padding-top: 5%;
+  padding-bottom: 20%;
+}
+
+.login img:last-child {
+  max-width: 284px;
+  max-height: 213px;
+  position: absolute;
+  bottom: -29px;
+  right: -18px;
+}
+
+.login h1 {
+  color: var(--blue);
+}
+
+.login form > div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 90%;
+}
+
+.login form > div p {
+  color: var(--blue);
+  text-decoration: underline;
+  text-align: end;
+}
+
+.login form > div > div, .login form > div > div > div  {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5px;
+}
+
+.login form > div > div:nth-child(4) {
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.login form > div > div:nth-child(4) > div {
+  width: 45%;
+}
+
+.login form > div:last-child {
+  flex-direction: row;
+  justify-content: end;
+}
+
+.login form > div:last-child button {
+  width: 93px;
+}
+
+.login label {
+  color: var(--blue);
+}
+
+.login input {
+  border-color: var(--blue);
+}
+
+.login input[type=text], .login input[type=password], .login input[type=email] {
+  background-size: 17px;
+  background-position: 4px 4.5px; 
+  background-repeat: no-repeat;
+  padding-left: 25px;
+}
+
+.login input[type=text] {
+  background-image: url('../public/icons/account.svg');
+}
+
+.login input[type=password] {
+  background-image: url('../public/icons/lock.svg');
+}
+
+.login input[type=email] {
+  background-image: url('../public/icons/mail.svg');
+}
+
+.login::placeholder {
+  color: var(--gray);
+}
+
+.login button {
+  width: 125px;
+}
+
+.login hr {
+  border: 0.5px solid var(--bg-black);
+  width: 70%;
+}
 
 /* ----------------------------- */
 /* ----------- FONTS ----------- */
@@ -135,73 +252,3 @@ button {
   font-style: normal;
 }
 
-/* ----------------------------- */
-/* ----------- LOGIN ----------- */
-/* ----------------------------- */
-
-.login {
-  overflow: hidden;
-  position: relative;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 30px;
-}
-
-.login form {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 30px;
-}
-
-.login img:first-child {
-  max-width: 200px;
-  padding-top: 5%;
-  padding-bottom: 20%;
-}
-
-.login img:last-child {
-  max-width: 300px;
-  position: absolute;
-  bottom: -29px;
-  right: -18px;
-}
-
-.login h1 {
-  color: var(--blue);
-}
-
-.login form > div {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 90%;
-}
-
-.login form > div p {
-  color: var(--blue);
-  text-decoration: underline;
-  text-align: end;
-}
-
-.login form > div > div {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5px;
-}
-
-.login label {
-  color: var(--blue);
-}
-
-.login button {
-  width: 150px;
-}
-
-.login hr {
-  border: 0.5px solid var(--bg-black);
-  width: 70%;
-}
