@@ -11,11 +11,11 @@ class Categorie
   {
     $this->id_cat = $data['id_cat'] ?? -1;
     $this->nom = $data['nom'] ?? '';
-    $this->documents = $data['documents'] ?? array();
+    $this->documents = $data['documents'] ?? [];
   }
 
   public function ajouterDocument(Document $document){
-    array_push($documents,$document);
+    $this->documents[] = $document;
   }
 
 
