@@ -39,6 +39,9 @@ class MedicamentDAO {
 
     // A MODIFIER PAS ENCORE FONCTIONNELL
     public function addMedecine($id_famille,$name, $stock, $stockTotal): bool {
+        if($stockTotal < $stock){
+            $stockTotal = $stock;
+        }
         $query = 'INSERT INTO STOCK_MEDICS (designation_med, quantite,id_famille, total) VALUES (:name, :stock, :id_famille, :stockTotal)';
         $stmt = $this->dal->prepare($query);
 
