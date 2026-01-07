@@ -75,7 +75,8 @@ function Medecine() {
 
     const nouveauMedoc = {
       name: nameMedecine,
-      stock: currentStock
+      stock: currentStock,
+      stockTotal: initialStock
     }
 
     try {
@@ -148,9 +149,9 @@ function Medecine() {
                 <p>{med.type}</p>
               </div>
               <div>
-                <progress max="100" value="70"></progress>
-                {/* <p>{med.currentStock}/{med.initialStock}</p> */}
-                <p>5/10</p>
+                <progress max="100" value={med.stockTotal > 0 ? (med.stock / med.stockTotal) * 100 : 0}></progress>
+                {<p>{med.stock}/{med.stockTotal}</p> }
+                
               </div>
             </div>
 

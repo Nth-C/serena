@@ -12,7 +12,7 @@ class Famille
         $this->id_famille = $data['id_famille'] ?? -1;
         $this->nom = $data['nom'] ?? '';
         $this->nom_aide = $data['nom_aide'] ?? '';
-        $this->desc = $data['desc'] ?? '';
+        $this->desc = $data['description'] ?? '';
     }
 
 

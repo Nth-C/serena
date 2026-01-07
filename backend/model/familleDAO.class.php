@@ -9,29 +9,59 @@ class FamilleDAO {
     }
 
     public function insert(Famille $famille): bool {
-        $query = 'INSERT INTO fams (nom, "desc", nom_aide) 
-                  VALUES (:nom, :desc, :nom_aide)';
+        $query = 'INSERT INTO fams (nom, description, nom_aide) 
+                  VALUES (:nom, :description, :nom_aide)';
         
         $stmt = $this->dal->prepare($query);
 
         return $stmt->execute([
             ':nom'            => $famille->nom,
-            ':desc'         => $famille->desc,
+            ':description'         => $famille->desc,
             ':nom_aide'           => $famille->nom_aide 
         ]);
     }
 
-        public function findByName(string $nom): ?Famille {
-            $query = 'SELECT * FROM fams WHERE nom = :nom';
-            $stmt = $this->dal->prepare($query);
-            $stmt->execute([':nom' => $nom]);   
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+public function update(Famille $famille): bool {
+    $query = 'UPDATE fams 
+              SET nom = :nom, description = :description, nom_aide = :nom_aide 
+              WHERE id_famille = :id';
+    
+    $stmt = $this->dal->prepare($query);
 
-            if ($result === false) {
-                return null;
-            }
+    return $stmt->execute([
+        ':nom'      => $famille->nom,
+        ':description'     => $famille->desc,
+        ':nom_aide' => $famille->nom_aide,
+        ':id'       => $famille->id_famille
+    ]);
+}
+
+    public function findByName(string $nom): ?Famille {
+        $query = 'SELECT * FROM fams WHERE nom = :nom';
+        $stmt = $this->dal->prepare($query);
+        $stmt->execute([':nom' => $nom]);   
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result === false) {
+        return null;
+        }
         
-            return new Famille($result);
+        return new Famille($result);
+    }
+
+    public function findAll(): array {
+        $query = 'SELECT * FROM fams';
+        $stmt = $this->dal->prepare($query);
+        $stmt->execute();
+        
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $resultats = [];
+
+        foreach($data as $row) {
+            $resultats[] = new Famille($row);
+        }
+
+        return $resultats;
     }
 
     public function getPersFam($id_famille): array {
@@ -43,8 +73,8 @@ class FamilleDAO {
 
         $resultats = [];
 
-        foreach($data as $row) {
-            $resultats[] = new Personne($row);
+        foreach($data as $personne) {
+            $resultats[] = new Personne($personne);
         }
 
         return $resultats;
