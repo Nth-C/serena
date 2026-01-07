@@ -2,19 +2,20 @@ import { NavLink } from 'react-router-dom';
 import { useEffect, useState } from 'react'
 import Slide from '../components/slide/Slide';
 
-// Le sous-composant reçoit maintenant l'information de visibilité du parent
+// Composant pour chaque ligne de famille (Accordéon)
 function FamilleItem({ famille, onModifier, isOpen, onToggle }) {
     return (
         <div className={`container_suivi_groupe ${isOpen ? 'open' : ''}`}>
             <div 
                 className="principal_infos" 
-                onClick={onToggle} // Déclenche la fonction du parent
+                onClick={onToggle}
             >
                 <p>{famille.nom}</p> 
             </div>
 
             {isOpen && (
                 <div className="drop">
+                    {/* On utilise famille.desc car le PHP mappe 'description' vers 'desc' */}
                     <p>{famille.desc}</p>                     
                     <div className="actions_buttons">
                         <button 
@@ -38,10 +39,11 @@ function AcceSuivi() {
     const [message, setMessage] = useState("");
     const apiUrl = import.meta.env.VITE_API_URL;
     const [familles, setFamilles] = useState([]); 
-    
     const [openFamilleId, setOpenFamilleId] = useState(null);
 
+    // État du formulaire incluant l'ID pour la modification
     const [formData, setFormData] = useState({
+        id_famille: null, 
         nom_aide: '',
         nom_groupe: '',
         description: ''
@@ -50,15 +52,7 @@ function AcceSuivi() {
     const [isNewSuiviOpen, setIsNewSuiviOpen] = useState(false);
     const [isModifSuiviOpen, setIsModifSuiviOpen] = useState(false);
 
-    const toggleFamille = (id) => {
-        setOpenFamilleId(openFamilleId === id ? null : id);
-    };
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
-
+    // Chargement des données
     const fetchFamilles = async () => {
         try {
             const response = await fetch(`${apiUrl}/?route=famille/all`);
@@ -69,47 +63,86 @@ function AcceSuivi() {
         }
     };
 
+    useEffect(() => {
+        fetchFamilles();
+    }, []);
+
+    // Gestion des inputs
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+    // Ouvrir un volet et fermer les autres
+    const toggleFamille = (id) => {
+        setOpenFamilleId(openFamilleId === id ? null : id);
+    };
+
+    // Soumission pour AJOUT
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage("");
-
         try {
             const response = await fetch(`${apiUrl}/?route=famille/add`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
             });
-
             const result = await response.json();
 
             if (result.success) {
                 setMessage("Suivi créé avec succès !");
-                setIsNewSuiviOpen(false); 
-                setFormData({ nom_aide: '', nom_groupe: '', description: '' });
+                setIsNewSuiviOpen(false);
+                setFormData({ id_famille: null, nom_aide: '', nom_groupe: '', description: '' });
                 fetchFamilles(); 
             } else {
                 setMessage("Erreur : " + result.error);
             }
         } catch (error) {
             setMessage("Erreur technique lors de l'enregistrement.");
-            console.error("Détails:", error);
+            console.error(error);
         }
     };
 
-    const toggleNewSuvi = () => setIsNewSuiviOpen(!isNewSuiviOpen);
-    
+    // Soumission pour MODIFICATION
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        setMessage("");
+        try {
+            const response = await fetch(`${apiUrl}/?route=famille/update`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData),
+            });
+            const result = await response.json();
+
+            if (result.success) {
+                setMessage("Modification enregistrée !");
+                setIsModifSuiviOpen(false);
+                fetchFamilles();
+            } else {
+                setMessage("Erreur : " + result.error);
+            }
+        } catch (error) {
+            console.error("Erreur mise à jour:", error);
+        }
+    };
+
+    // Pré-remplissage du formulaire de modification
     const handleOpenModif = (famille) => {
         setFormData({
+            id_famille: famille.id_famille,
             nom_aide: famille.nom_aide,
             nom_groupe: famille.nom,
-            description: famille.desc
+            description: famille.desc // On mappe vers le champ description du formulaire
         });
         setIsModifSuiviOpen(true);
     };
 
-    useEffect(() => {
-        fetchFamilles();
-    }, []);
+    const toggleNewSuvi = () => {
+        setFormData({ id_famille: null, nom_aide: '', nom_groupe: '', description: '' });
+        setIsNewSuiviOpen(!isNewSuiviOpen);
+    };
 
     useEffect(() => {
         const isActive = isNewSuiviOpen || isModifSuiviOpen;
@@ -128,7 +161,6 @@ function AcceSuivi() {
                             key={famille.id_famille} 
                             famille={famille} 
                             onModifier={handleOpenModif} 
-                            // L'élément est ouvert si son ID correspond à l'état stocké
                             isOpen={openFamilleId === famille.id_famille}
                             onToggle={() => toggleFamille(famille.id_famille)}
                         />
@@ -143,6 +175,7 @@ function AcceSuivi() {
             <button className="simple fill" onClick={toggleNewSuvi}>Creer un nouveau suivi</button>
             {message && <p className="success-msg">{message}</p>}
 
+            {/* Slide AJOUT */}
             <Slide title={"Créer un nouveau suivi"} isOpen={isNewSuiviOpen} onClickNewMedecine={toggleNewSuvi}>
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
@@ -163,8 +196,9 @@ function AcceSuivi() {
                 </form>
             </Slide>
 
+            {/* Slide MODIFICATION */}
             <Slide title={`Modifier le suivi de ${formData.nom_groupe}`} isOpen={isModifSuiviOpen} onClickNewMedecine={() => setIsModifSuiviOpen(false)}>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleUpdate}>
                     <div className="form-group">
                         <label>Nom de l'aidé : </label>
                         <input type="text" name="nom_aide" value={formData.nom_aide} onChange={handleChange} required />

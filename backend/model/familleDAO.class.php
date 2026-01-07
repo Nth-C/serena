@@ -9,30 +9,32 @@ class FamilleDAO {
     }
 
     public function insert(Famille $famille): bool {
-        $query = 'INSERT INTO fams (nom, "desc", nom_aide) 
-                  VALUES (:nom, :desc, :nom_aide)';
+        $query = 'INSERT INTO fams (nom, description, nom_aide) 
+                  VALUES (:nom, :description, :nom_aide)';
         
         $stmt = $this->dal->prepare($query);
 
         return $stmt->execute([
             ':nom'            => $famille->nom,
-            ':desc'         => $famille->desc,
+            ':description'         => $famille->desc,
             ':nom_aide'           => $famille->nom_aide 
         ]);
     }
 
-        public function update(Famille $famille): bool {
-        $query = 'INSERT INTO fams (nom, "desc", nom_aide) 
-                  VALUES (:nom, :desc, :nom_aide)';
-        
-        $stmt = $this->dal->prepare($query);
+public function update(Famille $famille): bool {
+    $query = 'UPDATE fams 
+              SET nom = :nom, description = :description, nom_aide = :nom_aide 
+              WHERE id_famille = :id';
+    
+    $stmt = $this->dal->prepare($query);
 
-        return $stmt->execute([
-            ':nom'            => $famille->nom,
-            ':desc'         => $famille->desc,
-            ':nom_aide'           => $famille->nom_aide 
-        ]);
-    }
+    return $stmt->execute([
+        ':nom'      => $famille->nom,
+        ':description'     => $famille->desc,
+        ':nom_aide' => $famille->nom_aide,
+        ':id'       => $famille->id_famille
+    ]);
+}
 
     public function findByName(string $nom): ?Famille {
         $query = 'SELECT * FROM fams WHERE nom = :nom';
