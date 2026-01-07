@@ -15,13 +15,15 @@ require_once('model/dal.class.php');
 $route = $_GET['route'] ?? '';
 
 const _ROUTES = array(
+  'evenement/add' => 'addEvenement',
   'medicament/list' => 'viewMedicament',
   'medicament/add' => 'addMedicament',
   'medicament/delete' => 'deleteMedicament',
   'login' => 'login',
   'register' => 'register',
   'logout' => 'logout',
-  'famille/add' => 'addFamille'
+  'famille/add' => 'addFamille',
+  'famille/all' => 'getFamille'
 );
 
 if (!array_key_exists($route, _ROUTES)) {

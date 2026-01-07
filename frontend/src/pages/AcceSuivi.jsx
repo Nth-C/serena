@@ -7,17 +7,17 @@ function AcceSuivi() {
 
     const apiUrl = import.meta.env.VITE_API_URL;
 
+    const [familles, setFamilles] = useState([]); 
+
     const [formData, setFormData] = useState({
         nom_aide: '',
         nom_groupe: '',
         description: ''
     });
 
-    // ajout suivi
-    const [isNewSuiviOpen, setIsNewSuiviOpen] = useState(false) // page
+    const [isNewSuiviOpen, setIsNewSuiviOpen] = useState(false) 
 
-    // ajout stock
-    const [isModifSuiviOpen, setIsModifSuiviOpen] = useState(false) // page
+    const [isModifSuiviOpen, setIsModifSuiviOpen] = useState(false) 
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -31,9 +31,7 @@ function AcceSuivi() {
         try {
             const response = await fetch(`${apiUrl}/?route=famille/add`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
             });
 
@@ -41,17 +39,17 @@ function AcceSuivi() {
 
             if (result.success) {
                 setMessage("Suivi créé avec succès !");
-                setShowCreateForm(false);
+                setIsNewSuiviOpen(false); 
+                setFormData({ nom_aide: '', nom_groupe: '', description: '' });
             } else {
                 setMessage("Erreur : " + result.error);
             }
         } catch (error) {
-            setMessage("Erreur lors de la connexion au serveur.");
-            console.error("Erreur:", error);
+            setMessage("Erreur technique lors de l'enregistrement.");
+            console.error("Détails:", error);
         }
     };
 
-    // fonction pour ouvrir/fermer le newMedecine
     const toggleNewSuvi = () => {
         setIsNewSuiviOpen(!isNewSuiviOpen)
     }
@@ -76,24 +74,40 @@ function AcceSuivi() {
         }
     }, [isModifSuiviOpen]);
 
+    const fetchFamilles = async () => {
+        try {
+            const response = await fetch(`${apiUrl}/?route=famille/all`);
+            const data = await response.json();
+            setFamilles(data);
+        } catch (error) {
+            console.error("Erreur chargement familles:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchFamilles();
+    }, []);
+
     return (
-        <div className="acce_suivi">
-            <img src="/img/logo-name.svg" alt="Logo" />
+            <div className="acce_suivi">
             <h1>Accéder au suivi</h1>
 
             <div className="list">
-                <div className="container_suivi_groupe">
-                    <div className="principal_infos">
-                        <p>Mr Parker</p>
-                    </div>
-                    <div className="drop">
-                        <p>Description lorem ipsum...</p>
-                        <div>
-                            <button className="simple" onClick={toggleModifSuivi}>Modifier</button>
-                            <button className="fill">Accéder</button>
+                {familles.map((famille) => (
+                    <div key={famille.id_famille} className="container_suivi_groupe">
+                        <div className="principal_infos">
+                            <p>{famille.nom}</p> {/* Correspond à $famille->nom */}
+                        </div>
+                        <div className="drop">
+                            <p>{famille.desc}</p> {/* Correspond à $famille->desc */}
+                            <p>Aidant : {famille.nom_aide}</p>
+                            <div>
+                                <button className="simple">Modifier</button>
+                                <button className="fill">Accéder</button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                ))}
             </div>
 
             <hr />
