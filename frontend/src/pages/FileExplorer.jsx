@@ -177,13 +177,17 @@ function FileExplorer() {
 
         <form className="new_document" onSubmit={handleAddDocument}>
           <div>
+
             <label>Emplacement : </label>
-            <input 
-              type="number" 
-              value={emplacementDocument} 
-              onChange={(e) => setEmplacementDocument(e.target.value)} 
-              required 
-            />
+            <select value={emplacementDocument} onChange={(e) => setEmplacementDocument(e.target.value)} required>
+            <option value=""></option>
+            {listDocument.map((cat) => (
+              <option key={cat.id_cat} value={cat.id_cat}>
+              {cat.nom}
+              </option>
+            ))}
+            </select>
+
           </div>
           <div>
             <label>Nom du document : </label>
