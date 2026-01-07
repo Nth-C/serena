@@ -213,8 +213,8 @@ function Medecine() {
             />
           </div>
           <div>
-            <button className="simple">Reinistialiser</button>
-            <button className="fill">Ajouter</button>
+            <button className="btn_border">Réinitialiser</button>
+            <button type="submit" className="btn_blue">Ajouter</button>
           </div>
         </form>
       </Slide>

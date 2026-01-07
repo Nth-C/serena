@@ -181,7 +181,7 @@ function LastVisitReport() {
             <textarea name="description" required></textarea>
           </div>
           <div>
-            <button className="btn_border">Réinistialiser</button>
+            <button className="btn_border">Réinitialiser</button>
             <button type="submit" className="btn_blue">Ajouter</button>
           </div>
         </form>
