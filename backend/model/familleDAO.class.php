@@ -21,6 +21,19 @@ class FamilleDAO {
         ]);
     }
 
+        public function update(Famille $famille): bool {
+        $query = 'INSERT INTO fams (nom, "desc", nom_aide) 
+                  VALUES (:nom, :desc, :nom_aide)';
+        
+        $stmt = $this->dal->prepare($query);
+
+        return $stmt->execute([
+            ':nom'            => $famille->nom,
+            ':desc'         => $famille->desc,
+            ':nom_aide'           => $famille->nom_aide 
+        ]);
+    }
+
     public function findByName(string $nom): ?Famille {
         $query = 'SELECT * FROM fams WHERE nom = :nom';
         $stmt = $this->dal->prepare($query);
@@ -58,8 +71,8 @@ class FamilleDAO {
 
         $resultats = [];
 
-        foreach($data as $row) {
-            $resultats[] = new Personne($row);
+        foreach($data as $personne) {
+            $resultats[] = new Personne($personne);
         }
 
         return $resultats;
