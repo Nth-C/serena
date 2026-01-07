@@ -35,26 +35,33 @@ function LastVisitReport() {
 
   return (
     <div className="last_visit_report">
-      <h1>Rapport de visite</h1>
+      <div className="contener_report">
+        <h1>Rapport de visite</h1>
 
-      <div>
-        <input type="search" />
-        <div>
-          <img src="/icons/sort.svg" alt="" />
-          <p>Tier par</p>
+        <div className="search_report">
+          <input type="search" placeholder="Rechercher un rapport" />
+          <div>
+            <img src="/icons/sort.svg" alt="" />
+            <p>Tier par</p>
+          </div>
         </div>
+
+        <div className="liste_report">
+          <div className="report_case">
+            <div>
+              <h2>Nom rapport</h2>
+              <p>25 décembre 2025 | 06:07</p>
+              <p>Fait par john</p>
+            </div>
+            <img src="/icons/arrow_forward.svg" alt="" />
+          </div>
+        </div>
+
+
+
       </div>
 
-      <div>
-        <div>
-          <h2>Nom rapport</h2>
-          <p>25 décembre 2025 | 06:07</p>
-          <p>Fait par john</p>
-        </div>
-        <img src="/icons/arrow_forward.svg" alt="" />
-      </div>
-
-      <button className="btn_add_report" onClick={toggleNewRapport}> test<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" /></svg></button>
+      <button className="btn_add" onClick={toggleNewRapport}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" /></svg></button>
 
       <div>
         <button onClick={toggleNewMedicine}>Ajouter un nouveau médicament dans la liste</button>
@@ -111,8 +118,8 @@ function LastVisitReport() {
               />
             </div>
             <div>
-              <button className="simple">Reinistialiser</button>
-              <button className="fill">Ajouter</button>
+              <button className="btn_border">Reinistialiser</button>
+              <button className="btn_blue">Ajouter</button>
             </div>
           </form>
         </Slide>
@@ -121,14 +128,14 @@ function LastVisitReport() {
 
       <Slide title={"Créer un rapport de visite"} isOpen={isNewRapportOpen} onClickNewMedecine={toggleNewRapport}>
 
-        <form>
+        <form className="add_report">
           <div>
             <label>Nom du rapport : </label>
             <input type="text" name="nom_aide" required />
           </div>
           <div>
             <label>Médicaments pris : </label>
-            <div>
+            <div className="list_medicament_report">
               <div>
                 <p>Xanax</p>
                 <input type="text" placeholder="Dosage" />
@@ -137,16 +144,16 @@ function LastVisitReport() {
                 <p>Cachets</p>
                 <img src="/icons/bin.svg" alt="" />
               </div>
-              <button>Ajouter médicament</button>
             </div>
+            <button className="btn_blue add_medi">Ajouter médicament</button>
           </div>
           <div>
             <label>Information supplémentaire : </label>
             <textarea name="description" required></textarea>
           </div>
           <div>
-            <button>Réinistialiser</button>
-            <button type="submit">Ajouter</button>
+            <button className="btn_border">Réinistialiser</button>
+            <button type="submit" className="btn_blue">Ajouter</button>
           </div>
         </form>
       </Slide>
