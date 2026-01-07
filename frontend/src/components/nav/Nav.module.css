@@ -5,6 +5,7 @@ nav > div {
     display: flex;
     bottom: 0;
     z-index: 10;
+    background: var(--white);
 }
 
 nav a {

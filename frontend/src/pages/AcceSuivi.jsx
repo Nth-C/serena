@@ -170,7 +170,7 @@ function AcceSuivi() {
                 )}
             </div>
 
-            <hr />
+            <span className='border'></span>
 
             <button className="simple fill" onClick={toggleNewSuvi}>Creer un nouveau suivi</button>
             {message && <p className="success-msg">{message}</p>}
