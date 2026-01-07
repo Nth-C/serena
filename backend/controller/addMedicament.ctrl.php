@@ -22,7 +22,7 @@ try {
     }
 
     $model = new MedicamentDAO();
-    $success = $model->addMedecine($app->id_famille,$data['name'], $data['stock']);
+    $success = $model->addMedecine($app->id_famille,$data['name'], $data['stock'], $data['stockTotal']);
 
     // renvoie a la vue des informations
     echo json_encode([
