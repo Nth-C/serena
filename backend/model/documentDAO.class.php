@@ -4,9 +4,12 @@ require_once(__DIR__ . '/document.class.php');
 class DocumentDAO {
     private DAL $dal;
 
-    public function __construct() {
-        $this->dal = DAL::get();
-    }
+    // Dans DocumentDAO.php
+
+public function __construct(DAL $dal = null) {
+    // pour faire les tests
+    $this->dal = $dal ?? DAL::get();
+}
 
 
     public function addDocument($id_famille, $id_categorie, $nom): bool{
@@ -27,7 +30,7 @@ class DocumentDAO {
 
     public function getOrdonnances($id_famille) {
 
-        $query = 'SELECT * FROM DOCUMENT WHERE id_famille = :id_famille AND  '; //attention
+        $query = 'SELECT * FROM DOCUMENT WHERE id_famille = :id_famille'; //attention
         $stmt = $this->dal->prepare($query);
 
         $stmt->execute(['id_famille' => $id_famille]);
@@ -50,10 +53,10 @@ class DocumentDAO {
         $stmt = $this->dal->prepare($query);
 
         $stmt->execute(['id_famille' => $id_famille]);
-        $result = $stmt->fetch();
+        $result = $stmt->fetchAll();
 
-        if ($result === false) {
-        return null;
+        if (!$result) { 
+            return []; 
         }
     
         $documents = [];
@@ -69,10 +72,10 @@ class DocumentDAO {
         $stmt = $this->dal->prepare($query);
 
         $stmt->execute(['id_famille' => $id_famille, 'id_cat' => $id_cat]);
-        $result = $stmt->fetch();
+        $result = $stmt->fetchAll();
 
-        if ($result === false) {
-        return null;
+        if (!$result) { 
+            return []; 
         }
     
         $documents = [];
