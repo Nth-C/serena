@@ -173,7 +173,7 @@ function FileExplorer() {
         ))}
       </div>
 
-      <Slide title={"Ajouter un document"} isOpen={isNewDocumentOpen} onClickNewMedecine={toggleNewDocument}>
+      <Slide title={"Ajouter un document"} isOpen={isNewDocumentOpen} toggleOpen={toggleNewDocument}>
 
         <form className="new_document" onSubmit={handleAddDocument}>
           <div>
@@ -206,7 +206,7 @@ function FileExplorer() {
       </Slide>
 
 
-      <Slide title={"Créer un répertoire"} isOpen={isNewCategorieOpen} onClickNewMedecine={toggleNewCategorie}>
+      <Slide title={"Créer un répertoire"} isOpen={isNewCategorieOpen} toggleOpen={toggleNewCategorie}>
 
         <form className="new_categorie" onSubmit={handleAddCategorie}>
           <div>
