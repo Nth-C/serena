@@ -53,7 +53,7 @@ public function __construct(DAL $dal = null) {
         $stmt = $this->dal->prepare($query);
 
         $stmt->execute(['id_famille' => $id_famille]);
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if (!$result) { 
             return []; 
