@@ -37,5 +37,18 @@ class PersonneDAO {
             ':date_naissance' => $personne->date_naissance 
         ]);
     }
+
+    public function findPersonneById(string $id_personne): ?Personne {
+        $query = 'SELECT * FROM personnes WHERE id_personne = :id_personne';
+        $stmt = $this->dal->prepare($query);
+        $stmt->execute([':id_personne' => $id_personne]);   
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result === false) {
+            return null;
+        }
+    
+        return new Personne($result);
+    }
 }
 ?>
