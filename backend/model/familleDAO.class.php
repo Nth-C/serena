@@ -21,21 +21,38 @@ class FamilleDAO {
         ]);
     }
 
-public function update(Famille $famille): bool {
-    $query = 'UPDATE fams 
-              SET nom = :nom, description = :description, nom_aide = :nom_aide 
-              WHERE id_famille = :id';
-    
-    $stmt = $this->dal->prepare($query);
+    public function update(Famille $famille): bool {
+        $query = 'UPDATE fams 
+                SET nom = :nom, description = :description, nom_aide = :nom_aide 
+                WHERE id_famille = :id';
+        
+        $stmt = $this->dal->prepare($query);
 
-    return $stmt->execute([
-        ':nom'      => $famille->nom,
-        ':description'     => $famille->desc,
-        ':nom_aide' => $famille->nom_aide,
-        ':id'       => $famille->id_famille
-    ]);
-}
+        return $stmt->execute([
+            ':nom'      => $famille->nom,
+            ':description'     => $famille->desc,
+            ':nom_aide' => $famille->nom_aide,
+            ':id'       => $famille->id_famille
+        ]);
+    }
 
+    public function findByPersonne(int $id_personne): array {
+        $query = 'SELECT f.* FROM FAMS f
+                    JOIN APPARTIENT_A a ON f.id_famille = a.id_famille
+                    WHERE a.id_personne = :id_pers;';
+        
+        $stmt = $this->dal->prepare($query);
+        $stmt->execute([':id_pers' => $id_personne]);
+        
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $resultats = [];
+
+        foreach($data as $row) {
+            $resultats[] = new Famille($row);
+        }
+
+        return $resultats;
+    }
     public function findByName(string $nom): ?Famille {
         $query = 'SELECT * FROM fams WHERE nom = :nom';
         $stmt = $this->dal->prepare($query);
@@ -80,12 +97,17 @@ public function update(Famille $famille): bool {
         return $resultats;
     }
 
-    public function AddPersFam($id_famille,$id_personne): array {
-        $query = 'INSERT INTO appartient_a (id_famille, id_personne) VALUES (:id_famille, :id_personne)';
+    public function AddPersFam(int $id_famille, int $id_personne, string $role = 'createur'): bool {
+        $query = 'INSERT INTO appartient_a (id_famille, id_personne, role) 
+                VALUES (:id_f, :id_p, :role)';
         $stmt = $this->dal->prepare($query);
-        $stmt->execute([
-            'id_famille'  => $id_famille,
-            'id_personne' => $id_personne
+        return $stmt->execute([
+            ':id_f' => $id_famille,
+            ':id_p' => $id_personne,
+            ':role' => $role
         ]);
+    }
+    public function getLastInsertedId(): int {
+        return (int)$this->dal->lastInsertId();
     }
 }

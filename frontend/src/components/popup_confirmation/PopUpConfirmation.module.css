@@ -1,0 +1,18 @@
+.container_pop_up_confirmation {
+    display: none;
+    position: fixed;
+    bottom: 8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    background: var(--white);
+    border: 1px solid var(--gray);
+    z-index: 100;
+    text-align: center;
+    padding: .2rem 0;
+    border-radius: 8px;
+}
+
+.container_pop_up_confirmation.active {
+    display: block;
+}

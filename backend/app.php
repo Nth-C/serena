@@ -1,35 +1,27 @@
 <?php
 require_once(__DIR__ . '/model/planning.class.php');
+require_once(__DIR__ . '/model/personneDAO.class.php');
 
 class App
 {
-  //public Parametre $parametre;
-  public array $aides;
-  public array $formulaires;
-  public array $categories;
-  public array $rapports;
+  //public array $aides;
+  //public array $formulaires;
+  //public array $categories;
+  //public array $rapports;
   public Stock $stock;
   public Planning $planning;
   public ?Personne $personne;
   public int $id_famille;
   public bool $connected; 
 
-
-  
-
   public function __construct()
   {
-    session_start();
-    //$this->parametre = new Parametre();
-    //$this->stock = new Stock();
-    //$this->planning = new Planning();
-
-    if (session_status() === PHP_SESSION_NONE) 
-      { 
+    if (session_status() === PHP_SESSION_NONE) { 
         session_start(); 
-      }    
+    }    
     $this->connected = $_SESSION['connected'] ?? false;
     $username = $_SESSION['username'] ?? '';
+
     if ($username != '') {
       $dao = new PersonneDAO();
       $this->personne = $dao->findByUsername($username);
@@ -42,12 +34,15 @@ class App
 
   public function __destruct()
   {
-    if ($this->connected ) {
+    if ($this->connected && $this->personne) {
       $_SESSION['connected'] = true;
       $_SESSION['username'] = $this->personne->username;
+      // AJOUT : Stocker l'ID pour les contrôleurs
+      $_SESSION['user_id'] = $this->personne->id; 
     } else {
       $_SESSION['connected'] = false;
       $_SESSION['username'] = '';
+      unset($_SESSION['user_id']);
     }
   }
 
@@ -58,12 +53,14 @@ class App
       throw new Exception("null pointer");
     }
     $this->personne = $personne;
+    // AJOUT : Immédiatement disponible en session
+    $_SESSION['user_id'] = $personne->id; 
   }
 
-  // Déconnection
   public function logout()
   {
     $this->connected = false;
     $this->personne = null;
+    session_destroy();
   }
 }

@@ -19,4 +19,4 @@ frontend/package-lock.json
 Thumbs.db
 .vscode/
 .idea/
-/vendor/
+backend/vendor/

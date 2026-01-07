@@ -19,10 +19,12 @@ try {
     $categories = $categorieDao->getAllCategories($app->id_famille);
     // echo pour envoyer les données dans la vue
     $documentDao = new DocumentDAO();
-    $documents = $documentDao->getDocumentsDeIdCategorie($app->id_famille);
     foreach($categories as $categorie){
+        $documents = $documentDao->getDocumentsDeIdCategorie($app->id_famille,$categorie->id_cat);
+        
         foreach($documents as $document){
             if($document->id_cat == $categorie->id_cat){
+
                 $categorie->ajouterDocument($document);
             }
         }

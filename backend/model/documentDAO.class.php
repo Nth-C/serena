@@ -13,7 +13,7 @@ public function __construct(DAL $dal = null) {
 
 
     public function addDocument($id_famille, $id_categorie, $nom): bool{
-        $query = 'INSERT INTO DOCUMENT (id_famille, id_cat, nom) VALUES (:id_famille, :id_cat, :nom)';
+        $query = 'INSERT INTO DOCUMENTS (id_famille, id_cat, nom_doc) VALUES (:id_famille, :id_cat, :nom)';
         $stmt = $this->dal->prepare($query);
         
         return $stmt->execute([
@@ -23,14 +23,14 @@ public function __construct(DAL $dal = null) {
         ]);
     }
     public function deleteDocument($id_document): bool{
-        $query = 'DELETE FROM DOCUMENT WHERE id_document = :id_document';
+        $query = 'DELETE FROM DOCUMENTS WHERE id_document = :id_document';
         $stmt = $this->dal->prepare($query);
         return $stmt->execute(['id_document' => $id_document]);
     }
 
     public function getOrdonnances($id_famille) {
 
-        $query = 'SELECT * FROM DOCUMENT WHERE id_famille = :id_famille'; //attention
+        $query = 'SELECT * FROM DOCUMENTS WHERE id_famille = :id_famille AND  '; //attention
         $stmt = $this->dal->prepare($query);
 
         $stmt->execute(['id_famille' => $id_famille]);
@@ -49,11 +49,11 @@ public function __construct(DAL $dal = null) {
     
 
     public function getDocuments($id_famille) {
-        $query = 'SELECT * FROM DOCUMENT WHERE id_famille = :id_famille';
+        $query = 'SELECT * FROM DOCUMENTS WHERE id_famille = :id_famille';
         $stmt = $this->dal->prepare($query);
 
         $stmt->execute(['id_famille' => $id_famille]);
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if (!$result) { 
             return []; 
@@ -68,11 +68,11 @@ public function __construct(DAL $dal = null) {
 
 
     public function getDocumentsDeIdCategorie($id_famille, $id_cat) {
-        $query = 'SELECT * FROM DOCUMENT WHERE id_famille = :id_famille AND id_cat = :id_cat';
+        $query = 'SELECT * FROM DOCUMENTS WHERE id_famille = :id_famille AND id_cat = :id_cat';
         $stmt = $this->dal->prepare($query);
 
         $stmt->execute(['id_famille' => $id_famille, 'id_cat' => $id_cat]);
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if (!$result) { 
             return []; 

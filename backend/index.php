@@ -1,8 +1,9 @@
 <?php
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '*';
+$origin = $_SERVER['HTTP_ORIGIN'] ?? 'http://localhost:5173'; 
 
 header("Access-Control-Allow-Origin: $origin");
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+header("Access-Control-Allow-Credentials: true"); 
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Content-Type: application/json");
 
@@ -24,7 +25,10 @@ const _ROUTES = array(
   'logout' => 'logout',
   'famille/add' => 'addFamille',
   'famille/all' => 'getFamille',
-  'famille/update' => 'updateFamille'
+  'famille/update' => 'updateFamille',
+  'document/list' => 'viewDocument',
+  'document/add' => 'addDocument',
+  'categorie/add' => 'addCategorie'
 );
 
 if (!array_key_exists($route, _ROUTES)) {

@@ -64,6 +64,11 @@ img {
 
 h1 {
   padding-left: 3rem;
+  font-size: var(--font-lg);
+}
+
+h2 {
+  font-size: var(--font-lg);
 }
 
 label,

@@ -36,4 +36,8 @@ class DAL {
         }
         return $stmt;
     }
+
+    public function lastInsertId(): string {
+    return $this->db->lastInsertId();
+    }
 }

@@ -88,7 +88,7 @@ function LastVisitReport() {
         </div>
 
 
-        <Slide title={"Ajouter un médicament"} isOpen={isNewMedicineOpen} onClickNewMedecine={toggleNewMedicine}>
+        <Slide title={"Ajouter un médicament"} isOpen={isNewMedicineOpen} toggleOpen={toggleNewMedicine}>
           <form className="new_medecine">
             <div>
               <label>Nom du médicament : </label>
@@ -126,7 +126,7 @@ function LastVisitReport() {
 
       </div>
 
-      <Slide title={"Créer un rapport de visite"} isOpen={isNewRapportOpen} onClickNewMedecine={toggleNewRapport}>
+      <Slide title={"Créer un rapport de visite"} isOpen={isNewRapportOpen} toggleOpen={toggleNewRapport}>
 
         <form className="add_report">
           <div>
