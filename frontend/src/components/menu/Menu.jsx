@@ -22,7 +22,7 @@ function Menu({isOpen , onHamburgerClick}) {
     return (
         <div className={[
                     styles.menu,
-                    isOpen ? styles.active : '', // si isOpen on ajoute la classe active
+                    isOpen ? styles.active : '', 
                 ].join(' ')}>
             <div className={styles.main_container}>
                 <div className={styles.header_container}>
@@ -53,8 +53,7 @@ function Menu({isOpen , onHamburgerClick}) {
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
                     </div>
-
-                    <span className={styles.border}></span> {/* les span sont pour une annimation */}
+                    <span className={styles.border}></span>
                 </div>
 
                 <div className={styles.user_container}>
@@ -77,7 +76,6 @@ function Menu({isOpen , onHamburgerClick}) {
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
                     </div>
-
                     <span className={styles.border}></span>
                 </div>
 
@@ -93,7 +91,6 @@ function Menu({isOpen , onHamburgerClick}) {
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
                     </div>
-
                     <span className={styles.border}></span>
                 </div>
 
@@ -113,12 +110,12 @@ function Menu({isOpen , onHamburgerClick}) {
 
                 <div className={styles.change_container}>
                     <div>
-                        <NavLink to={"/"}>
+                        {/* Redirection vers AcceSuivi et fermeture du menu */}
+                        <NavLink to={"/acce_suivi"} onClick={onHamburgerClick}>
                             <p>Changer de suivi</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
                     </div>
-
                     <span className={styles.border}></span>
                 </div>
 
