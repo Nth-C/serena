@@ -2,9 +2,18 @@ import { useEffect, useState } from 'react'
 import Slide from '../components/slide/Slide';
 
 function LastVisitReport() {
+
+  const popup = document.querySelector('.popup_report_add_medicament');
+
   // ajout rapport
   const [isNewRapportOpen, setIsNewRapportOpen] = useState(false) // page
+
+  //ajout méidicament
   const [isNewMedicineOpen, setIsMedicineOpen] = useState(false) // page
+
+  //ajout médicament popup
+  const [isNewPopupOpen, setIsPopupOpen] = useState(false) // page
+
 
   // fonction pour ouvrir/fermer le newMedecine
   const toggleNewRapport = () => {
@@ -13,6 +22,10 @@ function LastVisitReport() {
 
   const toggleNewMedicine = () => {
     setIsMedicineOpen(!isNewMedicineOpen)
+  }
+
+  const togglePopup = () => {
+    setIsPopupOpen(!isNewPopupOpen)
   }
 
   useEffect(() => {
@@ -30,6 +43,14 @@ function LastVisitReport() {
       document.documentElement.classList.remove('menu-active');
     }
   }, [isNewMedicineOpen]);
+
+  useEffect(() => {
+    if (isNewPopupOpen) {
+      popup.classList.add('popu-medi-active');
+    } else {
+      popup.classList.remove('popu-medi-active');
+    }
+  }, [isNewPopupOpen]);
 
 
 
@@ -63,8 +84,21 @@ function LastVisitReport() {
 
       <button className="btn_add" onClick={toggleNewRapport}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" /></svg></button>
 
-      <div>
-        <button onClick={toggleNewMedicine}>Ajouter un nouveau médicament dans la liste</button>
+      <div className="popup_report_add_medicament">
+
+        <div className="search_report">
+          <div>
+            <img src="/icons/arrow_back.svg" alt="" onClick={togglePopup} />
+            <input type="search" placeholder="Rechercher un rapport" />
+          </div>
+
+          <div>
+            <img src="/icons/sort.svg" alt="" />
+            <p>Tier par</p>
+          </div>
+        </div>
+
+        <button onClick={toggleNewMedicine} className="btn_blue">Ajouter un nouveau médicament dans la liste</button>
 
         <div className="list">
 
@@ -83,48 +117,44 @@ function LastVisitReport() {
               </div>
             </div>
           </div>
-
-
         </div>
-
-
-        <Slide title={"Ajouter un médicament"} isOpen={isNewMedicineOpen} toggleOpen={toggleNewMedicine}>
-          <form className="new_medecine">
-            <div>
-              <label>Nom du médicament : </label>
-              <input
-                type="text"
-                required
-              />
-            </div>
-            <div>
-              <label>Type de médicament : </label>
-              <input
-                type="text"
-                required
-              />
-            </div>
-            <div>
-              <label>Stock initiale du médicament : </label>
-              <input
-                type="number"
-                required
-              />
-            </div>
-            <div>
-              <label>Stock actuel du médicament :</label>
-              <input
-                type="number" required
-              />
-            </div>
-            <div>
-              <button className="btn_border">Reinistialiser</button>
-              <button className="btn_blue">Ajouter</button>
-            </div>
-          </form>
-        </Slide>
-
       </div>
+
+      <Slide title={"Ajouter un médicament"} isOpen={isNewMedicineOpen} toggleOpen={toggleNewMedicine}>
+        <form className="new_medecine">
+          <div>
+            <label>Nom du médicament : </label>
+            <input
+              type="text"
+              required
+            />
+          </div>
+          <div>
+            <label>Type de médicament : </label>
+            <input
+              type="text"
+              required
+            />
+          </div>
+          <div>
+            <label>Stock initiale du médicament : </label>
+            <input
+              type="number"
+              required
+            />
+          </div>
+          <div>
+            <label>Stock actuel du médicament :</label>
+            <input
+              type="number" required
+            />
+          </div>
+          <div>
+            <button className="btn_border">Reinistialiser</button>
+            <button className="btn_blue">Ajouter</button>
+          </div>
+        </form>
+      </Slide>
 
       <Slide title={"Créer un rapport de visite"} isOpen={isNewRapportOpen} toggleOpen={toggleNewRapport}>
 
@@ -142,10 +172,10 @@ function LastVisitReport() {
               </div>
               <div>
                 <p>Cachets</p>
-                <img src="/icons/bin.svg" alt="" />
+                <img src="/icons/bin.svg" alt=""/>
               </div>
             </div>
-            <button className="btn_blue add_medi">Ajouter médicament</button>
+            <button className="btn_blue add_medi" onClick={togglePopup}>Ajouter médicament</button>
           </div>
           <div>
             <label>Information supplémentaire : </label>

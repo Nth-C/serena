@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
 import Slide from '../components/slide/Slide';
-import PopUpDelete from '../components/popup_delete/PopUpDelete'
-import PopUpConfirmation from '../components/popup_confirmation/PopUpConfirmation'
 
 
 function Medecine() {
@@ -24,13 +22,6 @@ function Medecine() {
   // ajout stock
   const [isAddMedecineOpen , setIsAddMedecineOpen] = useState(false) // page
   const [addStock , setAddStock] = useState("")
-
-  // popup suppression
-  const [isPopUpDeleteOpen , setIsPopUpDeleteOpen] = useState(false) // page
-  const [idCurrentMedecine , setIdCurrentMedecine] = useState(null)
-
-  // popup confirmation
-  const [isShow , setIsShow] = useState(false) // page
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -100,9 +91,7 @@ function Medecine() {
       if (result.success) {
         // reset le formulaire
         setNameMedecine('')
-        setTypeMedecine('')
         setCurrentStock('')
-        setInitialStock('')
         // mettre a jour la liste 
         getMedecine()
       } else {
@@ -121,10 +110,6 @@ function Medecine() {
 
   const toggleAddMedecine = () => {
     setIsAddMedecineOpen(!isAddMedecineOpen)
-  }
-
-  const togglePopUpDelete = () => {
-    setIsPopUpDeleteOpen(!isPopUpDeleteOpen)
   }
 
   useEffect(() => {
@@ -177,14 +162,8 @@ function Medecine() {
               <p>{med.description}</p>
 
               <div>
-                <button className="btn_red" onClick={() => {
-                  setIdCurrentMedecine(med.id_medicament)
-                  togglePopUpDelete()
-                }}>Supprimer</button>
-                <button className="btn_blue" onClick={() => {
-                  toggleAddMedecine()
-
-                }}>Ajouter stock</button>
+                <button className="btn_red" onClick={() => handleDeleteMedecine(med.id_medicament)}>Supprimer</button>
+                <button className="btn_blue" onClick={toggleAddMedecine}>Ajouter stock</button>
               </div>
             </div>
           </div>
@@ -195,7 +174,7 @@ function Medecine() {
       <button className="btn_add" onClick={toggleNewMedecine}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg></button>
 
 
-      <Slide title={"Ajouter un médicament"} isOpen={isNewMedecineOpen} toggleOpen={toggleNewMedecine}>
+      <Slide title={"Ajouter un médicament"} isOpen={isNewMedecineOpen} onClickNewMedecine={toggleNewMedecine}>
         <form className="new_medecine" onSubmit={handleAddMedecine}>
           <div>
             <label>Nom du médicament : </label>
@@ -234,8 +213,8 @@ function Medecine() {
             />
           </div>
           <div>
-            <button className="btn_border">Reinistialiser</button>
-            <button className="btn_blue">Ajouter</button>
+            <button className="simple">Reinistialiser</button>
+            <button className="fill">Ajouter</button>
           </div>
         </form>
       </Slide>
@@ -245,7 +224,7 @@ function Medecine() {
         isAddMedecineOpen ? 'active' : '',
       ].join(' ')}>
         <div className="popup_add_stock">
-          <p>{nameCurrentMedecine}</p>
+          <h1>{nameCurrentMedecine}</h1>
           <form>
             <div>
               <label>Stock à ajouter </label>
@@ -257,8 +236,8 @@ function Medecine() {
               />
             </div>
             <div>
-              <button className="btn_border" onClick={toggleAddMedecine}>Annuler</button>
-              <button className="btn_blue">Ajouter</button>
+              <button className="simple" onClick={toggleAddMedecine}>Annuler</button>
+              <button className="fill">Ajouter</button>
             </div>
           </form>
         </div>
@@ -266,18 +245,6 @@ function Medecine() {
         <div className="background" onClick={toggleAddMedecine}></div>
       </div>
 
-      <PopUpDelete 
-        toDelete={nameCurrentMedecine}
-        handleDelete={() => handleDeleteMedecine(idCurrentMedecine)}
-        isOpen={isPopUpDeleteOpen}
-        onClose={togglePopUpDelete}
-        showConfirmation={() => setIsShow(true)}
-      />
-
-      <PopUpConfirmation 
-        sentence={`Le médicament ${nameCurrentMedecine} a bien été supprimé.`}
-        show={isShow}
-      />
 
     </div>
   )
