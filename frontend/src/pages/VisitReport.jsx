@@ -2,9 +2,6 @@ import { useEffect, useState } from 'react'
 import Slide from '../components/slide/Slide';
 
 function LastVisitReport() {
-
-  const popup = document.querySelector('.popup_report_add_medicament');
-
   // ajout rapport
   const [isNewRapportOpen, setIsNewRapportOpen] = useState(false) // page
 
@@ -45,6 +42,8 @@ function LastVisitReport() {
   }, [isNewMedicineOpen]);
 
   useEffect(() => {
+     const popup = document.querySelector('.popup_report_add_medicament');
+     
     if (isNewPopupOpen) {
       popup.classList.add('popu-medi-active');
     } else {
