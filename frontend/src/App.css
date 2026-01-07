@@ -23,6 +23,9 @@
   --gray: #B1B1B1;
   --bg-black: rgba(37, 37, 37, .2);
   --bezier: cubic-bezier(0.16, 1, 0.3, 1);
+  --font-sm: 1.2rem;
+  --font-md: 1.5rem;
+  --font-lg: 1.8rem;
 }
 
 html {
@@ -55,46 +58,69 @@ img {
 
 .content {
   width: 100%;
-  min-height: 300vh;
-}
-
-label, p {
-  font-size: 12px;
+  min-height: 100vh;
+  padding-bottom: 15rem;
 }
 
 h1 {
-  padding-left: 3rem; 
+  padding-left: 3rem;
 }
 
-/*style input*/
+label,
+p,
+a {
+  font-size: var(--font-sm);
+}
+
+/* style form */
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+form > div {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
 input {
   border: 1px solid var(--black);
-  border-radius: 8px;
-  height: 28px;
+  border-radius: 1rem;
+  height: 3.5rem;
+  font-size: var(--font-sm);
 }
 
-/*style bouton simple*/
-button.simple {
-  border: 1px solid var(--blue);
+.btn_border,
+.btn_blue,
+.btn_red {
   border-radius: 4px;
+  padding: .5rem 2.5rem;
   cursor: pointer;
-  height: 23px;
+  text-align: center;
+  font-size: var(--font-sm);
+}
+
+.btn_border {
+  border: 1px solid var(--blue);
   color: var(--blue);
 }
 
-/*style bouton rempli*/
-button.fill {
+.btn_blue {
   background-color: var(--blue);
   color: var(--white);
-  cursor: pointer;
 }
 
-button.red {
+.btn_red {
   background-color: var(--red);
   color: var(--white);
-  cursor: pointer;
 }
 
+input::placeholder {
+  color: var(--gray);
+}
 
 @media (min-width: 768px) {
   main {
@@ -104,35 +130,60 @@ button.red {
   }
 }
 
-/* ----------------------------- */
-/* ----------- LOGIN ----------- */
-/* ----------------------------- */
+/* --------------------------------------------------- */
+/* ----------- LOGIN + ACCE SUIVI + CREATE ----------- */
+/* --------------------------------------------------- */
 
-.login {
+.login,
+.create_account {
   overflow: hidden;
   position: relative;
   height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px;
 }
 
-.login form {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 30px;
+.login form,
+.create_account form {
+  width: 95%;
 }
 
-.login img:first-child, .acce_suivi img:first-child {
+.login .border,
+.acce_suivi .border {
+  display: block; 
+  width: 70%;
+  height: 1px;
+  background: var(--gray);
+  margin: 2.5rem 0;
+}
+
+.login h1,
+.create_account h1 {
+  color: var(--blue);
+}
+
+.login label,
+.create_account label {
+  color: var(--blue);
+}
+
+.login input,
+.create_account input {
+  border-color: var(--blue);
+}
+
+/* img */
+.login img:first-child,
+.acce_suivi img:first-child,
+.create_account img:first-child {
   max-width: 200px;
-  padding-top: 5%;
-  padding-bottom: 20%;
+  padding: 5% 0 10rem 0;
 }
 
-.login img:last-child, .acce_suivi img:last-child {
+.login img:last-child,
+.acce_suivi img:last-child,
+.create_account img:last-child {
   max-width: 284px;
   max-height: 213px;
   position: absolute;
@@ -140,15 +191,14 @@ button.red {
   right: -18px;
 }
 
-.login h1 {
-  color: var(--blue);
-}
+/* ----------------------------- */
+/* ----------- LOGIN ----------- */
+/* ----------------------------- */
 
-.login form > div {
+.login form > div:last-child {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 90%;
+  justify-content: center;
+  align-items: center;
 }
 
 .login form > div p {
@@ -157,71 +207,57 @@ button.red {
   text-align: end;
 }
 
-.login form > div > div, .login form > div > div > div  {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5px;
+.login form button,
+.login > a {
+  width: 15rem;
 }
 
-.login form > div > div:nth-child(4) {
-  flex-direction: row;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.login form > div > div:nth-child(4) > div {
-  width: 45%;
-}
-
-.login form > div:last-child {
-  flex-direction: row;
-  justify-content: end;
-}
-
-.login form > div:last-child button {
-  width: 93px;
-}
-
-.login label {
-  color: var(--blue);
-}
-
-.login input {
-  border-color: var(--blue);
-}
-
-.login input[type=text], .login input[type=password], .login input[type=email] {
-  background-size: 17px;
-  background-position: 4px 4.5px; 
+.login input[type=text],
+.login input[type=password],
+.login input[type=email], 
+.create_account input[type=text],
+.create_account input[type=password],
+.create_account input[type=email] {
+  background-size: 1.7rem;
+  background-position: .4rem center;
   background-repeat: no-repeat;
-  padding-left: 25px;
+  padding-left: 2.5rem;
 }
 
-.login input[type=text] {
+.login input[type=text],
+.create_account input[type=text] {
   background-image: url('/icons/account.svg');
 }
 
-.login input[type=password] {
+.login input[type=password],
+.create_account input[type=password] {
   background-image: url('/icons/lock.svg');
 }
 
-.login input[type=email] {
+.login input[type=email],
+.create_account input[type=email] {
   background-image: url('/icons/mail.svg');
 }
 
-.login::placeholder {
-  color: var(--gray);
+/* --------------------------------- */
+/* --------- CREATE ACCOUNT -------- */
+/* --------------------------------- */
+
+.create_account form > div:last-child {
+  flex-direction: row;
+  justify-content: end;
+  gap: 1.7rem;
 }
 
-.login button {
-  width: 125px;
+.create_account form > div:nth-child(4) {
+  flex-direction: row;
+  justify-content: space-between;
 }
 
-.login hr, .acce_suivi hr {
-  border: 0.5px solid var(--bg-black);
-  width: 70%;
+.create_account form > div:nth-child(4) > div {
+  display: flex;
+  flex-direction: column;
 }
-
 
 /* ----------------------------- */
 /* --------- ACCE SUIVI -------- */
@@ -281,6 +317,7 @@ button.red {
 .acce_suivi .principal_infos div {
   display: flex;
 }
+
 /* -------------------------------- */
 /* ----------- Medecine ----------- */
 /* -------------------------------- */
@@ -345,39 +382,12 @@ progress::-moz-progress-bar {
   gap: 1rem;
 }
 
-.medecine .drop::before {
-  /*
-  content: '';
-  display: block;
-  position: absolute;
-  width: ;
-  height: ;
-  top: ;
-  left: ;
-  */
-}
-
-.medecine .drop button {
-  padding: .5rem .7rem;
-  border-radius: 3px;
-}
-
-.medecine .new_medecine {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.medecine .new_medecine > div:not(:last-child) {
-  display: flex;
-  flex-direction: column;
-  gap: .5rem;
-}
+/* add medicament */
 
 .medecine .new_medecine > div:last-child {
-  display: flex;
+  flex-direction: row;
   justify-content: end;
-  gap: 2rem;
+  gap: 1.7rem;
 }
 
 .medecine .btn_add_medecine {
@@ -396,6 +406,8 @@ progress::-moz-progress-bar {
   fill: var(--white);
   width: 80%;
 }
+
+/* popup add stock */
 
 .medecine .container_popup_add_stock {
   display: none;
@@ -418,12 +430,25 @@ progress::-moz-progress-bar {
 
 .medecine .popup_add_stock {
   width: 95%;
-  padding: 5rem 2rem;
+  padding: 3.5rem 2rem;
   background: var(--white);
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  border-radius: 15px;
+}
+
+.medecine .popup_add_stock > p {
+  font-size: var(--font-lg);
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+.medecine form > div:last-child {
+  flex-direction: row;
+  justify-content: end;
+  gap: 1.7rem;
 }
 
 /* ----------------------------- */
