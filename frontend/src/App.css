@@ -389,7 +389,8 @@ button.creer_suivi, .acce_suivi .form-actions {
 /* -------- RAPPORT VISITE -------- */
 /* -------------------------------- */
 
-.contener_report {
+.contener_report,
+.popup_report_add_medicament {
   padding: 0.5rem 3rem;
 }
 
@@ -402,6 +403,7 @@ button.creer_suivi, .acce_suivi .form-actions {
   display: flex;
   justify-content: space-between;
 }
+
 
 .search_report {
   gap: 20px;
@@ -474,6 +476,25 @@ button.add_medi {
   min-width: 120px;
 }
 
+.popup_report_add_medicament {
+  display: none;
+  width: 100%;
+  height: 100vh;
+  background: var(--white);
+  position: absolute;
+  top: 0;
+  z-index: 999;
+}
+
+.popup_report_add_medicament .search_report div:first-child {
+  width: 100%;
+}
+
+.popu-medi-active {
+  display: block;
+}
+
+
 
 
 
@@ -483,6 +504,14 @@ button.add_medi {
 
 .medecine {
   position: relative;
+}
+
+.medecine > p {
+  font-size: var(--font-lg);
+  font-weight: 700;
+  color: var(--gray);
+  text-align: center;
+  margin-top: 2rem;
 }
 
 .medecine .container_medecine {
@@ -549,48 +578,21 @@ progress::-moz-progress-bar {
   gap: 1.7rem;
 }
 
-/* popup add stock */
-
-.medecine .container_popup_add_stock {
-  display: none;
+.medecine .btn_add_medecine {
   position: fixed;
-  z-index: 500;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 5.5rem;
+  height: 5.5rem;
+  border-radius: 50%;
+  background: var(--pink);
+  bottom: 10rem;
+  right: 2rem;
+  cursor: pointer;
+  z-index: 50;
 }
 
-.medecine .container_popup_add_stock.active {
-  display: block;
-}
-
-.medecine .container_popup_add_stock .background {
-  background: var(--bg-black);
-  width: 100%;
-  height: 100%;
-}
-
-.medecine .popup_add_stock {
-  width: 95%;
-  padding: 3.5rem 2rem;
-  background: var(--white);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 15px;
-}
-
-.medecine .popup_add_stock > p {
-  font-size: var(--font-lg);
-  font-weight: 700;
-  margin-bottom: 2rem;
-}
-
-.medecine form > div:last-child {
-  flex-direction: row;
-  justify-content: end;
-  gap: 1.7rem;
+.medecine .btn_add_medecine svg {
+  fill: var(--white);
+  width: 80%;
 }
 
 /* ----------------------------- */

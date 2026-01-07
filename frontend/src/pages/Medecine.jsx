@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react'
 import Slide from '../components/slide/Slide';
 import PopUpDelete from '../components/popup_delete/PopUpDelete'
 import PopUpConfirmation from '../components/popup_confirmation/PopUpConfirmation'
+import PopUpAddStock from '../components/popup_add_stock/PopUpAddStock'
 
 
 function Medecine() {
-  // recuperer les medicaments (les variables sont dans la class medicaments)
+// recuperer les medicaments (les variables sont dans la class medicaments)
   const [listMedecine , setListMedecine] = useState([])
   const [activeInList , setActiveInList] = useState(null)
   const [nameCurrentMedecine , setNameCurrentMedecine] = useState(null)
@@ -31,7 +32,7 @@ function Medecine() {
 
   // popup confirmation
   const [isShow , setIsShow] = useState(false) // page
-
+  
   const apiUrl = import.meta.env.VITE_API_URL;
 
   const getMedecine = async () => {
@@ -69,14 +70,14 @@ function Medecine() {
 
       if (result.success) {
         // rafrechir les medicaments
-        getMedecine(); 
+        getMedecine();
       } else {
         alert("Erreur: " + result.error);
       }
 
     } catch (error) {
       console.error("Erreur réseau:", error);
-    } 
+    }
   }
 
   const handleAddMedecine = async (e) => {
@@ -103,7 +104,7 @@ function Medecine() {
         setTypeMedecine('')
         setCurrentStock('')
         setInitialStock('')
-        // mettre a jour la liste 
+        // mettre a jour la liste
         getMedecine()
       } else {
         setMessage("Erreur: " + result.error);
@@ -118,7 +119,7 @@ function Medecine() {
   const toggleNewMedecine = () => {
     setIsNewMedecineOpen(!isNewMedecineOpen)
   }
-
+  
   const toggleAddMedecine = () => {
     setIsAddMedecineOpen(!isAddMedecineOpen)
   }
@@ -143,6 +144,8 @@ function Medecine() {
     }
   }, [isAddMedecineOpen]);
 
+
+
   // quand la page se lance on affiche les medicaments
   useEffect(() => {
     getMedecine()
@@ -151,7 +154,6 @@ function Medecine() {
   return (
     <div className="medecine">
       <h1>Liste médicaments</h1>
-
       <div className="list">
         {listMedecine.map((med) => (
           <div key={med.id_medicament} className="container_medecine">
@@ -166,7 +168,6 @@ function Medecine() {
               <div>
                 <progress max="100" value={med.stockTotal > 0 ? (med.stock / med.stockTotal) * 100 : 0}></progress>
                 {<p>{med.stock}/{med.stockTotal}</p> }
-                
               </div>
             </div>
 
@@ -175,62 +176,61 @@ function Medecine() {
               activeInList === med.id_medicament ? 'active' : '',
             ].join(' ')}>
               <p>{med.description}</p>
-
               <div>
+
                 <button className="btn_red" onClick={() => {
                   setIdCurrentMedecine(med.id_medicament)
                   togglePopUpDelete()
                 }}>Supprimer</button>
                 <button className="btn_blue" onClick={() => {
                   toggleAddMedecine()
-
                 }}>Ajouter stock</button>
               </div>
             </div>
           </div>
         ))}
-
       </div>
 
-      <button className="btn_add" onClick={toggleNewMedecine}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg></button>
+      <p>Aucun autre médicament</p>
 
+      <button className="btn_add_medecine" onClick={toggleNewMedecine}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg></button>;
 
       <Slide title={"Ajouter un médicament"} isOpen={isNewMedecineOpen} toggleOpen={toggleNewMedecine}>
         <form className="new_medecine" onSubmit={handleAddMedecine}>
           <div>
             <label>Nom du médicament : </label>
-            <input 
-              type="text" 
-              value={nameMedecine} 
-              onChange={(e) => setNameMedecine(e.target.value)} 
-              required 
+            <input
+              type="text"
+              value={nameMedecine}
+              onChange={(e) => setNameMedecine(e.target.value)}
+              required
             />
           </div>
           <div>
             <label>Type de médicament : </label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={typeMedecine}
-              onChange={(e) => setTypeMedecine(e.target.value)} 
-              required 
+              onChange={(e) => setTypeMedecine(e.target.value)}
+              required
             />
           </div>
           <div>
             <label>Stock initiale du médicament : </label>
-            <input 
-              type="number" 
-              value={initialStock} 
-              onChange={(e) => setInitialStock(e.target.value)} 
-              required 
+            <input
+              type="number"
+              value={initialStock}
+              onChange={(e) => setInitialStock(e.target.value)}
+              required
             />
           </div>
           <div>
             <label>Stock actuel du médicament :</label>
-            <input 
-              type="number" 
-              value={currentStock} 
-              onChange={(e) => setCurrentStock(e.target.value)} 
-              required 
+            <input
+              type="number"
+              value={currentStock}
+              onChange={(e) => setCurrentStock(e.target.value)}
+              required
             />
           </div>
           <div>
@@ -240,33 +240,14 @@ function Medecine() {
         </form>
       </Slide>
 
-      <div className={[
-        "container_popup_add_stock",
-        isAddMedecineOpen ? 'active' : '',
-      ].join(' ')}>
-        <div className="popup_add_stock">
-          <p>{nameCurrentMedecine}</p>
-          <form>
-            <div>
-              <label>Stock à ajouter </label>
-              <input 
-                type="number" 
-                value={addStock} 
-                onChange={(e) => setAddStock(e.target.value)} 
-                required 
-              />
-            </div>
-            <div>
-              <button className="btn_border" onClick={toggleAddMedecine}>Annuler</button>
-              <button className="btn_blue">Ajouter</button>
-            </div>
-          </form>
-        </div>
+      <PopUpAddStock
+      // il manque le handler pour ajouter le stock
+        nameMedecine={nameCurrentMedecine}
+        isOpen={isAddMedecineOpen}
+        toggleOpen={toggleAddMedecine}
+      />
 
-        <div className="background" onClick={toggleAddMedecine}></div>
-      </div>
-
-      <PopUpDelete 
+      <PopUpDelete
         toDelete={nameCurrentMedecine}
         handleDelete={() => handleDeleteMedecine(idCurrentMedecine)}
         isOpen={isPopUpDeleteOpen}
@@ -274,11 +255,10 @@ function Medecine() {
         showConfirmation={() => setIsShow(true)}
       />
 
-      <PopUpConfirmation 
+      <PopUpConfirmation
         sentence={`Le médicament ${nameCurrentMedecine} a bien été supprimé.`}
         show={isShow}
       />
-
     </div>
   )
 }

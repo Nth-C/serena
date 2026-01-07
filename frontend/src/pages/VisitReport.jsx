@@ -2,25 +2,29 @@ import { useEffect, useState } from 'react'
 import Slide from '../components/slide/Slide';
 
 function LastVisitReport() {
-  // États pour les données
-  const [rapports, setRapports] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const apiUrl = import.meta.env.VITE_API_URL;
+  // ajout rapport
+  const [isNewRapportOpen, setIsNewRapportOpen] = useState(false) // page
 
-  // États pour les fenêtres coulissantes (Slides) et Popups
-  const [isNewRapportOpen, setIsNewRapportOpen] = useState(false);
-  const [isNewMedicineOpen, setIsMedicineOpen] = useState(false);
-  const [isNewPopupOpen, setIsPopupOpen] = useState(false);
+  //ajout méidicament
+  const [isNewMedicineOpen, setIsMedicineOpen] = useState(false) // page
 
-  // Fonctions de bascule (Toggle)
-  const toggleNewRapport = () => setIsNewRapportOpen(!isNewRapportOpen);
-  const toggleNewMedicine = () => setIsMedicineOpen(!isNewMedicineOpen);
-  const togglePopup = (e) => {
-    if (e) e.preventDefault(); // Empêche la soumission du formulaire si cliqué dedans
-    setIsPopupOpen(!isNewPopupOpen);
-  };
+  //ajout médicament popup
+  const [isNewPopupOpen, setIsPopupOpen] = useState(false) // page
 
-  // 1. Charger les rapports de la famille active au montage du composant
+
+  // fonction pour ouvrir/fermer le newMedecine
+  const toggleNewRapport = () => {
+    setIsNewRapportOpen(!isNewRapportOpen)
+  }
+
+  const toggleNewMedicine = () => {
+    setIsMedicineOpen(!isNewMedicineOpen)
+  }
+
+  const togglePopup = () => {
+    setIsPopupOpen(!isNewPopupOpen)
+  }
+
   useEffect(() => {
     const fetchRapports = async () => {
       try {
@@ -43,42 +47,24 @@ function LastVisitReport() {
 
   // Gestion des classes CSS pour le menu actif
   useEffect(() => {
-    const active = isNewRapportOpen || isNewMedicineOpen;
-    document.documentElement.classList.toggle('menu-active', active);
-  }, [isNewRapportOpen, isNewMedicineOpen]);
-
-  // 2. Fonction pour envoyer un nouveau rapport
-  const handleSubmitRapport = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    
-    const bodyData = {
-      description: formData.get('description'),
-      nom_aide: formData.get('nom_aide')
-      // Les IDs (famille et personne) sont gérés par le serveur via la session
-    };
-
-    try {
-      const response = await fetch(`${apiUrl}/?route=rapport/add`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(bodyData)
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        alert("Rapport ajouté !");
-        setIsNewRapportOpen(false);
-        e.target.reset();
-        // Recharger la liste
-        window.location.reload(); 
-      }
-    } catch (err) {
-      alert("Erreur lors de l'envoi du rapport.");
+    if (isNewMedicineOpen) {
+      document.documentElement.classList.add('menu-active');
+    } else {
+      document.documentElement.classList.remove('menu-active');
     }
-  };
+  }, [isNewMedicineOpen]);
+
+  useEffect(() => {
+     const popup = document.querySelector('.popup_report_add_medicament');
+     
+    if (isNewPopupOpen) {
+      popup.classList.add('popu-medi-active');
+    } else {
+      popup.classList.remove('popu-medi-active');
+    }
+  }, [isNewPopupOpen]);
+
+
 
   return (
     <div className="last_visit_report">
@@ -116,21 +102,24 @@ function LastVisitReport() {
         </div>
       </div>
 
-      <button className="btn_add" onClick={toggleNewRapport}>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
-          <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
-        </svg>
-      </button>
+      <button className="btn_add" onClick={toggleNewRapport}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" /></svg></button>
 
-      {/* Popup Médicaments */}
-      <div className={`popup_report_add_medicament ${isNewPopupOpen ? 'popu-medi-active' : ''}`}>
+      <div className="popup_report_add_medicament">
+
         <div className="search_report">
           <div>
-            <img src="/icons/arrow_back.svg" alt="Retour" onClick={togglePopup} />
-            <input type="search" placeholder="Rechercher un médicament" />
+            <img src="/icons/arrow_back.svg" alt="" onClick={togglePopup} />
+            <input type="search" placeholder="Rechercher un rapport" />
+          </div>
+
+          <div>
+            <img src="/icons/sort.svg" alt="" />
+            <p>Tier par</p>
           </div>
         </div>
-        <button onClick={toggleNewMedicine} className="btn_blue">Ajouter un nouveau médicament</button>
+
+        <button onClick={toggleNewMedicine} className="btn_blue">Ajouter un nouveau médicament dans la liste</button>
+
         <div className="list">
           <div className="container_medecine">
             <div className="principal_infos">
@@ -143,21 +132,42 @@ function LastVisitReport() {
         </div>
       </div>
 
-      {/* Slide Nouveau Médicament */}
       <Slide title={"Ajouter un médicament"} isOpen={isNewMedicineOpen} toggleOpen={toggleNewMedicine}>
         <form className="new_medecine">
-          <div><label>Nom : </label><input type="text" required /></div>
-          <div><label>Type : </label><input type="text" required /></div>
-          <div><label>Stock initial : </label><input type="number" required /></div>
-          <div><label>Stock actuel : </label><input type="number" required /></div>
           <div>
-            <button type="button" className="btn_border" onClick={toggleNewMedicine}>Annuler</button>
-            <button type="submit" className="btn_blue">Ajouter</button>
+            <label>Nom du médicament : </label>
+            <input
+              type="text"
+              required
+            />
+          </div>
+          <div>
+            <label>Type de médicament : </label>
+            <input
+              type="text"
+              required
+            />
+          </div>
+          <div>
+            <label>Stock initiale du médicament : </label>
+            <input
+              type="number"
+              required
+            />
+          </div>
+          <div>
+            <label>Stock actuel du médicament :</label>
+            <input
+              type="number" required
+            />
+          </div>
+          <div>
+            <button className="btn_border">Reinistialiser</button>
+            <button className="btn_blue">Ajouter</button>
           </div>
         </form>
       </Slide>
 
-      {/* Slide Nouveau Rapport */}
       <Slide title={"Créer un rapport de visite"} isOpen={isNewRapportOpen} toggleOpen={toggleNewRapport}>
         <form className="add_report" onSubmit={handleSubmitRapport}>
           <div>
@@ -167,16 +177,23 @@ function LastVisitReport() {
           <div>
             <label>Médicaments pris : </label>
             <div className="list_medicament_report">
-              <div><p>Xanax</p><input type="text" placeholder="Dosage" /></div>
+              <div>
+                <p>Xanax</p>
+                <input type="text" placeholder="Dosage" />
+              </div>
+              <div>
+                <p>Cachets</p>
+                <img src="/icons/bin.svg" alt=""/>
+              </div>
             </div>
-            <button type="button" className="btn_blue add_medi" onClick={togglePopup}>Ajouter médicament</button>
+            <button className="btn_blue add_medi" onClick={togglePopup}>Ajouter médicament</button>
           </div>
           <div>
             <label>Information supplémentaire : </label>
             <textarea name="description" required></textarea>
           </div>
           <div>
-            <button type="button" className="btn_border" onClick={toggleNewRapport}>Annuler</button>
+            <button className="btn_border">Réinitialiser</button>
             <button type="submit" className="btn_blue">Ajouter</button>
           </div>
         </form>

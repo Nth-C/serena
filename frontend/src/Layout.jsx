@@ -15,7 +15,7 @@ function Layout({submenu}) {
 
     const breadcrumbList = [
         // home
-        { path : "/home/dashboard", breadcrumb: "Acceuil > Tableau de bord" },
+        { path : "/home/dashboard", breadcrumb: "Accueil > Tableau de bord" },
         { path : "/home/my_day", breadcrumb: "Accueil > Ma Journée" },
         { path : "/home/last_visit_report", breadcrumb: "Accueil > Dernier Rapport" },
         // agenda
