@@ -95,7 +95,7 @@ input, textarea {
   border: 1px solid var(--black);
   border-radius: 1rem;
   font-size: var(--font-sm);
-  padding-left: 6px;
+  padding: 4px 0 0 6px;
 }
 
 input {
