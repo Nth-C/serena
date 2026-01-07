@@ -4,11 +4,6 @@ require_once(__DIR__ . '/model/personneDAO.class.php');
 
 class App
 {
-  //public array $aides;
-  //public array $formulaires;
-  //public array $categories;
-  //public array $rapports;
-  public Stock $stock;
   public Planning $planning;
   public ?Personne $personne;
   public int $id_famille;
@@ -28,8 +23,16 @@ class App
     } else {
       $this->personne = null;
     }
-    $this->id_famille = 2;
+
+    // Récupération de la famille active depuis la session
+    $this->id_famille = $_SESSION['id_famille_active'] ?? 0;
     $this->planning = new Planning();
+  }
+
+  // CETTE MÉTHODE MANQUAIT ET CAUSAIT L'ERREUR
+  public function setFamilleActive(int $id) {
+    $this->id_famille = $id;
+    $_SESSION['id_famille_active'] = $id;
   }
 
   public function __destruct()
@@ -37,12 +40,14 @@ class App
     if ($this->connected && $this->personne) {
       $_SESSION['connected'] = true;
       $_SESSION['username'] = $this->personne->username;
-      // AJOUT : Stocker l'ID pour les contrôleurs
       $_SESSION['user_id'] = $this->personne->id; 
+      // Conservation de la famille active en fin de script
+      $_SESSION['id_famille_active'] = $this->id_famille;
     } else {
       $_SESSION['connected'] = false;
       $_SESSION['username'] = '';
       unset($_SESSION['user_id']);
+      unset($_SESSION['id_famille_active']);
     }
   }
 
@@ -53,14 +58,16 @@ class App
       throw new Exception("null pointer");
     }
     $this->personne = $personne;
-    // AJOUT : Immédiatement disponible en session
     $_SESSION['user_id'] = $personne->id; 
+    $_SESSION['connected'] = true;
+    $_SESSION['username'] = $personne->username;
   }
 
   public function logout()
   {
     $this->connected = false;
     $this->personne = null;
+    $this->id_famille = 0;
     session_destroy();
   }
 }

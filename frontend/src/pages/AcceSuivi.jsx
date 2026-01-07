@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
 import Slide from '../components/slide/Slide';
 
-// Composant pour chaque ligne de famille (Accordéon)
-function FamilleItem({ famille, onModifier, isOpen, onToggle }) {
+/**
+ * Composant pour chaque ligne de famille (Accordéon)
+ * Ajout de la prop onAcceder pour gérer le clic sur le bouton
+ */
+function FamilleItem({ famille, onModifier, onAcceder, isOpen, onToggle }) {
     return (
         <div className={`container_suivi_groupe ${isOpen ? 'open' : ''}`}>
             <div className="principal_infos" onClick={onToggle}>
@@ -22,7 +25,16 @@ function FamilleItem({ famille, onModifier, isOpen, onToggle }) {
                         >
                             Modifier
                         </button>
-                        <button className="btn_blue">Accéder</button>
+                        {/* Utilisation de la prop onAcceder passée par le parent */}
+                        <button 
+                            className="btn_blue" 
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onAcceder(famille.id_famille);
+                            }}
+                        >
+                            Accéder
+                        </button>                    
                     </div>
                 </div>
             )}
@@ -50,10 +62,10 @@ function AcceSuivi() {
     const fetchFamilles = async () => {
         try {
             const response = await fetch(`${apiUrl}/?route=famille/all`, {
-                credentials: 'include' // Indispensable pour récupérer la session PHP
+                credentials: 'include' // Indispensable pour la session PHP
             });
             const data = await response.json();
-            setFamilles(data);
+            setFamilles(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error("Erreur chargement familles:", error);
         }
@@ -72,6 +84,25 @@ function AcceSuivi() {
         setOpenFamilleId(openFamilleId === id ? null : id);
     };
 
+    const handleAcceder = async (id_famille) => {
+        try {
+            const response = await fetch(`${apiUrl}/?route=famille/select`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ id_famille }),
+            });
+            const result = await response.json();
+            if (result.success) {
+                window.location.href = '/home/'; 
+            } else {
+                alert("Erreur lors de l'accès au groupe : " + result.error);
+            }
+        } catch (error) {
+            console.error("Erreur de sélection de famille:", error);
+        }
+    };
+
     // Création d'un nouveau suivi
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -80,7 +111,7 @@ function AcceSuivi() {
             const response = await fetch(`${apiUrl}/?route=famille/add`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                credentials: 'include', // Envoie le cookie de session
+                credentials: 'include',
                 body: JSON.stringify(formData),
             });
             const result = await response.json();
@@ -106,7 +137,7 @@ function AcceSuivi() {
             const response = await fetch(`${apiUrl}/?route=famille/update`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                credentials: 'include', // Envoie le cookie de session
+                credentials: 'include',
                 body: JSON.stringify(formData),
             });
             const result = await response.json();
@@ -155,6 +186,7 @@ function AcceSuivi() {
                             key={famille.id_famille}
                             famille={famille}
                             onModifier={handleOpenModif}
+                            onAcceder={handleAcceder} // Transmission de la fonction de sélection
                             isOpen={openFamilleId === famille.id_famille}
                             onToggle={() => toggleFamille(famille.id_famille)}
                         />
@@ -166,10 +198,10 @@ function AcceSuivi() {
 
             <span className='border'></span>
 
-            <button className="btn_blue creer_suivi" onClick={toggleNewSuvi}>Creer un nouveau suivi</button>
+            <button className="btn_blue creer_suivi" onClick={toggleNewSuvi}>Créer un nouveau suivi</button>
             {message && <p className="success-msg">{message}</p>}
 
-            <Slide title={"Créer un nouveau suivi"} isOpen={isNewSuiviOpen} onClickNewMedecine={toggleNewSuvi}>
+            <Slide title={"Créer un nouveau suivi"} isOpen={isNewSuiviOpen} toggleOpen={toggleNewSuvi}>
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label>Nom de l'aidé : </label>
@@ -184,13 +216,13 @@ function AcceSuivi() {
                         <textarea name="description" value={formData.description} onChange={handleChange} required></textarea>
                     </div>
                     <div>
-                        <button className="btn_border">Annuler</button>
+                        <button type="button" className="btn_border" onClick={toggleNewSuvi}>Annuler</button>
                         <button type="submit" className="btn_blue">Créer</button>
                     </div>
                 </form>
             </Slide>
 
-            <Slide title={`Modifier le suivi de ${formData.nom_groupe}`} isOpen={isModifSuiviOpen} onClickNewMedecine={() => setIsModifSuiviOpen(false)}>
+            <Slide title={`Modifier le suivi de ${formData.nom_groupe}`} isOpen={isModifSuiviOpen} toggleOpen={() => setIsModifSuiviOpen(false)}>
                 <form onSubmit={handleUpdate}>
                     <div className="form-group">
                         <label>Nom de l'aidé : </label>
@@ -205,7 +237,7 @@ function AcceSuivi() {
                         <textarea name="description" value={formData.description} onChange={handleChange} required></textarea>
                     </div>
                     <div className="form-actions">
-                        <button className="btn_red">Supprimer</button>
+                        <button type="button" className="btn_red">Supprimer</button>
                         <div>
                             <button type="button" className="btn_border" onClick={() => setIsModifSuiviOpen(false)}>Annuler</button>
                             <button type="submit" className="btn_blue">Enregistrer</button>

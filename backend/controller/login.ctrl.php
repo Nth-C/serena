@@ -26,7 +26,10 @@ if ($username && $mdp) {
 }
 
 if ($personne && password_verify($mdp, $personne->mdp)) {
+    session_unset(); 
+    
     $app->login($personne);
+    
     echo json_encode([
         'success' => true,
         'user' => [
@@ -34,7 +37,7 @@ if ($personne && password_verify($mdp, $personne->mdp)) {
             'prenom' => $personne->prenom,
         ]
     ]);
-} else {
+}else {
     echo json_encode([
         'success' => false,
         'message' => 'Login ou mot de passe incorrect'
