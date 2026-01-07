@@ -1,0 +1,15 @@
+{
+    "name": "owner/serena",
+    "autoload": {
+        "psr-4": {
+            "Owner\\Serena\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Thomas",
+            "email": "thomas.demarcq@etu.univ-grenoble-alpes.fr"
+        }
+    ],
+    "require": {}
+}

@@ -2,7 +2,7 @@ CREATE TABLE FAMS (
     id_famille SERIAL PRIMARY KEY,
     nom VARCHAR(255),
     nom_aide varchar(255),
-    "desc" varchar(255)
+    description varchar(255)
 );
 
 CREATE TABLE PERSONNES (
@@ -61,7 +61,7 @@ CREATE TABLE ACCOMPAGNE (
 
 CREATE TABLE RAPPORTS (
     id_rapport SERIAL PRIMARY KEY,
-    "desc" TEXT,
+    description TEXT,
     date DATE,
     id_famille INT REFERENCES FAMS(id_famille),
     id_personne INT REFERENCES PERSONNES(id_personne)
@@ -69,7 +69,7 @@ CREATE TABLE RAPPORTS (
 
 CREATE TABLE FORMS (
     nom_aide VARCHAR(255) PRIMARY KEY,
-    "desc" TEXT,
+    description TEXT,
     access VARCHAR(255),
     cmt_obt TEXT,
     doc_req TEXT,
@@ -136,7 +136,7 @@ CREATE TABLE CHARGE (
 CREATE TABLE AIDE (
     id_aide SERIAL PRIMARY KEY,
     nom VARCHAR(255),
-    "desc" TEXT
+    description TEXT
 );
 
 

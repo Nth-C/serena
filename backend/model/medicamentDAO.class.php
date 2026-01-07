@@ -38,11 +38,14 @@ class MedicamentDAO {
     }
 
     // A MODIFIER PAS ENCORE FONCTIONNELL
-    public function addMedecine($id_famille,$name, $stock): bool {
-        $query = 'INSERT INTO STOCK_MEDICS (designation_med, quantite,id_famille) VALUES (:name, :stock, :id_famille)';
+    public function addMedecine($id_famille,$name, $stock, $stockTotal): bool {
+        if($stockTotal < $stock){
+            $stockTotal = $stock;
+        }
+        $query = 'INSERT INTO STOCK_MEDICS (designation_med, quantite,id_famille, total) VALUES (:name, :stock, :id_famille, :stockTotal)';
         $stmt = $this->dal->prepare($query);
 
-        return $stmt->execute(['name' => $name, 'stock' => $stock, 'id_famille' => $id_famille]);
+        return $stmt->execute(['name' => $name, 'stock' => $stock, 'id_famille' => $id_famille, 'stockTotal' => $stockTotal]);
     }
 
     public function addSameMedecine($id_famille,$id_medicament, $stockAAjouter): bool {
