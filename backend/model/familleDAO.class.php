@@ -21,17 +21,32 @@ class FamilleDAO {
         ]);
     }
 
-        public function findByName(string $nom): ?Famille {
-            $query = 'SELECT * FROM fams WHERE nom = :nom';
-            $stmt = $this->dal->prepare($query);
-            $stmt->execute([':nom' => $nom]);   
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    public function findByName(string $nom): ?Famille {
+        $query = 'SELECT * FROM fams WHERE nom = :nom';
+        $stmt = $this->dal->prepare($query);
+        $stmt->execute([':nom' => $nom]);   
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($result === false) {
-                return null;
-            }
+        if ($result === false) {
+        return null;
+        }
         
-            return new Famille($result);
+        return new Famille($result);
+    }
+
+    public function findAll(): array {
+        $query = 'SELECT * FROM fams';
+        $stmt = $this->dal->prepare($query);
+        $stmt->execute();
+        
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $resultats = [];
+
+        foreach($data as $row) {
+            $resultats[] = new Famille($row);
+        }
+
+        return $resultats;
     }
 
     public function getPersFam($id_famille): array {

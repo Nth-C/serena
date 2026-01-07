@@ -22,7 +22,8 @@ const _ROUTES = array(
   'login' => 'login',
   'register' => 'register',
   'logout' => 'logout',
-  'famille/add' => 'addFamille'
+  'famille/add' => 'addFamille',
+  'famille/all' => 'getFamille'
 );
 
 if (!array_key_exists($route, _ROUTES)) {
