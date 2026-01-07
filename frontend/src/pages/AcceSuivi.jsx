@@ -6,28 +6,28 @@ import Slide from '../components/slide/Slide';
 function FamilleItem({ famille, onModifier, isOpen, onToggle }) {
     return (
         <div className={`container_suivi_groupe ${isOpen ? 'open' : ''}`}>
-            <div 
-                className="principal_infos" 
+            <div
+                className="principal_infos"
                 onClick={onToggle}
             >
-                <p>{famille.nom}</p> 
+                <p>{famille.nom}</p>
             </div>
 
             {isOpen && (
                 <div className="drop">
                     {/* On utilise famille.desc car le PHP mappe 'description' vers 'desc' */}
-                    <p>{famille.desc}</p>                     
+                    <p>{famille.desc}</p>
                     <div className="actions_buttons">
-                        <button 
-                            className="simple" 
+                        <button
+                            className="btn_border"
                             onClick={(e) => {
-                                e.stopPropagation(); 
-                                onModifier(famille); 
+                                e.stopPropagation();
+                                onModifier(famille);
                             }}
                         >
                             Modifier
                         </button>
-                        <button className="fill">Accéder</button>
+                        <button className="btn_blue">Accéder</button>
                     </div>
                 </div>
             )}
@@ -38,12 +38,12 @@ function FamilleItem({ famille, onModifier, isOpen, onToggle }) {
 function AcceSuivi() {
     const [message, setMessage] = useState("");
     const apiUrl = import.meta.env.VITE_API_URL;
-    const [familles, setFamilles] = useState([]); 
+    const [familles, setFamilles] = useState([]);
     const [openFamilleId, setOpenFamilleId] = useState(null);
 
     // État du formulaire incluant l'ID pour la modification
     const [formData, setFormData] = useState({
-        id_famille: null, 
+        id_famille: null,
         nom_aide: '',
         nom_groupe: '',
         description: ''
@@ -94,7 +94,7 @@ function AcceSuivi() {
                 setMessage("Suivi créé avec succès !");
                 setIsNewSuiviOpen(false);
                 setFormData({ id_famille: null, nom_aide: '', nom_groupe: '', description: '' });
-                fetchFamilles(); 
+                fetchFamilles();
             } else {
                 setMessage("Erreur : " + result.error);
             }
@@ -157,10 +157,10 @@ function AcceSuivi() {
             <div className="list">
                 {familles.length > 0 ? (
                     familles.map((famille) => (
-                        <FamilleItem 
-                            key={famille.id_famille} 
-                            famille={famille} 
-                            onModifier={handleOpenModif} 
+                        <FamilleItem
+                            key={famille.id_famille}
+                            famille={famille}
+                            onModifier={handleOpenModif}
                             isOpen={openFamilleId === famille.id_famille}
                             onToggle={() => toggleFamille(famille.id_famille)}
                         />
@@ -172,7 +172,7 @@ function AcceSuivi() {
 
             <span className='border'></span>
 
-            <button className="simple fill" onClick={toggleNewSuvi}>Creer un nouveau suivi</button>
+            <button className="btn_blue creer_suivi" onClick={toggleNewSuvi}>Creer un nouveau suivi</button>
             {message && <p className="success-msg">{message}</p>}
 
             {/* Slide AJOUT */}
@@ -191,7 +191,8 @@ function AcceSuivi() {
                         <textarea name="description" value={formData.description} onChange={handleChange} required></textarea>
                     </div>
                     <div>
-                        <button type="submit" className="simple fill">Créer</button>
+                        <button className="btn_border">Annuler</button>
+                        <button type="submit" className="btn_blue">Créer</button>
                     </div>
                 </form>
             </Slide>
@@ -212,8 +213,11 @@ function AcceSuivi() {
                         <textarea name="description" value={formData.description} onChange={handleChange} required></textarea>
                     </div>
                     <div className="form-actions">
-                        <button type="button" onClick={() => setIsModifSuiviOpen(false)}>Annuler</button>
-                        <button type="submit">Enregistrer les modifications</button>
+                        <button className="btn_red">Supprimer</button>
+                        <div>
+                            <button type="button" className="btn_border" onClick={() => setIsModifSuiviOpen(false)}>Annuler</button>
+                            <button type="submit" className="btn_blue">Enregistrer</button>
+                        </div>
                     </div>
                 </form>
             </Slide>
