@@ -195,7 +195,7 @@ function Medecine() {
       <button className="btn_add_medecine" onClick={toggleNewMedecine}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg></button>
 
 
-      <Slide title={"Ajouter un médicament"} isOpen={isNewMedecineOpen} onClickNewMedecine={toggleNewMedecine}>
+      <Slide title={"Ajouter un médicament"} isOpen={isNewMedecineOpen} toggleOpen={toggleNewMedecine}>
         <form className="new_medecine" onSubmit={handleAddMedecine}>
           <div>
             <label>Nom du médicament : </label>

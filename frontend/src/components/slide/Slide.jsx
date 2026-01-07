@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import styles from './Silde.module.css';
 
-function Slide({children, title, isOpen, onClickNewMedecine}) {
+function Slide({children, title, isOpen, toggleOpen}) {
   return (
     <div className={[
       styles.slide,
@@ -11,7 +11,7 @@ function Slide({children, title, isOpen, onClickNewMedecine}) {
       <div className={styles.main_container}>
         <div>
           <h1>{title}</h1>
-          <button className={styles.hamburger_btn} onClick={onClickNewMedecine}>
+          <button className={styles.hamburger_btn} onClick={toggleOpen}>
             <span></span>
             <span></span>
           </button>
@@ -21,7 +21,7 @@ function Slide({children, title, isOpen, onClickNewMedecine}) {
         </div>
       </div>
 
-      <div className={styles.background} onClick={onClickNewMedecine}></div>
+      <div className={styles.background} onClick={toggleOpen}></div>
     </div>
   )
 }
