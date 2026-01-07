@@ -2,12 +2,25 @@
 
 use PHPUnit\Framework\TestCase;
 
-// On inclut tes classes (ajuste les chemins selon ton projet)
-require_once __DIR__ . '/../src/DocumentDAO.php'; 
-// On assume que DAL et Document existent ou sont autoloadés
+// --- CORRECTION ICI ---
+// Tu dois inclure explicitement TOUTES les classes que tu utilises dans le test
+// ou que tu veux mocker, si tu n'as pas d'autoloader global.
+
+// 1. Inclusion de la DAL
+// Attention à la casse du nom de fichier (Linux est sensible à la casse !)
+require_once __DIR__ . '/../../model/dal.class.php'; 
+
+// 2. Inclusion du DAO
+require_once __DIR__ . '/../../model/DocumentDAO.class.php';
+
+// 3. Inclusion de la classe métier Document (nécessaire pour le testGetDocuments)
+// Je suppose que le fichier s'appelle document.class.php ou Document.class.php
+require_once __DIR__ . '/../../model/document.class.php'; 
+
 
 class DocumentDAOTest extends TestCase
 {
+    // ... Le reste de ton code ne change pas ...
     // On va tester l'ajout d'un document
     public function testAddDocument()
     {
