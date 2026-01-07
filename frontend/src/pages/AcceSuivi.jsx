@@ -2,19 +2,18 @@ import { NavLink } from 'react-router-dom';
 import { useEffect, useState } from 'react'
 import Slide from '../components/slide/Slide';
 
-function FamilleItem({ famille, onModifier }) {
-    const [isExpanded, setIsExpanded] = useState(false);
-
+// Le sous-composant reçoit maintenant l'information de visibilité du parent
+function FamilleItem({ famille, onModifier, isOpen, onToggle }) {
     return (
-        <div className={`container_suivi_groupe ${isExpanded ? 'open' : ''}`}>
+        <div className={`container_suivi_groupe ${isOpen ? 'open' : ''}`}>
             <div 
                 className="principal_infos" 
-                onClick={() => setIsExpanded(!isExpanded)}
+                onClick={onToggle} // Déclenche la fonction du parent
             >
                 <p>{famille.nom}</p> 
             </div>
 
-            {isExpanded && (
+            {isOpen && (
                 <div className="drop">
                     <p>{famille.desc}</p>                     
                     <div className="actions_buttons">
@@ -39,6 +38,8 @@ function AcceSuivi() {
     const [message, setMessage] = useState("");
     const apiUrl = import.meta.env.VITE_API_URL;
     const [familles, setFamilles] = useState([]); 
+    
+    const [openFamilleId, setOpenFamilleId] = useState(null);
 
     const [formData, setFormData] = useState({
         nom_aide: '',
@@ -48,6 +49,10 @@ function AcceSuivi() {
 
     const [isNewSuiviOpen, setIsNewSuiviOpen] = useState(false);
     const [isModifSuiviOpen, setIsModifSuiviOpen] = useState(false);
+
+    const toggleFamille = (id) => {
+        setOpenFamilleId(openFamilleId === id ? null : id);
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -123,6 +128,9 @@ function AcceSuivi() {
                             key={famille.id_famille} 
                             famille={famille} 
                             onModifier={handleOpenModif} 
+                            // L'élément est ouvert si son ID correspond à l'état stocké
+                            isOpen={openFamilleId === famille.id_famille}
+                            onToggle={() => toggleFamille(famille.id_famille)}
                         />
                     ))
                 ) : (
