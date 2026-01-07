@@ -15,6 +15,7 @@ require_once('model/dal.class.php');
 $route = $_GET['route'] ?? '';
 
 const _ROUTES = array(
+  'evenement/add' => 'addEvenement',
   'medicament/list' => 'viewMedicament',
   'medicament/add' => 'addMedicament',
   'medicament/delete' => 'deleteMedicament',

@@ -24,11 +24,11 @@ class EvenementDAO{
     
         return new Evenement($result);
     }
-    public function addEvenement($id_event, $id_famille,$titre, $debut, $fin, $lieu, $description): bool {
-        $query = 'INSERT INTO STOCK_MEDICS (designation_med, quantite,id_famille) VALUES (:name, :stock, :id_famille)';
+    public function addEvenement($id_famille,$nom, $debut, $fin, $lieu, $description): bool {
+        $query = 'INSERT INTO EVENEMENTS (nom,date_deb, date_fin, lieu ,note ,id_famille) VALUES (:nom, :date_deb, :date_fin, :lieu, :note, :id_famille)';
         $stmt = $this->dal->prepare($query);
 
-        return $stmt->execute(['name' => $name, 'stock' => $stock, 'id_famille' => $id_famille]);
+        return $stmt->execute(['nom' => $nom, 'date_deb' => $debut, 'date_fin' => $fin, 'lieu' => $lieu, 'note' => $description, 'id_famille' => $id_famille]);
     }
     public function getAllEvenementsSemaine($id_famille, $date_debut, $date_fin): array {
     $query = 'SELECT * FROM EVENEMENTS 
