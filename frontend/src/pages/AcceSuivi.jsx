@@ -149,8 +149,8 @@ function AcceSuivi() {
                         <label>Courte description : </label>
                         <textarea name="description" value={formData.description} onChange={handleChange} required></textarea>
                     </div>
-                    <div className="form-actions">
-                        <button type="submit">Créer</button>
+                    <div>
+                        <button type="submit" className="simple fill">Créer</button>
                     </div>
                 </form>
             </Slide>
