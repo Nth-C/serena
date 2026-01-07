@@ -8,3 +8,4 @@ function LastVisitReport() {
     </div>
   )
 }
+export default LastVisitReport
