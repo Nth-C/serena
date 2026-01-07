@@ -64,6 +64,11 @@ img {
 
 h1 {
   padding-left: 3rem;
+  font-size: var(--font-lg);
+}
+
+h2 {
+  font-size: var(--font-lg);
 }
 
 label,
@@ -396,7 +401,7 @@ progress::-moz-progress-bar {
   height: 5.5rem;
   border-radius: 50%;
   background: var(--pink);
-  bottom: 9rem;
+  bottom: 10rem;
   right: 2rem;
   cursor: pointer;
   z-index: 50;

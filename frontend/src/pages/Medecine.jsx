@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import Slide from '../components/slide/Slide';
+import PopUpDelete from '../components/popup_delete/PopUpDelete'
+import PopUpConfirmation from '../components/popup_confirmation/PopUpConfirmation'
 
 
 function Medecine() {
@@ -22,6 +24,13 @@ function Medecine() {
   // ajout stock
   const [isAddMedecineOpen , setIsAddMedecineOpen] = useState(false) // page
   const [addStock , setAddStock] = useState("")
+
+  // popup suppression
+  const [isPopUpDeleteOpen , setIsPopUpDeleteOpen] = useState(false) // page
+  const [idCurrentMedecine , setIdCurrentMedecine] = useState(null)
+
+  // popup confirmation
+  const [isShow , setIsShow] = useState(false) // page
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -91,7 +100,9 @@ function Medecine() {
       if (result.success) {
         // reset le formulaire
         setNameMedecine('')
+        setTypeMedecine('')
         setCurrentStock('')
+        setInitialStock('')
         // mettre a jour la liste 
         getMedecine()
       } else {
@@ -110,6 +121,10 @@ function Medecine() {
 
   const toggleAddMedecine = () => {
     setIsAddMedecineOpen(!isAddMedecineOpen)
+  }
+
+  const togglePopUpDelete = () => {
+    setIsPopUpDeleteOpen(!isPopUpDeleteOpen)
   }
 
   useEffect(() => {
@@ -162,8 +177,14 @@ function Medecine() {
               <p>{med.description}</p>
 
               <div>
-                <button className="btn_red" onClick={() => handleDeleteMedecine(med.id_medicament)}>Supprimer</button>
-                <button className="btn_blue" onClick={toggleAddMedecine}>Ajouter stock</button>
+                <button className="btn_red" onClick={() => {
+                  setIdCurrentMedecine(med.id_medicament)
+                  togglePopUpDelete()
+                }}>Supprimer</button>
+                <button className="btn_blue" onClick={() => {
+                  toggleAddMedecine()
+
+                }}>Ajouter stock</button>
               </div>
             </div>
           </div>
@@ -245,6 +266,18 @@ function Medecine() {
         <div className="background" onClick={toggleAddMedecine}></div>
       </div>
 
+      <PopUpDelete 
+        toDelete={nameCurrentMedecine}
+        handleDelete={() => handleDeleteMedecine(idCurrentMedecine)}
+        isOpen={isPopUpDeleteOpen}
+        onClose={togglePopUpDelete}
+        showConfirmation={() => setIsShow(true)}
+      />
+
+      <PopUpConfirmation 
+        sentence={`Le médicament ${nameCurrentMedecine} a bien été supprimé.`}
+        show={isShow}
+      />
 
     </div>
   )
