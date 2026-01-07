@@ -24,7 +24,10 @@ const _ROUTES = array(
   'logout' => 'logout',
   'famille/add' => 'addFamille',
   'famille/all' => 'getFamille',
-  'famille/update' => 'updateFamille'
+  'famille/update' => 'updateFamille',
+  'document/list' => 'viewDocument',
+  'document/add' => 'addDocument',
+  'categorie/add' => 'addCategorie'
 );
 
 if (!array_key_exists($route, _ROUTES)) {

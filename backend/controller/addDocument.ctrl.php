@@ -22,7 +22,7 @@ try {
     }
 
     $model = new DocumentDAO();
-    $success = $model->addDocument($app->id_famille,$data['name'],$data['id_categorie']);
+    $success = $model->addDocument($app->id_famille,$data['id_categorie'],$data['name']);
 
     // renvoie a la vue des informations
     echo json_encode([
