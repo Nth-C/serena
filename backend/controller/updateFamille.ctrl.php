@@ -17,7 +17,7 @@ if($id && $nom && $desc && $nom_aide){
     $famille = new Famille([
         'id_famille' => (int)$id,
         'nom'        => $nom,
-        'desc'       => $desc,
+        'description'=> $desc,
         'nom_aide'   => $nom_aide
     ]);
 
