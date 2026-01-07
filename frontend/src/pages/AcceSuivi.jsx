@@ -101,7 +101,7 @@ function AcceSuivi() {
             <button className="simple fill"  onClick={toggleNewSuvi}>Creer un nouveau suivi</button>
             {message && <p className="success-msg">{message}</p>}
 
-            <Slide title={"Ajouter un médicament"} isOpen={isNewSuiviOpen} onClickNewMedecine={toggleNewSuvi}>
+            <Slide title={"Créer un nouveau suivi"} isOpen={isNewSuiviOpen} onClickNewMedecine={toggleNewSuvi}>
 
                 <form onSubmit={handleSubmit}>
                     <div>
@@ -117,7 +117,7 @@ function AcceSuivi() {
                         <textarea name="description" value={formData.description} onChange={handleChange} required></textarea>
                     </div>
                     <div>
-                        <button type="submit">Créer</button>
+                        <button type="submit" className="simple fill">Créer</button>
                     </div>
                 </form>
             </Slide>
