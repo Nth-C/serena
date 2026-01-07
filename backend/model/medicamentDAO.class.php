@@ -45,6 +45,21 @@ class MedicamentDAO {
         return $stmt->execute(['name' => $name, 'stock' => $stock, 'id_famille' => $id_famille]);
     }
 
+    public function addSameMedecine($id_famille,$id_medicament, $stockAAjouter): bool {
+    $query = 'UPDATE STOCK_MEDICS 
+              SET quantite = quantite + :stock 
+              WHERE id_medicament = :id_medicament 
+              AND id_famille = :id_famille';
+              
+    $stmt = $this->dal->prepare($query);
+
+    return $stmt->execute([
+        'id_medicament'       => $id_medicament, 
+        'stock'      => (int)$stockAAjouter, 
+        'id_famille' => (int)$id_famille
+    ]);
+    }
+
     public function deleteMedecine($id_famille,$id_medicament) : bool {
         $query = 'DELETE FROM STOCK_MEDICS WHERE id_famille = :id_famille AND id_medicament = :id_medicament';
         $stmt = $this->dal->prepare($query);

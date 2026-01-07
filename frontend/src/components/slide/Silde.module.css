@@ -4,25 +4,29 @@
     width: 100vw;
     height: 100vh;
     z-index: 500;
-    transform: translateX(-0%);
+    transform: translateY(100%);
     display: flex;
     align-items: end;
+}
+
+.slide.active {
+    transform: translateX(-0%);
 }
 
 .slide .main_container {
     position: relative;
     z-index: 100;
     width: 100%;
-    height: 50vh;
     background: var(--white);
     border-radius: 15px 15px 0 0;
-    padding-top: 1.5rem;
+    padding: 2.5rem 0 3.5rem 0;
 }
 
 .slide .main_container > div:first-child {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 3rem;
 }
 
 .slide .main_container > div:last-child {
@@ -31,7 +35,7 @@
 
 .slide .hamburger_btn {
     position: relative;
-    width: 3rem;
+    width: 2.5rem;
     height: 1.7rem;
     cursor: pointer;
     margin-right: 3rem;
