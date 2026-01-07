@@ -1,5 +1,5 @@
 <?php
-require_once('model/medicamentDAO.class.php');
+require_once('model/rapportDAO.class.php');
 require_once(__DIR__ . '/../app.php');
 
 // Indispensable pour que React puisse communiquer avec PHP
@@ -14,10 +14,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 $app = new App();
 
 try {
-    $model = new MedicamentDAO();
-    $medicaments = $model->getAllMedicaments($app->id_famille);
+    $model = new RapportDAO();
+    $rapports = $model->getAllRapports($app->id_famille);
     // echo pour envoyer les données dans la vue
-    echo json_encode($medicaments);
+    echo json_encode($rapports);
 } catch (Exception $e) {
     echo json_encode(["error" => $e->getMessage()]);
 }
