@@ -71,8 +71,8 @@ class FamilleDAO {
 
         $resultats = [];
 
-        foreach($data as $row) {
-            $resultats[] = new Personne($row);
+        foreach($data as $personne) {
+            $resultats[] = new Personne($personne);
         }
 
         return $resultats;
