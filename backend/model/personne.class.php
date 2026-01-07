@@ -10,7 +10,7 @@ class Personne{
          
     public function __construct(array $data=array())
     {
-        $this->id = $data['id'] ?? '';
+        $this->id = $data['id_personne'] ?? $data['id'] ?? '';        
         $this->nom = $data['nom'] ?? '';
         $this->prenom = $data['prenom'] ?? '';
         $this->mail = $data['mail'] ?? '';
