@@ -42,29 +42,28 @@ function Login() {
 
             <form onSubmit={handleSubmit}>
                 <div>
-                    <div>
-                        <label>Nom d'utilisateur : </label>
-                        <input type="text" name="username" value={formData.username} onChange={handleChange} placeholder="John_Doe" required />
-                    </div>
-
-                    <div>
-                        <label>Mot de passe : </label>
-                        <input type="password" name="mdp" value={formData.mdp} onChange={handleChange} required />
-                    </div>
-
+                    <label>Nom d'utilisateur : </label>
+                    <input type="text" name="username" value={formData.username} onChange={handleChange} placeholder="John_Doe" required />
+                </div>
+                <div>
+                    <label>Mot de passe : </label>
+                    <input type="password" name="mdp" value={formData.mdp} onChange={handleChange} required />
+                </div>
+                <div>
                     <NavLink to="/create_account">
                         <p>Mot de passe oublié ?</p>
                     </NavLink>
                 </div>
-
-                <button type="submit" className="simple fill">Se connecter</button>
-
-                <hr />
-
-                <NavLink to={"/create_account"}>
-                    <button className="simple">Créer un compte</button>
-                </NavLink>
+                <div>
+                    <button type="submit" className="btn_blue">Se connecter</button>
+                </div>
             </form>
+
+            <span className='border'></span>
+
+            <NavLink className="btn_border" to={"/create_account"}>
+                Créer un compte
+            </NavLink>
 
             <img src="/img/logo.svg" alt="" />
         </div>

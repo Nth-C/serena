@@ -162,8 +162,8 @@ function Medecine() {
               <p>{med.description}</p>
 
               <div>
-                <button className="red" onClick={() => handleDeleteMedecine(med.id_medicament)}>Supprimer</button>
-                <button className="fill" onClick={toggleAddMedecine}>Ajouter stock</button>
+                <button className="btn_red" onClick={() => handleDeleteMedecine(med.id_medicament)}>Supprimer</button>
+                <button className="btn_blue" onClick={toggleAddMedecine}>Ajouter stock</button>
               </div>
             </div>
           </div>
@@ -213,8 +213,8 @@ function Medecine() {
             />
           </div>
           <div>
-            <button className="simple">Reinistialiser</button>
-            <button className="fill">Ajouter</button>
+            <button className="btn_border">Reinistialiser</button>
+            <button className="btn_blue">Ajouter</button>
           </div>
         </form>
       </Slide>
@@ -224,7 +224,7 @@ function Medecine() {
         isAddMedecineOpen ? 'active' : '',
       ].join(' ')}>
         <div className="popup_add_stock">
-          <h1>{nameCurrentMedecine}</h1>
+          <p>{nameCurrentMedecine}</p>
           <form>
             <div>
               <label>Stock à ajouter </label>
@@ -236,8 +236,8 @@ function Medecine() {
               />
             </div>
             <div>
-              <button className="simple" onClick={toggleAddMedecine}>Annuler</button>
-              <button className="fill">Ajouter</button>
+              <button className="btn_border" onClick={toggleAddMedecine}>Annuler</button>
+              <button className="btn_blue">Ajouter</button>
             </div>
           </form>
         </div>
