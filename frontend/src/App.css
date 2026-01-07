@@ -23,6 +23,9 @@
   --gray: #B1B1B1;
   --bg-black: rgba(37, 37, 37, .2);
   --bezier: cubic-bezier(0.16, 1, 0.3, 1);
+  --font-sm: 1.2rem;
+  --font-md: 1.5rem;
+  --font-lg: 1.8rem;
 }
 
 html {
@@ -55,11 +58,8 @@ img {
 
 .content {
   width: 100%;
-  min-height: 300vh;
-}
-
-label, p {
-  font-size: 12px;
+  min-height: 100vh;
+  padding-bottom: 15rem;
 }
 
 h1 {
