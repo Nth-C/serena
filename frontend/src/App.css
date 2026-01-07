@@ -53,7 +53,8 @@ img {
 }
 
 .breadcrumb {
-  padding: 10rem 3rem 0 3rem; 
+  padding: 10rem 3rem 0 3rem;
+  text-decoration: underline;
 }
 
 .content {
@@ -91,15 +92,36 @@ form > div {
   gap: .5rem;
 }
 
-input, textarea {
+input,
+select,
+textarea {
   border: 1px solid var(--black);
   border-radius: 1rem;
   font-size: var(--font-sm);
   padding: 4px 0 0 6px;
 }
 
-input {
+input,
+select {
   height: 3.5rem;
+}
+
+select option {
+  background-color: var(--white);
+  color: var(--black);
+  font-size: var(--font-sm);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border: 1px solid var(--blue);
+}
+
+/* selectionne le label au dessus de l'input ou du select */
+form > div:has(input:focus, select:focus) label {
+  color: var(--blue);
 }
 
 input[type=search] {
@@ -149,7 +171,7 @@ textarea {
   height: 5.5rem;
   border-radius: 50%;
   background: var(--pink);
-  bottom: 9rem;
+  bottom: 10rem;
   right: 2rem;
   cursor: pointer;
   z-index: 50;
@@ -494,10 +516,6 @@ button.add_medi {
   display: block;
 }
 
-
-
-
-
 /* -------------------------------- */
 /* ----------- Medecine ----------- */
 /* -------------------------------- */
@@ -554,14 +572,27 @@ progress::-moz-progress-bar {
 }
 
 .medecine .drop {
+  position: relative;
   display: none;
   flex-direction: column;
   gap: 1rem;
-  padding: 0 3rem 1.5rem 3rem;
+  padding: 1rem 3rem 1.5rem 3rem;
+  border-top: 1px solid var(--gray);
 }
 
 .medecine .drop.active {
   display: flex;
+}
+
+.medecine .drop::before {
+  background: var(--pink);
+  content: '';
+  display: block;
+  position: absolute;
+  width: .5rem;
+  height: 100%;
+  top: 0;
+  left: 0;
 }
 
 .medecine .drop > div {
@@ -570,29 +601,16 @@ progress::-moz-progress-bar {
   gap: 1rem;
 }
 
+.medecine .principal_infos > div:first-child > p:first-child {
+  font-weight: 600;
+}
+
 /* add medicament */
 
 .medecine .new_medecine > div:last-child {
   flex-direction: row;
   justify-content: end;
   gap: 1.7rem;
-}
-
-.medecine .btn_add_medecine {
-  position: fixed;
-  width: 5.5rem;
-  height: 5.5rem;
-  border-radius: 50%;
-  background: var(--pink);
-  bottom: 10rem;
-  right: 2rem;
-  cursor: pointer;
-  z-index: 50;
-}
-
-.medecine .btn_add_medecine svg {
-  fill: var(--white);
-  width: 80%;
 }
 
 /* ----------------------------- */

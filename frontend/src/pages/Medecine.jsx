@@ -6,12 +6,12 @@ import PopUpAddStock from '../components/popup_add_stock/PopUpAddStock'
 
 
 function Medecine() {
-// recuperer les medicaments (les variables sont dans la class medicaments)
+  // recuperer les medicaments (les variables sont dans la class medicaments)
   const [listMedecine , setListMedecine] = useState([])
   const [activeInList , setActiveInList] = useState(null)
   const [nameCurrentMedecine , setNameCurrentMedecine] = useState(null)
 
-
+  // pour mettre les erreurs
   const [message, setMessage] = useState('');
   const [error, setError] = useState(null)
 
@@ -23,7 +23,7 @@ function Medecine() {
   const [currentStock , setCurrentStock] = useState("")
 
   // ajout stock
-  const [isAddMedecineOpen , setIsAddMedecineOpen] = useState(false) // page
+  const [isAddStockOpen , setIsAddStockOpen] = useState(false) // page
   const [addStock , setAddStock] = useState("")
 
   // popup suppression
@@ -31,9 +31,19 @@ function Medecine() {
   const [idCurrentMedecine , setIdCurrentMedecine] = useState(null)
 
   // popup confirmation
-  const [isShow , setIsShow] = useState(false) // page
+  const [isShowRemove , setIsShowRemove] = useState(false)
+  const [isShowAdd , setIsShowAdd] = useState(false)
+  const [nameMedecineToDisplay , setNameMedecineToDisplay] = useState('')
+
   
   const apiUrl = import.meta.env.VITE_API_URL;
+
+  const handleResetForm = () => {
+    setNameMedecine("")
+    setTypeMedecine("") 
+    setCurrentStock("")
+    setInitialStock("")
+  }
 
   const getMedecine = async () => {
       fetch(`${apiUrl}/?route=medicament/list`)
@@ -85,6 +95,7 @@ function Medecine() {
 
     const nouveauMedoc = {
       name: nameMedecine,
+      /*type: typeMedecine,*/
       stock: currentStock,
       stockTotal: initialStock
     }
@@ -99,13 +110,14 @@ function Medecine() {
       const result = await response.json();
 
       if (result.success) {
-        // reset le formulaire
-        setNameMedecine('')
-        setTypeMedecine('')
-        setCurrentStock('')
-        setInitialStock('')
+        handleResetForm()
         // mettre a jour la liste
         getMedecine()
+        // fermer le slide
+        toggleNewMedecine()
+        // affiche le message d'ajout
+        setIsShowAdd(true)
+        setNameMedecineToDisplay(nameMedecine)
       } else {
         setMessage("Erreur: " + result.error);
       }
@@ -120,8 +132,8 @@ function Medecine() {
     setIsNewMedecineOpen(!isNewMedecineOpen)
   }
   
-  const toggleAddMedecine = () => {
-    setIsAddMedecineOpen(!isAddMedecineOpen)
+  const toggleAddStock = () => {
+    setIsAddStockOpen(!isAddStockOpen)
   }
 
   const togglePopUpDelete = () => {
@@ -137,14 +149,20 @@ function Medecine() {
   }, [isNewMedecineOpen]);
 
   useEffect(() => {
-    if (isAddMedecineOpen) {
+    if (isAddStockOpen) {
         document.documentElement.classList.add('menu-active');
     } else {
         document.documentElement.classList.remove('menu-active');
     }
-  }, [isAddMedecineOpen]);
+  }, [isAddStockOpen]);
 
-
+  useEffect(() => {
+    if (isPopUpDeleteOpen) {
+        document.documentElement.classList.add('menu-active');
+    } else {
+        document.documentElement.classList.remove('menu-active');
+    }
+  }, [isPopUpDeleteOpen]);
 
   // quand la page se lance on affiche les medicaments
   useEffect(() => {
@@ -175,7 +193,8 @@ function Medecine() {
               "drop",
               activeInList === med.id_medicament ? 'active' : '',
             ].join(' ')}>
-              <p>{med.description}</p>
+              {/* <p>{med.description}</p> */}
+              <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Officia odit atque corrupti distinctio velit magnam nulla.</p>
               <div>
 
                 <button className="btn_red" onClick={() => {
@@ -183,7 +202,7 @@ function Medecine() {
                   togglePopUpDelete()
                 }}>Supprimer</button>
                 <button className="btn_blue" onClick={() => {
-                  toggleAddMedecine()
+                  toggleAddStock()
                 }}>Ajouter stock</button>
               </div>
             </div>
@@ -193,7 +212,7 @@ function Medecine() {
 
       <p>Aucun autre médicament</p>
 
-      <button className="btn_add_medecine" onClick={toggleNewMedecine}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg></button>;
+      <button className="btn_add" onClick={toggleNewMedecine}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg></button>;
 
       <Slide title={"Ajouter un médicament"} isOpen={isNewMedecineOpen} toggleOpen={toggleNewMedecine}>
         <form className="new_medecine" onSubmit={handleAddMedecine}>
@@ -208,12 +227,20 @@ function Medecine() {
           </div>
           <div>
             <label>Type de médicament : </label>
-            <input
-              type="text"
-              value={typeMedecine}
-              onChange={(e) => setTypeMedecine(e.target.value)}
+            <select 
+              value={typeMedecine} 
+              onChange={(e) => setTypeMedecine(e.target.value)} 
+              name="type_medecine"
               required
-            />
+            >
+              <option value="" disabled>-- Choisir un type --</option>
+              
+              <option value="pils">Comprimé / Gélule</option>
+              <option value="injection">Injection / Piqûre</option>
+              <option value="sirop">Sirop / Liquide</option>
+              <option value="creme">Pommade / Crème</option>
+              <option value="patch">Pansement / Patch</option>
+            </select>
           </div>
           <div>
             <label>Stock initiale du médicament : </label>
@@ -234,17 +261,17 @@ function Medecine() {
             />
           </div>
           <div>
-            <button className="btn_border">Reinistialiser</button>
-            <button className="btn_blue">Ajouter</button>
+            <button type="reset" className="btn_border" onClick={handleResetForm}>Reinistialiser</button>
+            <button type="submit" className="btn_blue">Ajouter</button>
           </div>
         </form>
       </Slide>
 
       <PopUpAddStock
-      // il manque le handler pour ajouter le stock
+        // il manque le handler pour ajouter le stock
         nameMedecine={nameCurrentMedecine}
-        isOpen={isAddMedecineOpen}
-        toggleOpen={toggleAddMedecine}
+        isOpen={isAddStockOpen}
+        toggleOpen={toggleAddStock}
       />
 
       <PopUpDelete
@@ -252,12 +279,19 @@ function Medecine() {
         handleDelete={() => handleDeleteMedecine(idCurrentMedecine)}
         isOpen={isPopUpDeleteOpen}
         onClose={togglePopUpDelete}
-        showConfirmation={() => setIsShow(true)}
+        showConfirmation={() => setIsShowRemove(true)} /*pas obligatoire*/
       />
 
       <PopUpConfirmation
         sentence={`Le médicament ${nameCurrentMedecine} a bien été supprimé.`}
-        show={isShow}
+        show={isShowRemove}
+        setShow={setIsShowRemove}
+      />
+
+      <PopUpConfirmation
+        sentence={`Le médicament ${nameMedecineToDisplay} a bien été ajouter.`}
+        show={isShowAdd}
+        setShow={setIsShowAdd}
       />
     </div>
   )

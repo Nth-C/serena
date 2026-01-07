@@ -1,6 +1,6 @@
 import styles from './PopUpDelete.module.css';
 
-function PopUpDelete({toDelete, handleDelete, isOpen, onClose, showConfirmation}) {
+function PopUpDelete({toDelete, handleDelete, isOpen, onClose, showConfirmation /*pas obligatoire*/}) {
     return (
         <div className={[
             styles.container_pop_up_delete,
