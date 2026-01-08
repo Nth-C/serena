@@ -122,7 +122,7 @@ function Medecine() {
 
     const nouveauMedoc = {
       name: nameMedecine,
-      /*type: typeMedecine,*/
+      type: typeMedecine,
       stock: currentStock,
       stockTotal: initialStock
     }
