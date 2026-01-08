@@ -96,7 +96,6 @@ function LastVisitReport() {
             rapports.map((rapport) => (
               <div className="report_case" key={rapport.id_rapport}>
                 <div>
-                  {/* auteur est récupéré via la jointure SQL dans le DAO */}
                   <h2>Rapport de {rapport.auteur || "Auteur inconnu"}</h2>
                   <p>{new Date(rapport.date).toLocaleDateString('fr-FR', {
                     day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'

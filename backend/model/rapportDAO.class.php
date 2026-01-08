@@ -9,7 +9,6 @@ class RapportDAO {
     }
 
     public function getAllRapports($id_famille): array {
-        // Ajout de ORDER BY date DESC pour voir le nouveau rapport en haut de liste
         $query = 'SELECT * FROM RAPPORTS WHERE id_famille = :id_famille ORDER BY date DESC';
         $stmt = $this->dal->prepare($query);
         $stmt->execute(['id_famille' => $id_famille]);
@@ -22,15 +21,16 @@ class RapportDAO {
         return $rapports;
     }
 
-    public function addRapport($id_famille, $id_personne, $description): bool {
-        $query = 'INSERT INTO RAPPORTS (description, date, id_famille, id_personne) 
-                  VALUES (:description, now(), :id_famille, :id_personne)';
+    public function addRapport($id_famille, $id_personne, $description, $nom): bool {
+        $query = 'INSERT INTO RAPPORTS (description, date, id_famille, id_personne, nom) 
+                  VALUES (:description, now(), :id_famille, :id_personne, :nom)';
         $stmt = $this->dal->prepare($query);
 
         return $stmt->execute([
             'description' => $description, 
             'id_famille' => $id_famille, 
-            'id_personne' => $id_personne
+            'id_personne' => $id_personne,
+            'nom' => $nom
         ]);
     }
 
