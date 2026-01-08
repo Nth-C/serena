@@ -53,7 +53,7 @@ img {
 }
 
 .breadcrumb {
-  padding: 10rem 3rem 0 3rem;
+  padding: 10rem 3rem 0.5rem 3rem;
   text-decoration: underline;
 }
 
@@ -421,7 +421,7 @@ button.creer_suivi, .acce_suivi .form-actions {
 
 .contener_report,
 .popup_report_add_medicament {
-  padding: 0.5rem 3rem;
+  padding: 0 3rem;
 }
 
 .contener_report h1 {
@@ -429,24 +429,28 @@ button.creer_suivi, .acce_suivi .form-actions {
 }
 
 .search_report,
-.report_case {
+.report_case,
+.search_document {
   display: flex;
   justify-content: space-between;
 }
 
 
-.search_report {
+.search_report, 
+.search_document {
   gap: 20px;
   padding: 1rem 0 3rem;
 }
 
-.search_report div {
+.search_report div,
+.search_document div {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
 }
 
-.search_report p {
+.search_report p,
+.search_document p {
   text-wrap: nowrap;
 }
 
@@ -457,6 +461,12 @@ button.creer_suivi, .acce_suivi .form-actions {
   color: var(--white);
   padding: 1rem;
   cursor: pointer;
+}
+
+.liste_report {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .report_case img {
@@ -615,6 +625,32 @@ progress::-moz-progress-bar {
   flex-direction: row;
   justify-content: end;
   gap: 1.7rem;
+}
+
+/* ----------------------------- */
+/* ------- FILE EXPLORER ------- */
+/* ----------------------------- */
+
+.search_container {
+  padding: 0.5rem 3rem;
+}
+
+.search_document {
+  margin: 0 auto 0 auto;
+}
+
+.search_document p {
+  color: var(--blue);
+}
+
+.search_document div,
+.search_report div {
+  cursor: pointer;
+}
+
+.search_document svg {
+  fill: var(--blue);
+  width: 20px;
 }
 
 /* ----------------------------- */

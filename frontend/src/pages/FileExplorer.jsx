@@ -2,15 +2,15 @@ import { useEffect, useState } from 'react'
 import Slide from '../components/slide/Slide';
 
 function FileExplorer() {
-  const [listDocument , setListDocument] = useState([])
-  const [activeInList , setActiveInList] = useState(null)
+  const [listDocument, setListDocument] = useState([])
+  const [activeInList, setActiveInList] = useState(null)
 
   const [isNewDocumentOpen, setIsNewDocumentOpen] = useState(false) // page
-  const [nameDocument , setNameDocument] = useState("")
-  const [emplacementDocument , setEmplacementDocument] = useState("")
+  const [nameDocument, setNameDocument] = useState("")
+  const [emplacementDocument, setEmplacementDocument] = useState("")
 
   const [isNewCategorieOpen, setIsNewCategorieOpen] = useState(false) // page
-  const [nameCategorie , setNameCategorie] = useState("")
+  const [nameCategorie, setNameCategorie] = useState("")
 
 
   const [message, setMessage] = useState('');
@@ -26,14 +26,14 @@ function FileExplorer() {
   }
 
   const apiUrl = import.meta.env.VITE_API_URL;
-  
+
   const handleAddDocument = async (e) => {
     e.preventDefault()
 
     const nouveauDocument = {
       name: nameDocument,
       id_categorie: emplacementDocument
-      }
+    }
 
     try {
       const response = await fetch(`${apiUrl}/?route=document/add`, {
@@ -72,7 +72,7 @@ function FileExplorer() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nouvelleCategorie)
       });
-      
+
       const result = await response.json();
 
       if (result.success) {
@@ -89,15 +89,15 @@ function FileExplorer() {
     }
   };
 
-  
+
 
 
   const getDocument = async () => {
-      fetch(`${apiUrl}/?route=document/list`)
-        .then((response) => {
-          return response.json() // recupere les données$
-        })
-        .then((data) => {
+    fetch(`${apiUrl}/?route=document/list`)
+      .then((response) => {
+        return response.json() // recupere les données$
+      })
+      .then((data) => {
         // on verifie si data est un tableau
         if (Array.isArray(data)) {
           setListDocument(data);
@@ -121,26 +121,29 @@ function FileExplorer() {
 
 
   useEffect(() => {
-  getDocument();
-}, []); 
+    getDocument();
+  }, []);
 
 
 
   return (
     <div className="file_explorer">
       <h1>Explorateur</h1>
-      
-      {/* 2. Liaison de l'input avec l'état */}
-      <input 
-        type="text" 
-        placeholder="Rechercher un fichier..."
-        value={searchText} 
-        onChange={(e) => setSearchText(e.target.value)} 
-        required 
-      />
 
-      <button className="btn_add_report" onClick={toggleNewDocument}> test<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" /></svg></button>
-      <button className="btn_add_report" onClick={toggleNewCategorie}> test<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" /></svg></button>
+      <div className="search_container">
+        <div className="search_document">
+          <input type="search" placeholder="Rechercher un fichier..." value={searchText} onChange={(e) => setSearchText(e.target.value)} required />
+          <div onClick={toggleNewCategorie}>
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M440-280h80v-160h160v-80H520v-160h-80v160H280v80h160v160Zm40 200q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" /></svg>
+            <p>Nouvelle catégorie</p>
+          </div>
+        </div>
+      </div>
+
+      <button className="btn_add" onClick={toggleNewDocument}>
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" /></svg>
+      </button>
+
 
 
 
@@ -167,7 +170,7 @@ function FileExplorer() {
                     </div>
                   </div>
                 </div>
-        ))}
+              ))}
             </div>
           </div>
         ))}
@@ -180,22 +183,22 @@ function FileExplorer() {
 
             <label>Emplacement : </label>
             <select value={emplacementDocument} onChange={(e) => setEmplacementDocument(e.target.value)} required>
-            <option value=""></option>
-            {listDocument.map((cat) => (
-              <option key={cat.id_cat} value={cat.id_cat}>
-              {cat.nom}
-              </option>
-            ))}
+              <option value=""></option>
+              {listDocument.map((cat) => (
+                <option key={cat.id_cat} value={cat.id_cat}>
+                  {cat.nom}
+                </option>
+              ))}
             </select>
 
           </div>
           <div>
             <label>Nom du document : </label>
-            <input 
-              type="text" 
-              value={nameDocument} 
-              onChange={(e) => setNameDocument(e.target.value)} 
-              required 
+            <input
+              type="text"
+              value={nameDocument}
+              onChange={(e) => setNameDocument(e.target.value)}
+              required
             />
           </div>
           <div>
@@ -211,11 +214,11 @@ function FileExplorer() {
         <form className="new_categorie" onSubmit={handleAddCategorie}>
           <div>
             <label>Nom du répertoire : </label>
-            <input 
-              type="text" 
-              value={nameCategorie} 
-              onChange={(e) => setNameCategorie(e.target.value)} 
-              required 
+            <input
+              type="text"
+              value={nameCategorie}
+              onChange={(e) => setNameCategorie(e.target.value)}
+              required
             />
           </div>
           <div>
@@ -225,7 +228,7 @@ function FileExplorer() {
         </form>
       </Slide>
 
-      
+
     </div>
   )
 }
