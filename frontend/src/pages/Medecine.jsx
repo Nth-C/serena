@@ -114,12 +114,34 @@ function Medecine() {
     }
   }
 
+  const handleUpdateMedecine = async (quantiteAjoutee) => {
+    try {
+        const response = await fetch(`${apiUrl}/?route=medicament/update`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            // On envoie l'ID du médicament actuel et la quantité
+            body: JSON.stringify({ 
+                id_medicament: activeInList, 
+                nouveauStock: quantiteAjoutee 
+            }),
+        });
+        const data = await response.json();
+        if (data.success) {
+            getMedecine(); // On rafraîchit la liste
+            toggleAddStock(); // On ferme la popup
+        }
+    } catch (err) {
+        console.error("Erreur mise à jour stock:", err);
+    }
+};
+
   const handleAddMedecine = async (e) => {
     e.preventDefault()
 
     const nouveauMedoc = {
       name: nameMedecine,
-      /*type: typeMedecine,*/
+      type: typeMedecine,
       stock: currentStock,
       stockTotal: initialStock
     }

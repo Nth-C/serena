@@ -19,7 +19,7 @@ try {
         throw new Exception("Données manquantes (name ou stock).");
     }
     
-    $success = $model->addMedecine($id_famille,$data['name'], $data['stock'], $data['stockTotal']);
+    $success = $model->addMedecine($id_famille,$data['name'], $data['stock'], $data['stockTotal'], $data['type']);
 
     // renvoie a la vue des informations
     echo json_encode([

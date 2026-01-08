@@ -36,16 +36,41 @@ class MedicamentDAO {
         return $medicaments;
     }
 
-    // A MODIFIER PAS ENCORE FONCTIONNELL
-    public function addMedecine($id_famille,$name, $stock, $stockTotal): bool {
-        if($stockTotal < $stock){
-            $stockTotal = $stock;
-        }
-        $query = 'INSERT INTO STOCK_MEDICS (designation_med, quantite,id_famille, total) VALUES (:name, :stock, :id_famille, :stockTotal)';
-        $stmt = $this->dal->prepare($query);
-
-        return $stmt->execute(['name' => $name, 'stock' => $stock, 'id_famille' => $id_famille, 'stockTotal' => $stockTotal]);
+    public function addMedecine($id_famille, $name, $stock, $stockTotal, $type): bool {
+    // Sécurité : Si le total est inférieur au stock actuel, on l'aligne
+    if ($stockTotal < $stock) {
+        $stockTotal = $stock;
     }
+
+    $query = 'INSERT INTO STOCK_MEDICS (designation_med, quantite, id_famille, total, type) 
+              VALUES (:name, :stock, :id_famille, :stockTotal, :type)';
+    
+    $stmt = $this->dal->prepare($query);
+
+    return $stmt->execute([
+        'name'       => $name,
+        'stock'      => (int)$stock,      // On force le type entier
+        'id_famille' => (int)$id_famille,
+        'stockTotal' => (int)$stockTotal,
+        'type'       => (string)$type     // On force le type string
+    ]);
+}
+
+    public function updateMedecine($id_famille, $nouveauStock, $id_medicament): bool {
+    // La requête cible le médicament précis au sein d'une famille précise
+    $query = 'UPDATE STOCK_MEDICS 
+              SET quantite = :stock 
+              WHERE id_medicament = :id_med 
+              AND id_famille = :id_famille';
+    
+    $stmt = $this->dal->prepare($query);
+
+    return $stmt->execute([
+        'stock'      => $nouveauStock,
+        'id_med'     => $id_medicament,
+        'id_famille' => $id_famille
+    ]);
+}
 
     public function addSameMedecine($id_famille,$id_medicament, $stockAAjouter): bool {
     $query = 'UPDATE STOCK_MEDICS 
