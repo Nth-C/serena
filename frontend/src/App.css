@@ -556,12 +556,12 @@ button.add_medi {
 
 .medecine .container_medecine {
   position: relative;
-  border-width: 1px 0 0 0; 
+  border-width: 0 0 1px 0; 
   border-color: var(--gray);
   border-style: solid;
 }
 
-.medecine .container_medecine:last-child {
+.medecine .container_medecine:first-child {
   border-width: 1px 0 1px 0; 
 }
 

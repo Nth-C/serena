@@ -28,7 +28,6 @@ function Medecine() {
 
   // ajout stock
   const [isAddStockOpen , setIsAddStockOpen] = useState(false) // page
-  const [addStock , setAddStock] = useState("")
 
   // popup suppression
   const [isPopUpDeleteOpen , setIsPopUpDeleteOpen] = useState(false) // page
@@ -50,19 +49,19 @@ function Medecine() {
   }
 
   const handleEditMedecine = (med) => {
-    // 1. On passe en mode édition
+    // On passe en mode édition
     setIsEditing(true);
     
-    // 2. On pré-remplit les inputs avec les données du médicament
+    // pré-remplit les inputs avec les données du médicament
     setNameMedecine(med.nomMedicament);
     setTypeMedecine(med.type);
     setInitialStock(med.stockTotal);
     setCurrentStock(med.stock);
     
-    // 3. On stocke l'ID pour savoir lequel modifier plus tard
+    // stocke l'id pour savoir lequel modifier plus tard
     setIdCurrentMedecine(med.id_medicament);
     
-    // 4. On ouvre le slide
+    // ouvrir le slide
     setIsNewMedecineOpen(true);
 };
 
@@ -114,29 +113,8 @@ function Medecine() {
     }
   }
 
-  const handleUpdateMedecine = async (quantiteAjoutee) => {
-    try {
-        const response = await fetch(`${apiUrl}/?route=medicament/update`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            // On envoie l'ID du médicament actuel et la quantité
-            body: JSON.stringify({ 
-                id_medicament: activeInList, 
-                nouveauStock: quantiteAjoutee 
-            }),
-        });
-        const data = await response.json();
-        if (data.success) {
-            getMedecine(); // On rafraîchit la liste
-            toggleAddStock(); // On ferme la popup
-        }
-    } catch (err) {
-        console.error("Erreur mise à jour stock:", err);
-    }
-};
-
-  const handleAddMedecine = async (e) => {
+  // handler ajoute / modifier médicament
+  const handleMedecine = async (e) => {
     e.preventDefault()
 
     const nouveauMedoc = {
@@ -147,14 +125,20 @@ function Medecine() {
     }
 
     const route = isEditing ? 'medicament/update' : 'medicament/add';
-    console.log(route)
 
     try {
       const response = await fetch(`${apiUrl}/?route=${route}`, {
         method: "POST",
         credentials: 'include',
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(nouveauMedoc)
+        body: JSON.stringify(
+          !isEditing 
+          ? nouveauMedoc
+          : {  
+            id_medicament: activeInList, 
+            nouveauStock: currentStock
+          }
+        )
       });
 
       const result = await response.json();
@@ -204,9 +188,11 @@ function Medecine() {
       <h1>Liste médicaments</h1>
       <div className="list">
           {loading ? (
+            
             <p>Chargement des médicaments...</p>
           ) : listMedecine.length > 0 ? (
-            listMedecine.map((med) => (
+            <>
+            {listMedecine.map((med) => (
               <div key={med.id_medicament} className="container_medecine">
                 <div className="principal_infos" onClick={() => {
                   setActiveInList(med.id_medicament)
@@ -241,13 +227,13 @@ function Medecine() {
                   </div>
                 </div>
               </div>
-            ))
+            ))}
+            <p className='end_list' >Aucun autre médicament</p>
+            </>
           ) : (
-            <p className="aucun">Aucun médicaments pour cette famille.</p>
+            <p className="aucun">Aucun médicaments.</p>
           )}
       </div>
-
-      <p className='end_list' >Aucun autre médicament</p>
 
       <button className="btn_add" onClick={toggleNewMedecine}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg></button>;
 
@@ -256,7 +242,7 @@ function Medecine() {
         isOpen={isNewMedecineOpen}
         toggleOpen={toggleNewMedecine}
         >
-        <form className="new_medecine" onSubmit={handleAddMedecine}>
+        <form className="new_medecine" onSubmit={handleMedecine}>
           <div>
             <label>Nom du médicament : </label>
             <input
@@ -264,6 +250,7 @@ function Medecine() {
               value={nameMedecine}
               onChange={(e) => setNameMedecine(e.target.value)}
               required
+              disabled={isEditing} // on ne peut pas modifier l'input si on modifie un medicament
             />
           </div>
           <div>
@@ -273,6 +260,7 @@ function Medecine() {
               onChange={(e) => setTypeMedecine(e.target.value)} 
               name="type_medecine"
               required
+              disabled={isEditing} // on ne peut pas modifier l'input si on modifie un medicament
             >
               <option value="" disabled>-- Choisir un type --</option>
               
@@ -290,6 +278,7 @@ function Medecine() {
               value={initialStock}
               onChange={(e) => setInitialStock(e.target.value)}
               required
+              disabled={isEditing} // on ne peut pas modifier l'input si on modifie un medicament
             />
           </div>
           <div>
