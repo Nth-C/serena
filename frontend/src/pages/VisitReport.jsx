@@ -231,32 +231,34 @@ function LastVisitReport() {
 
       {/* Slide détailes des Rapport */}
       <Slide title={"Nom du rapport"} isOpen={isDetailsReportOpen} toggleOpen={toggleDetailsReport} zIndex={500}>
-        <div>
-          <p>fait part : </p>
-          <p>Le : </p>
-          <p>A : </p>
-        </div>
-        <div>
-          <h2>Médicament pris : </h2>
-          <ul>
-            <li>1 doliprane</li>
-            <li>3 xanax</li>
-          </ul>
-        </div>
-        <div>
-          <h2>Informations supplémentaire : </h2>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-            sed do eiusmod tempor incididunt ut labore et dolore
-            magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo
-            consequat. Duis aute irure dolor in reprehenderit in
-            voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-            Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.</p>
-        </div>
-        <div>
-          <button className="btn_red">Supprimer</button>
-          <button className="btn_blue">Modifier</button>
+        <div className="details_report">
+          <div>
+            <p>fait part : </p>
+            <p>Le : </p>
+            <p>A : </p>
+          </div>
+          <div className="list-medic">
+            <h2>Médicament pris : </h2>
+            <ul>
+              <li>1 doliprane</li>
+              <li>3 xanax</li>
+            </ul>
+          </div>
+          <div>
+            <h2>Informations supplémentaire : </h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+              sed do eiusmod tempor incididunt ut labore et dolore
+              magna aliqua. Ut enim ad minim veniam, quis nostrud
+              exercitation ullamco laboris nisi ut aliquip ex ea commodo
+              consequat. Duis aute irure dolor in reprehenderit in
+              voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+              Excepteur sint occaecat cupidatat non proident, sunt in
+              culpa qui officia deserunt mollit anim id est laborum.</p>
+          </div>
+          <div>
+            <button className="btn_red">Supprimer</button>
+            <button className="btn_blue">Modifier</button>
+          </div>
         </div>
       </Slide>
     </div>

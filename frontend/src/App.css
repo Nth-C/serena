@@ -546,6 +546,32 @@ button.add_medi {
   cursor: pointer;
 }
 
+.details_report {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.details_report .list-medic li{
+  list-style: inside;
+}
+
+.details_report h2 {
+  padding-bottom: 2%;
+}
+
+.details_report div:last-child {
+  display: flex;
+  gap: 20px;
+  justify-content: end;
+}
+
+.details_report div:nth-child(3) p,
+.details_report li{
+  padding-left: 2%;
+  text-align: justify;
+}
+
 /* -------------------------------- */
 /* ----------- Medecine ----------- */
 /* -------------------------------- */
