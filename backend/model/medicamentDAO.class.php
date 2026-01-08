@@ -36,7 +36,6 @@ class MedicamentDAO {
         return $medicaments;
     }
 
-    // A MODIFIER PAS ENCORE FONCTIONNELL
     public function addMedecine($id_famille,$name, $stock, $stockTotal): bool {
         if($stockTotal < $stock){
             $stockTotal = $stock;
@@ -46,6 +45,22 @@ class MedicamentDAO {
 
         return $stmt->execute(['name' => $name, 'stock' => $stock, 'id_famille' => $id_famille, 'stockTotal' => $stockTotal]);
     }
+
+    public function updateMedecine($id_famille, $nouveauStock, $id_medicament): bool {
+    // La requête cible le médicament précis au sein d'une famille précise
+    $query = 'UPDATE STOCK_MEDICS 
+              SET quantite = :stock 
+              WHERE id_medicament = :id_med 
+              AND id_famille = :id_famille';
+    
+    $stmt = $this->dal->prepare($query);
+
+    return $stmt->execute([
+        'stock'      => $nouveauStock,
+        'id_med'     => $id_medicament,
+        'id_famille' => $id_famille
+    ]);
+}
 
     public function addSameMedecine($id_famille,$id_medicament, $stockAAjouter): bool {
     $query = 'UPDATE STOCK_MEDICS 

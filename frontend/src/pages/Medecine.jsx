@@ -95,6 +95,28 @@ function Medecine() {
     }
   }
 
+  const handleUpdateMedecine = async (quantiteAjoutee) => {
+    try {
+        const response = await fetch(`${apiUrl}/?route=medicament/update`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            // On envoie l'ID du médicament actuel et la quantité
+            body: JSON.stringify({ 
+                id_medicament: activeInList, 
+                nouveauStock: quantiteAjoutee 
+            }),
+        });
+        const data = await response.json();
+        if (data.success) {
+            getMedecine(); // On rafraîchit la liste
+            toggleAddStock(); // On ferme la popup
+        }
+    } catch (err) {
+        console.error("Erreur mise à jour stock:", err);
+    }
+};
+
   const handleAddMedecine = async (e) => {
     e.preventDefault()
 
@@ -190,7 +212,7 @@ function Medecine() {
                     }}>Supprimer</button>
                     <button className="btn_blue" onClick={() => {
                       toggleAddStock()
-                    }}>Ajouter stock</button>
+                    }}>Modifier stock</button>
                   </div>
                 </div>
               </div>
@@ -255,7 +277,7 @@ function Medecine() {
             />
           </div>
           <div>
-            <button type="reset" className="btn_border" onClick={handleResetForm}>Reinistialiser</button>
+            <button type="reset" className="btn_border" onClick={handleResetForm}>Réinitialiser</button>
             <button type="submit" className="btn_blue">Ajouter</button>
           </div>
         </form>
@@ -266,6 +288,7 @@ function Medecine() {
         nameMedecine={nameCurrentMedecine}
         isOpen={isAddStockOpen}
         toggleOpen={toggleAddStock}
+        onConfirm={handleUpdateMedecine}
       />
 
       <PopUpDelete
