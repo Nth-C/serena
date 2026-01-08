@@ -21,7 +21,6 @@ function FamilleItem({ famille, onModifier, onAcceder, isOpen, onToggle }) {
                         >
                             Modifier
                         </button>
-                        {/* Utilisation de la prop onAcceder passée par le parent */}
                         <button 
                             className="btn_blue" 
                             onClick={(e) => {
@@ -54,11 +53,10 @@ function AcceSuivi() {
     const [isNewSuiviOpen, setIsNewSuiviOpen] = useState(false);
     const [isModifSuiviOpen, setIsModifSuiviOpen] = useState(false);
 
-    // Chargement des familles de l'utilisateur
     const fetchFamilles = async () => {
         try {
             const response = await fetch(`${apiUrl}/?route=famille/all`, {
-                credentials: 'include' // Indispensable pour la session PHP
+                credentials: 'include' 
             });
             const data = await response.json();
             setFamilles(Array.isArray(data) ? data : []);
@@ -90,6 +88,8 @@ function AcceSuivi() {
             });
             const data = await response.json();
             if (data.success) {
+                localStorage.setItem('id_famille_active', id_famille);
+                
                 window.location.href = '/home/dashboard';
             }
         } catch (error) {
