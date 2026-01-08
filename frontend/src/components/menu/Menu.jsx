@@ -32,7 +32,7 @@ function Menu({isOpen , onHamburgerClick}) {
                             <span></span>
                         </button>
                         <p>Paramètre</p> 
-                        <img src="" alt="" />
+                        <img src="/img/logo.svg" alt="" />
                     </div>
                     <span className={styles.border}></span>
                 </div>
