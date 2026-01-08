@@ -25,7 +25,7 @@ class App
             $this->personne = null;
         }
 
-        $this->id_famille = $_SESSION['id_famille_active'] ?? 1;
+        $this->id_famille = $_SESSION['id_famille_active'] ?? 0;
 
         $this->planning = new Planning();
     }
@@ -48,8 +48,8 @@ class App
     {
         $this->connected = true;
         $this->personne = $personne;
-        $_SESSION['connected'] = true;       // INDISPENSABLE
-        $_SESSION['username'] = $personne->username; // INDISPENSABLE
+        $_SESSION['connected'] = true;      
+        $_SESSION['username'] = $personne->username; 
         $_SESSION['user_id'] = $personne->id;
     }
 
@@ -58,7 +58,8 @@ class App
     {
         $this->connected = false;
         $this->personne = null;
-        $this->id_famille = 0;
+        // Supprime carrément la variable au lieu de mettre 0
+        unset($_SESSION['id_famille_active']); 
         session_destroy();
     }
 
