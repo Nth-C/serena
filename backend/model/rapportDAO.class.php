@@ -1,5 +1,7 @@
 <?php
 require_once(__DIR__ . '/rapport.class.php');
+require_once(__DIR__ . '/dal.class.php');
+
 
 class RapportDAO {
     private DAL $dal;
@@ -8,29 +10,31 @@ class RapportDAO {
         $this->dal = DAL::get();
     }
 
+
     public function getAllRapports($id_famille): array {
-        // Ajout de ORDER BY date DESC pour voir le nouveau rapport en haut de liste
-        $query = 'SELECT * FROM RAPPORTS WHERE id_famille = :id_famille ORDER BY date DESC';
+        $query = 'SELECT r.*, p.prenom as auteur 
+                FROM RAPPORTS r 
+                JOIN PERSONNES p ON r.id_personne = p.id_personne
+                WHERE r.id_famille = :id_famille 
+                ORDER BY r.date DESC';
+        
         $stmt = $this->dal->prepare($query);
         $stmt->execute(['id_famille' => $id_famille]);
         $data = $stmt->fetchAll();
-
-        $rapports = [];
-        foreach($data as $rapport){
-             $rapports[] = new Rapport($rapport);
-        }
-        return $rapports;
+        return $data; 
     }
 
-    public function addRapport($id_famille, $id_personne, $description): bool {
-        $query = 'INSERT INTO RAPPORTS (description, date, id_famille, id_personne) 
-                  VALUES (:description, now(), :id_famille, :id_personne)';
+    public function addRapport($id_famille, $id_personne, $description, $nom): bool {$query = 
+        'INSERT INTO RAPPORTS (nom, description, date, heure, id_famille, id_personne) 
+        VALUES (:nom, :description, CURRENT_DATE, CURRENT_TIME, :id_famille, :id_personne)';
+
         $stmt = $this->dal->prepare($query);
 
         return $stmt->execute([
             'description' => $description, 
             'id_famille' => $id_famille, 
-            'id_personne' => $id_personne
+            'id_personne' => $id_personne,
+            'nom' => $nom
         ]);
     }
 
