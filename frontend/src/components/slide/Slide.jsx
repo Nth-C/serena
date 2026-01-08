@@ -15,7 +15,6 @@ function Slide({children, title, isOpen, toggleOpen, zIndex = 500, validOnHeader
 
 
   return createPortal(
-
     <div className={[
       styles.slide,
       isOpen ? styles.active : '', // si isOpen on ajoute la classe active
@@ -39,7 +38,10 @@ function Slide({children, title, isOpen, toggleOpen, zIndex = 500, validOnHeader
               <span></span>
             </button>
             <h1>{title}</h1>
-            <button className={styles.valid_btn} >valider</button>
+            <button className={styles.valid_btn} >
+              <span></span>
+              <span></span>
+            </button>
             </>
           )}
           </div>

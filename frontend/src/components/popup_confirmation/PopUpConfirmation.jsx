@@ -5,8 +5,6 @@ import { useEffect, useState } from 'react'
 function PopUpConfirmation({sentence, show, setShow}) {
 
     useEffect(() => {
-        console.log(sentence)
-
         if(show) {
             setTimeout(() => {
                 setShow(false)

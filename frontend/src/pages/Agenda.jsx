@@ -83,7 +83,7 @@ function AddEvent() {
         toggleOpen={toggleNewEvent}
         validOnHeader={true}
       >
-        <form className='add_event' onSubmit={handleSubmit}>  
+        <form className='add_event' >  
           <div>
             <button>Événement</button>
             <button>Trajet</button>
