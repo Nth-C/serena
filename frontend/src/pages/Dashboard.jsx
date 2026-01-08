@@ -1,23 +1,24 @@
 import { useEffect, useState } from 'react'
 
-// 👇 On garde uniquement cette déclaration avec { user }
-function Dashboard({ user }) {
+function Dashboard() {
   const [medicaments, setMedicaments] = useState([])
   const [error, setError] = useState(null)
+
   const apiUrl = import.meta.env.VITE_API_URL;
 
   const fetchMedicaments = async () => {
     fetch(`${apiUrl}/?route=medicament/list`)
       .then((response) => {
-        return response.json() 
+        return response.json() // recupere les données$
       })
       .then((data) => {
+      // on verifie si data est un tableau
       if (Array.isArray(data)) {
         setMedicaments(data);
         setError(null);
       } else if (data.error) {
         setError(data.error);
-        setMedicaments([]); 
+        setMedicaments([]); // On remet à vide pour éviter le crash du .map()
       }
     })
     .catch((err) => {
@@ -30,14 +31,16 @@ function Dashboard({ user }) {
   const handleDelete = async (id) => {
     try {
       const response = await fetch(`${apiUrl}/?route=medicament/delete`, {
-        method: "POST", 
-        headers: { "Content-Type": "application/json" }, 
-        body: JSON.stringify({ id: id }) 
+        method: "POST", // pour envoyer des données
+        headers: { "Content-Type": "application/json" }, // type de donnée envoyer
+        body: JSON.stringify({ id: id }) // message a transmettre
       });
 
+      // recupere la reponse du fetch
       const result = await response.json();
 
       if (result.success) {
+        // rafrechir les medicaments
         fetchMedicaments(); 
       } else {
         alert("Erreur: " + result.error);
@@ -48,16 +51,13 @@ function Dashboard({ user }) {
     } 
   }
 
+  // quand la page se lance on affiche les medicaments
   useEffect(() => {
     fetchMedicaments()
   }, []);
 
   return (
     <div className="accueil">
-      {/* C'est ici que le nom s'affichera grâce à la prop user */}
-      <div style={{ marginBottom: '20px', borderBottom: '1px solid #ddd', paddingBottom: '10px' }}>
-      <h2>Bonjour, {(user && user.username ? user.username : user) || 'Invité'} ! 👋</h2>      </div>
-
       <h1>Stock</h1>
 
       {medicaments.length === 0 ? (
@@ -69,7 +69,6 @@ function Dashboard({ user }) {
               <th>ID</th>
               <th>Nom</th>
               <th>Stock</th>
-              <th>Action</th>
             </tr>
           </thead>
           <tbody>

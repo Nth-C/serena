@@ -1,5 +1,4 @@
-import { Routes, Route, Link, useLocation, Navigate, useNavigate } from 'react-router-dom';
-import { useState } from 'react'; // <--- INDISPENSABLE
+import { Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import './App.css'
 
 import Dashboard from './pages/Dashboard';
@@ -17,51 +16,20 @@ import AcceSuivi from './pages/AcceSuivi';
 
 function App() {
   const location = useLocation();
-  const navigate = useNavigate(); // Pour pouvoir rediriger
-
-  // ---------------------------------------------------------
-  // 1. DÉFINITION DE LA VARIABLE USER (C'est ça qui manquait !)
-  // ---------------------------------------------------------
-  const [user, setUser] = useState(() => {
-    // Au démarrage, on regarde si une info est déjà stockée
-    const savedUser = localStorage.getItem('app_user');
-    // Attention : si 'app_user' contient un JSON (objet), il faut le parser, 
-    // sinon si c'est juste du texte, on le prend tel quel.
-    try {
-      return JSON.parse(savedUser);
-    } catch (e) {
-      return savedUser;
-    }
-  });
-
-  // Fonction appelée par Login.jsx quand la connexion réussit
-  const handleLogin = (userData) => {
-    setUser(userData);
-    // On sauvegarde en format texte (ou JSON si c'est un objet)
-    localStorage.setItem('app_user', JSON.stringify(userData));
-    navigate('/acce_suivi'); // Redirection vers le choix du groupe
-  };
-
-  // Fonction pour se déconnecter (optionnel, pour le bouton dans Dashboard)
-  const handleLogout = () => {
-    setUser(null);
-    localStorage.removeItem('app_user');
-    navigate('/login');
-  };
-  // ---------------------------------------------------------
 
   return (
     <>
+      {/* REDIRECTION / */}
       <Routes location={location} key={location.pathname}>
         <Route path="">
-          {/* Si on est connecté, on va au dashboard (ou acce_suivi), sinon login */}
-          <Route index element={<Navigate to={user ? "home/dashboard" : "login"} replace />} />
+          {/* quand on est sur / dans l'url on redirige vers home/dashboard */}
+          <Route index element={<Navigate to="login" replace />} />
         </Route>
+        
         
         {/* SE CONNECTER */}
         <Route path="login" element={
-          /* 👇 IMPORTANT : On passe la fonction au composant Login */
-          <Login onLogin={handleLogin} />
+          <Login />
         }>
         </Route>
 
@@ -71,9 +39,9 @@ function App() {
         }>
         </Route>
 
-        {/* ACCES AU SUIVI DES GROUPES */}
+        {/* ACCE AU SUIVI DES GROUPES */}
         <Route path="acce_suivi" element={
-          <AcceSuivi user={user} />
+          <AcceSuivi />
         }>
         </Route>
 
@@ -86,13 +54,11 @@ function App() {
             ]}
           />
         }>
+          {/* quand on est sur /home dans l'url on redirige vers dashboard */}
           <Route index element={<Navigate to="dashboard" replace />} />
           
-          {/* 👇 C'est ici que 'user' est utilisé et causait l'erreur avant */}
-          <Route path="dashboard" element={
-            <Dashboard user={user} onLogout={handleLogout} />
-          } />
-
+          {/* routes pour les sous partie avec leurs contenu */}
+          <Route path="dashboard" element={<Dashboard />} />
           <Route path="my_day" element={<MyDay />} />
           <Route path="last_visit_report" element={<LastVisitReport  />} />
         </Route>
@@ -110,8 +76,10 @@ function App() {
             ]}/>
           }>
           
+          {/* quand on est sur /suivi dans l'url on redirige vers visit_report */}
           <Route index element={<Navigate to="visit_report" replace />}/>
 
+          {/* routes pour les sous partie avec leurs contenu */}
           <Route path="visit_report" element={<VisitReport />} />
           <Route path="medicine" element={<Medecine />} />
         </Route>
@@ -124,8 +92,10 @@ function App() {
             ]}/>
           }>
           
+          {/* quand on est sur /suivi dans l'url on redirige vers visit_report */}
           <Route index element={<Navigate to="explorateur" replace />}/>
 
+          {/* routes pour les sous partie avec leurs contenu */}
           <Route path="explorateur" element={<FileExplorer />} />
           <Route path="aides" element={<Assistance />} />
         </Route>

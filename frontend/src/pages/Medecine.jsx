@@ -46,26 +46,26 @@ function Medecine() {
   }
 
   const getMedecine = async () => {
-      fetch(`${apiUrl}/?route=medicament/list`)
-        .then((response) => {
-          return response.json() // recupere les données$
-        })
-        .then((data) => {
-        // on verifie si data est un tableau
-        if (Array.isArray(data)) {
-          setListMedecine(data);
-          setError(null);
-        } else if (data.error) {
-          setError(data.error);
-          setListMedecine([]); // On remet à vide pour éviter le crash du .map()
-        }
-      })
-      .catch((err) => {
-        console.error("Erreur de récupération:", err);
-        setError("Impossible de contacter le serveur");
-        setListMedecine([]);
-      });
+  try {
+    const response = await fetch(`${apiUrl}/?route=medicament/list`);
+    const data = await response.json();
+
+    if (data.error) {
+      throw new Error(data.error);
+    }
+
+    // On vérifie si data est un tableau, sinon on met un tableau vide
+    setListMedecine(Array.isArray(data) ? data : []);
+    setError(null);
+  } catch (err) {
+    console.error("Erreur de récupération:", err.message);
+    setError(err.message || "Impossible de contacter le serveur");
+    setListMedecine([]); // Évite le crash du .map() en cas d'erreur
+  } finally {
+    // Si tu as un état de chargement, tu peux le stopper ici
+    // setLoading(false); 
   }
+};
 
   const handleDeleteMedecine = async (id) => {
     try {

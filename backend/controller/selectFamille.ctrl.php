@@ -42,5 +42,6 @@ if ($id_famille_selectionne !== null && $id_famille_selectionne > 0) {
         echo json_encode(['success' => false, 'error' => 'Accès refusé à cette famille']);
     }
 } else {
-    echo json_encode(['success' => false, 'error' => 'ID invalide']);
+    echo json_encode(['success' => false, 'error' => 'ID manquant']);
 }
+exit();
