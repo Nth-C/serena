@@ -387,8 +387,8 @@ button.creer_suivi, .acce_suivi .form-actions {
 .acce_suivi .container_suivi_groupe {
   border-width: 1px 0 0 0; 
   border-color: var(--gray);
-  padding: 0.5rem 3rem;
   border-style: solid;
+  padding: 0.5rem 3rem;
 }
 
 .acce_suivi .container_suivi_groupe:last-child {
@@ -611,10 +611,39 @@ progress::-moz-progress-bar {
 
 /* add medicament */
 
-.medecine .new_medecine > div:last-child {
+.new_medecine > div:last-child {
   flex-direction: row;
   justify-content: end;
   gap: 1.7rem;
+}
+
+/* ------------------------------ */
+/* ----------- Agenda ----------- */
+/* ------------------------------ */
+
+.add_event {
+
+}
+
+.add_event > div:first-child {
+  flex-direction: row;
+  gap: 0;
+}
+
+.add_event > div:first-child button {
+  width: 50%;
+  border-color: var(--gray);
+  border-style: solid;
+  padding: 0.5rem 3rem;
+  cursor: pointer;
+}
+
+.add_event > div:first-child button:first-child {
+  border-width: 1px 0 1px 1px; 
+}
+
+.add_event > div:first-child button:last-child {
+  border-width: 1px 1px 1px 0; 
 }
 
 /* ----------------------------- */
