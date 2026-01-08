@@ -194,6 +194,14 @@ input::placeholder {
   }
 }
 
+.aucun {
+  font-size: var(--font-lg);
+  font-weight: 700;
+  color: var(--gray);
+  text-align: center;
+  margin-top: 2rem;
+}
+
 /* --------------------------------------------------- */
 /* ----------- LOGIN + ACCE SUIVI + CREATE ----------- */
 /* --------------------------------------------------- */
@@ -516,20 +524,16 @@ button.add_medi {
   display: block;
 }
 
+.search_report img {
+  cursor: pointer;
+}
+
 /* -------------------------------- */
 /* ----------- Medecine ----------- */
 /* -------------------------------- */
 
 .medecine {
   position: relative;
-}
-
-.medecine > p {
-  font-size: var(--font-lg);
-  font-weight: 700;
-  color: var(--gray);
-  text-align: center;
-  margin-top: 2rem;
 }
 
 .medecine .container_medecine {

@@ -107,7 +107,7 @@ function LastVisitReport() {
               </div>
             ))
           ) : (
-            <p>Aucun rapport pour cette famille.</p>
+            <p className="aucun">Aucun rapport pour cette famille.</p>
           )}
         </div>
       </div>
