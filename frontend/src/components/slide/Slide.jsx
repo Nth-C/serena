@@ -1,13 +1,10 @@
-import { NavLink } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import styles from './Silde.module.css';
+import { useEffect, useState } from 'react'
+
 
 function Slide({children, title, isOpen, toggleOpen, zIndex = 500}) {
-  return createPortal(
-function Slide({children, title, isOpen, toggleOpen}) {
-
-
-  //supprimer le scroll de la page
+    //supprimer le scroll de la page
   useEffect(() => {  
     if (isOpen) {
         document.documentElement.classList.add('menu-active');
@@ -16,7 +13,9 @@ function Slide({children, title, isOpen, toggleOpen}) {
     }
   }, [isOpen]);
 
-  return (
+
+  return createPortal(
+
     <div className={[
       styles.slide,
       isOpen ? styles.active : '', // si isOpen on ajoute la classe active
