@@ -25,7 +25,7 @@ class App
             $this->personne = null;
         }
 
-        $this->id_famille = $_SESSION['id_famille_active'] ?? 1;
+        $this->id_famille = $_SESSION['id_famille_active'] ?? 0;
 
         $this->planning = new Planning();
     }

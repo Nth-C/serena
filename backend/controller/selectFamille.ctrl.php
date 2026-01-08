@@ -16,7 +16,7 @@ $json = file_get_contents('php://input');
 $data = json_decode($json, true);
 $id_famille = isset($data['id_famille']) ? (int)$data['id_famille'] : null;
 
-if ($id_famille == null) {
+if ($id_famille != null) {
     // Vérification que l'utilisateur appartient bien à cette famille
     $dao = new FamilleDAO();
     $mesFamilles = $dao->findByPersonne((int)$app->personne->id);
@@ -33,5 +33,5 @@ if ($id_famille == null) {
         echo json_encode(['success' => false, 'error' => 'Accès refusé']);
     }
 } else {
-    echo json_encode(['success' => true, 'error' => 'ID manquant']);
+    echo json_encode(['success' => false, 'error' => 'ID manquant']);
 }
