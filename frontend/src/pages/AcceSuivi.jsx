@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react'
 import Slide from '../components/slide/Slide';
 
-/**
- * Composant pour chaque ligne de famille (Accordéon)
- * Ajout de la prop onAcceder pour gérer le clic sur le bouton
- */
 function FamilleItem({ famille, onModifier, onAcceder, isOpen, onToggle }) {
     return (
         <div className={`container_suivi_groupe ${isOpen ? 'open' : ''}`}>
@@ -25,7 +21,6 @@ function FamilleItem({ famille, onModifier, onAcceder, isOpen, onToggle }) {
                         >
                             Modifier
                         </button>
-                        {/* Utilisation de la prop onAcceder passée par le parent */}
                         <button 
                             className="btn_blue" 
                             onClick={(e) => {
@@ -58,11 +53,10 @@ function AcceSuivi() {
     const [isNewSuiviOpen, setIsNewSuiviOpen] = useState(false);
     const [isModifSuiviOpen, setIsModifSuiviOpen] = useState(false);
 
-    // Chargement des familles de l'utilisateur
     const fetchFamilles = async () => {
         try {
             const response = await fetch(`${apiUrl}/?route=famille/all`, {
-                credentials: 'include' // Indispensable pour la session PHP
+                credentials: 'include' 
             });
             const data = await response.json();
             setFamilles(Array.isArray(data) ? data : []);
@@ -86,20 +80,20 @@ function AcceSuivi() {
 
     const handleAcceder = async (id_famille) => {
         try {
-            const response = await fetch(`${apiUrl}/?route=famille/select`, {
+            const response = await fetch(`${apiUrl}/?route=famille/select`, { 
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({ id_famille }),
+                credentials: 'include', 
+                body: JSON.stringify({ id_famille })
             });
-            const result = await response.json();
-            if (result.success) {
-                window.location.href = '/home/'; 
-            } else {
-                alert("Erreur lors de l'accès au groupe : " + result.error);
+            const data = await response.json();
+            if (data.success) {
+                localStorage.setItem('id_famille_active', id_famille);
+                
+                window.location.href = '/home/dashboard';
             }
         } catch (error) {
-            console.error("Erreur de sélection de famille:", error);
+            console.error("Erreur selection famille", error);
         }
     };
 

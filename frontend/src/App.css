@@ -194,6 +194,14 @@ input::placeholder {
   }
 }
 
+.aucun {
+  font-size: var(--font-lg);
+  font-weight: 700;
+  color: var(--gray);
+  text-align: center;
+  margin-top: 2rem;
+}
+
 /* --------------------------------------------------- */
 /* ----------- LOGIN + ACCE SUIVI + CREATE ----------- */
 /* --------------------------------------------------- */
@@ -503,9 +511,9 @@ button.add_medi {
   width: 100%;
   height: 100vh;
   background: var(--white);
-  position: absolute;
+  position: fixed;
+  z-index: 600;
   top: 0;
-  z-index: 999;
 }
 
 .popup_report_add_medicament .search_report div:first-child {
@@ -516,20 +524,16 @@ button.add_medi {
   display: block;
 }
 
+.search_report img {
+  cursor: pointer;
+}
+
 /* -------------------------------- */
 /* ----------- Medecine ----------- */
 /* -------------------------------- */
 
 .medecine {
   position: relative;
-}
-
-.medecine > p {
-  font-size: var(--font-lg);
-  font-weight: 700;
-  color: var(--gray);
-  text-align: center;
-  margin-top: 2rem;
 }
 
 .medecine .container_medecine {

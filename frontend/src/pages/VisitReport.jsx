@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom';
 import Slide from '../components/slide/Slide';
 
 function LastVisitReport() {
@@ -8,6 +9,14 @@ function LastVisitReport() {
   const [isNewRapportOpen, setIsNewRapportOpen] = useState(false);
   const [isNewMedicineOpen, setIsMedicineOpen] = useState(false);
   const [isNewPopupOpen, setIsPopupOpen] = useState(false);
+
+
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -98,7 +107,7 @@ function LastVisitReport() {
               </div>
             ))
           ) : (
-            <p>Aucun rapport pour cette famille.</p>
+            <p className="aucun">Aucun rapport pour cette famille.</p>
           )}
         </div>
       </div>
@@ -110,6 +119,7 @@ function LastVisitReport() {
       </button>
 
       {/* Popup Médicaments */}
+      {mounted && isNewPopupOpen && createPortal(
       <div className={`popup_report_add_medicament ${isNewPopupOpen ? 'popu-medi-active' : ''}`}>
         <div className="search_report">
           <div>
@@ -124,10 +134,12 @@ function LastVisitReport() {
             <div className="drop"><button className="fill">Ajouter</button></div>
           </div>
         </div>
-      </div>
+      </div>,
+      document.body
+      )}
 
       {/* Slide Médicament */}
-      <Slide title={"Ajouter un médicament"} isOpen={isNewMedicineOpen} toggleOpen={toggleNewMedicine}>
+      <Slide title={"Ajouter un médicament"} isOpen={isNewMedicineOpen} toggleOpen={toggleNewMedicine} zIndex={700}>
         <form className="new_medecine">
           <div><label>Nom : </label><input type="text" required /></div>
           <div><label>Type : </label><input type="text" required /></div>
@@ -141,7 +153,7 @@ function LastVisitReport() {
       </Slide>
 
       {/* Slide Rapport */}
-      <Slide title={"Créer un rapport de visite"} isOpen={isNewRapportOpen} toggleOpen={toggleNewRapport}>
+      <Slide title={"Créer un rapport de visite"} isOpen={isNewRapportOpen} toggleOpen={toggleNewRapport} zIndex={500}>
         <form className="add_report" onSubmit={handleSubmitRapport}>
           <div>
             <label>Nom de l'aidé : </label>

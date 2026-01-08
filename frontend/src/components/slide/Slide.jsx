@@ -1,6 +1,9 @@
-import { useEffect, useState } from 'react'
+import { NavLink } from 'react-router-dom';
+import { createPortal } from 'react-dom';
 import styles from './Silde.module.css';
 
+function Slide({children, title, isOpen, toggleOpen, zIndex = 500}) {
+  return createPortal(
 function Slide({children, title, isOpen, toggleOpen}) {
 
 
@@ -17,7 +20,8 @@ function Slide({children, title, isOpen, toggleOpen}) {
     <div className={[
       styles.slide,
       isOpen ? styles.active : '', // si isOpen on ajoute la classe active
-    ].join(' ')}>
+    ].join(' ')}
+    style={{ zIndex: zIndex }}>
 
       <div className={styles.main_container}>
         <div>
@@ -33,7 +37,8 @@ function Slide({children, title, isOpen, toggleOpen}) {
       </div>
 
       <div className={styles.background} onClick={toggleOpen}></div>
-    </div>
+    </div>,
+    document.body
   )
 }
 
