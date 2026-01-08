@@ -28,7 +28,6 @@ class MedicamentDAO {
 
         $stmt->execute(['id_famille' => $id_famille]);
         $data = $stmt->fetchAll();
-
         $medicaments = [];
         foreach($data as $medicament){
              $medicaments[] = new Medicament($medicament);

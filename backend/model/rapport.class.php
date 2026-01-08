@@ -1,6 +1,4 @@
 <?php
-require_once(__DIR__ . '/Personne.class.php');
-require_once(__DIR__ . '/PersonneDAO.class.php');
 
 class Rapport {
     public readonly int $id_rapport;
@@ -8,6 +6,8 @@ class Rapport {
     public ?DateTimeImmutable $date;
     public readonly int $id_famille;
     public readonly int $id_personne;
+    public readonly string $nom;
+    public string $heure;
 
 
 
@@ -15,10 +15,12 @@ class Rapport {
     public function __construct(array $data = array()) {
         
         $this->id_rapport = $data['id_rapport'] ?? -1;
+        $this->nom = $data['nom'] ??'';
         $this->description = $data['description'] ?? '';
         $this->date = $data['date'];
         $this->id_famille = $data['id_famille'];
         $this->id_personne = $data['id_personne'];
+        $this->heure = $data['heure'];
         
     }
 
