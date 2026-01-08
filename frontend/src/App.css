@@ -524,6 +524,10 @@ button.add_medi {
   display: block;
 }
 
+.search_report img {
+  cursor: pointer;
+}
+
 /* -------------------------------- */
 /* ----------- Medecine ----------- */
 /* -------------------------------- */
