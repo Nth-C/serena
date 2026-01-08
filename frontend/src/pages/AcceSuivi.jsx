@@ -37,7 +37,8 @@ function FamilleItem({ famille, onModifier, onAcceder, isOpen, onToggle }) {
     );
 }
 
-function AcceSuivi() {
+// 👇 1. ON RÉCUPÈRE { user } ICI
+function AcceSuivi({ user }) {
     const [message, setMessage] = useState("");
     const apiUrl = import.meta.env.VITE_API_URL;
     const [familles, setFamilles] = useState([]);
@@ -54,8 +55,12 @@ function AcceSuivi() {
     const [isModifSuiviOpen, setIsModifSuiviOpen] = useState(false);
 
     const fetchFamilles = async () => {
+        // Si pas d'utilisateur, on n'appelle pas l'API
+        if (!user) return; 
+
         try {
-            const response = await fetch(`${apiUrl}/?route=famille/all`, {
+            // 👇 2. ON ENVOIE LE USERNAME AU PHP DANS L'URL
+            const response = await fetch(`${apiUrl}/?route=famille/all&username=${user}`, {
                 credentials: 'include' 
             });
             const data = await response.json();
@@ -65,9 +70,10 @@ function AcceSuivi() {
         }
     };
 
+    // 👇 3. ON RECHARGE QUAND 'user' CHANGE
     useEffect(() => {
         fetchFamilles();
-    }, []);
+    }, [user]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -89,7 +95,6 @@ function AcceSuivi() {
             const data = await response.json();
             if (data.success) {
                 localStorage.setItem('id_famille_active', id_famille);
-                
                 window.location.href = '/home/dashboard';
             }
         } catch (error) {
@@ -106,7 +111,8 @@ function AcceSuivi() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
-                body: JSON.stringify(formData),
+                // On ajoute aussi le créateur dans le body si besoin
+                body: JSON.stringify({ ...formData, username: user }),
             });
             const result = await response.json();
 
@@ -171,8 +177,7 @@ function AcceSuivi() {
     return (
         <div className="acce_suivi">
             <img src="/img/logo-name.svg" alt="Logo" />
-            <h1>Accéder au suivi</h1>
-
+            <h1>Accéder au suivi (Utilisateur : {user && user.username ? user.username : user})</h1>
             <div className="list">
                 {familles.length > 0 ? (
                     familles.map((famille) => (
@@ -180,13 +185,13 @@ function AcceSuivi() {
                             key={famille.id_famille}
                             famille={famille}
                             onModifier={handleOpenModif}
-                            onAcceder={handleAcceder} // Transmission de la fonction de sélection
+                            onAcceder={handleAcceder} 
                             isOpen={openFamilleId === famille.id_famille}
                             onToggle={() => toggleFamille(famille.id_famille)}
                         />
                     ))
                 ) : (
-                    <p>Aucun suivi disponible.</p>
+                    <p>Aucun suivi disponible pour {user}.</p>
                 )}
             </div>
 
