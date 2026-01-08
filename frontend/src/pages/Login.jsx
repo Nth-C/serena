@@ -19,12 +19,13 @@ function Login() {
             const response = await fetch(`${apiUrl}/?route=login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include', 
                 body: JSON.stringify({ username : formData.username, mdp : formData.mdp  })
             });
             const data = await response.json();
             if (data.success) {
                 localStorage.setItem('user', JSON.stringify(data.user));
-                window.location.href = 'acce_suivi';
+                window.location.href = '/home/acce_suivi'; 
             } else {
                 setMessage(data.message);
             }
