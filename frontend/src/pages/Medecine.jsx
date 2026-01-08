@@ -36,6 +36,8 @@ function Medecine() {
   // popup confirmation
   const [isShowRemove , setIsShowRemove] = useState(false)
   const [isShowAdd , setIsShowAdd] = useState(false)
+  const [isShowModify , setIsShowModify] = useState(false)
+
   const [nameMedecineToDisplay , setNameMedecineToDisplay] = useState('')
 
   
@@ -87,7 +89,7 @@ function Medecine() {
     // Si tu as un état de chargement, tu peux le stopper ici
     setLoading(false); 
   }
-};
+}
 
   const handleDeleteMedecine = async (id) => {
     try {
@@ -124,6 +126,7 @@ function Medecine() {
       stockTotal: initialStock
     }
 
+    // change le controleur appeler en fonction de (créer / modifier)
     const route = isEditing ? 'medicament/update' : 'medicament/add';
 
     try {
@@ -132,6 +135,7 @@ function Medecine() {
         credentials: 'include',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
+          // change les donné envoyer (créer / modifier)
           !isEditing 
           ? nouveauMedoc
           : {  
@@ -150,7 +154,7 @@ function Medecine() {
         // fermer le slide
         toggleNewMedecine()
         // affiche le message d'ajout
-        setIsShowAdd(true)
+        !isEditing ? setIsShowAdd(true) : setIsShowModify(true)
         setNameMedecineToDisplay(nameMedecine)
       } else {
         setMessage("Erreur: " + result.error);
@@ -170,9 +174,11 @@ function Medecine() {
     setIsNewMedecineOpen(!isNewMedecineOpen);
   }
   
+  /*
   const toggleAddStock = () => {
     setIsAddStockOpen(!isAddStockOpen)
   }
+  */
 
   const togglePopUpDelete = () => {
     setIsPopUpDeleteOpen(!isPopUpDeleteOpen)
@@ -183,12 +189,19 @@ function Medecine() {
     getMedecine()
   }, []);
 
+  // change les couleur des progress bar
+  const calcProgressBar = (totalStock, currentStock) => {
+    if(totalStock > 0) {
+      return ((currentStock / totalStock) * 100).toFixed(0)
+    }
+    return 0
+  }
+
   return (
     <div className="medecine">
       <h1>Liste médicaments</h1>
       <div className="list">
           {loading ? (
-            
             <p>Chargement des médicaments...</p>
           ) : listMedecine.length > 0 ? (
             <>
@@ -203,8 +216,17 @@ function Medecine() {
                     <p>{med.type}</p>
                   </div>
                   <div>
-                    <progress max="100" value={med.stockTotal > 0 ? (med.stock / med.stockTotal) * 100 : 0}></progress>
-                    {<p>{med.stock}/{med.stockTotal}</p> }
+                    <progress 
+                    // met des class en fonction du pourcentage pour les bar de couleurs
+                    className={
+                        calcProgressBar(med.stockTotal, med.stock) < 33 ? "red_bar" : 
+                        calcProgressBar(med.stockTotal, med.stock) < 66 ? "pink_bar" : 
+                        "blue_bar"
+                      }
+                      max="100"
+                      value={calcProgressBar(med.stockTotal, med.stock)}
+                    ></progress>
+                    <p>{med.stock}/{med.stockTotal}</p>
                   </div>
                 </div>
 
@@ -215,7 +237,6 @@ function Medecine() {
                   {/* <p>{med.description}</p> */}
                   <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Officia odit atque corrupti distinctio velit magnam nulla.</p>
                   <div>
-
                     <button className="btn_red" onClick={() => {
                       setIdCurrentMedecine(med.id_medicament)
                       togglePopUpDelete()
@@ -291,7 +312,7 @@ function Medecine() {
             />
           </div>
           <div>
-            <button type="reset" className="btn_border" onClick={handleResetForm}>Reinistialiser</button>
+            <button type="reset" className="btn_border" onClick={handleResetForm} disabled={isEditing}>Reinistialiser</button>
             <button type="submit" className="btn_blue">{isEditing ? "Modifier" : "Ajouter"}</button>
           </div>
         </form>
@@ -322,6 +343,12 @@ function Medecine() {
         sentence={`Le médicament ${nameMedecineToDisplay} a bien été ajouter.`}
         show={isShowAdd}
         setShow={setIsShowAdd}
+      />
+
+      <PopUpConfirmation
+        sentence={`Le médicament ${nameMedecineToDisplay} a bien été modifier.`}
+        show={isShowModify}
+        setShow={setIsShowModify}
       />
     </div>
   )

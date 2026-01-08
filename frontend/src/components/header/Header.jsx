@@ -27,7 +27,7 @@ function Header({submenu, onHamburgerClick}) {
         </div>
 
         <div className={styles.principal_container}>
-          <img src="/img/logo-name.svg" alt="" />
+          <img src="/img/logo-name.png" alt="" />
         </div>
 
         {user && (

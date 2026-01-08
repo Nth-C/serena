@@ -612,10 +612,24 @@ button.add_medi {
 }
 
 /* La couleur de la barre pour Chrome, Safari et Edge */
-progress::-webkit-progress-value,
-progress::-webkit-progress-bar,
-progress::-moz-progress-bar {
+progress.red_bar::-webkit-progress-value,
+progress.red_bar::-webkit-progress-bar,
+progress.red_bar::-moz-progress-bar {
+  background-color: var(--red);
+  border-radius: 50rem;
+}
+
+progress.pink_bar::-webkit-progress-value,
+progress.pink_bar::-webkit-progress-bar,
+progress.pink_bar::-moz-progress-bar {
   background-color: var(--pink);
+  border-radius: 50rem;
+}
+
+progress.blue_bar::-webkit-progress-value,
+progress.blue_bar::-webkit-progress-bar,
+progress.blue_bar::-moz-progress-bar {
+  background-color: var(--blue);
   border-radius: 50rem;
 }
 
