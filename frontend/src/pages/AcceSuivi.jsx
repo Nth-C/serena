@@ -186,7 +186,7 @@ function AcceSuivi() {
                         />
                     ))
                 ) : (
-                    <p>Aucun suivi disponible.</p>
+                    <p className="aucun">Aucun suivi disponible.</p>
                 )}
             </div>
 
