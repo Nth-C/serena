@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react'
 import Slide from '../components/slide/Slide';
 
-/**
- * Composant pour chaque ligne de famille (Accordéon)
- * Ajout de la prop onAcceder pour gérer le clic sur le bouton
- */
 function FamilleItem({ famille, onModifier, onAcceder, isOpen, onToggle }) {
     return (
         <div className={`container_suivi_groupe ${isOpen ? 'open' : ''}`}>
@@ -86,20 +82,18 @@ function AcceSuivi() {
 
     const handleAcceder = async (id_famille) => {
         try {
-            const response = await fetch(`${apiUrl}/?route=famille/select`, {
+            const response = await fetch(`${apiUrl}/?route=famille/select`, { 
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({ id_famille }),
+                credentials: 'include', 
+                body: JSON.stringify({ id_famille })
             });
-            const result = await response.json();
-            if (result.success) {
-                window.location.href = '/home/'; 
-            } else {
-                alert("Erreur lors de l'accès au groupe : " + result.error);
+            const data = await response.json();
+            if (data.success) {
+                window.location.href = '/home/dashboard';
             }
         } catch (error) {
-            console.error("Erreur de sélection de famille:", error);
+            console.error("Erreur selection famille", error);
         }
     };
 

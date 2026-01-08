@@ -12,8 +12,15 @@ class App
   public function __construct()
   {
     if (session_status() === PHP_SESSION_NONE) { 
+        // Force les réglages pour que le navigateur accepte le cookie sur localhost
+        session_set_cookie_params([
+            'samesite' => 'Lax', 
+            'secure' => false,   // Garder à false si tu n'as pas de HTTPS (localhost)
+            'httponly' => true,
+            'path' => '/'
+        ]);
         session_start(); 
-    }    
+    }  
     $this->connected = $_SESSION['connected'] ?? false;
     $username = $_SESSION['username'] ?? '';
 
