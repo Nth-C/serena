@@ -101,8 +101,15 @@ CREATE TABLE CONSO (
 );
 
 CREATE TABLE CAT_MEDICS (
-    nom_medicament VARCHAR(255) PRIMARY KEY,
-    id_medicament INT REFERENCES STOCK_MEDICS(id_medicament)
+    id_medics SERIAL PRIMARY KEY,
+    code_cis VARCHAR(20),
+    designation_elem_pharma TEXT,
+    code_substance VARCHAR(20),
+    denomination_substance TEXT,
+    dosage_substance VARCHAR(255),
+    reference_dosage VARCHAR(255),
+    nature_composant VARCHAR(100),
+    numero_lien INT
 );
 
 CREATE TABLE TRAJET (

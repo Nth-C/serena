@@ -9,6 +9,7 @@ function LastVisitReport() {
   const [isNewRapportOpen, setIsNewRapportOpen] = useState(false);
   const [isNewMedicineOpen, setIsMedicineOpen] = useState(false);
   const [isNewPopupOpen, setIsPopupOpen] = useState(false);
+  const [isDetailsReportOpen, setIsDetailsReportpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   // ÉTATS POUR LE FORMULAIRE RAPPORT
@@ -31,8 +32,11 @@ function LastVisitReport() {
   const toggleNewRapport = () => setIsNewRapportOpen(!isNewRapportOpen);
   const toggleNewMedicine = () => setIsMedicineOpen(!isNewMedicineOpen);
   const togglePopup = (e) => {
-    if (e) e.preventDefault(); 
+    if (e) e.preventDefault();
     setIsPopupOpen(!isNewPopupOpen);
+  }
+  const toggleDetailsReport = () => {
+    setIsDetailsReportpen(!isDetailsReportOpen)
   }
 
   // FONCTIONS RESET
@@ -43,7 +47,7 @@ function LastVisitReport() {
 
   const handleResetMedecine = () => {
     setNameMedecine("");
-    setTypeMedecine(""); 
+    setTypeMedecine("");
     setInitialStock("");
     setCurrentStock("");
   };
@@ -51,10 +55,10 @@ function LastVisitReport() {
   const fetchRapports = async () => {
     try {
       const response = await fetch(`${apiUrl}/?route=rapport/list`, {
-        credentials: 'include' 
+        credentials: 'include'
       });
       const data = await response.json();
-      
+
       if (data.error) throw new Error(data.error);
       setRapports(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -70,7 +74,7 @@ function LastVisitReport() {
 
   const handleSubmitRapport = async (e) => {
     e.preventDefault();
-    
+
     const bodyData = {
       nom: nomRapport,
       description: descRapport
@@ -87,7 +91,7 @@ function LastVisitReport() {
       if (result.success) {
         setIsNewRapportOpen(false);
         handleResetRapport(); // On vide après succès
-        fetchRapports(); 
+        fetchRapports();
       }
     } catch (err) {
       alert("Erreur lors de l'envoi");
@@ -98,17 +102,19 @@ function LastVisitReport() {
     document.documentElement.classList.toggle('menu-active', isNewRapportOpen || isNewMedicineOpen);
   }, [isNewRapportOpen, isNewMedicineOpen]);
 
+
+
   return (
     <div className="last_visit_report">
       <div className="contener_report">
         <h1>Rapport de visite</h1>
-        
+
         <div className="search_report">
           <input type="search" placeholder="Rechercher un rapport" />
           <div><img src="/icons/sort.svg" alt="" /><p>Trier par</p></div>
         </div>
 
-        <div className="liste_report">
+        <div className="liste_report" onClick={toggleDetailsReport}>
           {loading ? (
             <p>Chargement des rapports...</p>
           ) : rapports.length > 0 ? (
@@ -140,30 +146,30 @@ function LastVisitReport() {
 
       {/* Popup Médicaments */}
       {mounted && isNewPopupOpen && createPortal(
-      <div className={`popup_report_add_medicament ${isNewPopupOpen ? 'popu-medi-active' : ''}`}>
-        <div className="search_report">
-          <div>
-            <img src="/icons/arrow_back.svg" alt="" onClick={() => setIsPopupOpen(false)} />
-            <input type="search" placeholder="Rechercher un rapport" />
-          </div>
+        <div className={`popup_report_add_medicament ${isNewPopupOpen ? 'popu-medi-active' : ''}`}>
+          <div className="search_report">
+            <div>
+              <img src="/icons/arrow_back.svg" alt="" onClick={() => setIsPopupOpen(false)} />
+              <input type="search" placeholder="Rechercher un rapport" />
+            </div>
 
-          <div>
-            <img src="/icons/sort.svg" alt="" />
-            <p>Tier par</p>
-          </div>
-        </div>
-        <button onClick={toggleNewMedicine} className="btn_blue">Ajouter un nouveau médicament dans la liste</button>
-        <div className="list">
-          <div className="container_medecine">
-            <div className="principal_infos"><p>Xanax</p></div>
-            <div className="drop">
-              <p>ddddddddddddddddddddddd</p>
-              <div><button className="fill">Ajouter</button></div>
+            <div>
+              <img src="/icons/sort.svg" alt="" />
+              <p>Tier par</p>
             </div>
           </div>
-        </div>
-      </div>,
-      document.body
+          <button onClick={toggleNewMedicine} className="btn_blue">Ajouter un nouveau médicament dans la liste</button>
+          <div className="list">
+            <div className="container_medecine">
+              <div className="principal_infos"><p>Xanax</p></div>
+              <div className="drop">
+                <p>ddddddddddddddddddddddd</p>
+                <div><button className="fill">Ajouter</button></div>
+              </div>
+            </div>
+          </div>
+        </div>,
+        document.body
       )}
 
       {/* Slide Médicament */}
@@ -197,11 +203,11 @@ function LastVisitReport() {
         <form className="add_report" onSubmit={handleSubmitRapport}>
           <div>
             <label>Nom du rapport : </label>
-            <input 
-              type="text" 
-              value={nomRapport} 
-              onChange={(e) => setNomRapport(e.target.value)} 
-              required 
+            <input
+              type="text"
+              value={nomRapport}
+              onChange={(e) => setNomRapport(e.target.value)}
+              required
             />
           </div>
           <div>
@@ -210,9 +216,9 @@ function LastVisitReport() {
           </div>
           <div>
             <label>Information supplémentaire : </label>
-            <textarea 
-              value={descRapport} 
-              onChange={(e) => setDescRapport(e.target.value)} 
+            <textarea
+              value={descRapport}
+              onChange={(e) => setDescRapport(e.target.value)}
               required
             ></textarea>
           </div>
@@ -221,6 +227,37 @@ function LastVisitReport() {
             <button type="submit" className="btn_blue">Ajouter</button>
           </div>
         </form>
+      </Slide>
+
+      {/* Slide détailes des Rapport */}
+      <Slide title={"Nom du rapport"} isOpen={isDetailsReportOpen} toggleOpen={toggleDetailsReport} zIndex={500}>
+        <div>
+          <p>fait part : </p>
+          <p>Le : </p>
+          <p>A : </p>
+        </div>
+        <div>
+          <h2>Médicament pris : </h2>
+          <ul>
+            <li>1 doliprane</li>
+            <li>3 xanax</li>
+          </ul>
+        </div>
+        <div>
+          <h2>Informations supplémentaire : </h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+            sed do eiusmod tempor incididunt ut labore et dolore
+            magna aliqua. Ut enim ad minim veniam, quis nostrud
+            exercitation ullamco laboris nisi ut aliquip ex ea commodo
+            consequat. Duis aute irure dolor in reprehenderit in
+            voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+            Excepteur sint occaecat cupidatat non proident, sunt in
+            culpa qui officia deserunt mollit anim id est laborum.</p>
+        </div>
+        <div>
+          <button className="btn_red">Supprimer</button>
+          <button className="btn_blue">Modifier</button>
+        </div>
       </Slide>
     </div>
   )
