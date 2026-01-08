@@ -38,6 +38,7 @@ function FileExplorer() {
     try {
       const response = await fetch(`${apiUrl}/?route=document/add`, {
         method: "POST",
+        credentials: 'include',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nouveauDocument)
       });
@@ -69,6 +70,7 @@ function FileExplorer() {
     try {
       const response = await fetch(`${apiUrl}/?route=categorie/add`, {
         method: "POST",
+        credentials: 'include',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nouvelleCategorie)
       });
@@ -93,26 +95,26 @@ function FileExplorer() {
 
 
   const getDocument = async () => {
-    fetch(`${apiUrl}/?route=document/list`)
-      .then((response) => {
-        return response.json() // recupere les données$
-      })
-      .then((data) => {
-        // on verifie si data est un tableau
-        if (Array.isArray(data)) {
-          setListDocument(data);
-          setError(null);
-        } else if (data.error) {
-          setError(data.error);
-          setListDocument([]); // On remet à vide pour éviter le crash du .map()
-        }
-      })
-      .catch((err) => {
-        console.error("Erreur de récupération:", err);
-        setError("Impossible de contacter le serveur");
-        setListDocument([]);
-      });
+  try {
+    const response = await fetch(`${apiUrl}/?route=document/list`, {
+      credentials: 'include' // Indispensable pour que PHP récupère la session (id_famille)
+    });
+    
+    const data = await response.json();
+
+    if (data.error) {
+      throw new Error(data.error);
+    }
+
+    // Mise à jour de l'état avec les documents ou un tableau vide
+    setListDocument(Array.isArray(data) ? data : []);
+    setError(null);
+  } catch (err) {
+    console.error("Erreur de récupération des documents:", err.message);
+    setError(err.message || "Impossible de contacter le serveur");
+    setListDocument([]); // Sécurité pour éviter que le .map() ne plante
   }
+};
 
 
 
