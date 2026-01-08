@@ -20,6 +20,12 @@
     background: var(--white);
     border-radius: 15px 15px 0 0;
     padding: 2.5rem 0 3.5rem 0;
+    
+    /* AJOUTS POUR LE SCROLL */
+    max-height: 90vh;        /* Empêche le slide de dépasser de l'écran */
+    overflow-y: auto;        /* Active le scroll vertical si besoin */
+    display: flex;
+    flex-direction: column;
 }
 
 .slide .main_container > div:first-child {

@@ -1,7 +1,18 @@
-import { NavLink } from 'react-router-dom';
+import { useEffect, useState } from 'react'
 import styles from './Silde.module.css';
 
 function Slide({children, title, isOpen, toggleOpen}) {
+
+
+  //supprimer le scroll de la page
+  useEffect(() => {  
+    if (isOpen) {
+        document.documentElement.classList.add('menu-active');
+    } else {
+        document.documentElement.classList.remove('menu-active');
+    }
+  }, [isOpen]);
+
   return (
     <div className={[
       styles.slide,

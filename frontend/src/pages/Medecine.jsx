@@ -140,29 +140,7 @@ function Medecine() {
     setIsPopUpDeleteOpen(!isPopUpDeleteOpen)
   }
 
-  useEffect(() => {
-    if (isNewMedecineOpen) {
-        document.documentElement.classList.add('menu-active');
-    } else {
-        document.documentElement.classList.remove('menu-active');
-    }
-  }, [isNewMedecineOpen]);
-
-  useEffect(() => {
-    if (isAddStockOpen) {
-        document.documentElement.classList.add('menu-active');
-    } else {
-        document.documentElement.classList.remove('menu-active');
-    }
-  }, [isAddStockOpen]);
-
-  useEffect(() => {
-    if (isPopUpDeleteOpen) {
-        document.documentElement.classList.add('menu-active');
-    } else {
-        document.documentElement.classList.remove('menu-active');
-    }
-  }, [isPopUpDeleteOpen]);
+  
 
   // quand la page se lance on affiche les medicaments
   useEffect(() => {
@@ -214,7 +192,11 @@ function Medecine() {
 
       <button className="btn_add" onClick={toggleNewMedecine}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg></button>;
 
-      <Slide title={"Ajouter un médicament"} isOpen={isNewMedecineOpen} toggleOpen={toggleNewMedecine}>
+      <Slide 
+        title={"Ajouter un médicament"}
+        isOpen={isNewMedecineOpen}
+        toggleOpen={toggleNewMedecine}
+      >
         <form className="new_medecine" onSubmit={handleAddMedecine}>
           <div>
             <label>Nom du médicament : </label>
