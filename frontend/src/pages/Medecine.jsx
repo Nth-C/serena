@@ -47,7 +47,9 @@ function Medecine() {
 
   const getMedecine = async () => {
   try {
-    const response = await fetch(`${apiUrl}/?route=medicament/list`);
+    const response = await fetch(`${apiUrl}/?route=medicament/list`, {
+        credentials: 'include'
+      });
     const data = await response.json();
 
     if (data.error) {
