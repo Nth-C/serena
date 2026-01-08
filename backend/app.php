@@ -4,77 +4,67 @@ require_once(__DIR__ . '/model/personneDAO.class.php');
 
 class App
 {
-  public Planning $planning;
-  public ?Personne $personne;
-  public int $id_famille;
-  public bool $connected; 
+    public Planning $planning;
+    public ?Personne $personne;
+    public int $id_famille; 
+    public bool $connected; 
 
-  public function __construct()
-  {
-    if (session_status() === PHP_SESSION_NONE) { 
-        // Force les réglages pour que le navigateur accepte le cookie sur localhost
-        session_set_cookie_params([
-            'samesite' => 'Lax', 
-            'secure' => false,   // Garder à false si tu n'as pas de HTTPS (localhost)
-            'httponly' => true,
-            'path' => '/'
-        ]);
-        session_start(); 
-    }  
-    $this->connected = $_SESSION['connected'] ?? false;
-    $username = $_SESSION['username'] ?? '';
+    public function __construct()
+    {
+        if (session_status() === PHP_SESSION_NONE) { 
+            session_start(); 
+        }    
 
-    if ($username != '') {
-      $dao = new PersonneDAO();
-      $this->personne = $dao->findByUsername($username);
-    } else {
-      $this->personne = null;
+        $this->connected = $_SESSION['connected'] ?? false;
+        $username = $_SESSION['username'] ?? '';
+
+        if ($username != '') {
+            $dao = new PersonneDAO();
+            $this->personne = $dao->findByUsername($username);
+        } else {
+            $this->personne = null;
+        }
+
+        $this->id_famille = $_SESSION['id_famille_active'] ?? 0;
+
+        $this->planning = new Planning();
     }
 
-    // Récupération de la famille active depuis la session
-    $this->id_famille = $_SESSION['id_famille_active'] ?? 0;
-    $this->planning = new Planning();
-  }
-
-  // CETTE MÉTHODE MANQUAIT ET CAUSAIT L'ERREUR
-  public function setFamilleActive(int $id) {
-    $this->id_famille = $id;
-    $_SESSION['id_famille_active'] = $id;
-  }
-
-  public function __destruct()
-  {
-    if ($this->connected && $this->personne) {
-      $_SESSION['connected'] = true;
-      $_SESSION['username'] = $this->personne->username;
-      $_SESSION['user_id'] = $this->personne->id; 
-      // Conservation de la famille active en fin de script
-      $_SESSION['id_famille_active'] = $this->id_famille;
-    } else {
-      $_SESSION['connected'] = false;
-      $_SESSION['username'] = '';
-      unset($_SESSION['user_id']);
-      unset($_SESSION['id_famille_active']);
+    public function __destruct()
+    {
+        if ($this->connected && $this->personne) {
+            $_SESSION['connected'] = true;
+            $_SESSION['username'] = $this->personne->username;
+            $_SESSION['id_famille_active'] = $this->id_famille;
+        } else {
+            $_SESSION['connected'] = false;
+            $_SESSION['username'] = '';
+            unset($_SESSION['id_famille_active']);
+        }
     }
-  }
 
-  public function login(Personne $personne)
-  {
-    $this->connected = true;
-    if ($personne == null) {
-      throw new Exception("null pointer");
+
+    public function login(Personne $personne)
+    {
+        $this->connected = true;
+        $this->personne = $personne;
+        $_SESSION['connected'] = true;       // INDISPENSABLE
+        $_SESSION['username'] = $personne->username; // INDISPENSABLE
+        $_SESSION['user_id'] = $personne->id;
     }
-    $this->personne = $personne;
-    $_SESSION['user_id'] = $personne->id; 
-    $_SESSION['connected'] = true;
-    $_SESSION['username'] = $personne->username;
-  }
 
-  public function logout()
-  {
-    $this->connected = false;
-    $this->personne = null;
-    $this->id_famille = 0;
-    session_destroy();
-  }
+
+    public function logout()
+    {
+        $this->connected = false;
+        $this->personne = null;
+        $this->id_famille = 0;
+        session_destroy();
+    }
+
+    public function setFamilleActive(int $id_famille)
+    {
+        $this->id_famille = $id_famille;
+        $_SESSION['id_famille_active'] = $id_famille;
+    }
 }

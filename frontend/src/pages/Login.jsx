@@ -25,7 +25,7 @@ function Login() {
             const data = await response.json();
             if (data.success) {
                 localStorage.setItem('user', JSON.stringify(data.user));
-                window.location.href = '/home/acce_suivi'; 
+                window.location.href = '/acce_suivi'; 
             } else {
                 setMessage(data.message);
             }
