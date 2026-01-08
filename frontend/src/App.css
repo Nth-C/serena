@@ -730,6 +730,50 @@ progress.blue_bar::-moz-progress-bar {
   width: 20px;
 }
 
+.file_explorer .list {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.file_explorer .case_categorie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--pink);
+}
+
+.file_explorer .case_categorie div {
+  padding: .5rem 1rem .5rem 1rem;
+}
+
+.file_explorer .case_categorie svg {
+  fill: var(--gray);
+  padding: 2px;
+  border-left: 1px solid var(--gray);
+  cursor: pointer;
+}
+
+.file_explorer .case_document {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .5rem 1rem .5rem 2.5rem;
+  border-bottom: 1px solid var(--gray);
+}
+
+.file_explorer .case_document div:last-child {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.file_explorer .case_document img,
+.file_explorer .case_document svg {
+  width: 20px;
+  cursor: pointer;
+}
+
 /* ----------------------------- */
 /* ----------- FONTS ----------- */
 /* ----------------------------- */
