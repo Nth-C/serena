@@ -73,6 +73,7 @@ function Medecine() {
     try {
       const response = await fetch(`${apiUrl}/?route=medicament/delete`, {
         method: "POST", // pour envoyer des données
+        credentials: 'include',
         headers: { "Content-Type": "application/json" }, // type de donnée envoyer
         body: JSON.stringify({ id: id }) // message a transmettre
       });
@@ -105,6 +106,7 @@ function Medecine() {
     try {
       const response = await fetch(`${apiUrl}/?route=medicament/add`, {
         method: "POST",
+        credentials: 'include',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nouveauMedoc)
       });
