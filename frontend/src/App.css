@@ -78,6 +78,14 @@ a {
   font-size: var(--font-sm);
 }
 
+.end_list {
+  font-size: var(--font-lg);
+  font-weight: 700;
+  color: var(--gray);
+  text-align: center;
+  margin-top: 3rem;
+}
+
 /* style form */
 
 form {

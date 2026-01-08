@@ -6,6 +6,8 @@ import PopUpAddStock from '../components/popup_add_stock/PopUpAddStock'
 
 
 function Medecine() {
+  const [loading, setLoading] = useState(true);
+
   // recuperer les medicaments (les variables sont dans la class medicaments)
   const [listMedecine , setListMedecine] = useState([])
   const [activeInList , setActiveInList] = useState(null)
@@ -65,7 +67,7 @@ function Medecine() {
     setListMedecine([]); // Évite le crash du .map() en cas d'erreur
   } finally {
     // Si tu as un état de chargement, tu peux le stopper ici
-    // setLoading(false); 
+    setLoading(false); 
   }
 };
 
@@ -155,44 +157,50 @@ function Medecine() {
     <div className="medecine">
       <h1>Liste médicaments</h1>
       <div className="list">
-        {listMedecine.map((med) => (
-          <div key={med.id_medicament} className="container_medecine">
-            <div className="principal_infos" onClick={() => {
-              setActiveInList(med.id_medicament)
-              setNameCurrentMedecine(med.nomMedicament)
-            }}>
-              <div>
-                <p>{med.nomMedicament}</p>
-                <p>{med.type}</p>
-              </div>
-              <div>
-                <progress max="100" value={med.stockTotal > 0 ? (med.stock / med.stockTotal) * 100 : 0}></progress>
-                {<p>{med.stock}/{med.stockTotal}</p> }
-              </div>
-            </div>
+          {loading ? (
+            <p>Chargement des médicaments...</p>
+          ) : listMedecine.length > 0 ? (
+            listMedecine.map((med) => (
+              <div key={med.id_medicament} className="container_medecine">
+                <div className="principal_infos" onClick={() => {
+                  setActiveInList(med.id_medicament)
+                  setNameCurrentMedecine(med.nomMedicament)
+                }}>
+                  <div>
+                    <p>{med.nomMedicament}</p>
+                    <p>{med.type}</p>
+                  </div>
+                  <div>
+                    <progress max="100" value={med.stockTotal > 0 ? (med.stock / med.stockTotal) * 100 : 0}></progress>
+                    {<p>{med.stock}/{med.stockTotal}</p> }
+                  </div>
+                </div>
 
-            <div className={[
-              "drop",
-              activeInList === med.id_medicament ? 'active' : '',
-            ].join(' ')}>
-              {/* <p>{med.description}</p> */}
-              <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Officia odit atque corrupti distinctio velit magnam nulla.</p>
-              <div>
+                <div className={[
+                  "drop",
+                  activeInList === med.id_medicament ? 'active' : '',
+                ].join(' ')}>
+                  {/* <p>{med.description}</p> */}
+                  <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Officia odit atque corrupti distinctio velit magnam nulla.</p>
+                  <div>
 
-                <button className="btn_red" onClick={() => {
-                  setIdCurrentMedecine(med.id_medicament)
-                  togglePopUpDelete()
-                }}>Supprimer</button>
-                <button className="btn_blue" onClick={() => {
-                  toggleAddStock()
-                }}>Ajouter stock</button>
+                    <button className="btn_red" onClick={() => {
+                      setIdCurrentMedecine(med.id_medicament)
+                      togglePopUpDelete()
+                    }}>Supprimer</button>
+                    <button className="btn_blue" onClick={() => {
+                      toggleAddStock()
+                    }}>Ajouter stock</button>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
+            ))
+          ) : (
+            <p className="aucun">Aucun médicaments pour cette famille.</p>
+          )}
       </div>
 
-      <p>Aucun autre médicament</p>
+      <p className='end_list' >Aucun autre médicament</p>
 
       <button className="btn_add" onClick={toggleNewMedecine}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg></button>;
 
