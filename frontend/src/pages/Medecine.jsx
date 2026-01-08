@@ -7,6 +7,8 @@ import PopUpAddStock from '../components/popup_add_stock/PopUpAddStock'
 
 function Medecine() {
   const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+
 
   // recuperer les medicaments (les variables sont dans la class medicaments)
   const [listMedecine , setListMedecine] = useState([])
