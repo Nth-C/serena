@@ -47,6 +47,23 @@ function Medecine() {
     setInitialStock("")
   }
 
+  const handleEditMedecine = (med) => {
+    // 1. On passe en mode édition
+    setIsEditing(true);
+    
+    // 2. On pré-remplit les inputs avec les données du médicament
+    setNameMedecine(med.nomMedicament);
+    setTypeMedecine(med.type);
+    setInitialStock(med.stockTotal);
+    setCurrentStock(med.stock);
+    
+    // 3. On stocke l'ID pour savoir lequel modifier plus tard
+    setIdCurrentMedecine(med.id_medicament);
+    
+    // 4. On ouvre le slide
+    setIsNewMedecineOpen(true);
+};
+
   const getMedecine = async () => {
   try {
     const response = await fetch(`${apiUrl}/?route=medicament/list`, {
@@ -105,8 +122,11 @@ function Medecine() {
       stockTotal: initialStock
     }
 
+    const route = isEditing ? 'medicament/update' : 'medicament/add';
+    console.log(route)
+
     try {
-      const response = await fetch(`${apiUrl}/?route=medicament/add`, {
+      const response = await fetch(`${apiUrl}/?route=${route}`, {
         method: "POST",
         credentials: 'include',
         headers: { "Content-Type": "application/json" },
@@ -135,7 +155,11 @@ function Medecine() {
 
   // fonction pour ouvrir/fermer le newMedecine
   const toggleNewMedecine = () => {
-    setIsNewMedecineOpen(!isNewMedecineOpen)
+    if (isEditing) {
+        setIsEditing(false);
+        handleResetForm(); // On vide les champs
+    }
+    setIsNewMedecineOpen(!isNewMedecineOpen);
   }
   
   const toggleAddStock = () => {
@@ -145,8 +169,6 @@ function Medecine() {
   const togglePopUpDelete = () => {
     setIsPopUpDeleteOpen(!isPopUpDeleteOpen)
   }
-
-  
 
   // quand la page se lance on affiche les medicaments
   useEffect(() => {
@@ -189,8 +211,9 @@ function Medecine() {
                       togglePopUpDelete()
                     }}>Supprimer</button>
                     <button className="btn_blue" onClick={() => {
-                      toggleAddStock()
-                    }}>Ajouter stock</button>
+                      /*toggleAddStock()*/
+                      handleEditMedecine(med)
+                    }}>Modifier</button>
                   </div>
                 </div>
               </div>
@@ -205,7 +228,7 @@ function Medecine() {
       <button className="btn_add" onClick={toggleNewMedecine}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg></button>;
 
       <Slide 
-        title={"Ajouter un médicament"}
+        title={isEditing ? "Modifier le médicament" : "Ajouter un médicament"}
         isOpen={isNewMedecineOpen}
         toggleOpen={toggleNewMedecine}
         >
@@ -256,17 +279,17 @@ function Medecine() {
           </div>
           <div>
             <button type="reset" className="btn_border" onClick={handleResetForm}>Reinistialiser</button>
-            <button type="submit" className="btn_blue">Ajouter</button>
+            <button type="submit" className="btn_blue">{isEditing ? "Modifier" : "Ajouter"}</button>
           </div>
         </form>
       </Slide>
 
-      <PopUpAddStock
+      {/* <PopUpAddStock
         // il manque le handler pour ajouter le stock
         nameMedecine={nameCurrentMedecine}
         isOpen={isAddStockOpen}
         toggleOpen={toggleAddStock}
-      />
+      /> */}
 
       <PopUpDelete
         toDelete={nameCurrentMedecine}
