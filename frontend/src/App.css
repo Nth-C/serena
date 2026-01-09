@@ -245,6 +245,12 @@ input::placeholder {
   color: var(--blue);
 }
 
+.bienvenue {
+  text-align: center;
+  padding: 0 !important;
+  color: var(--blue);
+}
+
 .login label,
 .create_account label {
   color: var(--blue);
@@ -271,6 +277,7 @@ input::placeholder {
   position: absolute;
   bottom: -29px;
   right: -18px;
+  z-index: -1;
 }
 
 /* ----------------------------- */
@@ -751,14 +758,24 @@ progress.blue_bar::-moz-progress-bar {
   background-color: var(--pink);
 }
 
-.file_explorer .case_categorie div {
-  padding: .5rem 1rem .5rem 1rem;
+.file_explorer .case_categorie span {
+  width: 1px;
+  display: block;
+  background-color: var(--gray);
+}
+
+.file_explorer .case_categorie div:first-child {
+  padding: 1.5rem 1rem 1.5rem 1rem;
+}
+
+.file_explorer .case_categorie div:last-child {
+  display: flex;
+  gap: 15px;
+  padding-right: 20px;
 }
 
 .file_explorer .case_categorie svg {
   fill: var(--gray);
-  padding: 2px;
-  border-left: 1px solid var(--gray);
   cursor: pointer;
 }
 
@@ -766,7 +783,7 @@ progress.blue_bar::-moz-progress-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: .5rem 1rem .5rem 2.5rem;
+  padding: .5rem 2rem .5rem 2.5rem;
   border-bottom: 1px solid var(--gray);
 }
 
@@ -778,7 +795,7 @@ progress.blue_bar::-moz-progress-bar {
 
 .file_explorer .case_document img,
 .file_explorer .case_document svg {
-  width: 20px;
+  width: 24px;
   cursor: pointer;
 }
 

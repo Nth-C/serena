@@ -205,10 +205,10 @@ function AcceSuivi() {
 
     return (
         <div className="acce_suivi">
-            <img src="/img/logo-name.svg" alt="Logo" />
+            <img src="/img/logo-name.png" alt="Logo" />
             
             {/* Le message affichera désormais "Bienvenue M. Scapin" pour "scapinb" */}
-            <h1>Bienvenue, {nomComplet} 👋</h1>
+            <h1 className="bienvenue">Bienvenue, {nomComplet} 👋</h1>
             
             <h1>Accéder au suivi</h1>
 
@@ -246,7 +246,7 @@ function AcceSuivi() {
                     </div>
                     <div className="form-group">
                         <label>Courte description : </label>
-                        <textarea name="description" value={formData.description} onChange={handleChange} required></textarea>
+                        <textarea name="description" value={formData.description} onChange={handleChange}></textarea>
                     </div>
                     <div>
                         <button type="button" className="btn_border" onClick={toggleNewSuvi}>Annuler</button>
@@ -267,7 +267,7 @@ function AcceSuivi() {
                     </div>
                     <div className="form-group">
                         <label>Courte description : </label>
-                        <textarea name="description" value={formData.description} onChange={handleChange} required></textarea>
+                        <textarea name="description" value={formData.description} onChange={handleChange}></textarea>
                     </div>
                     <div className="form-actions">
                         <button type="button" className="btn_red">Supprimer</button>

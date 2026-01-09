@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Slide from '../components/slide/Slide';
-
 
 function AddEvent() {
   const [newEventOpen, setNewEventOpen] = useState(false)
+  const [membresFamille, setMembresFamille] = useState([]) // Pour stocker la liste reçue du PHP
 
   const toggleNewEvent = () => {
     setNewEventOpen(!newEventOpen)
@@ -12,7 +12,7 @@ function AddEvent() {
   const [formData, setFormData] = useState({
     titre: '',
     lieu: '',
-    accompagnants: '', 
+    accompagnants: '', // Stockera l'ID de la personne sélectionnée
     debut: '',
     fin: '',
     recurrence: '',   
@@ -22,6 +22,26 @@ function AddEvent() {
   const [status, setStatus] = useState({ type: null, message: '' })
 
   const apiUrl = import.meta.env.VITE_API_URL
+
+  // --- NOUVEAU : Chargement de la liste au montage du composant ---
+  useEffect(() => {
+    const fetchMembres = async () => {
+      try {
+        // Adapte la route selon ton routeur PHP (ici : getfamillepersonne)
+        const response = await fetch(`${apiUrl}/?route=getfamillepersonne`)
+        const data = await response.json()
+        
+        if (data.success) {
+          setMembresFamille(data.membres)
+        }
+      } catch (error) {
+        console.error("Erreur chargement famille", error)
+      }
+    };
+
+    fetchMembres();
+  }, [apiUrl]);
+  // -------------------------------------------------------------
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -36,7 +56,6 @@ function AddEvent() {
     setStatus({ type: null, message: '' })
 
     try {
-    
       const response = await fetch(`${apiUrl}/?route=evenement/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -75,7 +94,7 @@ function AddEvent() {
         </div>
       )}
 
-      <button className="btn_add" onClick={toggleNewEvent}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg></button>;
+      <button className="btn_add" onClick={toggleNewEvent}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg></button>
 
       <Slide
         title={"Nouveau"} 
@@ -111,17 +130,26 @@ function AddEvent() {
             />
           </div>
 
+          {/* --- MODIFICATION ICI : SELECT AU LIEU DE INPUT --- */}
           <div>
-            <label>Accompagnants :</label>
-            <input 
-              type="text" 
+            <label>Accompagnant :</label>
+            <select 
               name="accompagnants" 
-              placeholder="Ex: Jean, Marie"
               value={formData.accompagnants} 
-              onChange={handleChange} 
-              required 
-            />
+              onChange={handleChange}
+              // Enlève 'required' si c'est optionnel
+            >
+              <option value="">-- Choisir une personne --</option>
+              
+              {membresFamille.map((personne) => (
+                <option key={personne.id} value={personne.id}>
+                  {personne.prenom} {personne.nom}
+                </option>
+              ))}
+              
+            </select>
           </div>
+          {/* ----------------------------------------------- */}
 
           <div>
             <label>Début :</label>
@@ -161,15 +189,11 @@ function AddEvent() {
               name="description" 
               value={formData.description} 
               onChange={handleChange} 
-              required 
             />
           </div>
 
         </form>
       </Slide>
-
-
-
 
     </div>
   )

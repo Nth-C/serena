@@ -170,11 +170,7 @@ const handleDeleteRapport = async () => {
             <p>Chargement des rapports...</p>
           ) : rapports.length > 0 ? (
             rapports.map((rapport) => (
-              <div 
-                className="report_case" 
-                key={rapport.id_rapport} 
-                onClick={() => handleOpenDetails(rapport)}
-              >
+              <div className="report_case" key={rapport.id_rapport} onClick={toggleDetailsReport}>
                 <div>
                   <h2>{rapport.nom || "Nom rapport"}</h2>
                   <p>
@@ -267,7 +263,10 @@ const handleDeleteRapport = async () => {
           </div>
           <div>
             <label>Information supplémentaire : </label>
-            <textarea value={descRapport} onChange={(e) => setDescRapport(e.target.value)} required></textarea>
+            <textarea
+              value={descRapport}
+              onChange={(e) => setDescRapport(e.target.value)}
+            ></textarea>
           </div>
           <div>
             <button type="button" className="btn_border" onClick={handleResetRapport}>Réinitialiser</button>

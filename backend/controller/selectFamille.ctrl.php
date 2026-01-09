@@ -20,7 +20,7 @@ if ($id_famille_selectionne !== null && $id_famille_selectionne > 0) {
     $dao = new FamilleDAO();
     // On vérifie que la personne a le droit d'accéder à cette famille
     $mesFamilles = $dao->findByPersonne((int)$app->personne->id);
-    
+
     $autorise = false;
     foreach ($mesFamilles as $f) {
         if ((int)$f->id_famille === $id_famille_selectionne) { 
@@ -33,10 +33,10 @@ if ($id_famille_selectionne !== null && $id_famille_selectionne > 0) {
         // MISE À JOUR DE LA SESSION
         $_SESSION['id_famille_active'] = $id_famille_selectionne;
         $app->id_famille = $id_famille_selectionne; // On met aussi à jour l'objet courant
-        
+
         // Force l'enregistrement de la session avant de répondre au JS
         session_write_close(); 
-        
+
         echo json_encode(['success' => true]);
     } else {
         echo json_encode(['success' => false, 'error' => 'Accès refusé à cette famille']);
