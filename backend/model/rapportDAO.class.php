@@ -2,7 +2,6 @@
 require_once(__DIR__ . '/rapport.class.php');
 require_once(__DIR__ . '/dal.class.php');
 
-
 class RapportDAO {
     private DAL $dal;
 
@@ -10,54 +9,52 @@ class RapportDAO {
         $this->dal = DAL::get();
     }
 
-
     public function getAllRapports($id_famille): array {
         $query = 'SELECT r.*, p.prenom as auteur 
                 FROM RAPPORTS r 
                 JOIN PERSONNES p ON r.id_personne = p.id_personne
                 WHERE r.id_famille = :id_famille 
-                ORDER BY r.date DESC';
+                ORDER BY r.date DESC, r.heure DESC';
         
         $stmt = $this->dal->prepare($query);
-        $stmt->execute(['id_famille' => $id_famille]);
-        $data = $stmt->fetchAll();
-        return $data; 
+        $stmt->execute(['id_famille' => $id_famille]); // $id_famille doit être une string (UUID)
+        return $stmt->fetchAll(); 
     }
 
     public function addRapport($id_famille, $id_personne, $description, $nom): bool {
+        // L'id_rapport est généré automatiquement par PostgreSQL (ex: DEFAULT gen_random_uuid())
         $query = 'INSERT INTO RAPPORTS (nom, description, date, heure, id_famille, id_personne) 
-        VALUES (:nom, :description, CURRENT_DATE, CURRENT_TIME, :id_famille, :id_personne)';
+                  VALUES (:nom, :description, CURRENT_DATE, CURRENT_TIME, :id_famille, :id_personne)';
 
         $stmt = $this->dal->prepare($query);
 
         return $stmt->execute([
+            'nom'         => $nom,
             'description' => $description, 
-            'id_famille' => $id_famille, 
-            'id_personne' => $id_personne,
-            'nom' => $nom
+            'id_famille'  => $id_famille,  // String UUID
+            'id_personne' => $id_personne  // String UUID
         ]);
     }
 
-    public function deleteRapport( $id_rapport, $id_famille): bool {
+    public function deleteRapport($id_rapport, $id_famille): bool {
         $query = 'DELETE FROM rapports WHERE id_rapport = :id AND id_famille = :id_fam';
         $stmt = $this->dal->prepare($query);
         return $stmt->execute([
-            'id' => $id_rapport,
+            'id'     => $id_rapport,
             'id_fam' => $id_famille
         ]);
     }
 
-    public function updateRapport( $id_famille,  $id_rapport, string $nom, string $desc): bool {
-    $query = 'UPDATE rapports 
-              SET nom = :nom, description = :desc 
-              WHERE id_rapport = :id_r AND id_famille = :id_f';
-    $stmt = $this->dal->prepare($query);
-    return $stmt->execute([
-        'nom'  => $nom,
-        'desc' => $desc,
-        'id_r' => $id_rapport,
-        'id_f' => $id_famille
-    ]);
-}
-    
+    public function updateRapport($id_famille, $id_rapport, string $nom, string $desc): bool {
+        $query = 'UPDATE rapports 
+                  SET nom = :nom, description = :desc 
+                  WHERE id_rapport = :id_r AND id_famille = :id_f';
+        $stmt = $this->dal->prepare($query);
+        return $stmt->execute([
+            'nom'  => $nom,
+            'desc' => $desc,
+            'id_r' => $id_rapport,
+            'id_f' => $id_famille
+        ]);
+    }
 }

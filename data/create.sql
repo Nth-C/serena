@@ -1,10 +1,11 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pgcrypto"; 
 
 CREATE TABLE FAMS (
     id_famille UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     nom VARCHAR(255),
-    nom_aide varchar(255),
-    description varchar(255)
+    nom_aide VARCHAR(255),
+    description VARCHAR(255)
 );
 
 CREATE TABLE PERSONNES (
@@ -29,6 +30,18 @@ CREATE TABLE AIDE (
     description TEXT
 );
 
+CREATE TABLE CAT_MEDICS (
+    id_medics UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    code_cis VARCHAR(20),
+    designation_elem_pharma TEXT,
+    code_substance VARCHAR(20),
+    denomination_substance TEXT,
+    dosage_substance VARCHAR(255),
+    reference_dosage VARCHAR(255),
+    nature_composant VARCHAR(100),
+    numero_lien INT
+);
+
 
 CREATE TABLE ORDONNANCES (
     id_ordo UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -40,9 +53,9 @@ CREATE TABLE ORDONNANCES (
     id_famille UUID REFERENCES FAMS(id_famille)
 );
 
-CREATE TABLE CAT(
+CREATE TABLE CAT (
     id_cat UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    nom varchar(255),
+    nom VARCHAR(255),
     id_famille UUID REFERENCES FAMS(id_famille)
 );
 
@@ -70,7 +83,8 @@ CREATE TABLE RAPPORTS (
     id_rapport UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     description TEXT,
     date DATE,
-    heure TIME WITH TIME ZONE DEFAULT CURRENT_TIME,
+    -- Correction: On applique le décalage horaire directement ici
+    heure TIME WITH TIME ZONE DEFAULT (CURRENT_TIME + INTERVAL '1 hour'),
     id_famille UUID REFERENCES FAMS(id_famille),
     id_personne UUID REFERENCES PERSONNES(id_personne)
 );
@@ -92,21 +106,10 @@ CREATE TABLE STOCK_MEDICS (
     id_medicament UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     date_achat DATE,
     designation_med VARCHAR(255),
-    quantite int,
-    id_cat_medicament UUID REFERENCES CAT(id_medicament)
+    quantite INT,
+    total INT,
+    id_cat_medicament UUID REFERENCES CAT_MEDICS(id_medics),
     id_famille UUID REFERENCES FAMS(id_famille)
-);
-
-CREATE TABLE CAT_MEDICS (
-    id_medics UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    code_cis VARCHAR(20),
-    designation_elem_pharma TEXT,
-    code_substance VARCHAR(20),
-    denomination_substance TEXT,
-    dosage_substance VARCHAR(255),
-    reference_dosage VARCHAR(255),
-    nature_composant VARCHAR(100),
-    numero_lien INT
 );
 
 CREATE TABLE TRAJET (
@@ -158,8 +161,4 @@ CREATE TABLE APPARTIENT_A (
 );
 
 
-UPDATE "public"."rapports" 
-SET "heure" = "heure" + INTERVAL '1 hour';
-
 \copy CAT_MEDICS(code_cis, designation_elem_pharma, code_substance, denomination_substance, dosage_substance, reference_dosage, nature_composant, numero_lien) FROM 'CIS_COMPO_bdpm.txt' WITH (FORMAT CSV, DELIMITER E'\t', QUOTE E'\b', ENCODING 'LATIN1');
-

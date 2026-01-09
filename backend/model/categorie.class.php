@@ -3,7 +3,7 @@ require_once(__DIR__ . '/document.class.php');
 
 class Categorie
 {
-  public readonly int $id_cat;
+  public readonly string $id_cat;
   public string $nom;
   public array $documents;
 

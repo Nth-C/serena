@@ -23,7 +23,7 @@ class MedicamentDAO {
     }
 
     public function getAllMedicaments($id_famille): array {
-        $query = 'SELECT * FROM STOCK_MEDICS,CAT_MEDICS WHERE id_famille = :id_famille AND CAT_MEDICS.id_medics = STOCK_MEDICS.idCatalogueMedecine';
+        $query = 'SELECT * FROM STOCK_MEDICS,CAT_MEDICS WHERE id_famille = :id_famille AND CAT_MEDICS.id_medics = STOCK_MEDICS.id_cat_medicament';
         $stmt = $this->dal->prepare($query);
 
         $stmt->execute(['id_famille' => $id_famille]);
@@ -136,9 +136,9 @@ class MedicamentDAO {
     return $stmt->execute([
         'name'       => $name,
         'stock'      => (int)$stock,      // On force le type entier
-        'id_famille' => (int)$id_famille,
+        'id_famille' => $id_famille,
         'stockTotal' => (int)$stockTotal,
-        'id_cat_medicament'       => (int)$id_cat_medicament     // On force le type string
+        'id_cat_medicament'       => $id_cat_medicament     // On force le type string
     ]);    
     }
 
