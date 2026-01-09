@@ -260,7 +260,7 @@ function LastVisitReport() {
       </Slide>
 
       {/* Slide Détails Dynamique */}
-      <Slide title={selectedRapport ? selectedRapport.nom : "Détails"} isOpen={isDetailsReportOpen} toggleOpen={toggleDetailsReport} zIndex={500}>
+      <Slide title={selectedRapport ? selectedRapport.nom : "Détails"} isOpen={isDetailsReportOpen} toggleOpen={toggleDetailsReport} zIndex={100}>
         {selectedRapport ? (
             <div className="details_report">
                 <div>
@@ -274,7 +274,7 @@ function LastVisitReport() {
                         {selectedRapport.medics_list ? (
                             selectedRapport.medics_list.map((m, i) => <li key={i}>{m}</li>)
                         ) : (
-                            <li>1 doliprane</li> // Fallback statique si vide pour le test
+                            <li>Aucun médicament</li> 
                         )}
                     </ul>
                 </div>
