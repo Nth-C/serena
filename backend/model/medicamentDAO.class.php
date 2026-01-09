@@ -60,7 +60,7 @@ class MedicamentDAO {
                         WHERE denomination_substance ILIKE :search 
                         LIMIT 5';
         $stmtSimple = $this->dal->prepare($querySimple);
-        $stmtSimple->execute(['search' => '%' . $texteNomMedicament . '%']);
+        $stmtSimple->execute(['search' => $texteNomMedicament . '%']);
         
         return [
             "resultats" => $stmtSimple->fetchAll(PDO::FETCH_ASSOC),
@@ -70,7 +70,7 @@ class MedicamentDAO {
         // CAS UNIQUE : On récupère les détails (ID, Pharma, etc.) pour ce nom précis
         $nomUnique = $nomsDistincts[0]['denomination_substance'];
 
-        $queryDetails = 'SELECT id_medics, designation_elem_pharma, denomination_substance
+        $queryDetails = 'SELECT DISTINCT ON (designation_elem_pharma) id_medics, designation_elem_pharma, denomination_substance
                          FROM CAT_MEDICS 
                          WHERE denomination_substance = :nomUnique';
         

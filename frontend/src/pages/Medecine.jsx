@@ -23,6 +23,7 @@ function Medecine() {
   const [isNewMedecineOpen , setIsNewMedecineOpen] = useState(false) // page
   const [listNomMedecine , setListNomMedecine] = useState([])
   const [listTypeMedecine , setListTypeMedecine] = useState([])
+  const [isNameGood, setIsNameGood] = useState(false);
   const [nameMedecine , setNameMedecine] = useState("")
   const [idCatalogueMedecine , setIdCatalogueMedecine] = useState("")
   const [initialStock , setInitialStock] = useState("")
@@ -184,7 +185,7 @@ function Medecine() {
         body: JSON.stringify(
           // change les donné envoyer (créer / modifier)
           {  
-            texteNomMedicament: nameMedecine
+            texteNomMedicament: e
           }
         )
       });
@@ -195,8 +196,10 @@ function Medecine() {
       if (result.isUnique) {
         console.log(result.resultats)
         setListTypeMedecine(result.resultats)
+        setIsNameGood(true)
       } else {
-        setMessage("Erreur: " + result.error);
+        setIdCatalogueMedecine("") 
+        setIsNameGood(false);
       }
     } catch (error) {
       setMessage("error");
@@ -320,7 +323,6 @@ function Medecine() {
               disabled={isEditing} // on ne peut pas modifier l'input si on modifie un medicament
             />
             <datalist id="medication-suggestions">
-              <option value="Doliprane"></option>
             {/* On boucle sur les résultats de votre recherche PHP */}
             {listNomMedecine?.map((suggestion) => (
             <option value={suggestion.denomination_substance} />
@@ -333,7 +335,8 @@ function Medecine() {
               setIdCatalogueMedecine(e.target.value)
             
             }}
-              required>
+              required
+              disabled={!isNameGood}>
               <option value=""></option>
               {listTypeMedecine.map((listeMedicament) => (
                 <option key={listeMedicament.id_medics} value={listeMedicament.id_medics}>
