@@ -199,6 +199,61 @@ const handleDeleteRapport = async () => {
         </svg>
       </button>
 
+       {/* Popup Médicaments */}
+      {mounted && isNewPopupOpen && createPortal(
+        <div className={`popup_report_add_medicament ${isNewPopupOpen ? 'popu-medi-active' : ''}`}>
+          <div className="search_report">
+            <div>
+              <img src="/icons/arrow_back.svg" alt="" onClick={() => setIsPopupOpen(false)} />
+              <input type="search" placeholder="Rechercher un rapport" />
+            </div>
+
+            <div>
+              <img src="/icons/sort.svg" alt="" />
+              <p>Tier par</p>
+            </div>
+          </div>
+          <button onClick={toggleNewMedicine} className="btn_blue">Ajouter un nouveau médicament dans la liste</button>
+          <div className="list">
+            <div className="container_medecine">
+              <div className="principal_infos"><p>Xanax</p></div>
+              <div className="drop">
+                <p>ddddddddddddddddddddddd</p>
+                <div><button className="fill">Ajouter</button></div>
+              </div>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Slide Médicament */}
+      <Slide title={"Ajouter un médicament"} isOpen={isNewMedicineOpen} toggleOpen={toggleNewMedicine} zIndex={700}>
+        <form className="new_medecine">
+          <div>
+            <label>Nom du médicament : </label>
+            <input type="text" value={nameMedecine} onChange={(e) => setNameMedecine(e.target.value)} required />
+          </div>
+          <div>
+            <label>Type de médicament : </label>
+            <input type="text" value={typeMedecine} onChange={(e) => setTypeMedecine(e.target.value)} required />
+          </div>
+          <div>
+            <label>Stock initiale du médicament : </label>
+            <input type="number" value={initialStock} onChange={(e) => setInitialStock(e.target.value)} required />
+          </div>
+          <div>
+            <label>Stock actuel du médicament :</label>
+            <input type="number" value={currentStock} onChange={(e) => setCurrentStock(e.target.value)} required />
+          </div>
+          <div>
+            <button type="button" className="btn_border" onClick={handleResetMedecine}>Réinitialiser</button>
+            <button className="btn_blue">Ajouter</button>
+          </div>
+        </form>
+      </Slide>
+
+
       {/* Slide Nouveau Rapport */}
       <Slide title={"Créer un rapport de visite"} isOpen={isNewRapportOpen} toggleOpen={toggleNewRapport} zIndex={500}>
         <form className="add_report" onSubmit={handleSubmitRapport}>
@@ -222,7 +277,7 @@ const handleDeleteRapport = async () => {
       </Slide>
 
       {/* Slide Détails */}
-      <Slide title={selectedRapport ? selectedRapport.nom : "Détails"} isOpen={isDetailsReportOpen} toggleOpen={toggleDetailsReport} zIndex={500}>
+      <Slide title={selectedRapport ? selectedRapport.nom : "Détails"} isOpen={isDetailsReportOpen} toggleOpen={toggleDetailsReport} zIndex={100}>
         {selectedRapport ? (
             <div className="details_report">
                 <div>
@@ -258,7 +313,6 @@ const handleDeleteRapport = async () => {
         )}
       </Slide>
 
-      {/* POPUPS */}
       <PopUpDelete
         toDelete={nameToDelete}
         handleDelete={handleDeleteRapport}

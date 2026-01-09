@@ -47,5 +47,17 @@ class RapportDAO {
         ]);
     }
 
+    public function updateRapport(int $id_famille, int $id_rapport, string $nom, string $desc): bool {
+    $query = 'UPDATE rapports 
+              SET nom = :nom, description = :desc 
+              WHERE id_rapport = :id_r AND id_famille = :id_f';
+    $stmt = $this->dal->prepare($query);
+    return $stmt->execute([
+        'nom'  => $nom,
+        'desc' => $desc,
+        'id_r' => $id_rapport,
+        'id_f' => $id_famille
+    ]);
+}
     
 }
