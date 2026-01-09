@@ -20,7 +20,7 @@ try {
         throw new Exception("ID du rapport manquant pour la suppression.");
     }
 
-    $id_rapport = (int)$data['id'];
+    $id_rapport = $data['id'];
     $model = new RapportDAO();
 
     // 2. Utilisation de la suppression sécurisée par ID de famille
