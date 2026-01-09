@@ -4,9 +4,10 @@ require_once(__DIR__ . '/dal.class.php');
 class FamilleDAO {
     private DAL $dal;
 
-    public function __construct() {
-        $this->dal = DAL::get();
-    }
+    // Dans FamilleDAO.class.php
+    public function __construct(DAL $dal = null) {
+    $this->dal = $dal ?: DAL::get();
+}
 
     public function insert(Famille $famille): bool {
         $query = 'INSERT INTO fams (nom, description, nom_aide) 
