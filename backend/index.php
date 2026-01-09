@@ -32,7 +32,8 @@ const _ROUTES = array(
   'rapport/add' => 'addRapport',
   'document/list' => 'viewDocument',
   'document/add' => 'addDocument',
-  'categorie/add' => 'addCategorie'
+  'categorie/add' => 'addCategorie',
+  'getfamillepersonne' => 'getfamillepersonne'
 );
 
 if (!array_key_exists($route, _ROUTES)) {
