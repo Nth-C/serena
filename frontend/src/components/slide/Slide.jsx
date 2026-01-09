@@ -3,7 +3,7 @@ import styles from './Silde.module.css';
 import { useEffect, useState } from 'react'
 
 
-function Slide({children, title, isOpen, toggleOpen, zIndex = 500, validOnHeader = false}) {
+function Slide({children, title, isOpen, toggleOpen, zIndex = 500, validOnHeader = false , handlerValid = null}) {
     //supprimer le scroll de la page
   useEffect(() => {  
     if (isOpen) {
@@ -38,7 +38,7 @@ function Slide({children, title, isOpen, toggleOpen, zIndex = 500, validOnHeader
               <span></span>
             </button>
             <h1>{title}</h1>
-            <button className={styles.valid_btn} >
+            <button className={styles.valid_btn} onClick={handlerValid}>
               <span></span>
               <span></span>
             </button>
