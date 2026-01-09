@@ -59,7 +59,7 @@ function CreateAccount() {
 
     return (
         <div className="create_account">
-            <img src="/img/logo-name.svg" alt="" />
+            <img src="/img/logo-name.png" alt="" />
 
             <h1>Créer un compte</h1>
             

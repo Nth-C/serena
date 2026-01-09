@@ -6,7 +6,7 @@ header("Content-Type: application/json");
 
 $app = new App();
 
-// Vérification de sécurité
+// Sécurité : l'utilisateur doit être connecté
 if (!$app->connected || !$app->personne) {
     echo json_encode(['success' => false, 'error' => 'Non connecté']);
     exit;
@@ -14,23 +14,27 @@ if (!$app->connected || !$app->personne) {
 
 $json = file_get_contents('php://input');
 $data = json_decode($json, true);
-$id_famille = isset($data['id_famille']) ? (int)$data['id_famille'] : null;
+$id_famille_selectionne = isset($data['id_famille']) ? (int)$data['id_famille'] : null;
 
 if ($id_famille != null) {
     // Vérification que l'utilisateur appartient bien à cette famille
     $dao = new FamilleDAO();
+    // On vérifie que la personne a le droit d'accéder à cette famille
     $mesFamilles = $dao->findByPersonne((int)$app->personne->id);
     
     $autorise = false;
     foreach ($mesFamilles as $f) {
-        if ($f->id_famille === $id_famille) { $autorise = true; break; }
+        if ((int)$f->id_famille === $id_famille_selectionne) { 
+            $autorise = true; 
+            break; 
+        }
     }
 
     if ($autorise) {
         $app->setFamilleActive($id_famille);
         echo json_encode(['success' => true, 'id_famille' => $id_famille]);
     } else {
-        echo json_encode(['success' => false, 'error' => 'Accès refusé']);
+        echo json_encode(['success' => false, 'error' => 'Accès refusé à cette famille']);
     }
 } else {
     echo json_encode(['success' => false, 'error' => 'ID manquant']);

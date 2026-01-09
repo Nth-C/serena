@@ -2,15 +2,15 @@ import { useEffect, useState } from 'react'
 import Slide from '../components/slide/Slide';
 
 function FileExplorer() {
-  const [listDocument , setListDocument] = useState([])
-  const [activeInList , setActiveInList] = useState(null)
+  const [listDocument, setListDocument] = useState([])
+  const [activeInList, setActiveInList] = useState(null)
 
   const [isNewDocumentOpen, setIsNewDocumentOpen] = useState(false) // page
-  const [nameDocument , setNameDocument] = useState("")
-  const [emplacementDocument , setEmplacementDocument] = useState("")
+  const [nameDocument, setNameDocument] = useState("")
+  const [emplacementDocument, setEmplacementDocument] = useState("")
 
   const [isNewCategorieOpen, setIsNewCategorieOpen] = useState(false) // page
-  const [nameCategorie , setNameCategorie] = useState("")
+  const [nameCategorie, setNameCategorie] = useState("")
 
 
   const [message, setMessage] = useState('');
@@ -26,18 +26,19 @@ function FileExplorer() {
   }
 
   const apiUrl = import.meta.env.VITE_API_URL;
-  
+
   const handleAddDocument = async (e) => {
     e.preventDefault()
 
     const nouveauDocument = {
       name: nameDocument,
       id_categorie: emplacementDocument
-      }
+    }
 
     try {
       const response = await fetch(`${apiUrl}/?route=document/add`, {
         method: "POST",
+        credentials: 'include',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nouveauDocument)
       });
@@ -69,10 +70,11 @@ function FileExplorer() {
     try {
       const response = await fetch(`${apiUrl}/?route=categorie/add`, {
         method: "POST",
+        credentials: 'include',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nouvelleCategorie)
       });
-      
+
       const result = await response.json();
 
       if (result.success) {
@@ -89,30 +91,30 @@ function FileExplorer() {
     }
   };
 
-  
+
 
 
   const getDocument = async () => {
-      fetch(`${apiUrl}/?route=document/list`)
-        .then((response) => {
-          return response.json() // recupere les données$
-        })
-        .then((data) => {
-        // on verifie si data est un tableau
-        if (Array.isArray(data)) {
-          setListDocument(data);
-          setError(null);
-        } else if (data.error) {
-          setError(data.error);
-          setListDocument([]); // On remet à vide pour éviter le crash du .map()
-        }
-      })
-      .catch((err) => {
-        console.error("Erreur de récupération:", err);
-        setError("Impossible de contacter le serveur");
-        setListDocument([]);
+    try {
+      const response = await fetch(`${apiUrl}/?route=document/list`, {
+        credentials: 'include' // Indispensable pour que PHP récupère la session (id_famille)
       });
-  }
+
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      // Mise à jour de l'état avec les documents ou un tableau vide
+      setListDocument(Array.isArray(data) ? data : []);
+      setError(null);
+    } catch (err) {
+      console.error("Erreur de récupération des documents:", err.message);
+      setError(err.message || "Impossible de contacter le serveur");
+      setListDocument([]); // Sécurité pour éviter que le .map() ne plante
+    }
+  };
 
 
 
@@ -121,26 +123,29 @@ function FileExplorer() {
 
 
   useEffect(() => {
-  getDocument();
-}, []); 
+    getDocument();
+  }, []);
 
 
 
   return (
     <div className="file_explorer">
       <h1>Explorateur</h1>
-      
-      {/* 2. Liaison de l'input avec l'état */}
-      <input 
-        type="text" 
-        placeholder="Rechercher un fichier..."
-        value={searchText} 
-        onChange={(e) => setSearchText(e.target.value)} 
-        required 
-      />
 
-      <button className="btn_add_report" onClick={toggleNewDocument}> test<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" /></svg></button>
-      <button className="btn_add_report" onClick={toggleNewCategorie}> test<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" /></svg></button>
+      <div className="search_container">
+        <div className="search_document">
+          <input type="search" placeholder="Rechercher un fichier..." value={searchText} onChange={(e) => setSearchText(e.target.value)} required />
+          <div onClick={toggleNewCategorie}>
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M440-280h80v-160h160v-80H520v-160h-80v160H280v80h160v160Zm40 200q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" /></svg>
+            <p>Nouvelle catégorie</p>
+          </div>
+        </div>
+      </div>
+
+      <button className="btn_add" onClick={toggleNewDocument}>
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" /></svg>
+      </button>
+
 
 
 
@@ -152,22 +157,31 @@ function FileExplorer() {
             <div className="principal_infos" onClick={() => {
               setActiveInList(cat.id_cat)
             }}>
-              <div>
-                <p>{cat.nom}</p>
-                <p>{cat.type}</p>
+              <div className="case_categorie">
+                <div>
+                  <p>{cat.nom}</p>
+                  <p>{cat.type}</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z" /></svg>
               </div>
 
               {cat.documents.map((doc) => (
                 <div key={doc.id_document} className="container_document">
                   <div className="principal_infos" onClick={() => {
                   }}>
-                    <div>
-                      <p>{doc.nom_doc}</p>
-                      <p>{doc.type}</p>
+                    <div className="case_document">
+                      <div>
+                        <p>{doc.nom_doc}</p>
+                        <p>{doc.type}</p>
+                      </div>
+                      <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
+                        <img src="/icons/bin.svg" alt="" />
+                      </div>
                     </div>
                   </div>
                 </div>
-        ))}
+              ))}
             </div>
           </div>
         ))}
@@ -180,22 +194,22 @@ function FileExplorer() {
 
             <label>Emplacement : </label>
             <select value={emplacementDocument} onChange={(e) => setEmplacementDocument(e.target.value)} required>
-            <option value=""></option>
-            {listDocument.map((cat) => (
-              <option key={cat.id_cat} value={cat.id_cat}>
-              {cat.nom}
-              </option>
-            ))}
+              <option value=""></option>
+              {listDocument.map((cat) => (
+                <option key={cat.id_cat} value={cat.id_cat}>
+                  {cat.nom}
+                </option>
+              ))}
             </select>
 
           </div>
           <div>
             <label>Nom du document : </label>
-            <input 
-              type="text" 
-              value={nameDocument} 
-              onChange={(e) => setNameDocument(e.target.value)} 
-              required 
+            <input
+              type="text"
+              value={nameDocument}
+              onChange={(e) => setNameDocument(e.target.value)}
+              required
             />
           </div>
           <div>
@@ -211,11 +225,11 @@ function FileExplorer() {
         <form className="new_categorie" onSubmit={handleAddCategorie}>
           <div>
             <label>Nom du répertoire : </label>
-            <input 
-              type="text" 
-              value={nameCategorie} 
-              onChange={(e) => setNameCategorie(e.target.value)} 
-              required 
+            <input
+              type="text"
+              value={nameCategorie}
+              onChange={(e) => setNameCategorie(e.target.value)}
+              required
             />
           </div>
           <div>
@@ -225,7 +239,7 @@ function FileExplorer() {
         </form>
       </Slide>
 
-      
+
     </div>
   )
 }

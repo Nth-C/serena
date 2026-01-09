@@ -2,37 +2,37 @@
 require_once('model/rapportDAO.class.php');
 require_once(__DIR__ . '/../app.php');
 
-header("Access-Control-Allow-Origin: *"); 
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
-
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    exit;
-}
+header("Content-Type: application/json");
 
 $app = new App();
 
+if (!$app->connected || !$app->id_famille) {
+    echo json_encode(["success" => false, "error" => "Session invalide ou famille non sélectionnée"]);
+    exit;
+}
+
 try {
     $json = file_get_contents('php://input'); 
-
     $data = json_decode($json, true); 
 
-    if (empty($data['id_personne']) || !isset($data['description'])) {
-        echo "Erreur : id_personne ou description manquant dans le JSON";
-        throw new Exception("Données manquantes.");
+    if (!isset($data['description'])) {
+        throw new Exception("La description du rapport est obligatoire.");
     }
 
     $model = new RapportDAO();
-    
-
-    $success = $model->addRapport($app->id_famille, $data['id_personne'], $data['description']);
+    $success = $model->addRapport(
+        (int)$app->id_famille, 
+        (int)$app->personne->id, 
+        $data['description'],
+        $data['nom']
+    );
 
     if ($success) {
         echo json_encode(["success" => true]);
     } else {
-        echo json_encode(["success" => false, "error" => "L'insertion a échoué en base de données"]);
+        echo json_encode(["success" => false, "error" => "Erreur lors de l'insertion en base de données"]);
     }
 
 } catch (Exception $e) {
-    echo json_encode(["error" => $e->getMessage()]);
+    echo json_encode(["success" => false, "error" => $e->getMessage()]);
 }

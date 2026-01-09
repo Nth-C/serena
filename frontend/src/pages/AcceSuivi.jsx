@@ -42,6 +42,9 @@ function AcceSuivi() {
     const apiUrl = import.meta.env.VITE_API_URL;
     const [familles, setFamilles] = useState([]);
     const [openFamilleId, setOpenFamilleId] = useState(null);
+    
+    // État pour le nom affiché
+    const [nomComplet, setNomComplet] = useState(""); 
 
     const [formData, setFormData] = useState({
         id_famille: null,
@@ -67,6 +70,41 @@ function AcceSuivi() {
 
     useEffect(() => {
         fetchFamilles();
+
+        // --- LOGIQUE DE NOM MODIFIEE ---
+        const userStored = localStorage.getItem('user');
+        if (userStored) {
+            try {
+                const user = JSON.parse(userStored);
+                
+                // Priorité 1 : Si on a le vrai nom et prénom dans la base
+                if (user.nom && user.prenom) {
+                    setNomComplet(`${user.nom} ${user.prenom}`);
+                } 
+                // Priorité 2 : Si on a juste le nom
+                else if (user.nom) {
+                    setNomComplet(user.nom);
+                } 
+                // Priorité 3 : On bricole le username (ex: "scapinb" -> "Scapin")
+                else if (user.username) {
+                    let text = user.username;
+                    
+                    // Si le texte est assez long, on applique la transformation
+                    if (text.length > 1) {
+                        // 1. On enlève le dernier caractère
+                        text = text.slice(0, -1);
+                        
+                        // 2. On met la première lettre en majuscule + le reste en minuscule
+                        text = text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+                    }
+                    
+                    setNomComplet(text);
+                }
+            } catch (e) {
+                console.error("Erreur lecture user", e);
+            }
+        }
+        // ----------------------------------
     }, []);
 
     const handleChange = (e) => {
@@ -89,7 +127,6 @@ function AcceSuivi() {
             const data = await response.json();
             if (data.success) {
                 localStorage.setItem('id_famille_active', id_famille);
-                
                 window.location.href = '/home/dashboard';
             }
         } catch (error) {
@@ -97,7 +134,6 @@ function AcceSuivi() {
         }
     };
 
-    // Création d'un nouveau suivi
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage("");
@@ -123,7 +159,6 @@ function AcceSuivi() {
         }
     };
 
-    // Mise à jour d'un suivi existant
     const handleUpdate = async (e) => {
         e.preventDefault();
         setMessage("");
@@ -170,7 +205,11 @@ function AcceSuivi() {
 
     return (
         <div className="acce_suivi">
-            <img src="/img/logo-name.svg" alt="Logo" />
+            <img src="/img/logo-name.png" alt="Logo" />
+            
+            {/* Le message affichera désormais "Bienvenue M. Scapin" pour "scapinb" */}
+            <h1 className="bienvenue">Bienvenue, {nomComplet} 👋</h1>
+            
             <h1>Accéder au suivi</h1>
 
             <div className="list">
@@ -180,13 +219,13 @@ function AcceSuivi() {
                             key={famille.id_famille}
                             famille={famille}
                             onModifier={handleOpenModif}
-                            onAcceder={handleAcceder} // Transmission de la fonction de sélection
+                            onAcceder={handleAcceder}
                             isOpen={openFamilleId === famille.id_famille}
                             onToggle={() => toggleFamille(famille.id_famille)}
                         />
                     ))
                 ) : (
-                    <p>Aucun suivi disponible.</p>
+                    <p className="aucun">Aucun suivi disponible.</p>
                 )}
             </div>
 

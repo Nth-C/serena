@@ -47,6 +47,10 @@
     height: 5rem;
 }
 
+.menu .header_container img {
+    height: 80%;
+}
+
 .menu .hamburger_btn span:nth-child(1) {
     transform: translate(-50%, -50%) rotate(45deg);
 }
@@ -96,7 +100,7 @@
     margin: 15px 0 0 0;
 }
 
-.menu .logout_container a {
+.menu .logout_container p {
     color: var(--red);
 }
 

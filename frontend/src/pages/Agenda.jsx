@@ -100,8 +100,14 @@ function AddEvent() {
         title={"Nouveau"} 
         isOpen={newEventOpen} 
         toggleOpen={toggleNewEvent}
+        validOnHeader={true}
       >
-        <form onSubmit={handleSubmit}>  
+        <form className='add_event' >  
+          <div>
+            <button>Événement</button>
+            <button>Trajet</button>
+          </div>
+
           <div>
             <label>Titre :</label>
             <input 
@@ -186,12 +192,6 @@ function AddEvent() {
               required 
             />
           </div>
-
-          <button 
-            type="submit" 
-          >
-            Enregistrer l'événement
-          </button>
 
         </form>
       </Slide>

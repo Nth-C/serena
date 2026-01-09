@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 
-function VisitReport() {
+function LastVisitReport() {
   
   return (
-    <div className="visit_report">
+    <div className="last_visit_report">
 
     </div>
   )
 }
 
-export default VisitReport
+export default LastVisitReport

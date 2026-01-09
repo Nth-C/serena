@@ -3,7 +3,7 @@ import styles from './Silde.module.css';
 import { useEffect, useState } from 'react'
 
 
-function Slide({children, title, isOpen, toggleOpen, zIndex = 500}) {
+function Slide({children, title, isOpen, toggleOpen, zIndex = 500, validOnHeader = false}) {
     //supprimer le scroll de la page
   useEffect(() => {  
     if (isOpen) {
@@ -15,7 +15,6 @@ function Slide({children, title, isOpen, toggleOpen, zIndex = 500}) {
 
 
   return createPortal(
-
     <div className={[
       styles.slide,
       isOpen ? styles.active : '', // si isOpen on ajoute la classe active
@@ -24,11 +23,27 @@ function Slide({children, title, isOpen, toggleOpen, zIndex = 500}) {
 
       <div className={styles.main_container}>
         <div>
-          <h1>{title}</h1>
-          <button className={styles.hamburger_btn} onClick={toggleOpen}>
-            <span></span>
-            <span></span>
-          </button>
+          {!validOnHeader ? (
+            <>
+            <h1>{title}</h1>
+            <button className={styles.hamburger_btn} onClick={toggleOpen}>
+              <span></span>
+              <span></span>
+            </button>
+            </>
+          ) : (
+            <>
+            <button className={styles.hamburger_btn} onClick={toggleOpen}>
+              <span></span>
+              <span></span>
+            </button>
+            <h1>{title}</h1>
+            <button className={styles.valid_btn} >
+              <span></span>
+              <span></span>
+            </button>
+            </>
+          )}
           </div>
         <div>
           {children}

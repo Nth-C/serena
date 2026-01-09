@@ -20,6 +20,7 @@ const _ROUTES = array(
   'medicament/list' => 'viewMedicament',
   'medicament/add' => 'addMedicament',
   'medicament/delete' => 'deleteMedicament',
+  'medicament/update' => 'updateMedicament',
   'login' => 'login',
   'register' => 'register',
   'logout' => 'logout',

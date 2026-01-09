@@ -22,7 +22,9 @@ if ($personne && password_verify($mdp, $personne->mdp)) {
         'success' => true,
         'user' => [
             'id' => $personne->id,
-            'username' => $personne->username
+            'username' => $personne->username,
+            'nom'=> $personne->nom,
+            'prenom' => $personne->prenom
         ]
     ]);
 } else {
