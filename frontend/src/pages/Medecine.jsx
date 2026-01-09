@@ -28,7 +28,6 @@ function Medecine() {
 
   // ajout stock
   const [isAddStockOpen , setIsAddStockOpen] = useState(false) // page
-  const [addStock , setAddStock] = useState("")
 
   // popup suppression
   const [isPopUpDeleteOpen , setIsPopUpDeleteOpen] = useState(false) // page
@@ -37,6 +36,8 @@ function Medecine() {
   // popup confirmation
   const [isShowRemove , setIsShowRemove] = useState(false)
   const [isShowAdd , setIsShowAdd] = useState(false)
+  const [isShowModify , setIsShowModify] = useState(false)
+
   const [nameMedecineToDisplay , setNameMedecineToDisplay] = useState('')
 
   
@@ -50,19 +51,19 @@ function Medecine() {
   }
 
   const handleEditMedecine = (med) => {
-    // 1. On passe en mode édition
+    // On passe en mode édition
     setIsEditing(true);
     
-    // 2. On pré-remplit les inputs avec les données du médicament
+    // pré-remplit les inputs avec les données du médicament
     setNameMedecine(med.nomMedicament);
     setTypeMedecine(med.type);
     setInitialStock(med.stockTotal);
     setCurrentStock(med.stock);
     
-    // 3. On stocke l'ID pour savoir lequel modifier plus tard
+    // stocke l'id pour savoir lequel modifier plus tard
     setIdCurrentMedecine(med.id_medicament);
     
-    // 4. On ouvre le slide
+    // ouvrir le slide
     setIsNewMedecineOpen(true);
 };
 
@@ -88,7 +89,7 @@ function Medecine() {
     // Si tu as un état de chargement, tu peux le stopper ici
     setLoading(false); 
   }
-};
+}
 
   const handleDeleteMedecine = async (id) => {
     try {
@@ -114,29 +115,8 @@ function Medecine() {
     }
   }
 
-  const handleUpdateMedecine = async (quantiteAjoutee) => {
-    try {
-        const response = await fetch(`${apiUrl}/?route=medicament/update`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            // On envoie l'ID du médicament actuel et la quantité
-            body: JSON.stringify({ 
-                id_medicament: activeInList, 
-                nouveauStock: quantiteAjoutee 
-            }),
-        });
-        const data = await response.json();
-        if (data.success) {
-            getMedecine(); // On rafraîchit la liste
-            toggleAddStock(); // On ferme la popup
-        }
-    } catch (err) {
-        console.error("Erreur mise à jour stock:", err);
-    }
-};
-
-  const handleAddMedecine = async (e) => {
+  // handler ajoute / modifier médicament
+  const handleMedecine = async (e) => {
     e.preventDefault()
 
     const nouveauMedoc = {
@@ -146,15 +126,23 @@ function Medecine() {
       stockTotal: initialStock
     }
 
+    // change le controleur appeler en fonction de (créer / modifier)
     const route = isEditing ? 'medicament/update' : 'medicament/add';
-    console.log(route)
 
     try {
       const response = await fetch(`${apiUrl}/?route=${route}`, {
         method: "POST",
         credentials: 'include',
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(nouveauMedoc)
+        body: JSON.stringify(
+          // change les donné envoyer (créer / modifier)
+          !isEditing 
+          ? nouveauMedoc
+          : {  
+            id_medicament: activeInList, 
+            nouveauStock: currentStock
+          }
+        )
       });
 
       const result = await response.json();
@@ -166,7 +154,7 @@ function Medecine() {
         // fermer le slide
         toggleNewMedecine()
         // affiche le message d'ajout
-        setIsShowAdd(true)
+        !isEditing ? setIsShowAdd(true) : setIsShowModify(true)
         setNameMedecineToDisplay(nameMedecine)
       } else {
         setMessage("Erreur: " + result.error);
@@ -186,9 +174,11 @@ function Medecine() {
     setIsNewMedecineOpen(!isNewMedecineOpen);
   }
   
+  /*
   const toggleAddStock = () => {
     setIsAddStockOpen(!isAddStockOpen)
   }
+  */
 
   const togglePopUpDelete = () => {
     setIsPopUpDeleteOpen(!isPopUpDeleteOpen)
@@ -199,6 +189,14 @@ function Medecine() {
     getMedecine()
   }, []);
 
+  // change les couleur des progress bar
+  const calcProgressBar = (totalStock, currentStock) => {
+    if(totalStock > 0) {
+      return ((currentStock / totalStock) * 100).toFixed(0)
+    }
+    return 0
+  }
+
   return (
     <div className="medecine">
       <h1>Liste médicaments</h1>
@@ -206,7 +204,8 @@ function Medecine() {
           {loading ? (
             <p>Chargement des médicaments...</p>
           ) : listMedecine.length > 0 ? (
-            listMedecine.map((med) => (
+            <>
+            {listMedecine.map((med) => (
               <div key={med.id_medicament} className="container_medecine">
                 <div className="principal_infos" onClick={() => {
                   setActiveInList(med.id_medicament)
@@ -217,8 +216,17 @@ function Medecine() {
                     <p>{med.type}</p>
                   </div>
                   <div>
-                    <progress max="100" value={med.stockTotal > 0 ? (med.stock / med.stockTotal) * 100 : 0}></progress>
-                    {<p>{med.stock}/{med.stockTotal}</p> }
+                    <progress 
+                    // met des class en fonction du pourcentage pour les bar de couleurs
+                    className={
+                        calcProgressBar(med.stockTotal, med.stock) < 33 ? "red_bar" : 
+                        calcProgressBar(med.stockTotal, med.stock) < 66 ? "pink_bar" : 
+                        "blue_bar"
+                      }
+                      max="100"
+                      value={calcProgressBar(med.stockTotal, med.stock)}
+                    ></progress>
+                    <p>{med.stock}/{med.stockTotal}</p>
                   </div>
                 </div>
 
@@ -229,7 +237,6 @@ function Medecine() {
                   {/* <p>{med.description}</p> */}
                   <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Officia odit atque corrupti distinctio velit magnam nulla.</p>
                   <div>
-
                     <button className="btn_red" onClick={() => {
                       setIdCurrentMedecine(med.id_medicament)
                       togglePopUpDelete()
@@ -241,13 +248,13 @@ function Medecine() {
                   </div>
                 </div>
               </div>
-            ))
+            ))}
+            <p className='end_list' >Aucun autre médicament</p>
+            </>
           ) : (
-            <p className="aucun">Aucun médicaments pour cette famille.</p>
+            <p className="aucun">Aucun médicaments.</p>
           )}
       </div>
-
-      <p className='end_list' >Aucun autre médicament</p>
 
       <button className="btn_add" onClick={toggleNewMedecine}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg></button>;
 
@@ -256,7 +263,7 @@ function Medecine() {
         isOpen={isNewMedecineOpen}
         toggleOpen={toggleNewMedecine}
         >
-        <form className="new_medecine" onSubmit={handleAddMedecine}>
+        <form className="new_medecine" onSubmit={handleMedecine}>
           <div>
             <label>Nom du médicament : </label>
             <input
@@ -264,6 +271,7 @@ function Medecine() {
               value={nameMedecine}
               onChange={(e) => setNameMedecine(e.target.value)}
               required
+              disabled={isEditing} // on ne peut pas modifier l'input si on modifie un medicament
             />
           </div>
           <div>
@@ -273,6 +281,7 @@ function Medecine() {
               onChange={(e) => setTypeMedecine(e.target.value)} 
               name="type_medecine"
               required
+              disabled={isEditing} // on ne peut pas modifier l'input si on modifie un medicament
             >
               <option value="" disabled>-- Choisir un type --</option>
               
@@ -290,6 +299,7 @@ function Medecine() {
               value={initialStock}
               onChange={(e) => setInitialStock(e.target.value)}
               required
+              disabled={isEditing} // on ne peut pas modifier l'input si on modifie un medicament
             />
           </div>
           <div>
@@ -302,7 +312,7 @@ function Medecine() {
             />
           </div>
           <div>
-            <button type="reset" className="btn_border" onClick={handleResetForm}>Reinistialiser</button>
+            <button type="reset" className="btn_border" onClick={handleResetForm} disabled={isEditing}>Reinistialiser</button>
             <button type="submit" className="btn_blue">{isEditing ? "Modifier" : "Ajouter"}</button>
           </div>
         </form>
@@ -333,6 +343,12 @@ function Medecine() {
         sentence={`Le médicament ${nameMedecineToDisplay} a bien été ajouter.`}
         show={isShowAdd}
         setShow={setIsShowAdd}
+      />
+
+      <PopUpConfirmation
+        sentence={`Le médicament ${nameMedecineToDisplay} a bien été modifier.`}
+        show={isShowModify}
+        setShow={setIsShowModify}
       />
     </div>
   )
