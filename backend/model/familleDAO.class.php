@@ -4,9 +4,10 @@ require_once(__DIR__ . '/dal.class.php');
 class FamilleDAO {
     private DAL $dal;
 
-    public function __construct() {
-        $this->dal = DAL::get();
-    }
+    // Dans FamilleDAO.class.php
+    public function __construct(?DAL $dal = null) {
+    $this->dal = $dal ?: DAL::get();
+}
 
     public function insert(Famille $famille): bool {
         $query = 'INSERT INTO fams (nom, description, nom_aide) 
@@ -82,20 +83,23 @@ class FamilleDAO {
     }
 
     public function getPersFam($id_famille): array {
-        $query = 'SELECT * FROM PERSONNES WHERE id_famille = :id_famille';
-        
-        $stmt = $this->dal->prepare($query);
-        $stmt->execute(['id_famille' => $id_famille]);
-        $data = $stmt->fetchAll();
+    // CORRECTION : On joint PERSONNES avec APPARTIENT_A
+    $query = 'SELECT p.* FROM PERSONNES p
+              JOIN APPARTIENT_A a ON p.id_personne = a.id_personne
+              WHERE a.id_famille = :id_famille';
+    
+    $stmt = $this->dal->prepare($query);
+    $stmt->execute(['id_famille' => $id_famille]);
+    $data = $stmt->fetchAll();
 
-        $resultats = [];
+    $resultats = [];
 
-        foreach($data as $personne) {
-            $resultats[] = new Personne($personne);
-        }
-
-        return $resultats;
+    foreach($data as $personne) {
+        $resultats[] = new Personne($personne);
     }
+
+    return $resultats;
+}
 
     public function AddPersFam(int $id_famille, int $id_personne, string $role = 'createur'): bool {
         $query = 'INSERT INTO appartient_a (id_famille, id_personne, role) 

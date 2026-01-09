@@ -5,9 +5,13 @@ require_once(__DIR__ . '/dal.class.php');
 class PersonneDAO {
     private DAL $dal;
 
-    public function __construct() {
-        $this->dal = DAL::get();
-    }
+    // Dans PersonneDAO.class.php
+
+    // Modifie le constructeur comme ceci :
+    public function __construct(DAL $dal = null) {
+    // Si $dal est fourni (test), on l'utilise. Sinon (prod), on prend le Singleton.
+    $this->dal = $dal ?: DAL::get();
+}
 
     public function findByUsername(string $username): ?Personne {
         $query = 'SELECT * FROM personnes WHERE username = :username';

@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Slide from '../components/slide/Slide';
-
 
 function AddEvent() {
   const [newEventOpen, setNewEventOpen] = useState(false)
+  
+  const [isTrajet, setIsTrajet] = useState(false)
+  const [membresFamille, setMembresFamille] = useState([]) // Pour stocker la liste reçue du PHP
 
   const toggleNewEvent = () => {
     setNewEventOpen(!newEventOpen)
@@ -12,16 +14,48 @@ function AddEvent() {
   const [formData, setFormData] = useState({
     titre: '',
     lieu: '',
-    accompagnants: '', 
+    accompagnants: '', // Stockera l'ID de la personne sélectionnée
     debut: '',
     fin: '',
     recurrence: '',   
-    description: ''
+    description: '',
+
+    effectue: '',
+    aidantAffecte: '',
+    societe: '',
+    lieuDepart: '',
+    lieuArrivee: ''
   })
+
+  useEffect(() => {
+    console.log(formData)
+  }, [formData]);
   
   const [status, setStatus] = useState({ type: null, message: '' })
 
   const apiUrl = import.meta.env.VITE_API_URL
+
+  // --- NOUVEAU : Chargement de la liste au montage du composant ---
+  useEffect(() => {
+    const fetchMembres = async () => {
+      try {
+        // Adapte la route selon ton routeur PHP (ici : getfamillepersonne)
+        const response = await fetch(`${apiUrl}/?route=getfamillepersonne`, {
+        credentials: 'include' // Indispensable pour que PHP récupère la session (id_famille)
+      });
+        const data = await response.json()
+        
+        if (data.success) {
+          setMembresFamille(data.membres)
+        }
+      } catch (error) {
+        console.error("Erreur chargement famille", error)
+      }
+    };
+
+    fetchMembres();
+  }, [apiUrl]);
+  // -------------------------------------------------------------
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -36,7 +70,6 @@ function AddEvent() {
     setStatus({ type: null, message: '' })
 
     try {
-    
       const response = await fetch(`${apiUrl}/?route=evenement/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -75,101 +108,150 @@ function AddEvent() {
         </div>
       )}
 
-      <button className="btn_add" onClick={toggleNewEvent}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg></button>;
+      <button className="btn_add" onClick={toggleNewEvent}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg></button>
 
       <Slide
         title={"Nouveau"} 
         isOpen={newEventOpen} 
         toggleOpen={toggleNewEvent}
         validOnHeader={true}
+        handlerValid={handleSubmit}
       >
-        <form className='add_event' >  
-          <div>
-            <button>Événement</button>
-            <button>Trajet</button>
+          <div className='switch_event'>
+            <button className={!isTrajet ? 'active' : ''} onClick={() => setIsTrajet(false)} >Événement</button>
+            <button className={isTrajet ? 'active' : ''} onClick={() => setIsTrajet(true)} >Trajet</button>
           </div>
 
-          <div>
-            <label>Titre :</label>
-            <input 
-              type="text" 
-              name="titre" 
-              value={formData.titre} 
-              onChange={handleChange} 
-              required 
-            />
-          </div>
+          <form className='add_event'>  
+          {!isTrajet ?(
+            <>
+            <div>
+              <label>Titre :</label>
+              <input 
+                type="text" 
+                name="titre" 
+                value={formData.titre} 
+                onChange={handleChange}
+                placeholder="Ex: Rendez-vous médical"
+                required 
+              />
+            </div>
 
-          <div>
-            <label>Lieu :</label>
-            <input 
-              type="text" 
-              name="lieu" 
-              value={formData.lieu} 
-              onChange={handleChange} 
-              required 
-            />
-          </div>
+            <div>
+              <label>Lieu :</label>
+              <input 
+                type="text" 
+                name="lieu" 
+                value={formData.lieu} 
+                onChange={handleChange} 
+                placeholder="Ex: 67 Rue du Skibidi, Agartha 38850"
+                required 
+              />
+            </div>
 
-          <div>
-            <label>Accompagnants :</label>
-            <input 
-              type="text" 
-              name="accompagnants" 
-              placeholder="Ex: Jean, Marie"
-              value={formData.accompagnants} 
-              onChange={handleChange} 
-              required 
-            />
-          </div>
+            <div>
+              <label>Accompagnants :</label>
+              <input 
+                type="text" 
+                name="accompagnants" 
+                placeholder="Ex: Jean, Marie"
+                value={formData.accompagnants} 
+                onChange={handleChange} 
+                required 
+              />
+            </div>
 
-          <div>
-            <label>Début :</label>
-            <input 
-              type="datetime-local" 
-              name="debut" 
-              value={formData.debut} 
-              onChange={handleChange} 
-              required 
-            />
-          </div>
+            <div>
+              <label>Début :</label>
+              <input 
+                type="datetime-local" 
+                name="debut" 
+                value={formData.debut} 
+                onChange={handleChange} 
+                required 
+              />
+            </div>
 
-          <div>
-            <label>Fin :</label>
-            <input 
-              type="datetime-local" 
-              name="fin" 
-              value={formData.fin} 
-              onChange={handleChange} 
-              required 
-            />
-          </div>
+            <div>
+              <label>Fin :</label>
+              <input 
+                type="datetime-local" 
+                name="fin" 
+                value={formData.fin} 
+                onChange={handleChange} 
+                required 
+              />
+            </div>
 
-          <div>
-            <label>Récurrence :</label>
-            <select name="recurrence" value={formData.recurrence} onChange={handleChange} required>
-              <option value="">Choisir...</option>
-              <option value="aucun">Aucune</option>
-              <option value="hebdo">Hebdomadaire</option>
-              <option value="mensuel">Mensuel</option>
-            </select>
-          </div>
+            <div>
+              <label>Récurrence :</label>
+              <select name="recurrence" value={formData.recurrence} onChange={handleChange} required>
+                <option value="">Choisir...</option>
+                <option value="aucun">Aucune</option>
+                <option value="hebdo">Hebdomadaire</option>
+                <option value="mensuel">Mensuel</option>
+              </select>
+            </div>
 
-          <div>
-            <label>Notes :</label>
-            <textarea 
-              name="description" 
-              value={formData.description} 
-              onChange={handleChange} 
-              required 
-            />
-          </div>
+            <div>
+              <label>Notes :</label>
+              <textarea 
+                name="description" 
+                value={formData.description} 
+                onChange={handleChange} 
+                required 
+              />
+            </div>
+            </>
+          ) : (
+            <>
+            <div className='effectue_trajet'>
+              <div>
+                <input type="radio" id="aidant" name="effectue" value={formData.effectue} onChange={handleChange}/>
+                <label for="aidant">Aidant</label>
+              </div>
+              <div>
+                <input type="radio" id="extrene" name="effectue" value={formData.effectue} onChange={handleChange}/>
+                <label for="extrene">Société Externe</label> 
+              </div> 
+            </div>
 
-        </form>
+            <div>
+              <label>Qui effectue le trajet :</label>
+              <select name="aidant_affecte" value={formData.aidantAffecte} onChange={handleChange} required>
+                <option value="">Choisir...</option>
+                <option value="">nathanta</option>
+                <option value="">zozo</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Lieu de départ :</label>
+              <input 
+                type="text" 
+                name="accompagnants" 
+                placeholder="Ex: Maison"
+                value={formData.accompagnants} 
+                onChange={handleChange} 
+                required 
+              />
+            </div>
+
+            <div>
+              <label>Lieu d'arrivée :</label>
+              <input 
+                type="text" 
+                name="accompagnants" 
+                placeholder="Ex: 67 Rue du Skibidi, Agartha 38850"
+                value={formData.accompagnants} 
+                onChange={handleChange} 
+                required 
+              />
+            </div>
+            </>
+          )}
+          </form>
       </Slide>
-
-
-
 
     </div>
   )
