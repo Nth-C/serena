@@ -29,8 +29,7 @@ if ($nom && $prenom && $mail && $username && $mdp && $date_naissance) {
         exit();
     }
 
-    $hashedPassword = password_hash($mdp, PASSWORD_DEFAULT);
-    
+    $hashedPassword = password_hash($mdp . "S4ZBwfUkpAyScWCEeqHfZ0TbQ0GzzeuL", PASSWORD_DEFAULT);    
     $personne = new Personne([
         'nom' => $nom,
         'prenom' => $prenom,
