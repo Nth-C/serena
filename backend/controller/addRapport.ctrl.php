@@ -6,6 +6,7 @@ header("Content-Type: application/json");
 
 $app = new App();
 
+// On vérifie que les UUID sont présents dans la session
 if (!$app->connected || !$app->id_famille) {
     echo json_encode(["success" => false, "error" => "Session invalide ou famille non sélectionnée"]);
     exit;
@@ -15,11 +16,14 @@ try {
     $json = file_get_contents('php://input'); 
     $data = json_decode($json, true); 
 
-    if (!isset($data['description'])) {
-        throw new Exception("La description du rapport est obligatoire.");
+    if (empty($data['description']) || empty($data['nom'])) {
+        throw new Exception("Le nom et la description sont obligatoires.");
     }
 
     $model = new RapportDAO();
+    
+    // On passe les IDs tels quels (en string). Si ce sont des UUID, ils fonctionneront.
+    // L'erreur "7" suggère que ton utilisateur de test a l'ID 7 au lieu d'un UUID.
     $success = $model->addRapport(
         $app->id_famille, 
         $app->personne->id, 
@@ -27,11 +31,7 @@ try {
         $data['nom']
     );
 
-    if ($success) {
-        echo json_encode(["success" => true]);
-    } else {
-        echo json_encode(["success" => false, "error" => "Erreur lors de l'insertion en base de données"]);
-    }
+    echo json_encode(["success" => $success]);
 
 } catch (Exception $e) {
     echo json_encode(["success" => false, "error" => $e->getMessage()]);
