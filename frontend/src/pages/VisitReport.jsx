@@ -114,12 +114,12 @@ function LastVisitReport() {
           <div><img src="/icons/sort.svg" alt="" /><p>Trier par</p></div>
         </div>
 
-        <div className="liste_report" onClick={toggleDetailsReport}>
+        <div className="liste_report">
           {loading ? (
             <p>Chargement des rapports...</p>
           ) : rapports.length > 0 ? (
             rapports.map((rapport) => (
-              <div className="report_case" key={rapport.id_rapport}>
+              <div className="report_case" key={rapport.id_rapport} onClick={toggleDetailsReport}>
                 <div>
                   <h2>{rapport.nom || "Nom rapport"}</h2>
                   <p>
