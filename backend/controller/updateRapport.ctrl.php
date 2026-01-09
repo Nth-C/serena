@@ -19,7 +19,7 @@ try {
     $model = new RapportDAO();
     $success = $model->updateRapport(
         $app->id_famille, 
-        (int)$data['id_rapport'], 
+        $data['id_rapport'], 
         $data['nom'], 
         $data['description']
     );
