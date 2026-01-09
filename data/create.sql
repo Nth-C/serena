@@ -93,6 +93,7 @@ CREATE TABLE STOCK_MEDICS (
     date_achat DATE,
     designation_med VARCHAR(255),
     quantite int,
+    id_cat_medicament UUID REFERENCES CAT(id_medicament)
     id_famille UUID REFERENCES FAMS(id_famille)
 );
 
