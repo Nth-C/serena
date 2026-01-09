@@ -2,7 +2,7 @@
 
 class Famille
 {
-    public readonly int $id_famille;
+    public readonly string $id_famille;
     public string $nom;
     public string $nom_aide;
     public string $desc;

@@ -27,15 +27,16 @@ if($nom && $desc && $nom_aide){
         'nom_aide' => $nom_aide
     ]);
 
-    if ($dao->insert($famille)) {
-        $id_famille = $dao->getLastInsertedId();
-        
-        $id_personne = (int)$app->personne->id;
+    // MODIFICATION ICI : On récupère l'ID directement
+    $id_famille = $dao->insert($famille);
+
+    if ($id_famille) { // Si l'ID est renvoyé (donc supérieur à 0)
+        $id_personne = $app->personne->id;
         
         if ($dao->AddPersFam($id_famille, $id_personne, 'createur')) {
             echo json_encode(['success' => true]);
         } else {
-            echo json_encode(['success' => false, 'error' => 'Famille créée mais liaison échouée.']);
+            echo json_encode(['success' => false, 'error' => 'Liaison échouée.']);
         }
     } else {
         echo json_encode(['success' => false, 'error' => 'Erreur lors de la création.']);

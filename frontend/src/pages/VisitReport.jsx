@@ -260,7 +260,7 @@ function LastVisitReport() {
       </Slide>
 
       {/* Slide Détails Rapport */}
-      <Slide title={selectedRapport ? selectedRapport.nom : "Détails"} isOpen={isDetailsReportOpen} toggleOpen={toggleDetailsReport} zIndex={500}>
+      <Slide title={selectedRapport ? selectedRapport.nom : "Détails"} isOpen={isDetailsReportOpen} toggleOpen={toggleDetailsReport} zIndex={100}>
         {selectedRapport ? (
             <div className="details_report">
                 <div>

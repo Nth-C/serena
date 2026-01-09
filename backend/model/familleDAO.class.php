@@ -8,7 +8,7 @@ class FamilleDAO {
     public function __construct(?DAL $dal = null) {
     $this->dal = $dal ?: DAL::get();
 }
-
+    /*
     public function insert(Famille $famille): bool {
         $query = 'INSERT INTO fams (nom, description, nom_aide) 
                   VALUES (:nom, :description, :nom_aide)';
@@ -20,7 +20,30 @@ class FamilleDAO {
             ':description'         => $famille->desc,
             ':nom_aide'           => $famille->nom_aide 
         ]);
+    }*/
+
+    public function insert(Famille $famille) {
+    // On ajoute RETURNING id_famille à la fin de la requête
+    $query = "INSERT INTO fams (nom, description, nom_aide) 
+              VALUES (:nom, :description, :nom_aide) 
+              RETURNING id_famille";
+              
+    $stmt = $this->dal->prepare($query);
+    
+    $res = $stmt->execute([
+            ':nom'            => $famille->nom,
+            ':description'         => $famille->desc,
+            ':nom_aide'           => $famille->nom_aide 
+        ]);
+
+    if ($res) {
+        // On récupère l'ID généré directement dans le jeu de résultats
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['id_famille'];
     }
+    
+    return false;
+}
 
     public function update(Famille $famille): bool {
         $query = 'UPDATE fams 
@@ -37,7 +60,7 @@ class FamilleDAO {
         ]);
     }
 
-    public function findByPersonne(int $id_personne): array {
+    public function findByPersonne($id_personne): array {
         $query = 'SELECT f.* FROM FAMS f
                     JOIN APPARTIENT_A a ON f.id_famille = a.id_famille
                     WHERE a.id_personne = :id_pers;';
@@ -101,7 +124,7 @@ class FamilleDAO {
     return $resultats;
 }
 
-    public function AddPersFam(int $id_famille, int $id_personne, string $role = 'createur'): bool {
+    public function AddPersFam( $id_famille, $id_personne, string $role = 'createur'): bool {
         $query = 'INSERT INTO appartient_a (id_famille, id_personne, role) 
                 VALUES (:id_f, :id_p, :role)';
         $stmt = $this->dal->prepare($query);
@@ -111,7 +134,7 @@ class FamilleDAO {
             ':role' => $role
         ]);
     }
-    public function getLastInsertedId(): int {
-        return (int)$this->dal->lastInsertId();
+    public function getLastInsertedId(): string {
+        return $this->dal->lastInsertId();
     }
 }

@@ -13,7 +13,7 @@ if (!$app->connected || !$app->personne) {
 
 try {
     $dao = new FamilleDAO();
-    $familles = $dao->findByPersonne((int)$app->personne->id);
+    $familles = $dao->findByPersonne($app->personne->id);
 
     echo json_encode($familles);
 } catch (Exception $e) {

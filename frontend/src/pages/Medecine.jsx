@@ -21,8 +21,9 @@ function Medecine() {
 
   // ajout medicament
   const [isNewMedecineOpen , setIsNewMedecineOpen] = useState(false) // page
+  const [listTypeMedecine , setListTypeMedecine] = useState([])
   const [nameMedecine , setNameMedecine] = useState("")
-  const [typeMedecine , setTypeMedecine] = useState("")
+  const [idCatalogueMedecine , setIdCatalogueMedecine] = useState("")
   const [initialStock , setInitialStock] = useState("")
   const [currentStock , setCurrentStock] = useState("")
 
@@ -121,7 +122,7 @@ function Medecine() {
 
     const nouveauMedoc = {
       name: nameMedecine,
-      type: typeMedecine,
+      idCatalogueMedecine: idCatalogueMedecine,
       stock: currentStock,
       stockTotal: initialStock
     }
@@ -156,6 +157,42 @@ function Medecine() {
         // affiche le message d'ajout
         !isEditing ? setIsShowAdd(true) : setIsShowModify(true)
         setNameMedecineToDisplay(nameMedecine)
+      } else {
+        setMessage("Erreur: " + result.error);
+      }
+    } catch (error) {
+      setMessage("error");
+      console.error(error);
+    }
+  };
+
+
+  const handleSearchMedecine = async (e) => {
+    
+
+    console.log(e);
+
+    // change le controleur appeler en fonction de (créer / modifier)
+    const route = 'nommedicament/search';
+    
+    try {
+      const response = await fetch(`${apiUrl}/?route=${route}`, {
+        method: "POST",
+        credentials: 'include',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(
+          // change les donné envoyer (créer / modifier)
+          {  
+            texteNomMedicament: nameMedecine
+          }
+        )
+      });
+
+      const result = await response.json();
+      console.log(result);
+      if (result.isUnique) {
+        console.log(result.resultats)
+        setListTypeMedecine(result.resultats)
       } else {
         setMessage("Erreur: " + result.error);
       }
@@ -269,27 +306,30 @@ function Medecine() {
             <input
               type="text"
               value={nameMedecine}
-              onChange={(e) => setNameMedecine(e.target.value)}
+              onChange={(e) => {
+                setNameMedecine(e.target.value);
+                if(e.target.value != ""){
+                  handleSearchMedecine(e.target.value);
+                }
+               
+              }}
               required
               disabled={isEditing} // on ne peut pas modifier l'input si on modifie un medicament
             />
           </div>
           <div>
             <label>Type de médicament : </label>
-            <select 
-              value={typeMedecine} 
-              onChange={(e) => setTypeMedecine(e.target.value)} 
-              name="type_medecine"
-              required
-              disabled={isEditing} // on ne peut pas modifier l'input si on modifie un medicament
-            >
-              <option value="" disabled>-- Choisir un type --</option>
-              
-              <option value="pils">Comprimé / Gélule</option>
-              <option value="injection">Injection / Piqûre</option>
-              <option value="sirop">Sirop / Liquide</option>
-              <option value="creme">Pommade / Crème</option>
-              <option value="patch">Pansement / Patch</option>
+            <select value={idCatalogueMedecine} onChange={(e) => {
+              setIdCatalogueMedecine(e.target.value)
+            
+            }}
+              required>
+              <option value=""></option>
+              {listTypeMedecine.map((listeMedicament) => (
+                <option key={listeMedicament.id_medics} value={listeMedicament.id_medics}>
+                  {listeMedicament.designation_elem_pharma}
+                </option>
+              ))}
             </select>
           </div>
           <div>
