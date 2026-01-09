@@ -6,7 +6,6 @@ header("Content-Type: application/json");
 
 $app = new App();
 
-// On vérifie que les UUID sont présents dans la session
 if (!$app->connected || !$app->id_famille) {
     echo json_encode(["success" => false, "error" => "Session invalide ou famille non sélectionnée"]);
     exit;
@@ -22,8 +21,6 @@ try {
 
     $model = new RapportDAO();
     
-    // On passe les IDs tels quels (en string). Si ce sont des UUID, ils fonctionneront.
-    // L'erreur "7" suggère que ton utilisateur de test a l'ID 7 au lieu d'un UUID.
     $success = $model->addRapport(
         $app->id_famille, 
         $app->personne->id, 
