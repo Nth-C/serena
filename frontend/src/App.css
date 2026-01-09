@@ -480,6 +480,12 @@ button.creer_suivi, .acce_suivi .form-actions {
   text-wrap: nowrap;
 }
 
+.add_report div:last-child {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+}
+
 .report_case {
   border: 1px solid var(--blue);
   border-radius: 10px;
@@ -816,6 +822,12 @@ progress.blue_bar::-moz-progress-bar {
 .file_explorer .case_document svg {
   width: 24px;
   cursor: pointer;
+}
+
+.new_document div:last-child {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
 }
 
 .drop_zone {
