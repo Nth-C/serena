@@ -46,7 +46,7 @@ function Medecine() {
 
   const handleResetForm = () => {
     setNameMedecine("")
-    setTypeMedecine("") 
+    setIdCatalogueMedecine("") 
     setCurrentStock("")
     setInitialStock("")
   }

@@ -15,7 +15,7 @@ try {
         echo json_encode([]);
         exit;
     }
-    echo $id_famille;
+    
     $medicaments = $model->getAllMedicaments($id_famille);
     // echo pour envoyer les données dans la vue
     echo json_encode($medicaments);
