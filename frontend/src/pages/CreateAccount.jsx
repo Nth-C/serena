@@ -95,11 +95,11 @@ function CreateAccount() {
                 </div>
                 <div>
                     <label>Date :</label>
-                    <input type="date" name="debut" value={formData.date_naissance} onChange={handleChange} required/>
+                    <input type="date" name="date_naissance" value={formData.date_naissance} onChange={handleChange} required/>
                 </div>
                 <div>
                     <label>Nom d'utilisateur : </label>
-                    <input type="text" name="username" value={formData.username} onChange={handleChange} placeholder="John_Doe" required />
+                    <input type="text" name="username" value={formData.username} onChange={handleChange} required />
                 </div>
 
                 <div>
