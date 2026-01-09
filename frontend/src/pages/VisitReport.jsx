@@ -5,7 +5,7 @@ import PopUpDelete from '../components/popup_delete/PopUpDelete'
 import PopUpConfirmation from '../components/popup_confirmation/PopUpConfirmation'
 
 function LastVisitReport() {
-  // 1. États de base
+  // 1. États de base et listes
   const [rapports, setRapports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
@@ -19,7 +19,7 @@ function LastVisitReport() {
 
   // 3. Gestion de la sélection et du mode édition
   const [selectedRapport, setSelectedRapport] = useState(null);
-  const [isEditing, setIsEditing] = useState(false); // Pour savoir si on modifie ou on ajoute
+  const [isEditing, setIsEditing] = useState(false);
 
   // 4. États Formulaire Rapport
   const [nomRapport, setNomRapport] = useState("");
@@ -87,8 +87,8 @@ function LastVisitReport() {
     setNomRapport(selectedRapport.nom);
     setDescRapport(selectedRapport.description);
     setIsEditing(true);
-    setIsDetailsReportpen(false); // On ferme les détails
-    setIsNewRapportOpen(true);   // On ouvre le formulaire
+    setIsDetailsReportpen(false); 
+    setIsNewRapportOpen(true);   
   };
 
   const handleSubmitRapport = async (e) => {
@@ -194,6 +194,47 @@ function LastVisitReport() {
         </svg>
       </button>
 
+      {/* Portal pour la popup médicaments */}
+      {mounted && isNewPopupOpen && createPortal(
+        <div className={`popup_report_add_medicament ${isNewPopupOpen ? 'popu-medi-active' : ''}`}>
+          <div className="search_report">
+            <div>
+              <img src="/icons/arrow_back.svg" alt="" onClick={() => setIsPopupOpen(false)} />
+              <input type="search" placeholder="Rechercher un médicament" />
+            </div>
+            <div>
+              <img src="/icons/sort.svg" alt="" />
+              <p>Trier par</p>
+            </div>
+          </div>
+          <button onClick={toggleNewMedicine} className="btn_blue">Ajouter un nouveau médicament</button>
+          <div className="list">
+            <div className="container_medecine">
+              <div className="principal_infos"><p>Xanax</p></div>
+              <div className="drop">
+                <p>Anxiolytique...</p>
+                <div><button className="fill">Ajouter</button></div>
+              </div>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Slide Ajout Médicament */}
+      <Slide title={"Ajouter un médicament"} isOpen={isNewMedicineOpen} toggleOpen={toggleNewMedicine} zIndex={700}>
+        <form className="new_medecine">
+          <div><label>Nom : </label><input type="text" value={nameMedecine} onChange={(e) => setNameMedecine(e.target.value)} required /></div>
+          <div><label>Type : </label><input type="text" value={typeMedecine} onChange={(e) => setTypeMedecine(e.target.value)} required /></div>
+          <div><label>Stock initial : </label><input type="number" value={initialStock} onChange={(e) => setInitialStock(e.target.value)} required /></div>
+          <div><label>Stock actuel : </label><input type="number" value={currentStock} onChange={(e) => setCurrentStock(e.target.value)} required /></div>
+          <div>
+            <button type="button" className="btn_border" onClick={handleResetMedecine}>Réinitialiser</button>
+            <button className="btn_blue">Ajouter</button>
+          </div>
+        </form>
+      </Slide>
+
       {/* Slide Nouveau/Modif Rapport */}
       <Slide title={isEditing ? "Modifier le rapport" : "Créer un rapport de visite"} isOpen={isNewRapportOpen} toggleOpen={toggleNewRapport} zIndex={500}>
         <form className="add_report" onSubmit={handleSubmitRapport}>
@@ -209,7 +250,7 @@ function LastVisitReport() {
           )}
           <div>
             <label>Information supplémentaire : </label>
-            <textarea value={descRapport} onChange={(e) => setDescRapport(e.target.value)}></textarea>
+            <textarea value={descRapport} onChange={(e) => setDescRapport(e.target.value)} required></textarea>
           </div>
           <div>
             <button type="button" className="btn_border" onClick={handleResetRapport}>Réinitialiser</button>
@@ -218,14 +259,24 @@ function LastVisitReport() {
         </form>
       </Slide>
 
-      {/* Slide Détails */}
-      <Slide title={selectedRapport ? selectedRapport.nom : "Détails"} isOpen={isDetailsReportOpen} toggleOpen={toggleDetailsReport} zIndex={100}>
+      {/* Slide Détails Dynamique */}
+      <Slide title={selectedRapport ? selectedRapport.nom : "Détails"} isOpen={isDetailsReportOpen} toggleOpen={toggleDetailsReport} zIndex={500}>
         {selectedRapport ? (
             <div className="details_report">
                 <div>
                     <p>Fait par : <strong>{selectedRapport.auteur || "Utilisateur"}</strong></p>
                     <p>Le : {new Date(selectedRapport.date).toLocaleDateString('fr-FR')}</p>
                     <p>À : {selectedRapport.heure ? selectedRapport.heure.substring(0, 5) : "--:--"}</p>
+                </div>
+                <div className="list-medic">
+                    <h2>Médicaments pris :</h2>
+                    <ul>
+                        {selectedRapport.medics_list ? (
+                            selectedRapport.medics_list.map((m, i) => <li key={i}>{m}</li>)
+                        ) : (
+                            <li>1 doliprane</li> // Fallback statique si vide pour le test
+                        )}
+                    </ul>
                 </div>
                 <div>
                     <h2>Informations supplémentaires :</h2>
@@ -243,21 +294,17 @@ function LastVisitReport() {
         ) : null}
       </Slide>
 
-      {/* Popups & Portal */}
-      <PopUpDelete toDelete={nameToDelete} handleDelete={handleDeleteRapport} isOpen={isPopUpDeleteOpen} onClose={togglePopUpDelete} />
+      {/* Popups de confirmation et suppression */}
+      <PopUpDelete 
+        toDelete={nameToDelete} 
+        handleDelete={handleDeleteRapport} 
+        isOpen={isPopUpDeleteOpen} 
+        onClose={togglePopUpDelete} 
+      />
+      
       <PopUpConfirmation sentence={`Le rapport "${nameToDelete}" a bien été supprimé.`} show={isShowRemove} setShow={setIsShowRemove} />
       <PopUpConfirmation sentence={`Le rapport "${nomRapport}" a bien été ajouté.`} show={isShowAdd} setShow={setIsShowAdd} />
       <PopUpConfirmation sentence={`Le rapport a bien été modifié.`} show={isShowModify} setShow={setIsShowModify} />
-
-      {mounted && isNewPopupOpen && createPortal(
-        <div className={`popup_report_add_medicament popu-medi-active`}>
-          <div className="search_report">
-            <img src="/icons/arrow_back.svg" alt="" onClick={() => setIsPopupOpen(false)} />
-            <input type="search" placeholder="Rechercher un médicament" />
-          </div>
-          <button onClick={toggleNewMedicine} className="btn_blue">Ajouter nouveau</button>
-        </div>, document.body
-      )}
     </div>
   )
 }
