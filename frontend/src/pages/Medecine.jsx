@@ -21,6 +21,7 @@ function Medecine() {
 
   // ajout medicament
   const [isNewMedecineOpen , setIsNewMedecineOpen] = useState(false) // page
+  const [listNomMedecine , setListNomMedecine] = useState([])
   const [listTypeMedecine , setListTypeMedecine] = useState([])
   const [nameMedecine , setNameMedecine] = useState("")
   const [idCatalogueMedecine , setIdCatalogueMedecine] = useState("")
@@ -190,6 +191,7 @@ function Medecine() {
 
       const result = await response.json();
       console.log(result);
+      setListNomMedecine(result.resultats)
       if (result.isUnique) {
         console.log(result.resultats)
         setListTypeMedecine(result.resultats)
@@ -305,6 +307,7 @@ function Medecine() {
             <label>Nom du médicament : </label>
             <input
               type="text"
+              list="medication-suggestions"
               value={nameMedecine}
               onChange={(e) => {
                 setNameMedecine(e.target.value);
@@ -316,6 +319,13 @@ function Medecine() {
               required
               disabled={isEditing} // on ne peut pas modifier l'input si on modifie un medicament
             />
+            <datalist id="medication-suggestions">
+              <option value="Doliprane"></option>
+            {/* On boucle sur les résultats de votre recherche PHP */}
+            {listNomMedecine?.map((suggestion) => (
+            <option value={suggestion.denomination_substance} />
+            ))}
+            </datalist>
           </div>
           <div>
             <label>Type de médicament : </label>
