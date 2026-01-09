@@ -6,7 +6,7 @@ class App
 {
     public Planning $planning;
     public ?Personne $personne;
-    public int $id_famille; 
+    public string $id_famille; 
     public bool $connected; 
 
     public function __construct()
