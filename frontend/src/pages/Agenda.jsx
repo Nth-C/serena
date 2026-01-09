@@ -5,7 +5,7 @@ function AddEvent() {
   const [newEventOpen, setNewEventOpen] = useState(false)
   
   const [isTrajet, setIsTrajet] = useState(false)
-  const [membresFamille, setMembresFamille] = useState([]) // Pour stocker la liste reçue du PHP
+  const [membresFamille, setMembresFamille] = useState([]) 
 
   const toggleNewEvent = () => {
     setNewEventOpen(!newEventOpen)
@@ -14,7 +14,7 @@ function AddEvent() {
   const [formData, setFormData] = useState({
     titre: '',
     lieu: '',
-    accompagnants: '', // Stockera l'ID de la personne sélectionnée
+    accompagnants: '', 
     debut: '',
     fin: '',
     recurrence: '',   
@@ -27,20 +27,19 @@ function AddEvent() {
     lieuArrivee: ''
   })
 
-  useEffect(() => {
-    console.log(formData)
-  }, [formData]);
+  // useEffect(() => { console.log(formData) }, [formData]); // Debug
   
   const [status, setStatus] = useState({ type: null, message: '' })
 
   const apiUrl = import.meta.env.VITE_API_URL
 
-  // --- NOUVEAU : Chargement de la liste au montage du composant ---
+  // --- Chargement de la liste des membres ---
   useEffect(() => {
     const fetchMembres = async () => {
       try {
-        // Adapte la route selon ton routeur PHP (ici : getfamillepersonne)
-        const response = await fetch(`${apiUrl}/?route=getfamillepersonne`)
+        const response = await fetch(`${apiUrl}/?route=getfamillepersonne`, {
+            credentials: 'include' 
+        });
         const data = await response.json()
         
         if (data.success) {
@@ -53,7 +52,6 @@ function AddEvent() {
 
     fetchMembres();
   }, [apiUrl]);
-  // -------------------------------------------------------------
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -68,6 +66,7 @@ function AddEvent() {
     setStatus({ type: null, message: '' })
 
     try {
+      // NOTE : Si c'est un trajet, tu voudras peut-être changer la route ici ?
       const response = await fetch(`${apiUrl}/?route=evenement/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -77,11 +76,13 @@ function AddEvent() {
       const result = await response.json()
 
       if (result.success) {
-        setStatus({ type: 'success', message: 'Événement créé avec succès !' })
-       
+        setStatus({ type: 'success', message: 'Enregistré avec succès !' })
+        // Reset du formulaire...
         setFormData({
-          titre: '', lieu: '', accompagnants: '', debut: '', fin: '', recurrence: '', description: ''
+          titre: '', lieu: '', accompagnants: '', debut: '', fin: '', recurrence: '', description: '',
+          effectue: '', aidantAffecte: '', societe: '', lieuDepart: '', lieuArrivee: ''
         })
+        setNewEventOpen(false); // On ferme le slide après succès
       } else {
         setStatus({ type: 'error', message: result.error || 'Une erreur est survenue' })
       }
@@ -147,17 +148,24 @@ function AddEvent() {
               />
             </div>
 
+            {/* --- CORRECTION ICI : INPUT REMPLACÉ PAR SELECT --- */}
             <div>
               <label>Accompagnants :</label>
-              <input 
-                type="text" 
+              <select 
                 name="accompagnants" 
-                placeholder="Ex: Jean, Marie"
                 value={formData.accompagnants} 
-                onChange={handleChange} 
-                required 
-              />
+                onChange={handleChange}
+                required
+              >
+                <option value="">-- Choisir un accompagnant --</option>
+                {membresFamille.map((personne) => (
+                    <option key={personne.id} value={personne.id}>
+                        {personne.prenom} {personne.nom}
+                    </option>
+                ))}
+              </select>
             </div>
+            {/* ------------------------------------------------ */}
 
             <div>
               <label>Début :</label>
@@ -205,21 +213,26 @@ function AddEvent() {
             <>
             <div className='effectue_trajet'>
               <div>
-                <input type="radio" id="aidant" name="effectue" value={formData.effectue} onChange={handleChange}/>
-                <label for="aidant">Aidant</label>
+                {/* Attention à ajouter value="aidant" sinon le radio ne marche pas bien */}
+                <input type="radio" id="aidant" name="effectue" value="aidant" onChange={handleChange}/>
+                <label htmlFor="aidant">Aidant</label>
               </div>
               <div>
-                <input type="radio" id="extrene" name="effectue" value={formData.effectue} onChange={handleChange}/>
-                <label for="extrene">Société Externe</label> 
+                <input type="radio" id="externe" name="effectue" value="externe" onChange={handleChange}/>
+                <label htmlFor="externe">Société Externe</label> 
               </div> 
             </div>
 
             <div>
               <label>Qui effectue le trajet :</label>
-              <select name="aidant_affecte" value={formData.aidantAffecte} onChange={handleChange} required>
+              <select name="aidantAffecte" value={formData.aidantAffecte} onChange={handleChange} required>
                 <option value="">Choisir...</option>
-                <option value="">nathanta</option>
-                <option value="">zozo</option>
+                {/* Tu peux aussi réutiliser membresFamille ici si besoin */}
+                {membresFamille.map((personne) => (
+                    <option key={personne.id} value={personne.id}>
+                        {personne.prenom} {personne.nom}
+                    </option>
+                ))}
               </select>
             </div>
 
@@ -227,9 +240,9 @@ function AddEvent() {
               <label>Lieu de départ :</label>
               <input 
                 type="text" 
-                name="accompagnants" 
+                name="lieuDepart" /* CORRIGÉ : c'était 'accompagnants' */
                 placeholder="Ex: Maison"
-                value={formData.accompagnants} 
+                value={formData.lieuDepart} 
                 onChange={handleChange} 
                 required 
               />
@@ -239,9 +252,9 @@ function AddEvent() {
               <label>Lieu d'arrivée :</label>
               <input 
                 type="text" 
-                name="accompagnants" 
-                placeholder="Ex: 67 Rue du Skibidi, Agartha 38850"
-                value={formData.accompagnants} 
+                name="lieuArrivee" /* CORRIGÉ : c'était 'accompagnants' */
+                placeholder="Ex: Centre ville"
+                value={formData.lieuArrivee} 
                 onChange={handleChange} 
                 required 
               />
