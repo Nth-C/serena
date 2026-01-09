@@ -476,6 +476,14 @@ button.creer_suivi, .acce_suivi .form-actions {
   color: var(--white);
   padding: 1rem;
   cursor: pointer;
+  height: 85 px;
+  overflow: hidden;
+}
+
+.report_case p{
+  text-overflow: ellipsis;
+  height: 18px;
+  overflow: hidden;
 }
 
 .liste_report {
