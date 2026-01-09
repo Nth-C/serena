@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 $app = new App();
 $model = new MedicamentDAO();
 try {
-    $id_famille = $app->id_famille; 
+    $id_famille = $app->id_famille;
     $json = file_get_contents('php://input'); // lit le body du fetch
     $data = json_decode($json, true); // transforme '$json' en tableau
 
@@ -19,7 +19,7 @@ try {
         throw new Exception("Données manquantes (name ou stock).");
     }
     
-    $success = $model->addMedecine($id_famille,$data['name'], $data['stock'], $data['stockTotal'], $data['type']);
+    $success = $model->addMedecine($id_famille,$data['name'], $data['stock'], $data['stockTotal'], $data['idCatalogueMedecine']);
 
     // renvoie a la vue des informations
     echo json_encode([
