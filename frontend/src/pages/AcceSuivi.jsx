@@ -205,10 +205,10 @@ function AcceSuivi() {
 
     return (
         <div className="acce_suivi">
-            <img src="/img/logo-name.svg" alt="Logo" />
+            <img src="/img/logo-name.png" alt="Logo" />
             
             {/* Le message affichera désormais "Bienvenue M. Scapin" pour "scapinb" */}
-            <h1>Bienvenue, {nomComplet} 👋</h1>
+            <h1 className="bienvenue">Bienvenue, {nomComplet} 👋</h1>
             
             <h1>Accéder au suivi</h1>
 
