@@ -2,11 +2,11 @@
 
 class Document
 {
-    public readonly int $id_document;
+    public readonly string $id_document;
     public string $url;
     public string $nom_doc;
     public string $type;
-    public int $id_cat;
+    public string $id_cat;
 
     public function __construct(array $data = array())
     {

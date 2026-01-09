@@ -23,7 +23,7 @@ class MedicamentDAO {
     }
 
     public function getAllMedicaments($id_famille): array {
-        $query = 'SELECT * FROM STOCK_MEDICS,CAT_MEDICS WHERE id_famille = :id_famille AND CAT_MEDICS.id_medics = STOCK_MEDICS.idCatalogueMedecine';
+        $query = 'SELECT * FROM STOCK_MEDICS,CAT_MEDICS WHERE id_famille = :id_famille AND CAT_MEDICS.id_medics = STOCK_MEDICS.id_cat_medicament';
         $stmt = $this->dal->prepare($query);
 
         $stmt->execute(['id_famille' => $id_famille]);
