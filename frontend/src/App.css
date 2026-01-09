@@ -760,6 +760,10 @@ progress.blue_bar::-moz-progress-bar {
   padding: 1.5rem 1rem 1.5rem 1rem;
 }
 
+.file_explorer .case_categorie div:first-child p {
+  font-weight: 700;
+}
+
 .file_explorer .case_categorie div:last-child {
   display: flex;
   gap: 15px;
@@ -789,6 +793,40 @@ progress.blue_bar::-moz-progress-bar {
 .file_explorer .case_document svg {
   width: 24px;
   cursor: pointer;
+}
+
+.drop_zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 160px;
+  width: 100%;
+  border: 1px dashed var(--black);
+  border-radius: 10px;
+  color: slategray;
+  cursor: pointer;
+}
+
+.drop_zone div {
+  display: flex;
+  gap: 4px;
+}
+
+.drop_zone svg {
+  width: 70px;
+  height: 70px;
+  fill: var(--gray);
+}
+
+.drop_zone div p:last-child {
+  color: var(--blue);
+  text-decoration: underline;
+}
+
+.drop_zone input {
+  display: none;
+  border: none;
 }
 
 /* ----------------------------- */
