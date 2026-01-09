@@ -20,49 +20,49 @@ function CreateAccount() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (formData.mdp !== formData.confirmMdp) {
-        setMessage('Les mots de passe ne correspondent pas');
-        return;
-    }
-
-    try {
-        // On utilise FormData pour que PHP reçoive les données dans $_POST
-        const dataToSend = new FormData();
-        dataToSend.append('nom', formData.nom);
-        dataToSend.append('prenom', formData.prenom);
-        dataToSend.append('mail', formData.mail);
-        dataToSend.append('username', formData.username);
-        dataToSend.append('mdp', formData.mdp);
-        dataToSend.append('date_naissance', formData.date_naissance);
-
-        const response = await fetch(`${apiUrl}/?route=register`, {
-            method: 'POST',
-            body: dataToSend 
-        });
-
-        // On vérifie si la réponse est du JSON valide
-        const result = await response.json();
-
-        if (response.ok && result.success) {
-            setMessage('Inscription réussie !');
-            setTimeout(() => navigate('/'), 1500);
-        } else {
-            setMessage(result.error || 'Erreur lors de l\'inscription');
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (formData.mdp !== formData.confirmMdp) {
+            setMessage('Les mots de passe ne correspondent pas');
+            return;
         }
-    } catch (error) {
-        console.error("Erreur détaillée:", error);
-        setMessage('Erreur de connexion au serveur');
-    }
-};
+
+        try {
+            // On utilise FormData pour que PHP reçoive les données dans $_POST
+            const dataToSend = new FormData();
+            dataToSend.append('nom', formData.nom);
+            dataToSend.append('prenom', formData.prenom);
+            dataToSend.append('mail', formData.mail);
+            dataToSend.append('username', formData.username);
+            dataToSend.append('mdp', formData.mdp);
+            dataToSend.append('date_naissance', formData.date_naissance);
+
+            const response = await fetch(`${apiUrl}/?route=register`, {
+                method: 'POST',
+                body: dataToSend
+            });
+
+            // On vérifie si la réponse est du JSON valide
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                setMessage('Inscription réussie !');
+                setTimeout(() => navigate('/'), 1500);
+            } else {
+                setMessage(result.error || 'Erreur lors de l\'inscription');
+            }
+        } catch (error) {
+            console.error("Erreur détaillée:", error);
+            setMessage('Erreur de connexion au serveur');
+        }
+    };
 
     return (
         <div className="create_account">
-            <img src="/img/logo-name.svg" alt="" />
+            <img src="/img/logo-name.png" alt="" />
 
             <h1>Créer un compte</h1>
-            
+
             {/* Affichage du message avec une couleur simple pour la visibilité */}
             {message && (
                 <p style={{ color: message.includes('réussie') ? 'green' : 'red' }}>
@@ -92,6 +92,10 @@ function CreateAccount() {
                         <label>Prénom : </label>
                         <input type="text" name="prenom" value={formData.prenom} onChange={handleChange} placeholder="John" required />
                     </div>
+                </div>
+                <div>
+                    <label>Début :</label>
+                    <input type="datetime-local" name="debut" value={formData.date_naissance} onChange={handleChange} required/>
                 </div>
                 <div>
                     <label>Nom d'utilisateur : </label>

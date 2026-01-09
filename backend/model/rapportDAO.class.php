@@ -38,11 +38,26 @@ class RapportDAO {
         ]);
     }
 
-    public function deleteRapport($id_rapport) : bool {
-        $query = 'DELETE FROM RAPPORTS WHERE id_rapport = :id_rapport';
+    public function deleteRapport(int $id_rapport, int $id_famille): bool {
+        $query = 'DELETE FROM rapports WHERE id_rapport = :id AND id_famille = :id_fam';
         $stmt = $this->dal->prepare($query);
-        return $stmt->execute(['id_rapport' => $id_rapport]);
+        return $stmt->execute([
+            'id' => $id_rapport,
+            'id_fam' => $id_famille
+        ]);
     }
 
+    public function updateRapport(int $id_famille, int $id_rapport, string $nom, string $desc): bool {
+    $query = 'UPDATE rapports 
+              SET nom = :nom, description = :desc 
+              WHERE id_rapport = :id_r AND id_famille = :id_f';
+    $stmt = $this->dal->prepare($query);
+    return $stmt->execute([
+        'nom'  => $nom,
+        'desc' => $desc,
+        'id_r' => $id_rapport,
+        'id_f' => $id_famille
+    ]);
+}
     
 }

@@ -36,7 +36,7 @@ function Login() {
 
     return (
         <div className="login">
-            <img src="/img/logo-name.svg" alt="" />
+            <img src="/img/logo-name.png" alt="" />
 
             <h1>Se connecter</h1>
             {message && <p>{message}</p>}
