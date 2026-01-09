@@ -5,36 +5,36 @@ import PopUpDelete from '../components/popup_delete/PopUpDelete'
 import PopUpConfirmation from '../components/popup_confirmation/PopUpConfirmation'
 
 function LastVisitReport() {
-  // 1. États de base et listes
+  // États de base et listes
   const [rapports, setRapports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
 
-  // 2. États des Slides et Popups
+  // États des Slides et Popups
   const [isNewRapportOpen, setIsNewRapportOpen] = useState(false);
   const [isNewMedicineOpen, setIsMedicineOpen] = useState(false);
   const [isNewPopupOpen, setIsPopupOpen] = useState(false);
   const [isDetailsReportOpen, setIsDetailsReportpen] = useState(false);
   const [isPopUpDeleteOpen, setIsPopUpDeleteOpen] = useState(false);
 
-  // 3. Gestion de la sélection et du mode édition
+  // Gestion de la sélection et du mode édition
   const [selectedRapport, setSelectedRapport] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
-  // 4. États Formulaire Rapport
+  // États Formulaire Rapport
   const [nomRapport, setNomRapport] = useState("");
   const [descRapport, setDescRapport] = useState("");
 
-  // 5. États Suppression
+  // États Suppression
   const [idCurrentRapport, setIdCurrentRapport] = useState(null);
   const [nameToDelete, setNameToDelete] = useState("");
 
-  // 6. États Notifications
+  // États Notifications
   const [isShowRemove, setIsShowRemove] = useState(false);
   const [isShowAdd, setIsShowAdd] = useState(false);
   const [isShowModify, setIsShowModify] = useState(false);
 
-  // 7. États Formulaire Médicament
+  // États Formulaire Médicament
   const [nameMedecine, setNameMedecine] = useState("");
   const [typeMedecine, setTypeMedecine] = useState("");
   const [initialStock, setInitialStock] = useState("");
@@ -194,7 +194,7 @@ function LastVisitReport() {
         </svg>
       </button>
 
-      {/* Portal pour la popup médicaments */}
+      {/* popup médicaments */}
       {mounted && isNewPopupOpen && createPortal(
         <div className={`popup_report_add_medicament ${isNewPopupOpen ? 'popu-medi-active' : ''}`}>
           <div className="search_report">
@@ -259,7 +259,7 @@ function LastVisitReport() {
         </form>
       </Slide>
 
-      {/* Slide Détails Dynamique */}
+      {/* Slide Détails Rapport */}
       <Slide title={selectedRapport ? selectedRapport.nom : "Détails"} isOpen={isDetailsReportOpen} toggleOpen={toggleDetailsReport} zIndex={500}>
         {selectedRapport ? (
             <div className="details_report">
