@@ -28,7 +28,9 @@ function AddEvent() {
     const fetchMembres = async () => {
       try {
         // Adapte la route selon ton routeur PHP (ici : getfamillepersonne)
-        const response = await fetch(`${apiUrl}/?route=getfamillepersonne`)
+        const response = await fetch(`${apiUrl}/?route=getfamillepersonne`, {
+        credentials: 'include' // Indispensable pour que PHP récupère la session (id_famille)
+      });
         const data = await response.json()
         
         if (data.success) {

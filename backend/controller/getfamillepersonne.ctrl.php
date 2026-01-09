@@ -3,11 +3,6 @@
 require_once('model/FamilleDAO.class.php'); 
 require_once(__DIR__ . '/../app.php');
 
-// Headers CORS (indispensable pour React)
-header("Access-Control-Allow-Origin: *"); 
-header("Access-Control-Allow-Methods: GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
-
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
