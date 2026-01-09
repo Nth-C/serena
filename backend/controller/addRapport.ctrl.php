@@ -21,8 +21,8 @@ try {
 
     $model = new RapportDAO();
     $success = $model->addRapport(
-        (int)$app->id_famille, 
-        (int)$app->personne->id, 
+        $app->id_famille, 
+        $app->personne->id, 
         $data['description'],
         $data['nom']
     );

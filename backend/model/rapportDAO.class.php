@@ -24,8 +24,8 @@ class RapportDAO {
         return $data; 
     }
 
-    public function addRapport($id_famille, $id_personne, $description, $nom): bool {$query = 
-        'INSERT INTO RAPPORTS (nom, description, date, heure, id_famille, id_personne) 
+    public function addRapport($id_famille, $id_personne, $description, $nom): bool {
+        $query = 'INSERT INTO RAPPORTS (nom, description, date, heure, id_famille, id_personne) 
         VALUES (:nom, :description, CURRENT_DATE, CURRENT_TIME, :id_famille, :id_personne)';
 
         $stmt = $this->dal->prepare($query);
@@ -38,7 +38,7 @@ class RapportDAO {
         ]);
     }
 
-    public function deleteRapport(int $id_rapport, int $id_famille): bool {
+    public function deleteRapport( $id_rapport, $id_famille): bool {
         $query = 'DELETE FROM rapports WHERE id_rapport = :id AND id_famille = :id_fam';
         $stmt = $this->dal->prepare($query);
         return $stmt->execute([
@@ -47,7 +47,7 @@ class RapportDAO {
         ]);
     }
 
-    public function updateRapport(int $id_famille, int $id_rapport, string $nom, string $desc): bool {
+    public function updateRapport( $id_famille,  $id_rapport, string $nom, string $desc): bool {
     $query = 'UPDATE rapports 
               SET nom = :nom, description = :desc 
               WHERE id_rapport = :id_r AND id_famille = :id_f';

@@ -1,11 +1,11 @@
 <?php
 
 class Rapport {
-    public readonly int $id_rapport;
+    public readonly string $id_rapport;
     public string $description;
     public ?DateTimeImmutable $date;
-    public readonly int $id_famille;
-    public readonly int $id_personne;
+    public readonly string $id_famille;
+    public readonly string $id_personne;
     public readonly string $nom;
     public string $heure;
 

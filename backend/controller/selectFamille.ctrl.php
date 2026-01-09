@@ -19,7 +19,7 @@ $id_famille_selectionne = isset($data['id_famille']) ? (int)$data['id_famille'] 
 if ($id_famille_selectionne !== null && $id_famille_selectionne > 0) {
     $dao = new FamilleDAO();
     // On vérifie que la personne a le droit d'accéder à cette famille
-    $mesFamilles = $dao->findByPersonne((int)$app->personne->id);
+    $mesFamilles = $dao->findByPersonne($app->personne->id);
 
     $autorise = false;
     foreach ($mesFamilles as $f) {
