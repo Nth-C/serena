@@ -14,7 +14,7 @@ if (!$app->connected || !$app->personne) {
 
 $json = file_get_contents('php://input');
 $data = json_decode($json, true);
-$id_famille_selectionne = isset($data['id_famille']) ? (string)$data['id_famille'] : null;
+$id_famille_selectionne = isset($data['id_famille']) ? $data['id_famille'] : null;
 
 if ($id_famille_selectionne !== null && $id_famille_selectionne > 0) {
     $dao = new FamilleDAO();
@@ -23,7 +23,7 @@ if ($id_famille_selectionne !== null && $id_famille_selectionne > 0) {
 
     $autorise = false;
     foreach ($mesFamilles as $f) {
-        if ((int)$f->id_famille === $id_famille_selectionne) { 
+        if ($f->id_famille === $id_famille_selectionne) { 
             $autorise = true; 
             break; 
         }

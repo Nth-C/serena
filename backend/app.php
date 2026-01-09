@@ -63,7 +63,7 @@ class App
         session_destroy();
     }
 
-    public function setFamilleActive($id_famille)
+    public function setFamilleActive( $id_famille)
     {
         $this->id_famille = $id_famille;
         $_SESSION['id_famille_active'] = $id_famille;
