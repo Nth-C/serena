@@ -216,7 +216,7 @@ function Medecine() {
                     <p>{med.type}</p>
                   </div>
                   <div>
-                    <progress 
+                    <progress
                     // met des class en fonction du pourcentage pour les bar de couleurs
                     className={
                         calcProgressBar(med.stockTotal, med.stock) < 33 ? "red_bar" : 

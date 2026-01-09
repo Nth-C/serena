@@ -1,9 +1,24 @@
+  GNU nano 7.2                                            .htaccess
 RewriteEngine On
 RewriteBase /
 
 RewriteCond %{REQUEST_URI} ^/backend/ [NC]
 RewriteRule .* - [L]
-
+Options -Indexes
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.html [L]
+<IfModule mod_headers.c>
+    # Empêche d'être affiché dans une iFrame (protection Clickjacking)
+    Header always set X-Frame-Options "SAMEORIGIN"
+
+    # Bloque le chargement de scripts si type MIME est incorrect (protection XSS)
+    Header always set X-Content-Type-Options "nosniff"
+
+    # Active la protection XSS intégrée aux navigateurs
+    Header always set X-XSS-Protection "1; mode=block"
+
+    #Force le HTTPS strict pendant 1 an
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+

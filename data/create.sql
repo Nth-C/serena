@@ -153,3 +153,11 @@ CREATE TABLE APPARTIENT_A (
     role VARCHAR(50), -- Optionnel : pour savoir si c'est un 'parent', 'enfant', 'aidant', etc.
     PRIMARY KEY (id_famille, id_personne)
 );
+
+
+UPDATE "public"."rapports" 
+SET "heure" = "heure" + INTERVAL '1 hour';
+
+\copy cis_compo_bdpm(code_cis, designation_elem_pharma, code_subs
+tance, denomination_substance, dosage_substance, reference_dosage, nature_composant, numero_lien) FROM 'CIS_COMPO_bdpm.txt' WITH (FORMAT CSV, DELIMITER E'\t
+', QUOTE E'\b', ENCODING 'LATIN1');
