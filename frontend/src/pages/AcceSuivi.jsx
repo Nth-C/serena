@@ -246,7 +246,7 @@ function AcceSuivi() {
                     </div>
                     <div className="form-group">
                         <label>Courte description : </label>
-                        <textarea name="description" value={formData.description} onChange={handleChange} required></textarea>
+                        <textarea name="description" value={formData.description} onChange={handleChange}></textarea>
                     </div>
                     <div>
                         <button type="button" className="btn_border" onClick={toggleNewSuvi}>Annuler</button>
@@ -267,7 +267,7 @@ function AcceSuivi() {
                     </div>
                     <div className="form-group">
                         <label>Courte description : </label>
-                        <textarea name="description" value={formData.description} onChange={handleChange} required></textarea>
+                        <textarea name="description" value={formData.description} onChange={handleChange}></textarea>
                     </div>
                     <div className="form-actions">
                         <button type="button" className="btn_red">Supprimer</button>

@@ -161,7 +161,6 @@ function AddEvent() {
               name="description" 
               value={formData.description} 
               onChange={handleChange} 
-              required 
             />
           </div>
 

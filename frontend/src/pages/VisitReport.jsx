@@ -219,7 +219,6 @@ function LastVisitReport() {
             <textarea
               value={descRapport}
               onChange={(e) => setDescRapport(e.target.value)}
-              required
             ></textarea>
           </div>
           <div>
