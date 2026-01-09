@@ -94,8 +94,8 @@ function CreateAccount() {
                     </div>
                 </div>
                 <div>
-                    <label>Début :</label>
-                    <input type="datetime-local" name="debut" value={formData.date_naissance} onChange={handleChange} required/>
+                    <label>Date :</label>
+                    <input type="date" name="debut" value={formData.date_naissance} onChange={handleChange} required/>
                 </div>
                 <div>
                     <label>Nom d'utilisateur : </label>
