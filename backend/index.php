@@ -31,6 +31,7 @@ const _ROUTES = array(
   'rapport/list' => 'getRapport',
   'rapport/add' => 'addRapport',
   'rapport/delete' => 'deleteRapport',
+  'rapport/update' => 'updateRapport',
   'document/list' => 'viewDocument',
   'document/add' => 'addDocument',
   'categorie/add' => 'addCategorie'
