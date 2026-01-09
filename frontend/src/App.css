@@ -132,6 +132,17 @@ form > div:has(input:focus, select:focus) label {
   color: var(--blue);
 }
 
+/* pour enlever la couleur bleu des label des radio*/
+form > div > div:has([type=radio]) label {
+  color: var(--black);
+}
+
+form > div > div:has([type=radio]) {
+  display: flex;
+  align-items: center;  
+  gap: .5rem;
+}
+
 input[type=search] {
   border-radius: 20px;
   background-size: 1.7rem;
@@ -611,7 +622,7 @@ button.add_medi {
   height: .9rem;
 }
 
-/* La couleur de la barre pour Chrome, Safari et Edge */
+/* la couleur de la barre pour Chrome, Safari et Edge */
 progress.red_bar::-webkit-progress-value,
 progress.red_bar::-webkit-progress-bar,
 progress.red_bar::-moz-progress-bar {
@@ -683,25 +694,29 @@ progress.blue_bar::-moz-progress-bar {
 
 }
 
-.add_event > div:first-child {
-  flex-direction: row;
-  gap: 0;
+.switch_event {
+  margin-bottom: 2rem;
+  border-radius: 8px;
 }
 
-.add_event > div:first-child button {
+.switch_event button {
   width: 50%;
-  border-color: var(--gray);
-  border-style: solid;
   padding: 0.5rem 3rem;
   cursor: pointer;
+  background-color: var(--bg-black);
+  color: var(--white);
 }
 
-.add_event > div:first-child button:first-child {
-  border-width: 1px 0 1px 1px; 
+.switch_event button.active {
+  background-color: var(--blue);
 }
 
-.add_event > div:first-child button:last-child {
-  border-width: 1px 1px 1px 0; 
+.switch_event button:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.switch_event button:last-child {
+  border-radius: 0 8px 8px 0;
 }
 
 /* ----------------------------- */

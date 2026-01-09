@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Slide from '../components/slide/Slide';
 
 
 function AddEvent() {
   const [newEventOpen, setNewEventOpen] = useState(false)
+  
+  const [isTrajet, setIsTrajet] = useState(false)
 
   const toggleNewEvent = () => {
     setNewEventOpen(!newEventOpen)
@@ -16,8 +18,18 @@ function AddEvent() {
     debut: '',
     fin: '',
     recurrence: '',   
-    description: ''
+    description: '',
+
+    effectue: '',
+    aidantAffecte: '',
+    societe: '',
+    lieuDepart: '',
+    lieuArrivee: ''
   })
+
+  useEffect(() => {
+    console.log(formData)
+  }, [formData]);
   
   const [status, setStatus] = useState({ type: null, message: '' })
 
@@ -82,94 +94,143 @@ function AddEvent() {
         isOpen={newEventOpen} 
         toggleOpen={toggleNewEvent}
         validOnHeader={true}
+        handlerValid={handleSubmit}
       >
-        <form className='add_event' >  
-          <div>
-            <button>Événement</button>
-            <button>Trajet</button>
+          <div className='switch_event'>
+            <button className={!isTrajet ? 'active' : ''} onClick={() => setIsTrajet(false)} >Événement</button>
+            <button className={isTrajet ? 'active' : ''} onClick={() => setIsTrajet(true)} >Trajet</button>
           </div>
 
-          <div>
-            <label>Titre :</label>
-            <input 
-              type="text" 
-              name="titre" 
-              value={formData.titre} 
-              onChange={handleChange} 
-              required 
-            />
-          </div>
+          <form className='add_event'>  
+          {!isTrajet ?(
+            <>
+            <div>
+              <label>Titre :</label>
+              <input 
+                type="text" 
+                name="titre" 
+                value={formData.titre} 
+                onChange={handleChange}
+                placeholder="Ex: Rendez-vous médical"
+                required 
+              />
+            </div>
 
-          <div>
-            <label>Lieu :</label>
-            <input 
-              type="text" 
-              name="lieu" 
-              value={formData.lieu} 
-              onChange={handleChange} 
-              required 
-            />
-          </div>
+            <div>
+              <label>Lieu :</label>
+              <input 
+                type="text" 
+                name="lieu" 
+                value={formData.lieu} 
+                onChange={handleChange} 
+                placeholder="Ex: 67 Rue du Skibidi, Agartha 38850"
+                required 
+              />
+            </div>
 
-          <div>
-            <label>Accompagnants :</label>
-            <input 
-              type="text" 
-              name="accompagnants" 
-              placeholder="Ex: Jean, Marie"
-              value={formData.accompagnants} 
-              onChange={handleChange} 
-              required 
-            />
-          </div>
+            <div>
+              <label>Accompagnants :</label>
+              <input 
+                type="text" 
+                name="accompagnants" 
+                placeholder="Ex: Jean, Marie"
+                value={formData.accompagnants} 
+                onChange={handleChange} 
+                required 
+              />
+            </div>
 
-          <div>
-            <label>Début :</label>
-            <input 
-              type="datetime-local" 
-              name="debut" 
-              value={formData.debut} 
-              onChange={handleChange} 
-              required 
-            />
-          </div>
+            <div>
+              <label>Début :</label>
+              <input 
+                type="datetime-local" 
+                name="debut" 
+                value={formData.debut} 
+                onChange={handleChange} 
+                required 
+              />
+            </div>
 
-          <div>
-            <label>Fin :</label>
-            <input 
-              type="datetime-local" 
-              name="fin" 
-              value={formData.fin} 
-              onChange={handleChange} 
-              required 
-            />
-          </div>
+            <div>
+              <label>Fin :</label>
+              <input 
+                type="datetime-local" 
+                name="fin" 
+                value={formData.fin} 
+                onChange={handleChange} 
+                required 
+              />
+            </div>
 
-          <div>
-            <label>Récurrence :</label>
-            <select name="recurrence" value={formData.recurrence} onChange={handleChange} required>
-              <option value="">Choisir...</option>
-              <option value="aucun">Aucune</option>
-              <option value="hebdo">Hebdomadaire</option>
-              <option value="mensuel">Mensuel</option>
-            </select>
-          </div>
+            <div>
+              <label>Récurrence :</label>
+              <select name="recurrence" value={formData.recurrence} onChange={handleChange} required>
+                <option value="">Choisir...</option>
+                <option value="aucun">Aucune</option>
+                <option value="hebdo">Hebdomadaire</option>
+                <option value="mensuel">Mensuel</option>
+              </select>
+            </div>
 
-          <div>
-            <label>Notes :</label>
-            <textarea 
-              name="description" 
-              value={formData.description} 
-              onChange={handleChange} 
-              required 
-            />
-          </div>
+            <div>
+              <label>Notes :</label>
+              <textarea 
+                name="description" 
+                value={formData.description} 
+                onChange={handleChange} 
+                required 
+              />
+            </div>
+            </>
+          ) : (
+            <>
+            <div className='effectue_trajet'>
+              <div>
+                <input type="radio" id="aidant" name="effectue" value={formData.effectue} onChange={handleChange}/>
+                <label for="aidant">Aidant</label>
+              </div>
+              <div>
+                <input type="radio" id="extrene" name="effectue" value={formData.effectue} onChange={handleChange}/>
+                <label for="extrene">Société Externe</label> 
+              </div> 
+            </div>
 
-        </form>
+            <div>
+              <label>Qui effectue le trajet :</label>
+              <select name="aidant_affecte" value={formData.aidantAffecte} onChange={handleChange} required>
+                <option value="">Choisir...</option>
+                <option value="">nathanta</option>
+                <option value="">zozo</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Lieu de départ :</label>
+              <input 
+                type="text" 
+                name="accompagnants" 
+                placeholder="Ex: Maison"
+                value={formData.accompagnants} 
+                onChange={handleChange} 
+                required 
+              />
+            </div>
+
+            <div>
+              <label>Lieu d'arrivée :</label>
+              <input 
+                type="text" 
+                name="accompagnants" 
+                placeholder="Ex: 67 Rue du Skibidi, Agartha 38850"
+                value={formData.accompagnants} 
+                onChange={handleChange} 
+                required 
+              />
+            </div>
+            </>
+          )}
+          </form>
       </Slide>
-
-
-
 
     </div>
   )
