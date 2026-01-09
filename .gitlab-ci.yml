@@ -6,3 +6,5 @@ test:
     - php composer.phar install
   script:
     - ./vendor/bin/phpunit --configuration phpunit.xml
+
+    
