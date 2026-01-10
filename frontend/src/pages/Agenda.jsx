@@ -1,11 +1,22 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import Slide from '../components/slide/Slide';
+import { getFormatDate } from '../utils/utils';
 
-function AddEvent() {
+import Calendar from '../components/calendar/Calendar'
+import PopUpSelectDate from '../components/pop_up_select_date/PopUpSelectDate'
+
+
+
+function Agenda() {
   const [newEventOpen, setNewEventOpen] = useState(false)
   const [isTrajet, setIsTrajet] = useState(false)
   const [membresFamille, setMembresFamille] = useState([]) 
-  
+
+  const [date, setDate] = useState(new Date()) // new Date renvoie la date actuelle
+  const [popUpDateOpen, setPopUpDateOpen] = useState(false)
+
+  const [isCalendarWeek, setIsCalendarWeek] = useState(false)
+
   const [status, setStatus] = useState({ type: null, message: '' })
   const apiUrl = import.meta.env.VITE_API_URL
 
@@ -26,6 +37,9 @@ function AddEvent() {
     lieuDepart: '',
     lieuArrivee: ''
   })
+
+
+
 
   const toggleNewEvent = () => {
     setNewEventOpen(!newEventOpen)
@@ -110,8 +124,31 @@ function AddEvent() {
   }
 
   return (
-    <div className="ajout-evenement">
+    <> 
+    <div className="agenda">
 
+      {/* selecteurs haut de page */}
+      <div className='container_date'>
+        <button onClick={() => setPopUpDateOpen(true)}>
+          <h1>{getFormatDate(date)}</h1>
+          <div>
+            <img src="/icons/arrows-extend.svg" alt="" />
+          </div>
+        </button>
+        <div className='switch_calendar'>
+          <button className={!isCalendarWeek ? 'active' : ''} onClick={() => setIsCalendarWeek(false)}>Jour</button>
+          <button className={isCalendarWeek ? 'active' : ''} onClick={() => setIsCalendarWeek(true)}>Semaine</button>
+        </div>
+      </div>
+
+
+
+      <Calendar 
+        date={date}
+        isCalendarWeek={isCalendarWeek}
+      />
+
+      {/* message d'erreur */}
       {status.message && (
         <div style={{ 
           padding: '10px', 
@@ -123,6 +160,7 @@ function AddEvent() {
         </div>
       )}
 
+      {/* ajouter un evenement */}
       <button className="btn_add" onClick={toggleNewEvent}>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
       </button>
@@ -218,8 +256,6 @@ function AddEvent() {
                 <label htmlFor="externe">Société Externe</label> 
               </div> 
             </div>
-
-            {/* Logique conditionnelle d'affichage */}
             {formData.effectue === 'aidant' && (
                 <div>
                     <label>Quel aidant effectue le trajet ?</label>
@@ -266,8 +302,19 @@ function AddEvent() {
           </form>
       </Slide>
 
+
+
     </div>
+
+    <PopUpSelectDate 
+      isOpen={popUpDateOpen}
+      onClose={() => setPopUpDateOpen(false)}
+      handlerValid={setDate}
+      startDate={date}
+    />
+      
+    </>
   )
 }
 
-export default AddEvent
+export default Agenda
