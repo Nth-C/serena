@@ -1,11 +1,11 @@
-export const getFormatDate = (date) => {    
-    // options formatage
+export const getFormatDate = (date, isAbbreviated = false) => {    
     const options = {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+        weekday: isAbbreviated ? 'short' : 'long',
+        day: 'numeric',
+        month: isAbbreviated ? 'short' : 'long',
+        year: 'numeric'
     };
 
-    return date.toLocaleDateString('fr-FR', options);
+    let formattedDate = date.toLocaleDateString('fr-FR', options);
+    return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
 }

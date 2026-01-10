@@ -13,7 +13,10 @@ function Agenda() {
   const [membresFamille, setMembresFamille] = useState([]) 
 
   const [date, setDate] = useState(new Date()) // new Date renvoie la date actuelle
-  
+  const [popUpDateOpen, setPopUpDateOpen] = useState(false)
+
+  const [isCalendarWeek, setIsCalendarWeek] = useState(false)
+
   const [status, setStatus] = useState({ type: null, message: '' })
   const apiUrl = import.meta.env.VITE_API_URL
 
@@ -121,28 +124,28 @@ function Agenda() {
   }
 
   return (
+    <> 
     <div className="agenda">
 
       {/* selecteurs haut de page */}
       <div className='container_date'>
-        <button>
+        <button onClick={() => setPopUpDateOpen(true)}>
           <h1>{getFormatDate(date)}</h1>
           <div>
             <img src="/icons/arrows-extend.svg" alt="" />
           </div>
         </button>
         <div className='switch_calendar'>
-          <button>Jour</button>
-          <button>Semaine</button>
+          <button className={!isCalendarWeek ? 'active' : ''} onClick={() => setIsCalendarWeek(false)}>Jour</button>
+          <button className={isCalendarWeek ? 'active' : ''} onClick={() => setIsCalendarWeek(true)}>Semaine</button>
         </div>
       </div>
 
-      <PopUpSelectDate 
-      
-      />
+
 
       <Calendar 
         date={date}
+        isCalendarWeek={isCalendarWeek}
       />
 
       {/* message d'erreur */}
@@ -299,7 +302,18 @@ function Agenda() {
           </form>
       </Slide>
 
+
+
     </div>
+
+    <PopUpSelectDate 
+      isOpen={popUpDateOpen}
+      onClose={() => setPopUpDateOpen(false)}
+      handlerValid={setDate}
+      startDate={date}
+    />
+      
+    </>
   )
 }
 
