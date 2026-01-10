@@ -11,8 +11,8 @@ const Calendar = ({ events, isCalendarWeek = false }) => {
             titre: 'event 1' 
         },
         { 
-            dateStart: new Date(new Date().setHours(13, 0)), 
-            dateEnd: new Date(new Date().setHours(15, 30)),
+            dateStart: new Date(new Date().setHours(13, 30)), 
+            dateEnd: new Date(new Date().setHours(16, 30)),
             titre: 'event 2' 
         },
         { 
@@ -21,7 +21,6 @@ const Calendar = ({ events, isCalendarWeek = false }) => {
             titre: 'event 3' 
         },
     ];
-
 
     const calcHeightEvent = (event) => {
         // calcul de la durée en minutes
@@ -36,6 +35,46 @@ const Calendar = ({ events, isCalendarWeek = false }) => {
         
         // (Nombre d'heures * 60px) + (Nombre de minutes * 1px)
         return (startHour * hourHeight) + (startMinute * (hourHeight / 60));
+    };
+
+    // verifie si 2 event se chevauche
+    const areOverlapping = (eventA, eventB) => {
+        return (
+            eventA.dateStart < eventB.dateEnd && 
+            eventA.dateEnd > eventB.dateStart
+        )
+    };
+
+    // trie des evenement par date de debut / titre
+    const sortEvents = (events) => {
+        return [...events].sort((a, b) => { // on tire une copie pour pas modifier l'original
+            // tire heure
+            if (a.dateStart.getTime() !== b.dateStart.getTime()) {
+                return a.dateStart - b.dateStart;
+            }
+            // trie titre
+            return a.titre.localeCompare(b.titre);
+        });
+    };
+
+    // calcul la width / left pour les possibles confilt
+    const calcPositionLeft = (currentEvent, allEvents) => {
+        // trouve les conflits
+        const overlaps = allEvents.filter(other => 
+            other !== currentEvent && areOverlapping(currentEvent, other)
+        );
+
+        // Calcule la largeur par rapport aux conflits
+        const width = 100 / (overlaps.length + 1);
+
+        // calcule sa colonne
+        const sortedConflicts = sortEvents([currentEvent, ...overlaps]);
+        const posIndex = sortedConflicts.indexOf(currentEvent);
+
+        return {
+            width: `${width}%`,
+            left: `${posIndex * width}%`
+        };
     };
 
     return (
@@ -60,15 +99,22 @@ const Calendar = ({ events, isCalendarWeek = false }) => {
                     ))}
 
                     {/* affichage events */}
-                    {eventTest.map((event, i) => (
-                        <div 
-                            key={i} 
-                            className={styles.event} 
-                            style={{ height: `${calcHeightEvent(event)}px`, top: `${calcPositionTop(event)}px` }}
-                            >
-                            {console.log(calcHeightEvent(event))}
-                        </div>
-                    ))}
+                    {eventTest.map((event, i) => {
+                        const horizontalStyle = calcPositionLeft(event, eventTest)
+                        
+                        const eventStyle = {
+                            left: `${horizontalStyle.left}`,
+                            width: `calc(${horizontalStyle.width} - 2px)`,
+                            height: `${calcHeightEvent(event)}px`,
+                            top: `${calcPositionTop(event)}px`
+                        }
+
+                        return (
+                            <div key={i} className={styles.event} style={eventStyle}>
+                                {event.titre}
+                            </div>
+                        );
+                    })}
                 </div>
 
             </div>
