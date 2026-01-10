@@ -4,16 +4,51 @@ require_once(__DIR__ . '/document.class.php');
 class DocumentDAO {
     private DAL $dal;
 
-    // Dans DocumentDAO.php
 
 public function __construct(?DAL $dal = null) {
-    // pour faire les tests
     $this->dal = $dal ?? DAL::get();
 }
 
 
-    public function addDocument($id_famille, $id_categorie, $nom, $url): bool{
-        $query = 'INSERT INTO DOCUMENTS (id_famille, id_cat, nom_doc, url) VALUES (:id_famille, :id_cat, :nom, :url)';
+    public function getDocumentsParCategorie(string $id_famille): array {
+        $query = 'SELECT c.id_cat, c.nom AS cat_nom, 
+                         d.id_doc, d.nom_doc, d.url, d.type
+                  FROM CAT c
+                  LEFT JOIN DOCUMENTS d ON c.id_cat = d.id_cat
+                  WHERE c.id_famille = :id_famille
+                  ORDER BY c.nom ASC';
+        
+        $stmt = $this->dal->prepare($query);
+        $stmt->execute(['id_famille' => $id_famille]);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $categories = [];
+        foreach ($result as $row) {
+            $idCat = $row['id_cat'];
+            
+            if (!isset($categories[$idCat])) {
+                $categories[$idCat] = [
+                    'id_cat' => $idCat,
+                    'nom' => $row['cat_nom'],
+                    'documents' => []
+                ];
+            }
+
+            if ($row['id_doc']) {
+                $categories[$idCat]['documents'][] = [
+                    'id_document' => $row['id_doc'],
+                    'nom_doc' => $row['nom_doc'],
+                    'url' => $row['url'],
+                    'type' => $row['type']
+                ];
+            }
+        }
+        return array_values($categories);
+    }
+
+    public function addDocument(string $id_famille, string $id_categorie, string $nom, string $url): bool {
+        $query = 'INSERT INTO DOCUMENTS (nom_doc, url, id_famille, id_cat) 
+                  VALUES (:nom, :url, :id_famille, :id_cat)';
         $stmt = $this->dal->prepare($query);
         
         return $stmt->execute([
@@ -23,10 +58,17 @@ public function __construct(?DAL $dal = null) {
             'url'        => $url
         ]);
     }
-    public function deleteDocument($id_document): bool{
-        $query = 'DELETE FROM DOCUMENTS WHERE id_document = :id_document';
+    public function getDocumentById(string $id_doc) {
+        $query = 'SELECT * FROM DOCUMENTS WHERE id_doc = :id_doc';
         $stmt = $this->dal->prepare($query);
-        return $stmt->execute(['id_document' => $id_document]);
+        $stmt->execute(['id_doc' => $id_doc]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function deleteDocument(string $id_doc): bool {
+        $query = 'DELETE FROM DOCUMENTS WHERE id_doc = :id_doc';
+        $stmt = $this->dal->prepare($query);
+        return $stmt->execute(['id_doc' => $id_doc]);
     }
 
     public function getOrdonnances($id_famille) {
