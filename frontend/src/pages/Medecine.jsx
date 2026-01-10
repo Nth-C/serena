@@ -365,7 +365,7 @@ function Medecine() {
             />
           </div>
           <div>
-            <button type="reset" className="btn_border" onClick={handleResetForm} disabled={isEditing}>Reinistialiser</button>
+            <button type="reset" className="btn_border" onClick={handleResetForm} disabled={isEditing}>Réinitialiser</button>
             <button type="submit" className="btn_blue">{isEditing ? "Modifier" : "Ajouter"}</button>
           </div>
         </form>

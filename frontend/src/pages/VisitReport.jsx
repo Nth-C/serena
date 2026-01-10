@@ -10,12 +10,23 @@ function LastVisitReport() {
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
 
+  const [listMedecine , setListMedecine] = useState([])
+
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState(null)
+
   // États des Slides et Popups
   const [isNewRapportOpen, setIsNewRapportOpen] = useState(false);
   const [isNewMedicineOpen, setIsMedicineOpen] = useState(false);
+  const [listNomMedecine , setListNomMedecine] = useState([])
+  const [isNameGood, setIsNameGood] = useState(false);
+  const [listTypeMedecine , setListTypeMedecine] = useState([])
+  const [idCatalogueMedecine , setIdCatalogueMedecine] = useState("")
   const [isNewPopupOpen, setIsPopupOpen] = useState(false);
   const [isDetailsReportOpen, setIsDetailsReportpen] = useState(false);
   const [isPopUpDeleteOpen, setIsPopUpDeleteOpen] = useState(false);
+
+  const [nameMedecineToDisplay , setNameMedecineToDisplay] = useState('')
 
   // Gestion de la sélection et du mode édition
   const [selectedRapport, setSelectedRapport] = useState(null);
@@ -47,6 +58,13 @@ function LastVisitReport() {
     fetchRapports();
   }, []);
 
+  const handleResetForm = () => {
+    setNameMedecine("")
+    setIdCatalogueMedecine("") 
+    setCurrentStock("")
+    setInitialStock("")
+  }
+
   // --- FONCTIONS DE CHARGEMENT ---
   const fetchRapports = async () => {
     try {
@@ -60,6 +78,117 @@ function LastVisitReport() {
       console.error("Erreur de chargement:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const getMedecine = async () => {
+  try {
+    const response = await fetch(`${apiUrl}/?route=medicament/list`, {
+        credentials: 'include'
+      });
+    const data = await response.json();
+
+    if (data.error) {
+      throw new Error(data.error);
+    }
+
+    // On vérifie si data est un tableau, sinon on met un tableau vide
+    setListMedecine(Array.isArray(data) ? data : []);
+    setError(null);
+  } catch (err) {
+    console.error("Erreur de récupération:", err.message);
+    setError(err.message || "Impossible de contacter le serveur");
+    setListMedecine([]); // Évite le crash du .map() en cas d'erreur
+  } finally {
+    // Si tu as un état de chargement, tu peux le stopper ici
+    setLoading(false); 
+  }
+}
+
+  const handleMedecine = async (e) => {
+    e.preventDefault()
+
+    const nouveauMedoc = {
+      name: nameMedecine,
+      idCatalogueMedecine: idCatalogueMedecine,
+      stock: currentStock,
+      stockTotal: initialStock
+    }
+
+    // change le controleur appeler en fonction de (créer / modifier)
+    const route = isEditing ? 'medicament/update' : 'medicament/add';
+
+    try {
+      const response = await fetch(`${apiUrl}/?route=${route}`, {
+        method: "POST",
+        credentials: 'include',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(
+          // change les donné envoyer (créer / modifier)
+          !isEditing 
+          ? nouveauMedoc
+          : {  
+            id_medicament: activeInList, 
+            nouveauStock: currentStock
+          }
+        )
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        handleResetForm()
+        // mettre a jour la liste
+        getMedecine()
+        // fermer le slide
+        setIsMedicineOpen(false)
+        // affiche le message d'ajout
+        !isEditing ? setIsShowAdd(true) : setIsShowModify(true)
+        setNameMedecineToDisplay(nameMedecine)
+      } else {
+        setMessage("Erreur: " + result.error);
+      }
+    } catch (error) {
+      setMessage("error");
+      console.error(error);
+    }
+  };
+
+  const handleSearchMedecine = async (e) => {
+    
+
+    console.log(e);
+
+    // change le controleur appeler en fonction de (créer / modifier)
+    const route = 'nommedicament/search';
+    
+    try {
+      const response = await fetch(`${apiUrl}/?route=${route}`, {
+        method: "POST",
+        credentials: 'include',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(
+          // change les donné envoyer (créer / modifier)
+          {  
+            texteNomMedicament: e
+          }
+        )
+      });
+
+      const result = await response.json();
+      console.log(result);
+      setListNomMedecine(result.resultats)
+      if (result.isUnique) {
+        console.log(result.resultats)
+        setListTypeMedecine(result.resultats)
+        setIsNameGood(true)
+      } else {
+        setIdCatalogueMedecine("") 
+        setIsNameGood(false);
+      }
+    } catch (error) {
+      setMessage("error");
+      console.error(error);
     }
   };
 
@@ -209,13 +338,20 @@ function LastVisitReport() {
           </div>
           <button onClick={toggleNewMedicine} className="btn_blue">Ajouter un nouveau médicament</button>
           <div className="list">
-            <div className="container_medecine">
-              <div className="principal_infos"><p>Xanax</p></div>
-              <div className="drop">
-                <p>Anxiolytique...</p>
-                <div><button className="fill">Ajouter</button></div>
-              </div>
-            </div>
+            
+            {listMedecine.map((med) => (
+                <div key={med.id_medicament} className="container_medecine">
+                  <div className="principal_infos">
+                    <p>{med.nomMedicament}</p>
+                  </div>
+                  <div className="drop">
+                    <p>{med.type}...</p>
+                    <div>
+                      <button className="fill">Ajouter</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
           </div>
         </div>,
         document.body
@@ -223,14 +359,59 @@ function LastVisitReport() {
 
       {/* Slide Ajout Médicament */}
       <Slide title={"Ajouter un médicament"} isOpen={isNewMedicineOpen} toggleOpen={toggleNewMedicine} zIndex={700}>
-        <form className="new_medecine">
-          <div><label>Nom : </label><input type="text" value={nameMedecine} onChange={(e) => setNameMedecine(e.target.value)} required /></div>
-          <div><label>Type : </label><input type="text" value={typeMedecine} onChange={(e) => setTypeMedecine(e.target.value)} required /></div>
+        <form className="new_medecine" onSubmit={handleMedecine}>
+
+
+          <div>
+            <label>Nom du médicament : </label>
+            <input
+              type="text"
+              list="medication-suggestions"
+              value={nameMedecine}
+              onChange={(e) => {
+                setNameMedecine(e.target.value);
+                if(e.target.value != ""){
+                  handleSearchMedecine(e.target.value);
+                }
+               
+              }}
+              required
+              disabled={isEditing} // on ne peut pas modifier l'input si on modifie un medicament
+            />
+            <datalist id="medication-suggestions">
+            {/* On boucle sur les résultats de votre recherche PHP */}
+            {listNomMedecine?.map((suggestion) => (
+            <option value={suggestion.denomination_substance} />
+            ))}
+            </datalist>
+          </div>
+
+
+
+
+          <div>
+            <label>Type de médicament : </label>
+            <select value={idCatalogueMedecine} onChange={(e) => {
+              setIdCatalogueMedecine(e.target.value)
+            
+            }}
+              required
+              disabled={!isNameGood}>
+              <option value=""></option>
+              {listTypeMedecine.map((listeMedicament) => (
+                <option key={listeMedicament.id_medics} value={listeMedicament.id_medics}>
+                  {listeMedicament.designation_elem_pharma}
+                </option>
+              ))}
+            </select>
+          </div>
+
+
           <div><label>Stock initial : </label><input type="number" value={initialStock} onChange={(e) => setInitialStock(e.target.value)} required /></div>
           <div><label>Stock actuel : </label><input type="number" value={currentStock} onChange={(e) => setCurrentStock(e.target.value)} required /></div>
           <div>
             <button type="button" className="btn_border" onClick={handleResetMedecine}>Réinitialiser</button>
-            <button className="btn_blue">Ajouter</button>
+            <button type="submit" className="btn_blue">Ajouter</button>
           </div>
         </form>
       </Slide>
@@ -245,7 +426,11 @@ function LastVisitReport() {
           {!isEditing && (
             <div>
               <label>Médicaments pris : </label>
-              <button type="button" className="btn_blue add_medi" onClick={togglePopup}>Ajouter médicament</button>
+              <button type="button" className="btn_blue add_medi" onClick={() => {
+                togglePopup();
+                getMedecine()
+              }}
+              >Ajouter médicament</button>
             </div>
           )}
           <div>
