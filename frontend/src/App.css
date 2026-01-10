@@ -59,7 +59,7 @@ img {
 
 .content {
   width: 100%;
-  min-height: 300vh;
+  min-height: 100vh;
   padding-bottom: 15rem;
 }
 
@@ -724,7 +724,7 @@ progress.blue_bar::-moz-progress-bar {
 }
 
 .agenda .container_date > button:first-child {
-    display: flex;
+  display: flex;
   gap: .5rem;
   cursor: pointer;
 }
@@ -734,7 +734,7 @@ progress.blue_bar::-moz-progress-bar {
 }
 
 .agenda .container_date > button:first-child img {
-  width: 1.8rem;
+  width: 1.5rem;
 }
 
 /* calandar */

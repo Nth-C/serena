@@ -1,3 +1,36 @@
-.calendar_grid {
+.calendar_day {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
 
+.calendar_day .case {
+    width: 100%;
+    position: relative;
+}
+
+.calendar_day :is(.hours p, .case > div) {
+    height: 6rem;
+}
+
+.calendar_day .case > div:not(.event) {
+    position: relative;
+    width: 100%;
+}
+
+.calendar_day .line {
+    position: absolute;
+    top: 8px;
+    display: block;
+    height: 1px;
+    width: 100%;
+    background: var(--bg-black);
+}
+
+.calendar_day .event {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--blue);
 }
