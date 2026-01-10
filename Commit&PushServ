@@ -1,3 +1,4 @@
+ssh sere-na_tom@sere-na.alwaysdata.net
 git add .
 git commit -m "$1"
 git pull origin master

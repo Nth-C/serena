@@ -1,11 +1,11 @@
 <?php
 require_once(__DIR__ . '/../model/personneDAO.class.php');
 require_once(__DIR__ . '/../app.php');
-
 header("Access-Control-Allow-Origin: *"); 
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header('Content-Type: application/json');
+$pepper = $_ENV['APP_PEPPER'];
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
@@ -28,8 +28,8 @@ if ($nom && $prenom && $mail && $username && $mdp && $date_naissance) {
         echo json_encode(['success' => false, 'error' => 'Ce nom d\'utilisateur est déjà pris.']);
         exit();
     }
+    $hashedPassword = password_hash($mdp .$pepper, PASSWORD_DEFAULT);    
 
-    $hashedPassword = password_hash($mdp . "S4ZBwfUkpAyScWCEeqHfZ0TbQ0GzzeuL", PASSWORD_DEFAULT);    
     $personne = new Personne([
         'nom' => $nom,
         'prenom' => $prenom,
