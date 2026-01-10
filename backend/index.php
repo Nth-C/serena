@@ -36,6 +36,7 @@ const _ROUTES = array(
   'document/list' => 'viewDocument',
   'document/add' => 'addDocument',
   'document/delete' => 'deleteDocument',
+  'document/download' => 'downloadDocument',
   'categorie/add' => 'addCategorie',
   'getfamillepersonne' => 'getfamillepersonne'
 );
