@@ -6,6 +6,7 @@ function FileExplorer() {
   const [activeInList, setActiveInList] = useState(null)
 
   const [isNewDocumentOpen, setIsNewDocumentOpen] = useState(false) // page
+  const [selectedFile, setSelectedFile] = useState(null); // C'est le fichier à envoyé
   const [nameDocument, setNameDocument] = useState("")
   const [emplacementDocument, setEmplacementDocument] = useState("")
 
@@ -30,37 +31,45 @@ function FileExplorer() {
   const apiUrl = import.meta.env.VITE_API_URL;
 
   const handleAddDocument = async (e) => {
-    e.preventDefault()
+  e.preventDefault();
 
-    const nouveauDocument = {
-      name: nameDocument,
-      id_categorie: emplacementDocument
+  if (!selectedFile) {
+    setMessage("Veuillez sélectionner un fichier.");
+    return;
+  }
+
+  // 1. Création du FormData
+  const formData = new FormData();
+  formData.append('document', selectedFile); // Le fichier
+  formData.append('name', nameDocument);      // Le nom personnalisé
+  formData.append('id_categorie', emplacementDocument); // L'ID catégorie
+
+  try {
+    const response = await fetch(`${apiUrl}/?route=document/add`, {
+      method: "POST",
+      credentials: 'include',
+      // ATTENTION : Ne pas mettre de Header "Content-Type" !
+      // Le navigateur le fera automatiquement avec le "boundary" pour le FormData
+      body: formData 
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      setNameDocument('');
+      setEmplacementDocument('');
+      setSelectedFile(null); // Reset le fichier
+      setIsUploaded(false);   // Reset l'affichage succès
+      getDocument();          // Rafraîchir la liste
+      toggleNewDocument();    // Fermer le slide
+    } else {
+      setMessage("Erreur: " + result.error);
     }
-
-    try {
-      const response = await fetch(`${apiUrl}/?route=document/add`, {
-        method: "POST",
-        credentials: 'include',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(nouveauDocument)
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        // reset le formulaire
-        setNameDocument('')
-        setEmplacementDocument('')
-        // mettre a jour la liste 
-        getDocument()
-      } else {
-        setMessage("Erreur: " + result.error);
-      }
-    } catch (error) {
-      setMessage("error");
-      console.error(error);
-    }
-  };
+  } catch (error) {
+    setMessage("Erreur technique lors de l'envoi");
+    console.error(error);
+  }
+};
 
   const handleAddCategorie = async (e) => {
     e.preventDefault()
@@ -94,13 +103,14 @@ function FileExplorer() {
   };
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
+  const file = e.target.files[0]; // On prend le premier fichier
 
-    if (file) {
-      setIsUploaded(true);
-      // faire l'envoie au serveur des documents
-    }
-  };
+  if (file) {
+    setSelectedFile(file); // On stocke le fichier
+    setIsUploaded(true);
+    
+  }
+};
 
 
 

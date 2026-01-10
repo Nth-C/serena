@@ -12,6 +12,7 @@ frontend/package-lock.json
 
 # --- BACKEND ---
 .env
+uploads
 
 # --- LOGS & OS ---
 *.log

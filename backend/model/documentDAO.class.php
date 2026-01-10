@@ -6,20 +6,21 @@ class DocumentDAO {
 
     // Dans DocumentDAO.php
 
-public function __construct(DAL $dal = null) {
+public function __construct(?DAL $dal = null) {
     // pour faire les tests
     $this->dal = $dal ?? DAL::get();
 }
 
 
-    public function addDocument($id_famille, $id_categorie, $nom): bool{
-        $query = 'INSERT INTO DOCUMENTS (id_famille, id_cat, nom_doc) VALUES (:id_famille, :id_cat, :nom)';
+    public function addDocument($id_famille, $id_categorie, $nom, $url): bool{
+        $query = 'INSERT INTO DOCUMENTS (id_famille, id_cat, nom_doc, url) VALUES (:id_famille, :id_cat, :nom, :url)';
         $stmt = $this->dal->prepare($query);
         
         return $stmt->execute([
             'id_famille' => $id_famille, 
             'id_cat'     => $id_categorie,
-            'nom'        => $nom
+            'nom'        => $nom,
+            'url'        => $url
         ]);
     }
     public function deleteDocument($id_document): bool{
