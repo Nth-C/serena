@@ -246,7 +246,7 @@ function FileExplorer() {
             </select>
           </div>
           <div>
-            <label>Nom du document : </label>
+            <label>Nom du document :</label>
             <input type="text" value={nameDocument} onChange={(e) => setNameDocument(e.target.value)} required />
           </div>
           <div>
