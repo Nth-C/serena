@@ -1,0 +1,82 @@
+.add_membre {
+    position: relative;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--white);
+    z-index: 1000;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.add_membre.active {
+    display: flex;
+}
+
+.add_membre .params_header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 5rem;
+    padding: 0 3rem;
+    border-bottom: 1px solid var(--gray);
+}
+
+.add_membre h2 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.add_membre .params_header svg {
+    fill: var(--black);
+    width: 2.5rem;
+}
+
+.add_membre .container_search {
+    padding: 0 3rem;
+}
+
+.add_membre .membre_list > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--gray);
+    padding: .5rem 3rem;
+}
+
+.add_membre .membre_list > div:last-child {
+    border-width: 1px 0 1px 0;
+    border-color: var(--gray);
+    border-style: solid;
+}
+
+.add_membre .membre_list .container_name {
+    display: flex;
+    gap: 2rem;
+}
+
+.add_membre .membre_list .container_name p:first-child {
+    font-weight: 600;
+}
+
+.add_membre .membre_list svg {
+    width: 2.5rem;
+    fill: var(--blue);
+}
+
+.add_membre .container_btn_invite {
+    position: absolute;
+    text-align: center;
+    bottom: 3rem;
+    width: 100%;
+}
+
+.add_membre .container_btn_invite button{
+    width: 80%;
+}
