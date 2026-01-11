@@ -2,8 +2,18 @@ import { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom';
 import styles from './Menu.module.css';
 
+import AddMembre from '../add_membre/AddMembre'
+import RoleMembre from '../role_membre/RoleMembre'
+
+
+
 function Menu({isOpen , onHamburgerClick}) {
+    const [addMembreOpen, setAddMembreOpen] = useState(false)
+    const [roleMembreOpen, setRoleMembreOpen] = useState(false)
+
+
     const navigate = useNavigate();
+
     const apiUrl = import.meta.env.VITE_API_URL;
 
     const handleLogout = async () => {
@@ -20,6 +30,7 @@ function Menu({isOpen , onHamburgerClick}) {
     };
 
     return (
+        <>
         <div className={[
                     styles.menu,
                     isOpen ? styles.active : '', 
@@ -44,15 +55,15 @@ function Menu({isOpen , onHamburgerClick}) {
                             <p>Logs</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
-                        <NavLink to={"/"}>
+                        <button onClick={() => setAddMembreOpen(true)}>
                             <p>Inviter des contact</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
-                        </NavLink>
-                        <NavLink to={"/"}>
+                        </button>
+                        <button onClick={() => setRoleMembreOpen(true)}>
                             <p>Gérer les roles</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
-                        </NavLink>
-                    </div>
+                        </button>
+                    </div >
                     <span className={styles.border}></span>
                 </div>
 
@@ -130,6 +141,18 @@ function Menu({isOpen , onHamburgerClick}) {
 
             <div className={styles.background} onClick={onHamburgerClick}></div>
         </div>
+        
+        <AddMembre 
+            isOpen={addMembreOpen}
+            onClose ={() => setAddMembreOpen(false)}
+        />
+        <RoleMembre 
+            isOpen={roleMembreOpen}
+            onClose ={() => setRoleMembreOpen(false)}
+        />
+
+
+        </>
     )
 }
 

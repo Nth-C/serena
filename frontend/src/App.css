@@ -86,6 +86,10 @@ a {
   margin-top: 3rem;
 }
 
+button {
+  cursor: pointer;
+}
+
 /* style form */
 
 form {
