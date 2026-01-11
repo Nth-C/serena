@@ -127,33 +127,35 @@ function Assistance() {
               </option>
             </select>
           </div>
+        </div>
+        <div>
+          <h2>Nature du besoin</h2>
           <div>
-            <h2>Nature du besoin</h2>
-            <div>
-              <label htmlFor="">Objectif prioritaire : </label>
-              <select name="statut_pro" value="" required>
-                <option value="">-- Choisir une situation de santée --</option>
-                <option>
-                  Recevoir un revenu pour compenser un arrêt de travail
-                </option>
-                <option>
-                  PCH (Prestation de Compensation du Handicap)
-                </option>
-                <option>
-                  Être rémunéré/dédommagé directement par l'aidé
-                </option>
-                <option>
-                  Préparer ma retraite
-                </option>
-                <option>
-                  Prendre du repos
-                </option>
-              </select>
-            </div>
+            <label htmlFor="">Objectif prioritaire : </label>
+            <select name="statut_pro" value="" required>
+              <option value="">-- Choisir une situation de santée --</option>
+              <option>
+                Recevoir un revenu pour compenser un arrêt de travail
+              </option>
+              <option>
+                PCH (Prestation de Compensation du Handicap)
+              </option>
+              <option>
+                Être rémunéré/dédommagé directement par l'aidé
+              </option>
+              <option>
+                Préparer ma retraite
+              </option>
+              <option>
+                Prendre du repos
+              </option>
+            </select>
           </div>
         </div>
-        <button className="btn_border">Annuler</button>
-        <button type="submit" className="btn_blue">Valider</button>
+        <div>
+          <button className="btn_border">Annuler</button>
+          <button type="submit" className="btn_blue">Valider</button>
+        </div>
       </form>
     </div>
   )
