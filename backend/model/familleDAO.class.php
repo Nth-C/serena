@@ -164,7 +164,35 @@ class FamilleDAO {
         ':id_f' => $id_famille,
         ':id_p' => $id_personne
     ]);
+    }
+
+    public function inviterPersonneDansFamille($id_famille_invitee, $id_pers_invitee, $id_pers_qui_invite): bool {
+    // On utilise INSERT pour créer l'invitation
+    $query = 'INSERT INTO invitation (id_famille_invitee, id_pers_invitee, id_pers_qui_invite) 
+              VALUES (:id_f, :id_p_invitee, :id_p_qui_invite)';
+              
+    $stmt = $this->dal->prepare($query);
+    
+    return $stmt->execute([
+        ':id_f'           => $id_famille_invitee,
+        ':id_p_invitee'    => $id_pers_invitee,
+        ':id_p_qui_invite' => $id_pers_qui_invite
+    ]);
 }
+
+    public function getInvitationDetails($id_famille, $id_personne): array|false {
+    $query = 'SELECT * FROM invitation JOIN Personne on Personne.id_personne = :id_p
+              WHERE id_famille_invitee = :id_f 
+              AND id_pers_qui_invite = :id_p';
+              
+    $stmt = $this->dal->prepare($query);
+    $stmt->execute([
+        ':id_f' => $id_famille,
+        ':id_p' => $id_personne
+    ]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
 
 

@@ -30,6 +30,7 @@ const _ROUTES = array(
   'famille/update' => 'updateFamille',
   'famille/select' => 'selectFamille', 
   'deletefamillepersonne' => 'deleteFamillePersonne',
+  'invitefamille/view' => 'viewInviteFamille',
   'rapport/list' => 'getRapport',
   'rapport/add' => 'addRapport',
   'rapport/delete' => 'deleteRapport',
