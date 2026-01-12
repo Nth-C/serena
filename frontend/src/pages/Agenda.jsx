@@ -279,14 +279,13 @@ function Agenda() {
                ========================================= */
             <>
             {/* CORRECTION ICI : Sélecteur adapté à ton JSON */}
-            <div style={{ marginBottom: '15px', borderBottom: '1px solid #eee', paddingBottom: '10px' }}>
-                <label style={{ fontWeight: 'bold', color: '#646cff' }}>Lier à l'événement :</label>
+            <div>
+                <label>Lier à l'événement :</label>
                 <select 
                     name="id_event" 
                     value={formData.id_event} 
                     onChange={handleChange} 
                     required
-                    style={{ border: "2px solid #646cff" }}
                 >
                     <option value="">-- Choisir un événement --</option>
                     {listeEvenements.map((ev) => {
@@ -295,6 +294,8 @@ function Agenda() {
                         // On n'affiche que la date car le JSON ne contient pas l'heure
                         const dateStr = !isNaN(d) ? d.toLocaleDateString('fr-FR') : ev.date_deb;
                         
+                        console.log(ev)
+
                         return (
                             <option key={ev.id_event} value={ev.id_event}>
                                 {ev.nom} ({dateStr})

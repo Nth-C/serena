@@ -4,10 +4,12 @@ import styles from './Menu.module.css';
 
 import AddMembre from '../add_membre/AddMembre'
 import RoleMembre from '../role_membre/RoleMembre'
+import AuditLog from '../audit_logs/AuditLog'
 
 function Menu({isOpen , onHamburgerClick}) {
     const [addMembreOpen, setAddMembreOpen] = useState(false)
     const [roleMembreOpen, setRoleMembreOpen] = useState(false)
+    const [logOpen, setLogOpen] = useState(false)
 
     const navigate = useNavigate();
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -53,10 +55,10 @@ function Menu({isOpen , onHamburgerClick}) {
                 <div className={styles.admin_container}>
                     <div>
                         <h3>Administrateur</h3>
-                        <NavLink to={"/"} onClick={onHamburgerClick}>
+                        <button onClick={() => setLogOpen(true)}>
                             <p>Logs</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
-                        </NavLink>
+                        </button>
                         <button onClick={() => setAddMembreOpen(true)}>
                             <p>Inviter des contact</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
@@ -156,6 +158,11 @@ function Menu({isOpen , onHamburgerClick}) {
             isOpen={roleMembreOpen}
             onClose ={() => setRoleMembreOpen(false)}
         />
+        <AuditLog 
+            isOpen={logOpen}
+            onClose ={() => setLogOpen(false)}
+        />
+
         </>
     )
 }
