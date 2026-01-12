@@ -16,6 +16,9 @@ function FileExplorer() {
 
   const [isUploaded, setIsUploaded] = useState(false);
 
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState(null)
+
   const [isPopUpDeleteOpen, setIsPopUpDeleteOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
   const [nameToDelete, setNameToDelete] = useState("");
