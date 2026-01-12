@@ -94,7 +94,7 @@ function CreateAccount() {
                     </div>
                 </div>
                 <div>
-                    <label>Date :</label>
+                    <label>Date de naissance:</label>
                     <input type="date" name="date_naissance" value={formData.date_naissance} onChange={handleChange} required/>
                 </div>
                 <div>

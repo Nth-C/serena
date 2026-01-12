@@ -58,7 +58,7 @@ function Dashboard() {
 
   return (
     <div className="accueil">
-      <h1>Stock</h1>
+      <h1>Journal de bord</h1>
 
       {medicaments.length === 0 ? (
         <p>Aucun médicament</p>
