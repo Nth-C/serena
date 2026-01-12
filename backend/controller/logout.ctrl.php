@@ -1,22 +1,24 @@
 <?php
-require_once(__DIR__ . '/../model/personneDAO.class.php');
 require_once(__DIR__ . '/../app.php');
 
-header("Access-Control-Allow-Origin: *"); 
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
-
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    exit;
-}
+header("Content-Type: application/json");
 
 $app = new App();
 
-$json = file_get_contents('php://input');
-$data = json_decode($json, true);
+try {
+    $app->logout();
 
-$app->logout();
-echo 'success';
+    echo json_encode([
+        "success" => true, 
+        "message" => "Déconnexion réussie"
+    ]);
+
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode([
+        "success" => false, 
+        "error" => $e->getMessage()
+    ]);
+}
 
 exit();
-?>

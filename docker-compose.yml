@@ -12,9 +12,11 @@ services:
       - ./data:/docker-entrypoint-initdb.d
     command: >
       postgres 
-      -c "shared_preload_libraries=pgaudit,auth_delay" 
-      -c "pgaudit.log=write,ddl,role" 
-      -c "auth_delay.milliseconds=1000"
+        -c "shared_preload_libraries=pgaudit,auth_delay" 
+        -c "pgaudit.log=write,role,ddl" 
+        -c "auth_delay.milliseconds=1000"
+        -c "log_statement=mod"
+
 
   backend:
     build: ./backend

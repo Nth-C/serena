@@ -42,6 +42,8 @@ const _ROUTES = array(
   'getfamillepersonne' => 'getfamillepersonne',
   'rolepersonne/update' => 'updateRolePersonne',
   'getevents' => 'getevents',
+  'forgot_password' => 'forgotPassword',
+  'reset_password' => 'resetPassword'
 );
 
 if (!array_key_exists($route, _ROUTES)) {
