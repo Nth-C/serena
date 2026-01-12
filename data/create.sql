@@ -162,3 +162,5 @@ CREATE TABLE APPARTIENT_A (
 
 
 \copy CAT_MEDICS(code_cis, designation_elem_pharma, code_substance, denomination_substance, dosage_substance, reference_dosage, nature_composant, numero_lien) FROM 'CIS_COMPO_bdpm.txt' WITH (FORMAT CSV, DELIMITER E'\t', QUOTE E'\b', ENCODING 'LATIN1');
+
+ALTER TABLE public.personnes ADD tps_mdp _timestamptz NULL;
