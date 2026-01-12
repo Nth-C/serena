@@ -48,7 +48,7 @@ function App() {
         {/* ACCUEIL */}
         <Route path="home" element={
           <Layout submenu={[
-              { label: "Tableau de bord", path: "home/dashboard" },
+              { label: "Journal de bord", path: "home/dashboard" },
               { label: "Ma journée", path: "home/my_day" },
               { label: "Dernier rapport", path: "home/last_visit_report" },
             ]}
