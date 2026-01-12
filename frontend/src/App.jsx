@@ -1,4 +1,5 @@
 import { Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
+import { useState } from 'react';
 import './App.css'
 
 import Dashboard from './pages/Dashboard';
@@ -16,8 +17,24 @@ import AcceSuivi from './pages/AcceSuivi';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 
+const ProtectedRoute = ({ children, requireFamily = true }) => {
+  const isConnected = sessionStorage.getItem('isConnected') === 'true';
+  const hasFamily = sessionStorage.getItem('id_famille') !== null;
+
+  if (!isConnected) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (requireFamily && !hasFamily) {
+    return <Navigate to="/acce_suivi" replace />;
+  }
+
+  return children;
+};
+
 function App() {
   const location = useLocation();
+  const [auth, setAuth] = useState(sessionStorage.getItem('isConnected') === 'true');
 
   return (
     <>
@@ -31,7 +48,7 @@ function App() {
         
         {/* SE CONNECTER */}
         <Route path="login" element={
-          <Login />
+          <Login setAuth={setAuth} />
         }>
         </Route>
         {/* MOT DE PASSE OUBLIÉ (Demande email) */}
@@ -47,18 +64,22 @@ function App() {
 
         {/* ACCE AU SUIVI DES GROUPES */}
         <Route path="acce_suivi" element={
-          <AcceSuivi />
+          <ProtectedRoute requireFamily={false}>
+            <AcceSuivi />
+          </ProtectedRoute>
         }>
         </Route>
 
         {/* ACCUEIL */}
         <Route path="home" element={
-          <Layout submenu={[
-              { label: "Journal de bord", path: "home/dashboard" },
-              { label: "Ma journée", path: "home/my_day" },
-              { label: "Dernier rapport", path: "home/last_visit_report" },
-            ]}
-          />
+          <ProtectedRoute>
+            <Layout submenu={[
+                { label: "Tableau de bord", path: "home/dashboard" },
+                { label: "Ma journée", path: "home/my_day" },
+                { label: "Dernier rapport", path: "home/last_visit_report" },
+              ]}
+            />
+          </ProtectedRoute>
         }>
           {/* quand on est sur /home dans l'url on redirige vers dashboard */}
           <Route index element={<Navigate to="dashboard" replace />} />
@@ -70,16 +91,22 @@ function App() {
         </Route>
 
         {/* AGENDA */}
-        <Route path="agenda" element={<Layout submenu={[]} />}>
+        <Route path="agenda" element={
+          <ProtectedRoute>
+            <Layout submenu={[]} />
+          </ProtectedRoute>
+        }>
           <Route index element={<Agenda />} />
         </Route>
 
         {/* SUIVI */}
         <Route path="suivi" element= {
-          <Layout submenu={[
-              { label: "Rapport de visite", path: "suivi/visit_report" },
-              { label: "Médicament", path: "suivi/medicine" },
-            ]}/>
+          <ProtectedRoute>
+            <Layout submenu={[
+                { label: "Rapport de visite", path: "suivi/visit_report" },
+                { label: "Médicament", path: "suivi/medicine" },
+              ]}/>
+          </ProtectedRoute>
           }>
           
           {/* quand on est sur /suivi dans l'url on redirige vers visit_report */}
@@ -92,10 +119,12 @@ function App() {
 
         {/* DOCUMENT */}
         <Route path="document" element= {
-          <Layout submenu={[
-              { label: "Explorateur", path: "document/explorateur" },
-              { label: "Aides", path: "document/aides" },
-            ]}/>
+          <ProtectedRoute>
+            <Layout submenu={[
+                { label: "Explorateur", path: "document/explorateur" },
+                { label: "Aides", path: "document/aides" },
+              ]}/>
+          </ProtectedRoute>
           }>
           
           {/* quand on est sur /suivi dans l'url on redirige vers visit_report */}
@@ -105,6 +134,8 @@ function App() {
           <Route path="explorateur" element={<FileExplorer />} />
           <Route path="aides" element={<Assistance />} />
         </Route>
+
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </>
   )
