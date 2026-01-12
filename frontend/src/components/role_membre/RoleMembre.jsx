@@ -1,5 +1,5 @@
 import styles from './RoleMembre.module.css';
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import LayoutMenu from '../../LayoutMenu'
 
 import Slide from '../slide/Slide'
@@ -9,6 +9,27 @@ const RoleMembre = ({isOpen, onClose }) => {
 const [infosMembre, setSettingsOf] = useState({id : '',name: '', role: ''})
 const [settingsOfOpen, setSettingsOfOpen] = useState(false)
 const [membresFamille, setMembresFamille] = useState([]) 
+
+    const membreTest = [
+        { 
+            nom: "Wood",
+            prenom: "Barry",
+            username: "Big D",
+            role: "Visiteur",
+        },
+        { 
+            nom: "Kirk",
+            prenom: "Charlie",
+            username: "FreakyGuy",
+            role: "Aidant",
+        },
+        {
+            nom: "Jeffrey",
+            prenom: "Epstein",
+            username: "EFN",
+            role: "Aidant",
+        },
+    ];
 
 const apiUrl = import.meta.env.VITE_API_URL;
 // Déclare la fonction en dehors du useEffect
