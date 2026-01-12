@@ -4,13 +4,34 @@ import Slide from '../components/slide/Slide';
 import PopUpDelete from '../components/popup_delete/PopUpDelete'
 import PopUpConfirmation from '../components/popup_confirmation/PopUpConfirmation'
 
+function MedicItem({ medicament, isOpen, onToggle }) {
+  return (
+
+
+    <div className={`container_medecine ${isOpen ? 'open' : ''}`}>
+      <div className="principal_infos" onClick={onToggle}>
+        <p>{medicament.nomMedicament}</p>
+      </div>
+
+      {isOpen && (
+        <div className="drop">
+          <p>{medicament.type}...</p>
+          <div>
+            <button className="btn_blue">Ajouter</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function LastVisitReport() {
   // États de base et listes
   const [rapports, setRapports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
 
-  const [listMedecine , setListMedecine] = useState([])
+  const [listMedecine, setListMedecine] = useState([])
 
   const [message, setMessage] = useState('');
   const [error, setError] = useState(null)
@@ -18,15 +39,15 @@ function LastVisitReport() {
   // États des Slides et Popups
   const [isNewRapportOpen, setIsNewRapportOpen] = useState(false);
   const [isNewMedicineOpen, setIsMedicineOpen] = useState(false);
-  const [listNomMedecine , setListNomMedecine] = useState([])
+  const [listNomMedecine, setListNomMedecine] = useState([])
   const [isNameGood, setIsNameGood] = useState(false);
-  const [listTypeMedecine , setListTypeMedecine] = useState([])
-  const [idCatalogueMedecine , setIdCatalogueMedecine] = useState("")
+  const [listTypeMedecine, setListTypeMedecine] = useState([])
+  const [idCatalogueMedecine, setIdCatalogueMedecine] = useState("")
   const [isNewPopupOpen, setIsPopupOpen] = useState(false);
   const [isDetailsReportOpen, setIsDetailsReportpen] = useState(false);
   const [isPopUpDeleteOpen, setIsPopUpDeleteOpen] = useState(false);
 
-  const [nameMedecineToDisplay , setNameMedecineToDisplay] = useState('')
+  const [nameMedecineToDisplay, setNameMedecineToDisplay] = useState('')
 
   // Gestion de la sélection et du mode édition
   const [selectedRapport, setSelectedRapport] = useState(null);
@@ -50,6 +71,8 @@ function LastVisitReport() {
   const [typeMedecine, setTypeMedecine] = useState("");
   const [initialStock, setInitialStock] = useState("");
   const [currentStock, setCurrentStock] = useState("");
+  const [openMedicId, setOpenMedicId] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -60,7 +83,7 @@ function LastVisitReport() {
 
   const handleResetForm = () => {
     setNameMedecine("")
-    setIdCatalogueMedecine("") 
+    setIdCatalogueMedecine("")
     setCurrentStock("")
     setInitialStock("")
   }
@@ -82,28 +105,28 @@ function LastVisitReport() {
   };
 
   const getMedecine = async () => {
-  try {
-    const response = await fetch(`${apiUrl}/?route=medicament/list`, {
+    try {
+      const response = await fetch(`${apiUrl}/?route=medicament/list`, {
         credentials: 'include'
       });
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.error) {
-      throw new Error(data.error);
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      // On vérifie si data est un tableau, sinon on met un tableau vide
+      setListMedecine(Array.isArray(data) ? data : []);
+      setError(null);
+    } catch (err) {
+      console.error("Erreur de récupération:", err.message);
+      setError(err.message || "Impossible de contacter le serveur");
+      setListMedecine([]); // Évite le crash du .map() en cas d'erreur
+    } finally {
+      // Si tu as un état de chargement, tu peux le stopper ici
+      setLoading(false);
     }
-
-    // On vérifie si data est un tableau, sinon on met un tableau vide
-    setListMedecine(Array.isArray(data) ? data : []);
-    setError(null);
-  } catch (err) {
-    console.error("Erreur de récupération:", err.message);
-    setError(err.message || "Impossible de contacter le serveur");
-    setListMedecine([]); // Évite le crash du .map() en cas d'erreur
-  } finally {
-    // Si tu as un état de chargement, tu peux le stopper ici
-    setLoading(false); 
   }
-}
 
   const handleMedecine = async (e) => {
     e.preventDefault()
@@ -125,12 +148,12 @@ function LastVisitReport() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
           // change les donné envoyer (créer / modifier)
-          !isEditing 
-          ? nouveauMedoc
-          : {  
-            id_medicament: activeInList, 
-            nouveauStock: currentStock
-          }
+          !isEditing
+            ? nouveauMedoc
+            : {
+              id_medicament: activeInList,
+              nouveauStock: currentStock
+            }
         )
       });
 
@@ -155,13 +178,13 @@ function LastVisitReport() {
   };
 
   const handleSearchMedecine = async (e) => {
-    
+
 
     console.log(e);
 
     // change le controleur appeler en fonction de (créer / modifier)
     const route = 'nommedicament/search';
-    
+
     try {
       const response = await fetch(`${apiUrl}/?route=${route}`, {
         method: "POST",
@@ -169,7 +192,7 @@ function LastVisitReport() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
           // change les donné envoyer (créer / modifier)
-          {  
+          {
             texteNomMedicament: e
           }
         )
@@ -183,7 +206,7 @@ function LastVisitReport() {
         setListTypeMedecine(result.resultats)
         setIsNameGood(true)
       } else {
-        setIdCatalogueMedecine("") 
+        setIdCatalogueMedecine("")
         setIsNameGood(false);
       }
     } catch (error) {
@@ -216,17 +239,17 @@ function LastVisitReport() {
     setNomRapport(selectedRapport.nom);
     setDescRapport(selectedRapport.description);
     setIsEditing(true);
-    setIsDetailsReportpen(false); 
-    setIsNewRapportOpen(true);   
+    setIsDetailsReportpen(false);
+    setIsNewRapportOpen(true);
   };
 
   const handleSubmitRapport = async (e) => {
     e.preventDefault();
     const route = isEditing ? 'rapport/update' : 'rapport/add';
-    const bodyData = { 
-        nom: nomRapport, 
-        description: descRapport,
-        id_rapport: isEditing ? selectedRapport.id_rapport : null 
+    const bodyData = {
+      nom: nomRapport,
+      description: descRapport,
+      id_rapport: isEditing ? selectedRapport.id_rapport : null
     };
 
     try {
@@ -256,10 +279,10 @@ function LastVisitReport() {
     if (!idCurrentRapport) return;
     try {
       const response = await fetch(`${apiUrl}/?route=rapport/delete`, {
-        method: "POST", 
+        method: "POST",
         credentials: 'include',
-        headers: { "Content-Type": "application/json" }, 
-        body: JSON.stringify({ id: idCurrentRapport }) 
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: idCurrentRapport })
       });
       const result = await response.json();
       if (result.success) {
@@ -268,7 +291,7 @@ function LastVisitReport() {
         setIsShowRemove(true);
         fetchRapports();
       }
-    } catch(error) {
+    } catch (error) {
       console.error("Erreur réseau", error);
     }
   };
@@ -278,7 +301,9 @@ function LastVisitReport() {
   const togglePopup = (e) => { if (e) e.preventDefault(); setIsPopupOpen(!isNewPopupOpen); }
   const handleResetRapport = () => { setNomRapport(""); setDescRapport(""); };
   const handleResetMedecine = () => { setNameMedecine(""); setTypeMedecine(""); setInitialStock(""); setCurrentStock(""); };
-
+  const toggleMedic = (id) => {
+    setOpenMedicId(openMedicId === id ? null : id);
+  };
   useEffect(() => {
     document.documentElement.classList.toggle('menu-active', isNewRapportOpen || isNewMedicineOpen || isDetailsReportOpen || isPopUpDeleteOpen);
   }, [isNewRapportOpen, isNewMedicineOpen, isDetailsReportOpen, isPopUpDeleteOpen]);
@@ -336,22 +361,20 @@ function LastVisitReport() {
               <p>Trier par</p>
             </div>
           </div>
-          <button onClick={toggleNewMedicine} className="btn_blue">Ajouter un nouveau médicament</button>
+          <div className="add_medi">
+            <button onClick={toggleNewMedicine} className="btn_blue">Ajouter un nouveau médicament</button>
+          </div>
           <div className="list">
-            
+
             {listMedecine.map((med) => (
-                <div key={med.id_medicament} className="container_medecine">
-                  <div className="principal_infos">
-                    <p>{med.nomMedicament}</p>
-                  </div>
-                  <div className="drop">
-                    <p>{med.type}...</p>
-                    <div>
-                      <button className="fill">Ajouter</button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+              <MedicItem
+                key={med.id_medicament}
+                medicament={med}
+                isOpen={openMedicId === med.id_medicament}
+                onToggle={() => toggleMedic(med.id_medicament)}
+              />
+
+            ))}
           </div>
         </div>,
         document.body
@@ -370,19 +393,19 @@ function LastVisitReport() {
               value={nameMedecine}
               onChange={(e) => {
                 setNameMedecine(e.target.value);
-                if(e.target.value != ""){
+                if (e.target.value != "") {
                   handleSearchMedecine(e.target.value);
                 }
-               
+
               }}
               required
               disabled={isEditing} // on ne peut pas modifier l'input si on modifie un medicament
             />
             <datalist id="medication-suggestions">
-            {/* On boucle sur les résultats de votre recherche PHP */}
-            {listNomMedecine?.map((suggestion) => (
-            <option value={suggestion.denomination_substance} />
-            ))}
+              {/* On boucle sur les résultats de votre recherche PHP */}
+              {listNomMedecine?.map((suggestion) => (
+                <option value={suggestion.denomination_substance} />
+              ))}
             </datalist>
           </div>
 
@@ -393,7 +416,7 @@ function LastVisitReport() {
             <label>Type de médicament : </label>
             <select value={idCatalogueMedecine} onChange={(e) => {
               setIdCatalogueMedecine(e.target.value)
-            
+
             }}
               required
               disabled={!isNameGood}>
@@ -447,46 +470,46 @@ function LastVisitReport() {
       {/* Slide Détails Rapport */}
       <Slide title={selectedRapport ? selectedRapport.nom : "Détails"} isOpen={isDetailsReportOpen} toggleOpen={toggleDetailsReport} zIndex={100}>
         {selectedRapport ? (
-            <div className="details_report">
-                <div>
-                    <p>Fait par : <strong>{selectedRapport.auteur || "Utilisateur"}</strong></p>
-                    <p>Le : {new Date(selectedRapport.date).toLocaleDateString('fr-FR')}</p>
-                    <p>À : {selectedRapport.heure ? selectedRapport.heure.substring(0, 5) : "--:--"}</p>
-                </div>
-                <div className="list-medic">
-                    <h2>Médicaments pris :</h2>
-                    <ul>
-                        {selectedRapport.medics_list ? (
-                            selectedRapport.medics_list.map((m, i) => <li key={i}>{m}</li>)
-                        ) : (
-                            <li>Aucun médicament</li> 
-                        )}
-                    </ul>
-                </div>
-                <div>
-                    <h2>Informations supplémentaires :</h2>
-                    <p>{selectedRapport.description}</p>
-                </div>
-                <div className="actions">
-                    <button className="btn_red" onClick={() => {
-                      setIdCurrentRapport(selectedRapport.id_rapport);
-                      setNameToDelete(selectedRapport.nom);
-                      togglePopUpDelete();
-                    }}>Supprimer</button>
-                    <button className="btn_blue" onClick={handleEditClick}>Modifier</button>
-                </div>
+          <div className="details_report">
+            <div>
+              <p>Fait par : <strong>{selectedRapport.auteur || "Utilisateur"}</strong></p>
+              <p>Le : {new Date(selectedRapport.date).toLocaleDateString('fr-FR')}</p>
+              <p>À : {selectedRapport.heure ? selectedRapport.heure.substring(0, 5) : "--:--"}</p>
             </div>
+            <div className="list-medic">
+              <h2>Médicaments pris :</h2>
+              <ul>
+                {selectedRapport.medics_list ? (
+                  selectedRapport.medics_list.map((m, i) => <li key={i}>{m}</li>)
+                ) : (
+                  <li>Aucun médicament</li>
+                )}
+              </ul>
+            </div>
+            <div>
+              <h2>Informations supplémentaires :</h2>
+              <p>{selectedRapport.description}</p>
+            </div>
+            <div className="actions">
+              <button className="btn_red" onClick={() => {
+                setIdCurrentRapport(selectedRapport.id_rapport);
+                setNameToDelete(selectedRapport.nom);
+                togglePopUpDelete();
+              }}>Supprimer</button>
+              <button className="btn_blue" onClick={handleEditClick}>Modifier</button>
+            </div>
+          </div>
         ) : null}
       </Slide>
 
       {/* Popups de confirmation et suppression */}
-      <PopUpDelete 
-        toDelete={nameToDelete} 
-        handleDelete={handleDeleteRapport} 
-        isOpen={isPopUpDeleteOpen} 
-        onClose={togglePopUpDelete} 
+      <PopUpDelete
+        toDelete={nameToDelete}
+        handleDelete={handleDeleteRapport}
+        isOpen={isPopUpDeleteOpen}
+        onClose={togglePopUpDelete}
       />
-      
+
       <PopUpConfirmation sentence={`Le rapport "${nameToDelete}" a bien été supprimé.`} show={isShowRemove} setShow={setIsShowRemove} />
       <PopUpConfirmation sentence={`Le rapport "${nomRapport}" a bien été ajouté.`} show={isShowAdd} setShow={setIsShowAdd} />
       <PopUpConfirmation sentence={`Le rapport a bien été modifié.`} show={isShowModify} setShow={setIsShowModify} />
