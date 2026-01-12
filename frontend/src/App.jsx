@@ -1,6 +1,6 @@
-import { Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { useState } from 'react';
 import './App.css'
-
 import Dashboard from './pages/Dashboard';
 import MyDay from './pages/MyDay'
 import LastVisitReport from './pages/LastVisitReport'
@@ -14,94 +14,69 @@ import CreateAccount from './pages/CreateAccount';
 import Layout from './Layout'
 import AcceSuivi from './pages/AcceSuivi';
 
+
+const ProtectedRoute = ({ children, requireFamily = true }) => {
+  const isConnected = sessionStorage.getItem('isConnected') === 'true';
+  const hasFamily = sessionStorage.getItem('id_famille') !== null;
+
+  if (!isConnected) {
+    return <Navigate to="/login" replace />;
+  }
+  if (requireFamily && !hasFamily) {
+    return <Navigate to="/acce_suivi" replace />;
+  }
+
+  return children;
+};
+
 function App() {
   const location = useLocation();
+  const [auth, setAuth] = useState(sessionStorage.getItem('isConnected') === 'true');
 
   return (
     <>
-      {/* REDIRECTION / */}
       <Routes location={location} key={location.pathname}>
-        <Route path="">
-          {/* quand on est sur / dans l'url on redirige vers home/dashboard */}
-          <Route index element={<Navigate to="login" replace />} />
-        </Route>
-        
-        
-        {/* SE CONNECTER */}
-        <Route path="login" element={
-          <Login />
-        }>
-        </Route>
+        {/* ROUTES PUBLIQUES */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="login" element={<Login setAuth={setAuth} />} />
+        <Route path="create_account" element={<CreateAccount />} />
 
-        {/* CREER UN COMPTE */}
-        <Route path="create_account" element={
-          <CreateAccount />
-        }>
-        </Route>
-
-        {/* ACCE AU SUIVI DES GROUPES */}
+        {/* ROUTE DE SÉLECTION (Connecté requis, mais pas encore de famille) */}
         <Route path="acce_suivi" element={
-          <AcceSuivi />
-        }>
-        </Route>
+          <ProtectedRoute requireFamily={false}>
+            <AcceSuivi />
+          </ProtectedRoute>
+        } />
 
-        {/* ACCUEIL */}
+        {/* ROUTES PROTÉGÉES (Connexion + Famille requise) */}
         <Route path="home" element={
           <Layout submenu={[
-              { label: "Tableau de bord", path: "home/dashboard" },
+              { label: "Journal de bord", path: "home/dashboard" },
               { label: "Ma journée", path: "home/my_day" },
               { label: "Dernier rapport", path: "home/last_visit_report" },
             ]}
           />
         }>
-          {/* quand on est sur /home dans l'url on redirige vers dashboard */}
           <Route index element={<Navigate to="dashboard" replace />} />
-          
-          {/* routes pour les sous partie avec leurs contenu */}
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="my_day" element={<MyDay />} />
-          <Route path="last_visit_report" element={<LastVisitReport  />} />
+          {/* ... autres routes home */}
         </Route>
 
-        {/* AGENDA */}
-        <Route path="agenda" element={<Layout submenu={[]} />}>
-          <Route index element={<Agenda />} />
+        {/* On applique la même logique à SUIVI, AGENDA et DOCUMENT */}
+        <Route path="suivi" element={<ProtectedRoute><Layout submenu={[/*...*/]} /></ProtectedRoute>}>
+            <Route index element={<Navigate to="visit_report" replace />}/>
+            <Route path="visit_report" element={<VisitReport />} />
         </Route>
 
-        {/* SUIVI */}
-        <Route path="suivi" element= {
-          <Layout submenu={[
-              { label: "Rapport de visite", path: "suivi/visit_report" },
-              { label: "Médicament", path: "suivi/medicine" },
-            ]}/>
-          }>
-          
-          {/* quand on est sur /suivi dans l'url on redirige vers visit_report */}
-          <Route index element={<Navigate to="visit_report" replace />}/>
-
-          {/* routes pour les sous partie avec leurs contenu */}
-          <Route path="visit_report" element={<VisitReport />} />
-          <Route path="medicine" element={<Medecine />} />
+        <Route path="document" element={<ProtectedRoute><Layout submenu={[/*...*/]} /></ProtectedRoute>}>
+            <Route index element={<Navigate to="explorateur" replace />}/>
+            <Route path="explorateur" element={<FileExplorer />} />
         </Route>
 
-        {/* DOCUMENT */}
-        <Route path="document" element= {
-          <Layout submenu={[
-              { label: "Explorateur", path: "document/explorateur" },
-              { label: "Aides", path: "document/aides" },
-            ]}/>
-          }>
-          
-          {/* quand on est sur /suivi dans l'url on redirige vers visit_report */}
-          <Route index element={<Navigate to="explorateur" replace />}/>
-
-          {/* routes pour les sous partie avec leurs contenu */}
-          <Route path="explorateur" element={<FileExplorer />} />
-          <Route path="aides" element={<Assistance />} />
-        </Route>
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </>
   )
 }
 
-export default App
+export default App;

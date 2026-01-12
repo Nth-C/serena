@@ -5,7 +5,7 @@ function FamilleItem({ famille, onModifier, onAcceder, isOpen, onToggle }) {
     return (
         <div className={`container_suivi_groupe ${isOpen ? 'open' : ''}`}>
             <div className="principal_infos" onClick={onToggle}>
-                <p>{famille.nom}</p> 
+                <p>Espace de la famille : {famille.nom}</p> 
             </div>
 
             {isOpen && (
@@ -28,7 +28,7 @@ function FamilleItem({ famille, onModifier, onAcceder, isOpen, onToggle }) {
                                 onAcceder(famille.id_famille);
                             }}
                         >
-                            Accéder
+                            Entrer
                         </button>                    
                     </div>
                 </div>
@@ -127,6 +127,7 @@ function AcceSuivi() {
             const data = await response.json();
             if (data.success) {
                 localStorage.setItem('id_famille_active', id_famille);
+                sessionStorage.setItem('id_famille', id_famille);
                 window.location.href = '/home/dashboard';
             }
         } catch (error) {
@@ -210,7 +211,7 @@ function AcceSuivi() {
             {/* Le message affichera désormais "Bienvenue M. Scapin" pour "scapinb" */}
             <h1 className="bienvenue">Bienvenue, {nomComplet} 👋</h1>
             
-            <h1>Accéder au suivi</h1>
+            <h1>Liste de vos familles</h1>
 
             <div className="list">
                 {familles.length > 0 ? (
@@ -225,23 +226,23 @@ function AcceSuivi() {
                         />
                     ))
                 ) : (
-                    <p className="aucun">Aucun suivi disponible.</p>
+                    <p className="aucun">Aucune famille disponible.</p>
                 )}
             </div>
 
             <span className='border'></span>
 
-            <button className="btn_blue creer_suivi" onClick={toggleNewSuvi}>Créer un nouveau suivi</button>
+            <button className="btn_blue creer_suivi" onClick={toggleNewSuvi}>Créer une nouvelle famille</button>
             {message && <p className="success-msg">{message}</p>}
 
-            <Slide title={"Créer un nouveau suivi"} isOpen={isNewSuiviOpen} toggleOpen={toggleNewSuvi}>
+            <Slide title={"Créer une nouvelle famille"} isOpen={isNewSuiviOpen} toggleOpen={toggleNewSuvi}>
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label>Nom de l'aidé : </label>
                         <input type="text" name="nom_aide" value={formData.nom_aide} onChange={handleChange} required />
                     </div>
                     <div className="form-group">
-                        <label>Nom du groupe : </label>
+                        <label>Nom de la famille : </label>
                         <input type="text" name="nom_groupe" value={formData.nom_groupe} onChange={handleChange} required />
                     </div>
                     <div className="form-group">

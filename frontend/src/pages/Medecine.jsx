@@ -241,7 +241,7 @@ function Medecine() {
 
   return (
     <div className="medecine">
-      <h1>Liste médicaments</h1>
+      <h1>Liste des médicaments</h1>
       <div className="list">
           {loading ? (
             <p>Chargement des médicaments...</p>
