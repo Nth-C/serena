@@ -21,6 +21,11 @@ const AddMembre = ({isOpen, onClose }) => {
             prenom: "Epstein",
             username: "EFN",
         },
+        {
+            nom: "TATA",
+            prenom: "Rayan",
+            username: "DZ",
+        },
     ];
 
     return (

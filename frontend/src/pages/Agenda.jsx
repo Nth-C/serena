@@ -5,19 +5,19 @@ import { getFormatDate } from '../utils/utils';
 import Calendar from '../components/calendar/Calendar'
 import PopUpSelectDate from '../components/pop_up_select_date/PopUpSelectDate'
 
-
-
 function Agenda() {
   const [newEventOpen, setNewEventOpen] = useState(false)
   const [isTrajet, setIsTrajet] = useState(false)
   const [membresFamille, setMembresFamille] = useState([]) 
+  
+  // State pour stocker la liste des événements
+  const [listeEvenements, setListeEvenements] = useState([])
 
-  const [date, setDate] = useState(new Date()) // new Date renvoie la date actuelle
+  const [date, setDate] = useState(new Date())
   const [popUpDateOpen, setPopUpDateOpen] = useState(false)
-
   const [isCalendarWeek, setIsCalendarWeek] = useState(false)
-
   const [status, setStatus] = useState({ type: null, message: '' })
+  
   const apiUrl = import.meta.env.VITE_API_URL
 
   // --- Initialisation du State ---
@@ -32,21 +32,19 @@ function Agenda() {
     description: '',
 
     // Champs Trajet
-    effectue: 'aidant',  // Valeur par défaut pour éviter les bugs d'affichage
+    effectue: 'aidant',  // Valeur par défaut
     aidantAffecte: '',   // UUID
     societe: '',         // Texte
     lieuDepart: '',
-    lieuArrivee: ''
+    lieuArrivee: '',
+    id_event: ''         // ID de l'événement lié
   })
-
-
-
 
   const toggleNewEvent = () => {
     setNewEventOpen(!newEventOpen)
   }
 
-  // --- Chargement des membres de la famille ---
+  // --- 1. Chargement des membres de la famille ---
   useEffect(() => {
     const fetchMembres = async () => {
       try {
@@ -66,6 +64,29 @@ function Agenda() {
     fetchMembres();
   }, [apiUrl]);
 
+  // --- 2. Chargement des événements pour le select ---
+  useEffect(() => {
+    const fetchEvents = async () => {
+      if (!newEventOpen) return;
+
+      try {
+        const response = await fetch(`${apiUrl}/?route=getevents`, {
+            credentials: 'include' 
+        });
+        const data = await response.json()
+        
+        if (data.success) {
+          // console.log("Events reçus:", data.evenements); // Debug
+          setListeEvenements(data.evenements)
+        }
+      } catch (error) {
+        console.error("Erreur chargement événements", error)
+      }
+    };
+
+    fetchEvents();
+  }, [apiUrl, newEventOpen]);
+
   // --- Gestion des changements dans les inputs ---
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -80,19 +101,31 @@ function Agenda() {
     e.preventDefault() 
     setStatus({ type: null, message: '' })
 
-    // 1. Copie des données
-    const payload = { ...formData };
+    // 1. Préparation du payload
+    let payload = {};
 
-    // 2. Nettoyage : PostgreSQL déteste les chaînes vides "" pour les UUID
-    // On les remplace par null
+    if (isTrajet) {
+        payload = {
+            date_deb: formData.debut,
+            date_fin: formData.debut,
+            lieu_dep: formData.lieuDepart,
+            lieu_arr: formData.lieuArrivee,
+            id_event: formData.id_event,
+            aidant_id: formData.effectue === 'aidant' ? formData.aidantAffecte : null,
+            societe: formData.effectue === 'externe' ? formData.societe : null
+        };
+    } else {
+        payload = { ...formData };
+    }
+
+    // 2. Nettoyage des chaînes vides
     Object.keys(payload).forEach(key => {
         if (payload[key] === '') {
             payload[key] = null;
         }
     });
 
-    // 3. Détermination de la route API (Evenement OU Trajet)
-    // Assurez-vous que votre PHP écoute bien sur ces deux routes
+    // 3. Détermination de la route API
     const routeAction = isTrajet ? 'trajet/add' : 'evenement/add';
 
     try {
@@ -111,7 +144,7 @@ function Agenda() {
         // Reset du formulaire
         setFormData({
           titre: '', lieu: '', accompagnants: '', debut: '', fin: '', recurrence: '', description: '',
-          effectue: 'aidant', aidantAffecte: '', societe: '', lieuDepart: '', lieuArrivee: ''
+          effectue: 'aidant', aidantAffecte: '', societe: '', lieuDepart: '', lieuArrivee: '', id_event: ''
         })
         setNewEventOpen(false); 
 
@@ -142,8 +175,6 @@ function Agenda() {
           <button className={isCalendarWeek ? 'active' : ''} onClick={() => setIsCalendarWeek(true)}>Semaine</button>
         </div>
       </div>
-
-
 
       <Calendar 
         date={date}
@@ -247,7 +278,33 @@ function Agenda() {
                PARTIE TRAJET
                ========================================= */
             <>
-            {/* Choix Aidant ou Société */}
+            {/* CORRECTION ICI : Sélecteur adapté à ton JSON */}
+            <div>
+                <label>Lier à l'événement :</label>
+                <select 
+                    name="id_event" 
+                    value={formData.id_event} 
+                    onChange={handleChange} 
+                    required
+                >
+                    <option value="">-- Choisir un événement --</option>
+                    {listeEvenements.map((ev) => {
+                        // Traitement de la date
+                        const d = new Date(ev.date_deb);
+                        // On n'affiche que la date car le JSON ne contient pas l'heure
+                        const dateStr = !isNaN(d) ? d.toLocaleDateString('fr-FR') : ev.date_deb;
+                        
+                        console.log(ev)
+
+                        return (
+                            <option key={ev.id_event} value={ev.id_event}>
+                                {ev.nom} ({dateStr})
+                            </option>
+                        )
+                    })}
+                </select>
+            </div>
+
             <div className='effectue_trajet'>
               <div>
                 <input 
@@ -266,6 +323,7 @@ function Agenda() {
                 <label htmlFor="externe">Société Externe</label> 
               </div> 
             </div>
+
             {formData.effectue === 'aidant' && (
                 <div>
                     <label>Quel aidant effectue le trajet ?</label>
@@ -280,7 +338,6 @@ function Agenda() {
                 </div>
             )}
 
-            {/* Affichage conditionnel : Input Société */}
             {formData.effectue === 'externe' && (
                 <div>
                     <label>Nom de la société :</label>
@@ -294,7 +351,7 @@ function Agenda() {
             <div>
               <label>Date et heure du trajet :</label>
               <input 
-                type="datetime-local" name="debut" // On réutilise le champ 'debut' pour la date du trajet
+                type="datetime-local" name="debut" 
                 value={formData.debut} onChange={handleChange} required 
               />
             </div>
@@ -318,8 +375,6 @@ function Agenda() {
           )}
           </form>
       </Slide>
-
-
 
     </div>
 
