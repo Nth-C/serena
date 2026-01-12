@@ -37,7 +37,7 @@ class MedicamentDAO {
     }
 
     public function searchNomMedicament($texteNomMedicament): array {
-    // 1. On récupère d'abord les noms DISTINCTS pour tester l'unicité
+    // 1. On récupère les noms DISTINCTS
     $queryDistinct = 'SELECT DISTINCT denomination_substance 
                       FROM CAT_MEDICS 
                       WHERE denomination_substance ILIKE :search';
@@ -50,27 +50,26 @@ class MedicamentDAO {
         return ["resultats" => [], "isUnique" => false];
     }
 
-    // On regarde s'il y a plus d'une dénomination différente
+    // --- AJOUT : Vérification de correspondance exacte ---
+    $nomExact = null;
+    foreach ($nomsDistincts as $row) {
+        // strcasecmp compare sans tenir compte de la casse (A = a)
+        if (strcasecmp($row['denomination_substance'], $texteNomMedicament) === 0) {
+            $nomExact = $row['denomination_substance'];
+            break;
+        }
+    }
+
     $nbNoms = count($nomsDistincts);
 
-    if ($nbNoms > 1) {
-        // CAS MULTIPLE : On refait la requête SANS DISTINCT avec un LIMIT 5
-        $querySimple = 'SELECT DISTINCT denomination_substance 
-                        FROM CAT_MEDICS 
-                        WHERE denomination_substance ILIKE :search 
-                        LIMIT 5';
-        $stmtSimple = $this->dal->prepare($querySimple);
-        $stmtSimple->execute(['search' => '%' . $texteNomMedicament . '%']);
+    // On va dans le bloc "UNIQUE" si on a trouvé un nom exact 
+    // OU s'il n'y a qu'un seul résultat dans la liste.
+    if ($nomExact !== null || $nbNoms === 1) {
         
-        return [
-            "resultats" => $stmtSimple->fetchAll(PDO::FETCH_ASSOC),
-            "isUnique" => false
-        ];
-    } else {
-        // CAS UNIQUE : On récupère les détails (ID, Pharma, etc.) pour ce nom précis
-        $nomUnique = $nomsDistincts[0]['denomination_substance'];
+        // On prend soit le nom exact trouvé, soit le seul nom de la liste
+        $nomUnique = ($nomExact !== null) ? $nomExact : $nomsDistincts[0]['denomination_substance'];
 
-        $queryDetails = 'SELECT id_medics, designation_elem_pharma, denomination_substance
+        $queryDetails = 'SELECT DISTINCT ON (designation_elem_pharma) id_medics, designation_elem_pharma, denomination_substance
                          FROM CAT_MEDICS 
                          WHERE denomination_substance = :nomUnique';
         
@@ -80,6 +79,21 @@ class MedicamentDAO {
         return [
             "resultats" => $stmtDetails->fetchAll(PDO::FETCH_ASSOC),
             "isUnique" => true
+        ];
+
+    } else {
+        // CAS MULTIPLE : On liste les suggestions (LIMIT 5)
+        // Note: Ici j'ai gardé ton LIKE sans les % autour pour suggérer ce qui COMMENCE par le texte
+        $querySimple = 'SELECT DISTINCT denomination_substance 
+                        FROM CAT_MEDICS 
+                        WHERE denomination_substance ILIKE :search 
+                        LIMIT 5';
+        $stmtSimple = $this->dal->prepare($querySimple);
+        $stmtSimple->execute(['search' => $texteNomMedicament . '%']);
+        
+        return [
+            "resultats" => $stmtSimple->fetchAll(PDO::FETCH_ASSOC),
+            "isUnique" => false
         ];
     }
 }

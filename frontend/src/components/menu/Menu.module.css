@@ -85,11 +85,13 @@
     font-weight: 400;
 }
 
-.menu .main_container a {
+.menu .main_container a,
+.menu .main_container > div:not(:first-child) button {
     display: flex;
     justify-content: space-between;
     align-items: center;
     color: var(--black);
+    width: 100%;
 }
 
 .menu .header_container .border {

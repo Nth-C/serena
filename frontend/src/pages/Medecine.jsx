@@ -21,7 +21,9 @@ function Medecine() {
 
   // ajout medicament
   const [isNewMedecineOpen , setIsNewMedecineOpen] = useState(false) // page
+  const [listNomMedecine , setListNomMedecine] = useState([])
   const [listTypeMedecine , setListTypeMedecine] = useState([])
+  const [isNameGood, setIsNameGood] = useState(false);
   const [nameMedecine , setNameMedecine] = useState("")
   const [idCatalogueMedecine , setIdCatalogueMedecine] = useState("")
   const [initialStock , setInitialStock] = useState("")
@@ -183,18 +185,21 @@ function Medecine() {
         body: JSON.stringify(
           // change les donné envoyer (créer / modifier)
           {  
-            texteNomMedicament: nameMedecine
+            texteNomMedicament: e
           }
         )
       });
 
       const result = await response.json();
       console.log(result);
+      setListNomMedecine(result.resultats)
       if (result.isUnique) {
         console.log(result.resultats)
         setListTypeMedecine(result.resultats)
+        setIsNameGood(true)
       } else {
-        setMessage("Erreur: " + result.error);
+        setIdCatalogueMedecine("") 
+        setIsNameGood(false);
       }
     } catch (error) {
       setMessage("error");
@@ -305,6 +310,7 @@ function Medecine() {
             <label>Nom du médicament : </label>
             <input
               type="text"
+              list="medication-suggestions"
               value={nameMedecine}
               onChange={(e) => {
                 setNameMedecine(e.target.value);
@@ -316,6 +322,12 @@ function Medecine() {
               required
               disabled={isEditing} // on ne peut pas modifier l'input si on modifie un medicament
             />
+            <datalist id="medication-suggestions">
+            {/* On boucle sur les résultats de votre recherche PHP */}
+            {listNomMedecine?.map((suggestion) => (
+            <option value={suggestion.denomination_substance} />
+            ))}
+            </datalist>
           </div>
           <div>
             <label>Type de médicament : </label>
@@ -323,7 +335,8 @@ function Medecine() {
               setIdCatalogueMedecine(e.target.value)
             
             }}
-              required>
+              required
+              disabled={!isNameGood}>
               <option value=""></option>
               {listTypeMedecine.map((listeMedicament) => (
                 <option key={listeMedicament.id_medics} value={listeMedicament.id_medics}>
@@ -352,7 +365,7 @@ function Medecine() {
             />
           </div>
           <div>
-            <button type="reset" className="btn_border" onClick={handleResetForm} disabled={isEditing}>Reinistialiser</button>
+            <button type="reset" className="btn_border" onClick={handleResetForm} disabled={isEditing}>Réinitialiser</button>
             <button type="submit" className="btn_blue">{isEditing ? "Modifier" : "Ajouter"}</button>
           </div>
         </form>

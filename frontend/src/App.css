@@ -59,7 +59,7 @@ img {
 
 .content {
   width: 100%;
-  min-height: 300vh;
+  min-height: 100vh;
   padding-bottom: 15rem;
 }
 
@@ -84,6 +84,10 @@ a {
   color: var(--gray);
   text-align: center;
   margin-top: 3rem;
+}
+
+button {
+  cursor: pointer;
 }
 
 /* style form */
@@ -711,16 +715,46 @@ progress.blue_bar::-moz-progress-bar {
 /* ----------- Agenda ----------- */
 /* ------------------------------ */
 
+.agenda {
+  margin: 0 3rem;
+}
+
+.agenda .container_date {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.agenda .container_date > button:first-child {
+  display: flex;
+  gap: .5rem;
+  cursor: pointer;
+}
+
+.agenda .container_date h1 {
+  padding: 0;
+}
+
+.agenda .container_date > button:first-child img {
+  width: 1.5rem;
+}
+
+/* calandar */
+
+/*  slide event */
 .add_event {
 
 }
 
-.switch_event {
-  margin-bottom: 2rem;
+:is(.switch_event, .switch_calendar) {
+  /*margin-bottom: 2rem;*/
   border-radius: 8px;
+  flex-grow: 1;
 }
 
-.switch_event button {
+:is(.switch_event, .switch_calendar) button {
   width: 50%;
   padding: 0.5rem 3rem;
   cursor: pointer;
@@ -728,15 +762,15 @@ progress.blue_bar::-moz-progress-bar {
   color: var(--white);
 }
 
-.switch_event button.active {
+:is(.switch_event, .switch_calendar) button.active {
   background-color: var(--blue);
 }
 
-.switch_event button:first-child {
+:is(.switch_event, .switch_calendar) button:first-child {
   border-radius: 8px 0 0 8px;
 }
 
-.switch_event button:last-child {
+:is(.switch_event, .switch_calendar) button:last-child {
   border-radius: 0 8px 8px 0;
 }
 
@@ -824,7 +858,7 @@ progress.blue_bar::-moz-progress-bar {
   cursor: pointer;
 }
 
-.new_document div:last-child {
+.new_document > div:last-child {
   display: flex;
   flex-direction: row;
   justify-content: end;
@@ -862,6 +896,52 @@ progress.blue_bar::-moz-progress-bar {
 .drop_zone input {
   display: none;
   border: none;
+}
+
+.upload_success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+.upload_success > div {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ----------------------------- */
+/* --------- FORM AIDES -------- */
+/* ----------------------------- */
+
+.assistance {
+  padding : 0 3rem 0 3rem;
+}
+
+.assistance h1 {
+  padding: 0;
+}
+
+.assistance h2 {
+  padding: 2rem 0 0 0;
+}
+
+.assistance > form  > div {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.assistance > form  > div > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.assistance > form  > div:last-child {
+  flex-direction: row;
+  justify-content: end;
 }
 
 /* ----------------------------- */

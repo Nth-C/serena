@@ -2,33 +2,38 @@
 require_once('model/documentDAO.class.php');
 require_once(__DIR__ . '/../app.php');
 
-// Indispensable pour que React puisse communiquer avec PHP
-header("Access-Control-Allow-Origin: *"); 
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
+header("Content-Type: application/json");
+$app = new App();
 
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+if (!$app->connected || !$app->id_famille) {
+    echo json_encode(["success" => false, "error" => "Non autorisé"]);
     exit;
 }
 
-$app = new App();
-
 try {
-    $json = file_get_contents('php://input'); // lit le body du fetch
-    $data = json_decode($json, true); // transforme '$json' en tableau
+    $id_doc = $_GET['id'] ?? $_POST['id'] ?? null;
 
-    if (empty($data['id'])) {
+    if (!$id_doc) {
         throw new Exception("ID manquant pour la suppression.");
     }
 
-    $model = new DocumentDAO();
-    $success = $model->deleteDocument($data['id']);
+    $dao = new DocumentDAO();
+    $doc = $dao->getDocumentById($id_doc);
 
-    // renvoie a la vue des informations
-    echo json_encode([
-        "success" => $success, 
-    ]);
+    if ($doc) {
+        $filePath = __DIR__ . '/../' . $doc['url'];
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+
+        $success = $dao->deleteDocument($id_doc);
+        echo json_encode(["success" => $success]);
+    } else {
+        throw new Exception("Document introuvable dans la base de données.");
+    }
+} catch (Exception $e) {
+    echo json_encode(["success" => false, "error" => $e->getMessage()]);
 
 } catch (Exception $e) {
-    echo json_encode(["error" => $e->getMessage()]);
+    echo json_encode(["success" => false, "error" => $e->getMessage()]);
 }

@@ -16,9 +16,9 @@ class Medicament
     $this->nomMedicament = $data['designation_med'] ?? '';
     $this->description = $data['desc'] ?? '';
     $this->numAutorisationEU = $data['numAutorisationEU'] ?? -1;
-    $this->type = $data['type'] ?? 'PAS DE TYPE';
-    $this->stock = $data['quantite'] ?? 0;
-    $this->stockTotal = $data['total'] ?? 0;
+    $this->type = $data['type'] ?? $data['designation_elem_pharma'] ?? 'PAS DE TYPE';
+    $this->stock = $data['quantite'] ?? -1;
+    $this->stockTotal = $data['total'] ?? -1;
   }
 
   
