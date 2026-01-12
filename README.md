@@ -1,20 +1,11 @@
 <a id="readme-top"></a>
 
 
--->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![Unlicense License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
 
 
-
-<!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
+  <a href="https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena">
     <img src="frontend/public/img/logo.svg" alt="Logo" width="80" height="80">
   </a>
 
@@ -23,14 +14,13 @@
   <p align="center">
     Le pillier de votre sérénité
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
+    <a href="https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena"><strong>Explorer le document »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena">Signaler un Bug</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+
   </p>
 </div>
 
@@ -42,7 +32,7 @@
     <li>
       <a href="#about-the-project">à propos du projet</a>
       <ul>
-        <li><a href="#built-with">Fait avec</a></li>
+        <li><a href="#built-with">Languages utilisés</a></li>
       </ul>
     </li>
     <li>
@@ -57,7 +47,6 @@
     <li><a href="#contributing">Contribuer</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
@@ -65,196 +54,127 @@
 
 ## A propos du projet
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
+En France, le « grand âge » est un enjeu social et sanitaire majeur. Avec le vieillissement de la population, la France compte de plus en plus de personnes en situation de grand âge. En 2025, on estime que plus de 5 millions de personnes ont plus de 75 ans.
+En France, il existe une volonté de faciliter le maintien à domicile des personnes âgées, y compris dans le cadre de la dépendance. Ce maintien à domicile repose sur la présence d'aidants.
+C'est pour cela que nous devons développer une plateforme à destination des aidants familiaux dans le cadre de l'accompagnement du grand âge.
+Notre application doit pouvoir faciliter le maintien à domicile des personnes âgées en fournissant aux aidants familiaux, à la famille proche et aux différents intervenants (aides à domicile, infirmiers) un outil centralisant les informations utiles au suivi médical (prise de rendez-vous, stock de médicaments), au suivi administratif (suivi des demandes d'aides) ou au quotidien.
 
-Here's why:
-* Your time should be focused on creating something amazing. A project that solves a problem and helps others
-* You shouldn't be doing the same tasks over and over like creating a README from scratch
-* You should implement DRY principles to the rest of your life :smile:
-
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
-
-Use the `BLANK_README.md` to get started.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-### Fait avec
-
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
-
-* [![Next][Next.js]][Next-url]
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- GETTING STARTED -->
-## Où commencer
-
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
-
-### Prérequis
-
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
-
-### Installation
-
-._
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/github_username/repo_name.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-5. Change git remote url to avoid accidental pushes to base project
-   ```sh
-   git remote set-url origin github_username/repo_name
-   git remote -v # confirm the changes
-   ```
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-## Utilisation
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- ROADMAP -->
-## Roadmap
-
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Multi-language Support
-    - [ ] Chinese
-    - [ ] Spanish
-
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- CONTRIBUTING -->
-## Contribuer
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-### Top contributors:
-
-<a href="https://github.com/othneildrew/Best-README-Template/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=othneildrew/Best-README-Template" alt="contrib.rocks image" />
-</a>
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-## License
-
-Distributed under the Unlicense License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- CONTACT -->
-## Contact
-
- - [@your_twitter](https://twitter.com/your_username) - sere-na@alwaysdata.net
-
-Project Link: [https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena](https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena)
 
 <p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
 
 
 
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
+### Languages Utilisés
 
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
+Pour ce projet nous avons utilisés pour le front end des languages comme PHP et react avec des éléments plus minimes comme CSS ou HTML. Pour le backend nous avons utilisés POSTGRESQL
 
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
-* [Malven's Grid Cheatsheet](https://grid.malven.co/)
-* [Img Shields](https://shields.io)
-* [GitHub Pages](https://pages.github.com)
-* [Font Awesome](https://fontawesome.com)
-* [React Icons](https://react-icons.github.io/react-icons/search)
+### Languages et Outils
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+* [![React][React-shield]][React-url]
+* [![PHP][PHP-shield]][PHP-url]
+* [![PostgreSQL][PostgreSQL-shield]][PostgreSQL-url]
+* [![Docker][Docker-shield]][Docker-url]
+* [![HTML5][HTML5-shield]][HTML5-url]
+* [![CSS3][CSS3-shield]][CSS3-url]
 
+<p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
 
 
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
-[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
-[forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
-[stars-url]: https://github.com/othneildrew/Best-README-Template/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
-[product-screenshot]: images/screenshot.png
-[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
-[Next-url]: https://nextjs.org/
-[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+## Où commencer
+
+
+
+### Prérequis
+
+Pour pouvoir lancer l'application en local il vous faudra installer DOCKER, PHP (à mettre dans les variables d'environnement windows) et POSTGRESQL.
+
+### Installation
+
+._
+
+1. Cloner le repo
+   ```sh
+   git clone https://github.com/github_username/repo_name.git
+   ```
+2. Composer le docker
+   ```sh
+    docker compose up --build                                                                                     
+   ```
+3. Changer le .env pour VOTRE base de donnée
+   ```js
+   DB_HOST= 'L''ADRESSE_DE_VOTRE_DATABASE'
+   DB_PORT= 'LES_PORTS_DE_VOTRE_DATABASE'
+   DB_NAME= 'LE_NOM_DE_VOTRE_DATABASE'
+   DB_USER= 'L''UTILISATEUR_DE_VOTRE_DATABASE'
+   DB_PASSWORD= 'LE_MOT_DE_PASSE_DE_VOTRE_DATABASE'
+   ```
+
+
+<p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
+
+
+
+## Utilisation
+
+
+
+<p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
+
+
+
+## Roadmap
+
+- [x] Création,synchronisation et administration d'un agenda
+- [x] Création d'un espace de dépot de fichiers
+- [ ] Lecture automatique d'une ordonnance
+- [ ] Add "components" document to easily copy & paste sections of the readme
+
+
+<p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
+
+
+
+## Contribuer
+
+1. Fork le projet
+2. Créer votre Branch (`git checkout -b feature/VotreFeature`)
+3. Commit vos changements (`git commit -m 'ajout de changements'`)
+4. Push to the Branch (`git push origin feature/VotreFeature`)
+5. Ouvrer une requête de Pull 
+
+
+<p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
+
+
+## License
+
+Distribué sous license. Aller voir `LICENCE.TXT` pour plus d'informations.
+
+<p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
+
+
+
+## Contact
+
+ - sere-na@alwaysdata.net
+
+Lien du projet: [https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena](https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena)
+
+<p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
+
+
+
+
+[React-shield]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
-[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
-[Vue-url]: https://vuejs.org/
-[Angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white
-[Angular-url]: https://angular.io/
-[Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
-[Svelte-url]: https://svelte.dev/
-[Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white
-[Laravel-url]: https://laravel.com
-[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
-[Bootstrap-url]: https://getbootstrap.com
-[JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
-[JQuery-url]: https://jquery.com 
+[PHP-shield]: https://img.shields.io/badge/php-%23777BB4.svg?style=for-the-badge&logo=php&logoColor=white
+[PHP-url]: https://www.php.net/
+[PostgreSQL-shield]: https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white
+[PostgreSQL-url]: https://www.postgresql.org/
+[Docker-shield]: https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white
+[Docker-url]: https://www.docker.com/
+[HTML5-shield]: https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white
+[HTML5-url]: https://developer.mozilla.org/fr/docs/Web/HTML
+[CSS3-shield]: https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white
+[CSS3-url]: https://developer.mozilla.org/fr/docs/Web/CSS

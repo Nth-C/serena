@@ -37,7 +37,8 @@ const _ROUTES = array(
   'document/add' => 'addDocument',
   'document/delete' => 'deleteDocument',
   'categorie/add' => 'addCategorie',
-  'getfamillepersonne' => 'getfamillepersonne'
+  'getfamillepersonne' => 'getfamillepersonne',
+  'rolepersonne/update' => 'updateRolePersonne'
 );
 
 if (!array_key_exists($route, _ROUTES)) {
