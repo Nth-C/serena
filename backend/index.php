@@ -25,6 +25,7 @@ const _ROUTES = array(
   'login' => 'login',
   'register' => 'register',
   'logout' => 'logout',
+  'audit/list' => 'viewAudit',
   'famille/add' => 'addFamille',
   'famille/all' => 'getFamille',
   'famille/update' => 'updateFamille',
