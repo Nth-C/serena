@@ -164,3 +164,16 @@ CREATE TABLE APPARTIENT_A (
 \copy CAT_MEDICS(code_cis, designation_elem_pharma, code_substance, denomination_substance, dosage_substance, reference_dosage, nature_composant, numero_lien) FROM 'CIS_COMPO_bdpm.txt' WITH (FORMAT CSV, DELIMITER E'\t', QUOTE E'\b', ENCODING 'LATIN1');
 
 ALTER TABLE public.personnes ADD tps_mdp _timestamptz NULL;
+CREATE TABLE public.invitation (
+
+)
+TABLESPACE pg_default
+;
+ALTER TABLE public.invitation ADD famille_invitee varchar NULL;
+ALTER TABLE public.invitation ADD id_pers_invitee uuid NULL;
+ALTER TABLE public.invitation ADD id_pers_qui_invite uuid NULL;
+ALTER TABLE public.invitation RENAME COLUMN famille_invitee TO id_famille_invitee;
+ALTER TABLE public.invitation ALTER COLUMN id_famille_invitee TYPE uuid USING id_famille_invitee::uuid::uuid;
+ALTER TABLE public.invitation ADD CONSTRAINT invitation_fams_fk FOREIGN KEY (id_famille_invitee) REFERENCES public.fams(id_famille);
+ALTER TABLE public.invitation ADD CONSTRAINT invitation_personnes_fk FOREIGN KEY (id_pers_qui_invite) REFERENCES public.personnes(id_personne);
+ALTER TABLE public.invitation ADD CONSTRAINT invitation_personnes FOREIGN KEY (id_pers_invitee) REFERENCES public.personnes(id_personne);
