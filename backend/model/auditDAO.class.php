@@ -11,7 +11,6 @@ class auditDAO {
 
     public function getAllAudit($id_famille): array
     {
-        // On sélectionne tout depuis la vue ou la table audit_logs
         $query = 'SELECT * FROM audit_logs WHERE id_famille_audit = :id_famille ORDER BY action_tstamp DESC';
         $stmt = $this->dal->prepare($query);
 

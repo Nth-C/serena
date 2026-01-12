@@ -16,7 +16,7 @@ class audit
   {
     $this->id_audit = $data['id_audit'] ?? ''; 
     $this->operation = $data['operation'] ?? '';
-    $this->user_name = $data['user_name'] ?? 'Inconnu'; // Valeur par défaut
+    $this->user_name = $data['user_name'] ?? 'Inconnu'; 
     
     $this->table_name = $data['table_name'] ?? '';
     $this->schema_name = $data['schema_name'] ?? '';

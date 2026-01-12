@@ -15,13 +15,12 @@ const AuditLog = ({ isOpen, onClose }) => {
         try {
             const response = await fetch(`${apiUrl}/?route=audit/list`, {
                 method: 'GET',
-                credentials: 'include', // CRUCIAL pour envoyer le cookie de session
+                credentials: 'include', 
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
 
-            // Vérification si la réponse est bien du JSON
             const contentType = response.headers.get("content-type");
             if (!contentType || !contentType.includes("application/json")) {
                 throw new Error("Réponse serveur invalide (pas de JSON)");
@@ -33,7 +32,6 @@ const AuditLog = ({ isOpen, onClose }) => {
                 throw new Error(data.error);
             }
 
-            // On s'assure que c'est bien un tableau
             setListLogs(Array.isArray(data) ? data : []);
             
         } catch (err) {
@@ -75,7 +73,6 @@ const AuditLog = ({ isOpen, onClose }) => {
         if (table === 'ordonnances') table = 'Ordonnance';
         if (table === 'personnes') table = 'Profil';
         
-        // Sécurité si table est null
         return `Sur ${table || 'Inconnu'}`;
     };
 
