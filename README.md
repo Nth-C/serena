@@ -151,7 +151,7 @@ Pour pouvoir lancer l'application en local il vous faudra installer DOCKER, PHP 
 
 Distribué sous license. Aller voir `LICENCE.TXT` pour plus d'informations.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
 
 
 
