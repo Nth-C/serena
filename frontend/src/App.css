@@ -17,8 +17,8 @@
 :root {
   --black: #252525;
   --white: #FFFBF2;
-  --blue: #91A8D2;
-  --pink: #F6CAC9;
+  --blue: #4C79CC;;
+  --pink: #FF9593;
   --red: #BF443D;
   --gray: #B1B1B1;
   --bg-black: rgba(37, 37, 37, .2);
@@ -223,6 +223,50 @@ input::placeholder {
   color: var(--gray);
   text-align: center;
   margin-top: 2rem;
+}
+
+/* ----------------------------------- */
+/* ----------- LAYOUT MENU ----------- */
+/* ----------------------------------- */
+
+.page_menu {
+    position: relative;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--white);
+    z-index: 1000;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.page_menu.active {
+    display: flex;
+}
+
+.page_menu .params_header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 5rem;
+    padding: 0 1.5rem;
+    border-bottom: 1px solid var(--gray);
+}
+
+.page_menu h2 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.page_menu .params_header svg {
+    fill: var(--black);
+    width: 2.5rem;
 }
 
 /* --------------------------------------------------- */

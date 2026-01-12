@@ -1,5 +1,6 @@
 import styles from './RoleMembre.module.css';
 import { useState, useEffect } from 'react'
+import LayoutMenu from '../../LayoutMenu'
 
 import Slide from '../slide/Slide'
 
@@ -8,6 +9,7 @@ const RoleMembre = ({isOpen, onClose }) => {
 const [infosMembre, setSettingsOf] = useState({id : '',name: '', role: ''})
 const [settingsOfOpen, setSettingsOfOpen] = useState(false)
 const [membresFamille, setMembresFamille] = useState([]) 
+
 
 const apiUrl = import.meta.env.VITE_API_URL;
 // Déclare la fonction en dehors du useEffect
@@ -94,21 +96,17 @@ console.error("Erreur réseau:", error);
 
     return (
         <>
-        <div className={[
-            styles.role_membre,
-            isOpen ? styles.active : ''
-        ].join(' ')}>
-            <div className={styles.params_header}>
-                <button onClick={onClose}>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" ><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z"/></svg>                </button>
-                <h2>Gérer rôle</h2>
-            </div>
+        <LayoutMenu
+            title={"Gérer rôle"} 
+            isOpen={isOpen} 
+            onClose={onClose}
+        >
+            <div className={styles.role_membre}>
+                <div className={styles.container_search}>
+                    <input type="search" placeholder="Rechercher"/>
+                </div>
 
-            <div className={styles.container_search}>
-                <input type="search" placeholder="Rechercher"/>
-            </div>
-
-            <div className={styles.membre_list}>
+                <div className={styles.membre_list}>
                 {membresFamille.map((membre) => (
                     <div key={membre.id}>
                         <div className={styles.container_name}>
@@ -128,9 +126,9 @@ console.error("Erreur réseau:", error);
                     </div>
                 ))}
             </div>
-        </div>
+            </div>
+        </LayoutMenu>
 
-        
         <Slide
             title={infosMembre.name || ''}
             isOpen={settingsOfOpen}

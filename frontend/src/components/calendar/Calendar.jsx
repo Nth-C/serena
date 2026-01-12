@@ -20,6 +20,11 @@ const Calendar = ({ events, isCalendarWeek = false }) => {
             dateEnd: new Date(new Date().setHours(10, 0)),
             titre: 'event 3' 
         },
+        { 
+            dateStart: new Date(new Date().setHours(23, 0)), 
+            dateEnd: new Date(new Date().setHours(0, 0)),
+            titre: 'event 4' 
+        },
     ];
 
     const calcHeightEvent = (event) => {
@@ -64,7 +69,7 @@ const Calendar = ({ events, isCalendarWeek = false }) => {
             other !== currentEvent && areOverlapping(currentEvent, other)
         );
 
-        // Calcule la largeur par rapport aux conflits
+        // calcule la largeur par rapport aux conflits
         const width = 100 / (overlaps.length + 1);
 
         // calcule sa colonne
@@ -106,7 +111,7 @@ const Calendar = ({ events, isCalendarWeek = false }) => {
                             left: `${horizontalStyle.left}`,
                             width: `calc(${horizontalStyle.width} - 2px)`,
                             height: `${calcHeightEvent(event)}px`,
-                            top: `${calcPositionTop(event)}px`
+                            top: `${calcPositionTop(event) + 8}px`
                         }
 
                         return (

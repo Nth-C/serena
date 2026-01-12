@@ -50,7 +50,12 @@ function App() {
 
         {/* ROUTES PROTÉGÉES (Connexion + Famille requise) */}
         <Route path="home" element={
-          <ProtectedRoute><Layout submenu={[/*...*/]} /></ProtectedRoute>
+          <Layout submenu={[
+              { label: "Journal de bord", path: "home/dashboard" },
+              { label: "Ma journée", path: "home/my_day" },
+              { label: "Dernier rapport", path: "home/last_visit_report" },
+            ]}
+          />
         }>
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
