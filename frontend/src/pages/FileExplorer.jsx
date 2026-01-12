@@ -58,7 +58,6 @@ function FileExplorer() {
       setError(null);
     } catch (err) {
       console.error("Erreur de récupération:", err.message);
-      setError(err.message || "Impossible de contacter le serveur");
       setListDocument([]);
     }
   };
