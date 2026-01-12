@@ -1,31 +1,8 @@
 import styles from './Calendar.module.css';
 
-const Calendar = ({ events, isCalendarWeek = false }) => {
+const Calendar = ({ events = [], isCalendarWeek = false }) => {
     const weekDays = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
     const hourHeight = 60; // 1 heure = 60px
-
-    const eventTest = [
-        { 
-            dateStart: new Date(new Date().setHours(13, 0)), 
-            dateEnd: new Date(new Date().setHours(15, 30)),
-            titre: 'event 1' 
-        },
-        { 
-            dateStart: new Date(new Date().setHours(13, 30)), 
-            dateEnd: new Date(new Date().setHours(16, 30)),
-            titre: 'event 2' 
-        },
-        { 
-            dateStart: new Date(new Date().setHours(8, 0)), 
-            dateEnd: new Date(new Date().setHours(10, 0)),
-            titre: 'event 3' 
-        },
-        { 
-            dateStart: new Date(new Date().setHours(23, 0)), 
-            dateEnd: new Date(new Date().setHours(0, 0)),
-            titre: 'event 4' 
-        },
-    ];
 
     const calcHeightEvent = (event) => {
         // calcul de la durée en minutes
@@ -104,8 +81,8 @@ const Calendar = ({ events, isCalendarWeek = false }) => {
                     ))}
 
                     {/* affichage events */}
-                    {eventTest.map((event, i) => {
-                        const horizontalStyle = calcPositionLeft(event, eventTest)
+                    {events.map((event, i) => {
+                        const horizontalStyle = calcPositionLeft(event, events)
                         
                         const eventStyle = {
                             left: `${horizontalStyle.left}`,
