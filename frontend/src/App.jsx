@@ -1,10 +1,20 @@
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { useState } from 'react';
 import './App.css'
+import Dashboard from './pages/Dashboard';
+import MyDay from './pages/MyDay'
+import LastVisitReport from './pages/LastVisitReport'
+import Agenda from './pages/Agenda'
+import VisitReport from './pages/VisitReport'
+import Medecine from './pages/Medecine'
+import FileExplorer from './pages/FileExplorer'
+import Assistance from './pages/Assistance'
+import Login from './pages/Login'
+import CreateAccount from './pages/CreateAccount';
+import Layout from './Layout'
+import AcceSuivi from './pages/AcceSuivi';
 
-// ... (tes imports de pages restent identiques)
 
-// --- COMPOSANT DE PROTECTION AMÉLIORÉ ---
 const ProtectedRoute = ({ children, requireFamily = true }) => {
   const isConnected = sessionStorage.getItem('isConnected') === 'true';
   const hasFamily = sessionStorage.getItem('id_famille') !== null;
