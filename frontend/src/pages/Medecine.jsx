@@ -59,7 +59,7 @@ function Medecine() {
     
     // pré-remplit les inputs avec les données du médicament
     setNameMedecine(med.nomMedicament);
-    setTypeMedecine(med.type);
+    setIdCatalogueMedecine(med.type);
     setInitialStock(med.stockTotal);
     setCurrentStock(med.stock);
     
@@ -336,7 +336,7 @@ function Medecine() {
             
             }}
               required
-              disabled={!isNameGood}>
+              disabled={!isNameGood && isEditing}>
               <option value=""></option>
               {listTypeMedecine.map((listeMedicament) => (
                 <option key={listeMedicament.id_medics} value={listeMedicament.id_medics}>

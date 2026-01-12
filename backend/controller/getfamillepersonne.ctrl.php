@@ -22,19 +22,11 @@ try {
     $membres = $dao->getPersFam($app->id_famille);
 
     // On prépare les données pour React (on ne garde que l'utile)
-    $dataExport = [];
-    foreach ($membres as $personne) {
-        $dataExport[] = [
-            'id' => $personne->id,       // id_personne
-            'nom' => $personne->nom,
-            'prenom' => $personne->prenom,
-            'role' => $personne->role
-        ];
-    }
+    
 
     echo json_encode([
         "success" => true,
-        "membres" => $dataExport
+        "membres" => $membres
     ]);
 
 } catch (Exception $e) {

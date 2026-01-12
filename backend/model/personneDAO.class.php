@@ -13,6 +13,34 @@ class PersonneDAO {
     $this->dal = $dal ?: DAL::get();
 }
 
+    public function getAllPersonneWithTexte($texte): array {
+    // 1. On ne sélectionne QUE les colonnes nécessaires (sécurité)
+    $query = 'SELECT * 
+              FROM PERSONNES 
+              WHERE username ILIKE :search 
+              OR nom ILIKE :search 
+              OR prenom ILIKE :search
+              LIMIT 16';
+    
+    $stmt = $this->dal->prepare($query);
+    $stmt->execute(['search' => '%' . $texte . '%']);
+    
+    // FETCH_ASSOC est plus propre pour manipuler les données
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $resultats = [];
+    foreach($data as $personne) {
+        // Option A : Garder des objets si ton modèle est bien défini
+        $resultats[] = new Personne($personne);
+        
+        // Option B : Si tu as encore des erreurs "offset on null" dans le contrôleur, 
+        // retourne directement le tableau associatif :
+        // $resultats[] = $personne;
+    }
+
+    return $resultats;
+}
+
     public function findByUsername(string $username): ?Personne {
         $query = 'SELECT * FROM personnes WHERE username = :username';
         $stmt = $this->dal->prepare($query);
