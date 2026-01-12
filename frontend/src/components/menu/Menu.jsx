@@ -16,18 +16,21 @@ function Menu({isOpen , onHamburgerClick}) {
 
     const apiUrl = import.meta.env.VITE_API_URL;
 
-    const handleLogout = async () => {
-        try {
-            await fetch(`${apiUrl}/?route=logout`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-            });
-            localStorage.removeItem('user');
-            navigate('/login');
-        } catch (error) {
-            console.error('Erreur lors de la déconnexion', error);
-        }
-    };
+const handleLogout = async () => {
+    try {
+      await fetch(`${apiUrl}/?route=logout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include' 
+      });
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion serveur', error);
+    } finally {
+        localStorage.removeItem('user');
+        sessionStorage.removeItem('isConnected');
+        avigate('/login');
+    }
+};
 
     return (
         <>

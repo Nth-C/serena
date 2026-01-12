@@ -54,14 +54,20 @@ class App
     }
 
 
-    public function logout()
-    {
-        $this->connected = false;
-        $this->personne = null;
-        // Supprime carrément la variable au lieu de mettre 0
-        unset($_SESSION['id_famille_active']); 
-        session_destroy();
+public function logout() {
+    $_SESSION = array();
+
+    if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000,
+            $params["path"], $params["domain"],
+            $params["secure"], $params["httponly"]
+        );
     }
+    session_destroy();
+    $this->connected = false;
+    $this->id_famille = "";
+}
 
     public function setFamilleActive( $id_famille)
     {

@@ -6,7 +6,6 @@ function Login() {
     const [formData, setFormData] = useState({ username: '', mdp: '' });
     const [message, setMessage] = useState('');
 
-    
     const apiUrl = import.meta.env.VITE_API_URL; 
 
     const handleChange = (e) => {
@@ -23,14 +22,16 @@ function Login() {
                 body: JSON.stringify({ username : formData.username, mdp : formData.mdp  })
             });
             const data = await response.json();
+            
             if (data.success) {
                 localStorage.setItem('user', JSON.stringify(data.user));
-                window.location.href = '/acce_suivi'; 
+                sessionStorage.setItem('isConnected', 'true');
+                navigate('/acce_suivi'); 
             } else {
-                setMessage(data.message);
+                setMessage(data.message || 'Identifiants incorrects');
             }
         } catch (error) {
-            setMessage('Erreur de connexion');
+            setMessage('Erreur de connexion au serveur');
         }
     };
 
@@ -39,7 +40,7 @@ function Login() {
             <img src="/img/logo-name.png" alt="" />
 
             <h1>Se connecter</h1>
-            {message && <p>{message}</p>}
+            {message && <p className="error_message" style={{color: 'red'}}>{message}</p>}
 
             <form onSubmit={handleSubmit}>
                 <div>
@@ -71,4 +72,4 @@ function Login() {
     )
 };
 
-export default Login
+export default Login;
