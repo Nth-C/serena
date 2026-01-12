@@ -1,12 +1,20 @@
 services:
   db:
-    image: postgres:16
+    # MODIFICATION : On construit notre image perso au lieu de télécharger l'officielle
+    build:
+      context: .
+      dockerfile: Dockerfile.db
     environment:
       POSTGRES_DB: ma_base
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password123
     volumes:
       - ./data:/docker-entrypoint-initdb.d
+    command: >
+      postgres 
+      -c "shared_preload_libraries=pgaudit,auth_delay" 
+      -c "pgaudit.log=write,ddl,role" 
+      -c "auth_delay.milliseconds=1000"
 
   backend:
     build: ./backend

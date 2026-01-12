@@ -11,7 +11,6 @@ function Menu({isOpen , onHamburgerClick}) {
     const [addMembreOpen, setAddMembreOpen] = useState(false)
     const [roleMembreOpen, setRoleMembreOpen] = useState(false)
 
-
     const navigate = useNavigate();
 
     const apiUrl = import.meta.env.VITE_API_URL;
