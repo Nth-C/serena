@@ -29,6 +29,7 @@ const _ROUTES = array(
   'famille/all' => 'getFamille',
   'famille/update' => 'updateFamille',
   'famille/select' => 'selectFamille', 
+  'deletefamillepersonne' => 'deleteFamillePersonne',
   'rapport/list' => 'getRapport',
   'rapport/add' => 'addRapport',
   'rapport/delete' => 'deleteRapport',
@@ -37,7 +38,8 @@ const _ROUTES = array(
   'document/add' => 'addDocument',
   'document/delete' => 'deleteDocument',
   'categorie/add' => 'addCategorie',
-  'getfamillepersonne' => 'getfamillepersonne'
+  'getfamillepersonne' => 'getfamillepersonne',
+  'rolepersonne/update' => 'updateRolePersonne'
 );
 
 if (!array_key_exists($route, _ROUTES)) {

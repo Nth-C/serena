@@ -1,19 +1,11 @@
 <a id="readme-top"></a>
 
 
--->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![Unlicense License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
-
 
 
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
+  <a href="https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena">
     <img src="frontend/public/img/logo.svg" alt="Logo" width="80" height="80">
   </a>
 
@@ -22,11 +14,11 @@
   <p align="center">
     Le pillier de votre sérénité
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explorer le document »</strong></a>
+    <a href="https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena"><strong>Explorer le document »</strong></a>
     <br />
     <br />
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues/new?labels=bug&template=bug-report---.md">Report un Bug</a>
+    <a href="https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena">Signaler un Bug</a>
     ·
 
   </p>
@@ -62,16 +54,11 @@
 
 ## A propos du projet
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-
-
-Et voici pourquoi:
-* Your time should be focused on creating something amazing. A project that solves a problem and helps others
-* You shouldn't be doing the same tasks over and over like creating a README from scratch
-* You should implement DRY principles to the rest of your life :smile:
-
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
+En France, le « grand âge » est un enjeu social et sanitaire majeur. Avec le vieillissement de la population, la France compte de plus en plus de personnes en situation de grand âge. En 2025, on estime que plus de 5 millions de personnes ont plus de 75 ans.
+En France, il existe une volonté de faciliter le maintien à domicile des personnes âgées, y compris dans le cadre de la dépendance. Ce maintien à domicile repose sur la présence d'aidants.
+C'est pour cela que nous devons développer une plateforme à destination des aidants familiaux dans le cadre de l'accompagnement du grand âge.
+Notre application doit pouvoir faciliter le maintien à domicile des personnes âgées en fournissant aux aidants familiaux, à la famille proche et aux différents intervenants (aides à domicile, infirmiers) un outil centralisant les informations utiles au suivi médical (prise de rendez-vous, stock de médicaments), au suivi administratif (suivi des demandes d'aides) ou au quotidien.
 
 
 <p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
@@ -130,24 +117,18 @@ Pour pouvoir lancer l'application en local il vous faudra installer DOCKER, PHP 
 
 ## Utilisation
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
 
 <p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
 
 
 
-<!-- ROADMAP -->
 ## Roadmap
 
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
+- [x] Création,synchronisation et administration d'un agenda
+- [x] Création d'un espace de dépot de fichiers
+- [ ] Lecture automatique d'une ordonnance
 - [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Multi-language Support
-    - [ ] Chinese
-    - [ ] Spanish
 
 
 <p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
@@ -156,22 +137,12 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 ## Contribuer
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+1. Fork le projet
+2. Créer votre Branch (`git checkout -b feature/VotreFeature`)
+3. Commit vos changements (`git commit -m 'ajout de changements'`)
+4. Push to the Branch (`git push origin feature/VotreFeature`)
+5. Ouvrer une requête de Pull 
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-### Top contributors:
-
-<a href="https://github.com/othneildrew/Best-README-Template/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=othneildrew/Best-README-Template" alt="contrib.rocks image" />
-</a>
 
 <p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
 
@@ -180,7 +151,7 @@ Don't forget to give the project a star! Thanks again!
 
 Distribué sous license. Aller voir `LICENCE.TXT` pour plus d'informations.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
 
 
 
@@ -188,7 +159,7 @@ Distribué sous license. Aller voir `LICENCE.TXT` pour plus d'informations.
 
  - sere-na@alwaysdata.net
 
-Project Link: [https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena](https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena)
+Lien du projet: [https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena](https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena)
 
 <p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
 
