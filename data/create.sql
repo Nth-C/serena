@@ -1,3 +1,28 @@
+DROP TABLE IF EXISTS INVITATION CASCADE;
+DROP TABLE IF EXISTS APPARTIENT_A CASCADE;
+DROP TABLE IF EXISTS CHARGE CASCADE;
+DROP TABLE IF EXISTS EFFECTUE CASCADE;
+DROP TABLE IF EXISTS CONSO CASCADE;
+DROP TABLE IF EXISTS CONTIENT CASCADE;
+DROP TABLE IF EXISTS ACCOMPAGNE CASCADE;
+DROP TABLE IF EXISTS TRAJET CASCADE;
+DROP TABLE IF EXISTS STOCK_MEDICS CASCADE;
+DROP TABLE IF EXISTS FORMS CASCADE;
+DROP TABLE IF EXISTS RAPPORTS CASCADE;
+DROP TABLE IF EXISTS EVENEMENTS CASCADE;
+DROP TABLE IF EXISTS DOCUMENTS CASCADE;
+DROP TABLE IF EXISTS CAT CASCADE;
+DROP TABLE IF EXISTS ORDONNANCES CASCADE;
+DROP TABLE IF EXISTS CAT_MEDICS CASCADE;
+DROP TABLE IF EXISTS AIDE CASCADE;
+DROP TABLE IF EXISTS SOCIETES CASCADE;
+DROP TABLE IF EXISTS PERSONNES CASCADE;
+DROP TABLE IF EXISTS FAMS CASCADE;
+
+DROP EXTENSION IF EXISTS "uuid-ossp";
+DROP EXTENSION IF EXISTS "pgcrypto";
+DROP EXTENSION IF EXISTS "pgaudit";
+CREATE EXTENSION IF NOT EXISTS "uuid-pgaudit";
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto"; 
 
@@ -15,7 +40,8 @@ CREATE TABLE PERSONNES (
     mail VARCHAR(255) UNIQUE NOT NULL,
     username VARCHAR(100) UNIQUE NOT NULL,
     mdp VARCHAR(255) NOT NULL,
-    date_naissance DATE NOT NULL
+    date_naissance DATE NOT NULL,
+    tps_mdp TIMESTAMPTZ NULL 
 );
 
 CREATE TABLE SOCIETES (
@@ -41,7 +67,6 @@ CREATE TABLE CAT_MEDICS (
     nature_composant VARCHAR(100),
     numero_lien INT
 );
-
 
 CREATE TABLE ORDONNANCES (
     id_ordo UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -83,7 +108,6 @@ CREATE TABLE RAPPORTS (
     id_rapport UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     description TEXT,
     date DATE,
-    -- Correction: On applique le décalage horaire directement ici
     heure TIME WITH TIME ZONE DEFAULT (CURRENT_TIME + INTERVAL '1 hour'),
     id_famille UUID REFERENCES FAMS(id_famille),
     id_personne UUID REFERENCES PERSONNES(id_personne)
@@ -121,6 +145,7 @@ CREATE TABLE TRAJET (
     lieu_arr VARCHAR(255),
     id_event UUID REFERENCES EVENEMENTS(id_event)
 );
+
 
 
 CREATE TABLE ACCOMPAGNE (
@@ -161,19 +186,33 @@ CREATE TABLE APPARTIENT_A (
 );
 
 
-\copy CAT_MEDICS(code_cis, designation_elem_pharma, code_substance, denomination_substance, dosage_substance, reference_dosage, nature_composant, numero_lien) FROM 'CIS_COMPO_bdpm.txt' WITH (FORMAT CSV, DELIMITER E'\t', QUOTE E'\b', ENCODING 'LATIN1');
+CREATE TABLE INVITATION (
+    id_invitation UUID PRIMARY KEY DEFAULT uuid_generate_v4(), 
+    id_famille_invitee UUID REFERENCES FAMS(id_famille),
+    id_pers_invitee UUID REFERENCES PERSONNES(id_personne),
+    id_pers_qui_invite UUID REFERENCES PERSONNES(id_personne),
+    date_invitation TIMESTAMPTZ DEFAULT NOW() 
+);
 
-ALTER TABLE public.personnes ADD tps_mdp _timestamptz NULL;
-CREATE TABLE public.invitation (
 
-)
-TABLESPACE pg_default
-;
-ALTER TABLE public.invitation ADD famille_invitee varchar NULL;
-ALTER TABLE public.invitation ADD id_pers_invitee uuid NULL;
-ALTER TABLE public.invitation ADD id_pers_qui_invite uuid NULL;
-ALTER TABLE public.invitation RENAME COLUMN famille_invitee TO id_famille_invitee;
-ALTER TABLE public.invitation ALTER COLUMN id_famille_invitee TYPE uuid USING id_famille_invitee::uuid::uuid;
-ALTER TABLE public.invitation ADD CONSTRAINT invitation_fams_fk FOREIGN KEY (id_famille_invitee) REFERENCES public.fams(id_famille);
-ALTER TABLE public.invitation ADD CONSTRAINT invitation_personnes_fk FOREIGN KEY (id_pers_qui_invite) REFERENCES public.personnes(id_personne);
-ALTER TABLE public.invitation ADD CONSTRAINT invitation_personnes FOREIGN KEY (id_pers_invitee) REFERENCES public.personnes(id_personne);
+
+ALTER TABLE public.accompagne ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.aide ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.appartient_a ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.cat ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.cat_medics ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.charge ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.conso ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.contient ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.documents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.effectue ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.fams ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.evenements ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.forms ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.invitation ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.ordonnances ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.personnes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.rapports ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.stock_medics ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.societes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.trajet ENABLE ROW LEVEL SECURITY;
