@@ -5,32 +5,30 @@ import styles from './Menu.module.css';
 import AddMembre from '../add_membre/AddMembre'
 import RoleMembre from '../role_membre/RoleMembre'
 
-
-
 function Menu({isOpen , onHamburgerClick}) {
     const [addMembreOpen, setAddMembreOpen] = useState(false)
     const [roleMembreOpen, setRoleMembreOpen] = useState(false)
 
-
     const navigate = useNavigate();
-
     const apiUrl = import.meta.env.VITE_API_URL;
 
-const handleLogout = async () => {
-    try {
-      await fetch(`${apiUrl}/?route=logout`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include' 
-      });
-    } catch (error) {
-      console.error('Erreur lors de la déconnexion serveur', error);
-    } finally {
-        localStorage.removeItem('user');
-        sessionStorage.removeItem('isConnected');
-        avigate('/login');
-    }
-};
+    const handleLogout = async () => {
+        try {
+            await fetch(`${apiUrl}/?route=logout`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include' 
+            });
+        } catch (error) {
+            console.error('Erreur lors de la déconnexion serveur', error);
+        } finally {
+            localStorage.removeItem('user');
+            sessionStorage.removeItem('isConnected');
+            sessionStorage.removeItem('id_famille');
+            onHamburgerClick(); 
+            navigate('/login');
+        }
+    };
 
     return (
         <>
@@ -51,10 +49,11 @@ const handleLogout = async () => {
                     <span className={styles.border}></span>
                 </div>
 
+                {/* --- ADMINISTRATEUR --- */}
                 <div className={styles.admin_container}>
                     <div>
                         <h3>Administrateur</h3>
-                        <NavLink to={"/"}>
+                        <NavLink to={"/"} onClick={onHamburgerClick}>
                             <p>Logs</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
@@ -70,22 +69,23 @@ const handleLogout = async () => {
                     <span className={styles.border}></span>
                 </div>
 
+                {/* --- UTILISATEUR --- */}
                 <div className={styles.user_container}>
                     <div>
                         <h3>Utilisateur</h3>
-                        <NavLink to={"/"}>
+                        <NavLink to={"/"} onClick={onHamburgerClick}>
                             <p>Profile</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
-                        <NavLink to={"/"}>
+                        <NavLink to={"/"} onClick={onHamburgerClick}>
                             <p>Compte</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
-                        <NavLink to={"/"}>
+                        <NavLink to={"/"} onClick={onHamburgerClick}>
                             <p>Données personnelles</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
-                        <NavLink to={"/"}>
+                        <NavLink to={"/"} onClick={onHamburgerClick}>
                             <p>Notifications</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
@@ -93,14 +93,15 @@ const handleLogout = async () => {
                     <span className={styles.border}></span>
                 </div>
 
+                {/* --- AUTRE --- */}
                 <div className={styles.other_container}>
                     <div>
                         <h3>Autre</h3>
-                        <NavLink to={"/"}>
+                        <NavLink to={"/"} onClick={onHamburgerClick}>
                             <p>Accessibilité</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
-                        <NavLink to={"/"}>
+                        <NavLink to={"/"} onClick={onHamburgerClick}>
                             <p>Liste membres</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
@@ -108,23 +109,24 @@ const handleLogout = async () => {
                     <span className={styles.border}></span>
                 </div>
 
+                {/* --- LEGAL --- */}
                 <div className={styles.legal_container}>
                     <div>
                         <h3>Legal</h3>
-                        <NavLink to={"/"}>
+                        <NavLink to={"/"} onClick={onHamburgerClick}>
                             <p>Politique de confidentialité</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
-                        <NavLink to={"/"}>
+                        <NavLink to={"/"} onClick={onHamburgerClick}>
                             <p>Conditions d’utilisation</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
                     </div>
                 </div>
 
+                {/* --- CHANGER DE SUIVI --- */}
                 <div className={styles.change_container}>
                     <div>
-                        {/* Redirection vers AcceSuivi et fermeture du menu */}
                         <NavLink to={"/acce_suivi"} onClick={onHamburgerClick}>
                             <p>Changer de suivi</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
@@ -133,9 +135,10 @@ const handleLogout = async () => {
                     <span className={styles.border}></span>
                 </div>
 
+                {/* --- DÉCONNEXION --- */}
                 <div className={styles.logout_container}>
                     <div>
-                        <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer' }}>
+                        <button onClick={handleLogout} className={styles.logout_btn}>
                             <p>Déconnexion</p>
                         </button>
                     </div>
@@ -153,10 +156,8 @@ const handleLogout = async () => {
             isOpen={roleMembreOpen}
             onClose ={() => setRoleMembreOpen(false)}
         />
-
-
         </>
     )
 }
 
-export default Menu
+export default Menu;

@@ -127,6 +127,7 @@ function AcceSuivi() {
             const data = await response.json();
             if (data.success) {
                 localStorage.setItem('id_famille_active', id_famille);
+                sessionStorage.setItem('id_famille', id_famille);
                 window.location.href = '/home/dashboard';
             }
         } catch (error) {
