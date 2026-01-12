@@ -107,7 +107,7 @@ class FamilleDAO {
 
     public function getPersFam($id_famille): array {
     // CORRECTION : On joint PERSONNES avec APPARTIENT_A
-    $query = 'SELECT p.* FROM PERSONNES p
+    $query = 'SELECT p.*,a.role  FROM PERSONNES p
               JOIN APPARTIENT_A a ON p.id_personne = a.id_personne
               WHERE a.id_famille = :id_famille';
     
@@ -122,9 +122,9 @@ class FamilleDAO {
     }
 
     return $resultats;
-}
+    }
 
-    public function AddPersFam( $id_famille, $id_personne, string $role = 'createur'): bool {
+    public function AddPersFam($id_famille, $id_personne, string $role = 'createur'): bool {
         $query = 'INSERT INTO appartient_a (id_famille, id_personne, role) 
                 VALUES (:id_f, :id_p, :role)';
         $stmt = $this->dal->prepare($query);
@@ -134,6 +134,40 @@ class FamilleDAO {
             ':role' => $role
         ]);
     }
+
+
+    public function UpdateRolePersFam($id_famille, $id_personne, $role): bool {
+    // On met à jour le champ 'role' là où l'id_famille ET l'id_personne correspondent
+    $query = 'UPDATE appartient_a 
+              SET role = :role 
+              WHERE id_famille = :id_f 
+              AND id_personne = :id_p';
+              
+    $stmt = $this->dal->prepare($query);
+    
+    return $stmt->execute([
+        ':id_f' => $id_famille,
+        ':id_p' => $id_personne,
+        ':role' => $role
+    ]);
+    }
+
+    public function deletePersonneDeFamille($id_famille, $id_personne): bool {
+    // On supprime la ligne qui correspond au couple famille / personne
+    $query = 'DELETE FROM appartient_a 
+              WHERE id_famille = :id_f 
+              AND id_personne = :id_p';
+              
+    $stmt = $this->dal->prepare($query);
+    
+    return $stmt->execute([
+        ':id_f' => $id_famille,
+        ':id_p' => $id_personne
+    ]);
+}
+
+
+
     public function getLastInsertedId(): string {
         return $this->dal->lastInsertId();
     }

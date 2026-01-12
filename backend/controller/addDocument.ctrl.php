@@ -12,44 +12,27 @@ if (!$app->connected || !$app->id_famille) {
 }
 
 try {
-    $name = $_POST['name'] ?? null;
-    $id_categorie = $_POST['id_categorie'] ?? null;
+    if (!isset($_FILES['document'])) throw new Exception("Fichier manquant.");
 
-    if (!$name || !$id_categorie) {
-        throw new Exception("Le nom du document et la catégorie sont obligatoires.");
-    }
-
-    if (!isset($_FILES['document']) || $_FILES['document']['error'] !== UPLOAD_ERR_OK) {
-        throw new Exception("Fichier non reçu ou erreur lors du transfert.");
-    }
-
-    $uploadDir = __DIR__ . '/../uploads/famille_' . $app->id_famille . '/';
+    $file = $_FILES['document'];
     
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
+    $allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf'];
+    $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+
+    if (!in_array($extension, $allowedExtensions)) {
+        throw new Exception("Format de fichier non autorisé (Seuls JPG, PNG et PDF sont acceptés).");
     }
 
-    $extension = pathinfo($_FILES['document']['name'], PATHINFO_EXTENSION);
-    $safeFileName = uniqid('doc_', true) . '.' . $extension;
-    $targetPath = $uploadDir . $safeFileName;
+    $allowedMimes = ['image/jpeg', 'image/png', 'application/pdf'];
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mimeType = finfo_file($finfo, $file['tmp_name']);
+    finfo_close($finfo);
 
-    if (!move_uploaded_file($_FILES['document']['tmp_name'], $targetPath)) {
-        throw new Exception("Impossible d'enregistrer le fichier sur le serveur.");
+    if (!in_array($mimeType, $allowedMimes)) {
+        throw new Exception("Le contenu du fichier est invalide.");
     }
-
-    $model = new DocumentDAO();
-    
-    $relativeUrl = 'uploads/famille_' . $app->id_famille . '/' . $safeFileName;
-
-    $success = $model->addDocument(
-        $app->id_famille, 
-        $id_categorie, 
-        $name, 
-        $relativeUrl 
-    );
-
-    echo json_encode(["success" => $success]);
 
 } catch (Exception $e) {
     echo json_encode(["success" => false, "error" => $e->getMessage()]);
+    exit;
 }

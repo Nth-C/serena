@@ -17,15 +17,15 @@ try {
     $json = file_get_contents('php://input'); // lit le body du fetch
     $data = json_decode($json, true); // transforme '$json' en tableau
 
-    if (empty($data['titre']) || empty($data['lieu']) || 
-    empty($data['accompagnants']) || empty($data['debut']) || empty($data['fin']) || empty($data['recurrence']) || empty($data['description'])) {
-        throw new Exception("Données manquantes (name ou stock).");
-    }
+    // if (empty($data['titre']) || empty($data['lieu']) || 
+    // empty($data['accompagnants']) || empty($data['debut']) || empty($data['fin']) || empty($data['recurrence']) || empty($data['description'])) {
+    //     throw new Exception("Données manquantes (name ou stock).");
+    // }
 
     //ajouter 
 
-    $model = new EvenementDAO();
-    $success = $model->addEvenement($app->id_famille,$data['titre'], $data['debut'], $data['fin'], $data['lieu'], $data['description']);
+    $model = new TrajetDAO();
+    $success = $model->addTrajet($data['date_deb'],$data['date_fin'], $data['lieu_dep'], $data['lieu_arr'], $data['id_event']);
 
     // renvoie a la vue des informations
     echo json_encode([

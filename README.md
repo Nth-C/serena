@@ -5,7 +5,7 @@
 
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
+  <a href="https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena">
     <img src="frontend/public/img/logo.svg" alt="Logo" width="80" height="80">
   </a>
 
@@ -14,11 +14,11 @@
   <p align="center">
     Le pillier de votre sérénité
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explorer le document »</strong></a>
+    <a href="https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena"><strong>Explorer le document »</strong></a>
     <br />
     <br />
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues/new?labels=bug&template=bug-report---.md">Report un Bug</a>
+    <a href="https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena">Signaler un Bug</a>
     ·
 
   </p>
@@ -151,7 +151,7 @@ Pour pouvoir lancer l'application en local il vous faudra installer DOCKER, PHP 
 
 Distribué sous license. Aller voir `LICENCE.TXT` pour plus d'informations.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
 
 
 

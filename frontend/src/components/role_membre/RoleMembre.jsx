@@ -6,30 +6,92 @@ import Slide from '../slide/Slide'
 
 // Il ne faut pas qu'on puisse afficher tout les aidants d'un coup (il faut une limite)
 const RoleMembre = ({isOpen, onClose }) => {
-    const [infosMembre, setSettingsOf] = useState({name: '', role: '',})
-    const [settingsOfOpen, setSettingsOfOpen] = useState(false)
+const [infosMembre, setSettingsOf] = useState({id : '',name: '', role: ''})
+const [settingsOfOpen, setSettingsOfOpen] = useState(false)
+const [membresFamille, setMembresFamille] = useState([]) 
+
+const apiUrl = import.meta.env.VITE_API_URL;
+// Déclare la fonction en dehors du useEffect
+const fetchMembres = async () => {
+    try {
+        const response = await fetch(`${apiUrl}/?route=getfamillepersonne`, {
+            credentials: 'include' 
+        });
+        const data = await response.json();
+        if (data.success) {
+            setMembresFamille(data.membres);
+        }
+    } catch (error) {
+        console.error("Erreur chargement famille", error);
+    }
+};
 
 
-    const membreTest = [
-        { 
-            nom: "Wood",
-            prenom: "Barry",
-            username: "Big D",
-            role: "Aidant",
-        },
-        { 
-            nom: "Kirk",
-            prenom: "Charlie",
-            username: "FreakyGuy",
-            role: "Visiteur",
-        },
-        {
-            nom: "Jeffrey",
-            prenom: "Epstein",
-            username: "EFN",
-            role: 'Visiteur',
-        },
-    ];
+const handleDeletePersonneFromFamille = async (id) => {
+    // Petit ajout de sécurité : confirmer la suppression
+    
+    try {
+        const response = await fetch(`${apiUrl}/?route=deletefamillepersonne`, {
+            method: "POST", // Indispensable pour envoyer un body
+            credentials: 'include',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id_personne: id }) // On envoie un objet structuré
+        });
+        
+        const data = await response.json();
+
+        if (data.success) {
+            setSettingsOfOpen(false); // Ferme le Slide
+            fetchMembres(); // Rafraîchit la liste des membres
+        } else {
+            console.error("Erreur : " + data.error);
+        }
+    } catch (error) {
+        console.error("Erreur lors de la suppression :", error);
+    }
+};
+
+// Appelle-la au chargement
+useEffect(() => {
+    fetchMembres();
+}, [apiUrl]);
+
+// Appelle-la aussi dans UpdateRole après le succès
+const UpdateRole = async (e) => {
+if (e) e.preventDefault(); // Empêche le rechargement de page
+
+const donneesAModifier = {
+idPersonne: infosMembre.id, // L'identifiant du membre
+nouveauRole: infosMembre.role // Le rôle sélectionné dans le <select>
+};
+
+console.log(infosMembre.id);
+
+const route = 'rolepersonne/update';
+
+try {
+const response = await fetch(`${apiUrl}/?route=${route}`, {
+method: "POST",
+credentials: 'include',
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify(donneesAModifier)
+});
+
+const result = await response.json();
+
+if (result.success) {
+// Actions en cas de succès
+setSettingsOfOpen(false); // Ferme le Slide
+fetchMembres();
+} else {
+console.error("Erreur serveur:", result.error);
+}
+} catch (error) {
+console.error("Erreur réseau:", error);
+}
+};
+
+    
 
     return (
         <>
@@ -68,7 +130,7 @@ const RoleMembre = ({isOpen, onClose }) => {
             toggleOpen={() => setSettingsOfOpen(false)}
             zIndex={"9999"}
         >
-            <form className={styles.form_role_membre}>
+            <form className={styles.form_role_membre} onSubmit={UpdateRole}>
                 <div>
                     <label>Role :</label>
                     <select
@@ -82,10 +144,16 @@ const RoleMembre = ({isOpen, onClose }) => {
                 </div>
                 <div>
                     <div>
-                        <button className='btn_red'>Retirer l’aidant</button>
+                        <button 
+                            onClick={() => 
+                                handleDeletePersonneFromFamille(infosMembre.id)} // Ajoute () => 
+                            type="button" 
+                            className='btn_red'
+                            >Retirer l’aidant
+                        </button>
                     </div>
                     <div>
-                        <button className='btn_border'>Annuler</button>
+                        <button type="button" className='btn_border'>Annuler</button>
                         <button className='btn_blue'>Valider</button>
                     </div>
                 </div>

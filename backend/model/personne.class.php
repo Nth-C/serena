@@ -7,6 +7,7 @@ class Personne{
     public readonly string $username;
     public readonly string $mdp;
     public readonly string $date_naissance;
+    public readonly string $role;
          
     public function __construct(array $data=array())
     {
@@ -17,6 +18,7 @@ class Personne{
         $this->username = $data['username'] ?? '';
         $this->mdp = $data['mdp'] ?? '';
         $this->date_naissance = $data['date_naissance'] ?? '';
+        $this->role = $data['role'] ?? '';
 }
 
     public function checkPassword(string $password) 
