@@ -20,7 +20,7 @@ class PersonneDAO {
               WHERE username ILIKE :search 
               OR nom ILIKE :search 
               OR prenom ILIKE :search
-              LIMIT 10';
+              LIMIT 16';
     
     $stmt = $this->dal->prepare($query);
     $stmt->execute(['search' => '%' . $texte . '%']);

@@ -74,10 +74,7 @@ useEffect(() => {
                     <input type="search" placeholder="Rechercher"
                     onChange={(e) => {
                     setUsernameSearch(e.target.value);
-                    if(e.target.value != ""){
                     fetchMembres(e.target.value);
-                    }
-               
               }}
                     
                     />
