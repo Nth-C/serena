@@ -58,7 +58,6 @@ try {
         $id_categorie, 
         $name, 
         $relativeUrl,
-        $mimeType
     );
 
     echo json_encode(["success" => $success]);
