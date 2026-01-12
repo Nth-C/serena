@@ -4,6 +4,7 @@ import styles from './Menu.module.css';
 
 import AddMembre from '../add_membre/AddMembre'
 import RoleMembre from '../role_membre/RoleMembre'
+import AuditLog from '../audit_logs/AuditLog'
 
 
 
@@ -51,7 +52,7 @@ function Menu({isOpen , onHamburgerClick}) {
                 <div className={styles.admin_container}>
                     <div>
                         <h3>Administrateur</h3>
-                        <NavLink to={"/"}>
+                        <button onClick={() => setLogOpen(true)}>
                             <p>Logs</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </button>
