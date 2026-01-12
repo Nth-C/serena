@@ -10,6 +10,7 @@ import RoleMembre from '../role_membre/RoleMembre'
 function Menu({isOpen , onHamburgerClick}) {
     const [addMembreOpen, setAddMembreOpen] = useState(false)
     const [roleMembreOpen, setRoleMembreOpen] = useState(false)
+    const [logOpen, setLogOpen] = useState(false)
 
     const navigate = useNavigate();
 
@@ -53,7 +54,7 @@ function Menu({isOpen , onHamburgerClick}) {
                         <NavLink to={"/"}>
                             <p>Logs</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
-                        </NavLink>
+                        </button>
                         <button onClick={() => setAddMembreOpen(true)}>
                             <p>Inviter des contact</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
@@ -149,7 +150,10 @@ function Menu({isOpen , onHamburgerClick}) {
             isOpen={roleMembreOpen}
             onClose ={() => setRoleMembreOpen(false)}
         />
-
+        <AuditLog 
+            isOpen={logOpen}
+            onClose ={() => setLogOpen(false)}
+        />
 
         </>
     )
