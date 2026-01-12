@@ -14,8 +14,6 @@ function FileExplorer() {
   const [isNewCategorieOpen, setIsNewCategorieOpen] = useState(false) // page
   const [nameCategorie, setNameCategorie] = useState("")
 
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState(null)
   const [isUploaded, setIsUploaded] = useState(false);
 
   const [isPopUpDeleteOpen, setIsPopUpDeleteOpen] = useState(false);
@@ -29,11 +27,24 @@ function FileExplorer() {
 
   // fonction pour ouvrir/fermer le newDocument
   const toggleNewDocument = () => {
+    handleResetForm();
     setIsNewDocumentOpen(!isNewDocumentOpen)
   }
 
   const toggleNewCategorie = () => {
+    handleResetCategorie();
     setIsNewCategorieOpen(!isNewCategorieOpen)
+  }
+
+  const handleResetForm = () => {
+        setNameDocument('');
+        setEmplacementDocument('');
+        setSelectedFile(null); 
+        setIsUploaded(false); 
+  }
+
+  const handleResetCategorie = () => {
+        setNameCategorie('');
   }
 
   const getDocument = async () => {
@@ -77,10 +88,7 @@ function FileExplorer() {
       const result = await response.json();
       if (result.success) {
         setIsShowAdd(true); // Confirmation ajout
-        setNameDocument('');
-        setEmplacementDocument('');
-        setSelectedFile(null); 
-        setIsUploaded(false);   
+        handleResetForm();
         getDocument();          
         toggleNewDocument();    
       } else {
@@ -250,7 +258,7 @@ function FileExplorer() {
             <input type="text" value={nameDocument} onChange={(e) => setNameDocument(e.target.value)} required />
           </div>
           <div>
-            <button type="button" className="btn_border" onClick={toggleNewDocument}>Annuler</button>
+            <button type="button" className="btn_border" onClick={handleResetForm}>Réinitialiser</button>
             <button type="submit" className="btn_blue">Ajouter</button>
           </div>
         </form>
@@ -263,7 +271,7 @@ function FileExplorer() {
             <input type="text" value={nameCategorie} onChange={(e) => setNameCategorie(e.target.value)} required />
           </div>
           <div>
-            <button type="button" className="btn_border" onClick={toggleNewCategorie}>Annuler</button>
+            <button type="button" className="btn_border" onClick={handleResetCategorie}>Réinitialiser</button>
             <button type="submit" className="btn_blue">Ajouter</button>
           </div>
         </form>
