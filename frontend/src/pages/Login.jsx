@@ -51,7 +51,8 @@ function Login() {
                     <input type="password" name="mdp" value={formData.mdp} onChange={handleChange} required />
                 </div>
                 <div>
-                    <NavLink to="/create_account">
+                    {/* CORRECTION ICI : Redirection vers la page mot de passe oublié */}
+                    <NavLink to="/forgot_password">
                         <p>Mot de passe oublié ?</p>
                     </NavLink>
                 </div>

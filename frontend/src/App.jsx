@@ -13,6 +13,8 @@ import Login from './pages/Login'
 import CreateAccount from './pages/CreateAccount';
 import Layout from './Layout'
 import AcceSuivi from './pages/AcceSuivi';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 function App() {
   const location = useLocation();
@@ -32,7 +34,11 @@ function App() {
           <Login />
         }>
         </Route>
+        {/* MOT DE PASSE OUBLIÉ (Demande email) */}
+        <Route path="forgot_password" element={<ForgotPassword />} > </Route>
 
+        {/* RÉINITIALISATION (Nouveau mot de passe) */}
+        <Route path="reset_password" element={<ResetPassword />} > </Route>
         {/* CREER UN COMPTE */}
         <Route path="create_account" element={
           <CreateAccount />
