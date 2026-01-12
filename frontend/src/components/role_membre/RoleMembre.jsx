@@ -25,6 +25,31 @@ const fetchMembres = async () => {
     }
 };
 
+
+const handleDeletePersonneFromFamille = async (id) => {
+    // Petit ajout de sécurité : confirmer la suppression
+    
+    try {
+        const response = await fetch(`${apiUrl}/?route=deletefamillepersonne`, {
+            method: "POST", // Indispensable pour envoyer un body
+            credentials: 'include',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id_personne: id }) // On envoie un objet structuré
+        });
+        
+        const data = await response.json();
+
+        if (data.success) {
+            setSettingsOfOpen(false); // Ferme le Slide
+            fetchMembres(); // Rafraîchit la liste des membres
+        } else {
+            console.error("Erreur : " + data.error);
+        }
+    } catch (error) {
+        console.error("Erreur lors de la suppression :", error);
+    }
+};
+
 // Appelle-la au chargement
 useEffect(() => {
     fetchMembres();
@@ -126,7 +151,13 @@ console.error("Erreur réseau:", error);
                 </div>
                 <div>
                     <div>
-                        <button type="button" className='btn_red'>Retirer l’aidant</button>
+                        <button 
+                            onClick={() => 
+                                handleDeletePersonneFromFamille(infosMembre.id)} // Ajoute () => 
+                            type="button" 
+                            className='btn_red'
+                            >Retirer l’aidant
+                        </button>
                     </div>
                     <div>
                         <button type="button" className='btn_border'>Annuler</button>

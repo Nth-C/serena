@@ -152,6 +152,20 @@ class FamilleDAO {
     ]);
     }
 
+    public function deletePersonneDeFamille($id_famille, $id_personne): bool {
+    // On supprime la ligne qui correspond au couple famille / personne
+    $query = 'DELETE FROM appartient_a 
+              WHERE id_famille = :id_f 
+              AND id_personne = :id_p';
+              
+    $stmt = $this->dal->prepare($query);
+    
+    return $stmt->execute([
+        ':id_f' => $id_famille,
+        ':id_p' => $id_personne
+    ]);
+}
+
 
 
     public function getLastInsertedId(): string {
