@@ -27,7 +27,8 @@ try {
         $dataExport[] = [
             'id' => $personne->id,       // id_personne
             'nom' => $personne->nom,
-            'prenom' => $personne->prenom
+            'prenom' => $personne->prenom,
+            'role' => $personne->role
         ];
     }
 
