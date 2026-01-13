@@ -3,7 +3,7 @@ import styles from './AuditLog.module.css';
 import LayoutMenu from '../../LayoutMenu';
 
 const AuditLog = ({ isOpen, onClose }) => {
-    const [listLogs, setListLogs] = useState([]);
+    const [listhistorique, setListhistorique] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -16,7 +16,7 @@ const AuditLog = ({ isOpen, onClose }) => {
 
     const apiUrl = import.meta.env.VITE_API_URL;
 
-    const getLogs = async () => {
+    const gethistorique = async () => {
         if (loading) return;
         setLoading(true);
         setError(null);
@@ -35,12 +35,12 @@ const AuditLog = ({ isOpen, onClose }) => {
             const data = await response.json();
             if (data.error) throw new Error(data.error);
 
-            setListLogs(Array.isArray(data) ? data : []);
+            setListhistorique(Array.isArray(data) ? data : []);
             
         } catch (err) {
             console.error("Erreur Audit:", err);
             setError(err.message || "Impossible de récupérer l'historique");
-            if (listLogs.length === 0) setListLogs([]);
+            if (listhistorique.length === 0) setListhistorique([]);
         } finally {
             setLoading(false);
         }
@@ -48,12 +48,12 @@ const AuditLog = ({ isOpen, onClose }) => {
 
     useEffect(() => {
         if (isOpen) {
-            getLogs();
+            gethistorique();
         }
     }, [isOpen]);
 
-    const filteredAndSortedLogs = useMemo(() => {
-        let result = listLogs.filter(log => filters[log.operation]);
+    const filteredAndSortedhistorique = useMemo(() => {
+        let result = listhistorique.filter(log => filters[log.operation]);
 
         result.sort((a, b) => {
             const dateA = new Date(a.action_tstamp);
@@ -62,7 +62,7 @@ const AuditLog = ({ isOpen, onClose }) => {
         });
 
         return result;
-    }, [listLogs, filters, sortOrder]);
+    }, [listhistorique, filters, sortOrder]);
 
     const toggleFilter = (type) => {
         setFilters(prev => ({ ...prev, [type]: !prev[type] }));
@@ -201,7 +201,7 @@ const AuditLog = ({ isOpen, onClose }) => {
 
                         <button 
                             className={styles.refresh_btn} 
-                            onClick={getLogs} 
+                            onClick={gethistorique} 
                             disabled={loading}
                             title="Actualiser la liste"
                         >
@@ -213,14 +213,14 @@ const AuditLog = ({ isOpen, onClose }) => {
                     </div>
                 </div>
 
-                {loading && listLogs.length === 0 ? (
+                {loading && listhistorique.length === 0 ? (
                     <p className={styles.loading}>Chargement de l'historique...</p>
                 ) : error ? (
                     <div className={styles.error}>
                         <p>{error}</p>
-                        <button onClick={getLogs} className={styles.retry_btn}>Réessayer</button>
+                        <button onClick={gethistorique} className={styles.retry_btn}>Réessayer</button>
                     </div>
-                ) : filteredAndSortedLogs.length > 0 ? (
+                ) : filteredAndSortedhistorique.length > 0 ? (
                     <div className={styles.table_container}>
                         <table className={styles.audit_table}>
                             <thead>
@@ -233,7 +233,7 @@ const AuditLog = ({ isOpen, onClose }) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredAndSortedLogs.map((log) => (
+                                {filteredAndSortedhistorique.map((log) => (
                                     <tr key={log.id_audit || Math.random()}>
                                         <td style={{whiteSpace: 'nowrap'}}>{formatDate(log.action_tstamp)}</td>
                                         <td>{log.user_name}</td>
@@ -250,7 +250,7 @@ const AuditLog = ({ isOpen, onClose }) => {
                     </div>
                 ) : (
                     <p className={styles.empty}>
-                        {listLogs.length === 0 
+                        {listhistorique.length === 0 
                             ? "Aucun historique disponible." 
                             : "Aucun résultat pour ces filtres."}
                     </p>

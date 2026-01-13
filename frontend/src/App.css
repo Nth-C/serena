@@ -1048,7 +1048,16 @@ progress.blue_bar::-moz-progress-bar {
 .upload_success > div {
   display: flex;
   align-items: center;
+  flex-direction: column;
   gap: 5px;
+}
+
+.upload_success > div svg {
+  fill: var(--red);
+}
+
+.doc_type_erreur {
+  text-align: center;
 }
 
 /* ----------------------------- */

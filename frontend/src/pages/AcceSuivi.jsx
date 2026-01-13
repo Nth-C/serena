@@ -37,11 +37,50 @@ function FamilleItem({ famille, onModifier, onAcceder, isOpen, onToggle }) {
     );
 }
 
+
+function InvitationItem({ invitation, onModifier, onAcceder, isOpen, onToggle }) {
+    return (
+        <div className={`container_suivi_groupe ${isOpen ? 'open' : ''}`}>
+            <div className="principal_infos" onClick={onToggle}>
+                <p>invitation de la famille : {invitation.nom}</p> 
+            </div>
+
+            {isOpen && (
+                <div className="drop">
+                    <p>{invitation.desc}</p>                     
+                    <div className="actions_buttons">
+                        <button
+                            className="btn_border"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onModifier(invitation);
+                            }}
+                        >
+                            Refuser
+                        </button>
+                        <button 
+                            className="btn_blue" 
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onAcceder(invitation.id_famille_invitee);
+                            }}
+                        >
+                            Accepter
+                        </button>                    
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
 function AcceSuivi() {
     const [message, setMessage] = useState("");
     const apiUrl = import.meta.env.VITE_API_URL;
     const [familles, setFamilles] = useState([]);
+    const [invitations, setInvitations] = useState([]);
     const [openFamilleId, setOpenFamilleId] = useState(null);
+    const [openInvitationId, setOpenInvitationId] = useState(null);
     
     // État pour le nom affiché
     const [nomComplet, setNomComplet] = useState(""); 
@@ -68,8 +107,21 @@ function AcceSuivi() {
         }
     };
 
+    const fetchInvites = async () => {
+        try {
+            const response = await fetch(`${apiUrl}/?route=invitation/view`, {
+                credentials: 'include' 
+            });
+            const data = await response.json();
+            setInvitations(Array.isArray(data) ? data : []);
+        } catch (error) {
+            console.error("Erreur chargement invitations:", error);
+        }
+    };
+
     useEffect(() => {
         fetchFamilles();
+        fetchInvites();
 
         // --- LOGIQUE DE NOM MODIFIEE ---
         const userStored = localStorage.getItem('user');
@@ -115,6 +167,12 @@ function AcceSuivi() {
     const toggleFamille = (id) => {
         setOpenFamilleId(openFamilleId === id ? null : id);
     };
+
+    const toggleInvitation = (id) => {
+        setOpenInvitationId(openInvitationId === id ? null : id);
+    };
+
+    
 
     const handleAcceder = async (id_famille) => {
         try {
@@ -227,6 +285,26 @@ function AcceSuivi() {
                     ))
                 ) : (
                     <p className="aucun">Aucune famille disponible.</p>
+                )}
+            </div>
+
+
+            <h1>Liste des inviations</h1>
+
+            <div className="list">
+                {invitations.length > 0 ? (
+                    invitations.map((invitation) => (
+                        <InvitationItem
+                            key={invitation.id_invitation}
+                            invitation={invitation}
+                            onModifier={handleOpenModif}
+                            onAcceder={handleAcceder}
+                            isOpen={openInvitationId === invitation.id_invitation}
+                            onToggle={() => toggleInvitation(invitation.id_invitation)}
+                        />
+                    ))
+                ) : (
+                    <p className="aucun">Aucune Invitation.</p>
                 )}
             </div>
 
