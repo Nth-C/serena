@@ -33,6 +33,7 @@ const _ROUTES = array(
   'deletefamillepersonne' => 'deleteFamillePersonne',
   'invitepersonnefamille/add' => 'addInviteFamille',
   'invitefamille/view' => 'viewInviteFamille',
+  'invitation/view' => 'viewInvitation',
   'allpersonne/view' => 'viewAllPersonne',
   'rapport/list' => 'getRapport',
   'rapport/add' => 'addRapport',

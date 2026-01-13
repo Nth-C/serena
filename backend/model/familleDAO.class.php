@@ -161,19 +161,23 @@ class FamilleDAO {
     ]);
 }
 
-    public function getInvitationDetails($id_famille, $id_personne): array|false {
-    $query = 'SELECT * FROM invitation JOIN Personne on Personne.id_personne = :id_p
-              WHERE id_famille_invitee = :id_f 
-              AND id_pers_qui_invite = :id_p';
+    public function getInvitationDetails($id_personne): array {
+    // Jointure triple pour avoir l'invitation, l'expéditeur et la famille
+    $query = 'SELECT 
+                *
+              FROM invitation i
+              JOIN Fams f ON f.id_famille = i.id_famille_invitee
+              JOIN PERSONNES p ON p.id_personne = i.id_pers_qui_invite
+              WHERE i.id_pers_invitee = :id_p';
               
     $stmt = $this->dal->prepare($query);
     $stmt->execute([
-        ':id_f' => $id_famille,
         ':id_p' => $id_personne
     ]);
 
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+    // fetchAll est nécessaire pour retourner une liste à React
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
 
 
