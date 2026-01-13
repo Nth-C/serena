@@ -15,7 +15,7 @@ function FamilleItem({ famille, onModifier, onAcceder, isOpen, onToggle }) {
                         <button
                             className="btn_border"
                             onClick={(e) => {
-                                e.stopPropagation();
+                                e.stopProxpagation();
                                 onModifier(famille);
                             }}
                         >

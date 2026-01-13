@@ -1,14 +1,17 @@
 import { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom'; // Pas forcément utile ici si on veut juste afficher un message
 
 function ForgotPassword() {
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
+    // const navigate = useNavigate(); // Optionnel
     const apiUrl = import.meta.env.VITE_API_URL;
-    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setMessage("Envoi en cours..."); // Feedback immédiat pour l'utilisateur
+
         try {
             const response = await fetch(`${apiUrl}/?route=forgot_password`, {
                 method: 'POST',
@@ -18,26 +21,35 @@ function ForgotPassword() {
             const data = await response.json();
 
             if (data.success) {
-                setMessage("Si l'email existe, un lien a été envoyé (Regarde la console pour le lien factice).");
-                // POUR LE TEST : On redirige après 2 secondes vers la page de reset
-                // Dans la vraie vie, l'utilisateur cliquerait sur un lien dans son mail.
-                console.log("LIEN TEST : http://localhost:5173/reset_password?email=" + email);
+                // Succès : On prévient l'utilisateur
+                setMessage("Succès ! " + data.message + " Vérifiez vos spams.");
+                // Optionnel : Vider le champ
+                setEmail('');
             } else {
-                setMessage(data.message || "Erreur.");
+                // Erreur (Email inconnu ou erreur SMTP)
+                setMessage(data.message || "Une erreur est survenue.");
             }
         } catch (error) {
-            setMessage('Erreur réseau');
+            setMessage('Erreur réseau : Impossible de contacter le serveur.');
         }
     };
 
     return (
-        <div className="login"> {/* On réutilise le style de login */}
+        <div className="login">
             <h1>Mot de passe oublié</h1>
-            {message && <p>{message}</p>}
+            
+            {/* Affichage des messages (succès ou erreur) */}
+            {message && <p className="message-box">{message}</p>}
+            
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Votre Email : </label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                    <input 
+                        type="email" 
+                        value={email} 
+                        onChange={(e) => setEmail(e.target.value)} 
+                        required 
+                    />
                 </div>
                 <div>
                     <button type="submit" className="btn_blue">Envoyer le lien</button>

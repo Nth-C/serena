@@ -5,7 +5,6 @@ require_once(__DIR__ . '/../app.php');
 
 $app = new App();
 
-// On vérifie que l'utilisateur est bien connecté via l'objet App
 if (!$app->connected || !$app->personne) {
     echo json_encode(['success' => false, 'error' => 'Utilisateur non connecté']);
     exit;
@@ -27,10 +26,9 @@ if($nom && $desc && $nom_aide){
         'nom_aide' => $nom_aide
     ]);
 
-    // MODIFICATION ICI : On récupère l'ID directement
     $id_famille = $dao->insert($famille);
 
-    if ($id_famille) { // Si l'ID est renvoyé (donc supérieur à 0)
+    if ($id_famille) { 
         $id_personne = $app->personne->id;
         
         if ($dao->AddPersFam($id_famille, $id_personne, 'createur')) {
