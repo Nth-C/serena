@@ -16,6 +16,10 @@ import Layout from './Layout'
 import AcceSuivi from './pages/AcceSuivi';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import AuditLog from './pages/AuditLog';
+import AddMembre from './pages/AddMembre';
+import RoleMembre from './pages/RoleMembre';
+
 
 const ProtectedRoute = ({ children, requireFamily = true }) => {
   const isConnected = sessionStorage.getItem('isConnected') === 'true';
@@ -44,6 +48,18 @@ function App() {
           {/* quand on est sur / dans l'url on redirige vers home/dashboard */}
           <Route index element={<Navigate to="login" replace />} />
         </Route>
+
+      {/* page menu */}
+        <Route path="logs"
+          element={<AuditLog />}>
+        </Route>
+        <Route path="add_contact" 
+          element={<AddMembre />}>
+        </Route>
+        <Route path="role_membre" 
+          element={<RoleMembre />}>
+        </Route>
+
         
         
         {/* SE CONNECTER */}
