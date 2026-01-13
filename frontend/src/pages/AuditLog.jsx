@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import styles from './AuditLog.module.css';
-import LayoutMenu from '../../LayoutMenu';
+import LayoutMenu from '../LayoutMenu';
 
 const AuditLog = ({ isOpen, onClose }) => {
-    const [listhistorique, setListhistorique] = useState([]);
+    const [listLogs, setListLogs] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -16,7 +15,7 @@ const AuditLog = ({ isOpen, onClose }) => {
 
     const apiUrl = import.meta.env.VITE_API_URL;
 
-    const gethistorique = async () => {
+    const getLogs = async () => {
         if (loading) return;
         setLoading(true);
         setError(null);
@@ -35,12 +34,12 @@ const AuditLog = ({ isOpen, onClose }) => {
             const data = await response.json();
             if (data.error) throw new Error(data.error);
 
-            setListhistorique(Array.isArray(data) ? data : []);
+            setListLogs(Array.isArray(data) ? data : []);
             
         } catch (err) {
             console.error("Erreur Audit:", err);
             setError(err.message || "Impossible de récupérer l'historique");
-            if (listhistorique.length === 0) setListhistorique([]);
+            if (listLogs.length === 0) setListLogs([]);
         } finally {
             setLoading(false);
         }
@@ -48,12 +47,12 @@ const AuditLog = ({ isOpen, onClose }) => {
 
     useEffect(() => {
         if (isOpen) {
-            gethistorique();
+            getLogs();
         }
     }, [isOpen]);
 
-    const filteredAndSortedhistorique = useMemo(() => {
-        let result = listhistorique.filter(log => filters[log.operation]);
+    const filteredAndSortedLogs = useMemo(() => {
+        let result = listLogs.filter(log => filters[log.operation]);
 
         result.sort((a, b) => {
             const dateA = new Date(a.action_tstamp);
@@ -62,7 +61,7 @@ const AuditLog = ({ isOpen, onClose }) => {
         });
 
         return result;
-    }, [listhistorique, filters, sortOrder]);
+    }, [listLogs, filters, sortOrder]);
 
     const toggleFilter = (type) => {
         setFilters(prev => ({ ...prev, [type]: !prev[type] }));
@@ -82,9 +81,9 @@ const AuditLog = ({ isOpen, onClose }) => {
 
     const formatOperation = (op) => {
         switch (op) {
-            case 'INSERT': return <span className={styles.tag_add}>Ajout</span>;
-            case 'UPDATE': return <span className={styles.tag_update}>Modif</span>;
-            case 'DELETE': return <span className={styles.tag_delete}>Suppr</span>;
+            case 'INSERT': return <span className='tag_add'>Ajout</span>;
+            case 'UPDATE': return <span className='tag_update'>Modif</span>;
+            case 'DELETE': return <span className='tag_delete'>Suppr</span>;
             default: return op;
         }
     };
@@ -162,30 +161,28 @@ const AuditLog = ({ isOpen, onClose }) => {
     return (
         <LayoutMenu
             title={"Historique des actions"}
-            isOpen={isOpen}
-            onClose={onClose}
         >
-            <div className={styles.audit_log}>
+            <div className='audit_log'>
                 
-                <div className={styles.filter_bar}>
-                    <div className={styles.filter_group}>
+                <div className='filter_bar'>
+                    <div className='filter_group'>
                         <p><strong>Filtres :</strong></p>
-                        <label className={styles.checkbox_label}>
+                        <label className='checkbox_label'>
                             <input type="checkbox" checked={filters.INSERT} onChange={() => toggleFilter('INSERT')} />
                             Ajouts
                         </label>
-                        <label className={styles.checkbox_label}>
+                        <label className='checkbox_label'>
                             <input type="checkbox" checked={filters.UPDATE} onChange={() => toggleFilter('UPDATE')} />
                             Modifs
                         </label>
-                        <label className={styles.checkbox_label}>
+                        <label className='checkbox_label'>
                             <input type="checkbox" checked={filters.DELETE} onChange={() => toggleFilter('DELETE')} />
                             Suppr.
                         </label>
                     </div>
 
-                    <div className={styles.filter_group}>
-                        <button className={styles.sort_btn} onClick={toggleSort}>
+                    <div className='filter_group'>
+                        <button className='sort_btn' onClick={toggleSort}>
                             {sortOrder === 'DESC' ? (
                                 <>
                                     <svg viewBox="0 -960 960 960"><path d="M440-160v-487L216-423l-56-57 320-320 320 320-56 57-224-224v487h-80Z"/></svg>
@@ -200,12 +197,12 @@ const AuditLog = ({ isOpen, onClose }) => {
                         </button>
 
                         <button 
-                            className={styles.refresh_btn} 
-                            onClick={gethistorique} 
+                            className='refresh_btn'
+                            onClick={getLogs} 
                             disabled={loading}
                             title="Actualiser la liste"
                         >
-                            <svg className={loading ? styles.spinning : ''} viewBox="0 -960 960 960">
+                            <svg className={loading ? 'spinning' : ''} viewBox="0 -960 960 960">
                                 <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/>
                             </svg>
                             {loading ? '...' : 'Actualiser'}
@@ -213,27 +210,27 @@ const AuditLog = ({ isOpen, onClose }) => {
                     </div>
                 </div>
 
-                {loading && listhistorique.length === 0 ? (
-                    <p className={styles.loading}>Chargement de l'historique...</p>
+                {loading && listLogs.length === 0 ? (
+                    <p className='loading'>Chargement de l'historique...</p>
                 ) : error ? (
-                    <div className={styles.error}>
+                    <div className='error'>
                         <p>{error}</p>
-                        <button onClick={gethistorique} className={styles.retry_btn}>Réessayer</button>
+                        <button onClick={getLogs} className='retry_btn'>Réessayer</button>
                     </div>
-                ) : filteredAndSortedhistorique.length > 0 ? (
-                    <div className={styles.table_container}>
-                        <table className={styles.audit_table}>
+                ) : filteredAndSortedLogs.length > 0 ? (
+                    <div className='table_container'>
+                        <table className='audit_table'>
                             <thead>
                                 <tr>
                                     <th>Date</th>
                                     <th>Utilisateur</th>
                                     <th>Action</th>
                                     <th>Cible</th>
-                                    <th>Description</th> {}
+                                    <th>Description</th> {/* Changé "Détails" en "Description" */}
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredAndSortedhistorique.map((log) => (
+                                {filteredAndSortedLogs.map((log) => (
                                     <tr key={log.id_audit || Math.random()}>
                                         <td style={{whiteSpace: 'nowrap'}}>{formatDate(log.action_tstamp)}</td>
                                         <td>{log.user_name}</td>
@@ -249,8 +246,8 @@ const AuditLog = ({ isOpen, onClose }) => {
                         </table>
                     </div>
                 ) : (
-                    <p className={styles.empty}>
-                        {listhistorique.length === 0 
+                    <p className='empty'>
+                        {listLogs.length === 0 
                             ? "Aucun historique disponible." 
                             : "Aucun résultat pour ces filtres."}
                     </p>

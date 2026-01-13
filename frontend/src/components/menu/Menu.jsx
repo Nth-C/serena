@@ -2,22 +2,15 @@ import { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom';
 import styles from './Menu.module.css';
 
-import AddMembre from '../add_membre/AddMembre'
-import RoleMembre from '../role_membre/RoleMembre'
-import AuditLog from '../audit_logs/AuditLog'
-
 function Menu({isOpen , onHamburgerClick}) {
+    /*
     const [addMembreOpen, setAddMembreOpen] = useState(false)
     const [roleMembreOpen, setRoleMembreOpen] = useState(false)
     const [logOpen, setLogOpen] = useState(false)
+    */
 
     const navigate = useNavigate();
     const apiUrl = import.meta.env.VITE_API_URL;
-
-    const handleSwitchFamille = () => {
-        sessionStorage.removeItem('id_famille');
-        navigate('/acce_suivi');
-    }
 
     const handleLogout = async () => {
         try {
@@ -60,8 +53,22 @@ function Menu({isOpen , onHamburgerClick}) {
                 <div className={styles.admin_container}>
                     <div>
                         <h3>Administrateur</h3>
-                        <button onClick={() => setLogOpen(true)}>
+
+                        <NavLink to="/logs" onClick={onHamburgerClick}>
                             <p>Historique</p>
+                            <img src="/icons/chevron_right.svg" alt=">" />
+                        </NavLink>
+                        <NavLink to={"/add_contact"} onClick={onHamburgerClick}>
+                            <p>Inviter des contact</p>
+                            <img src="/icons/chevron_right.svg" alt=">" />
+                        </NavLink>
+                        <NavLink to={"/role_membre"} onClick={onHamburgerClick}>
+                            <p>Gérer les roles</p>
+                            <img src="/icons/chevron_right.svg" alt=">" />
+                        </NavLink>
+
+                        {/* <button onClick={() => setLogOpen(true)}>
+                            <p>Logs</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </button>
                         <button onClick={() => setAddMembreOpen(true)}>
@@ -71,7 +78,7 @@ function Menu({isOpen , onHamburgerClick}) {
                         <button onClick={() => setRoleMembreOpen(true)}>
                             <p>Gérer les roles</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
-                        </button>
+                        </button> */}
                     </div >
                     <span className={styles.border}></span>
                 </div>
@@ -134,10 +141,10 @@ function Menu({isOpen , onHamburgerClick}) {
                 {/* --- CHANGER DE SUIVI --- */}
                 <div className={styles.change_container}>
                     <div>
-                        <button onClick={handleSwitchFamille}>
+                        <NavLink to={"/acce_suivi"} onClick={onHamburgerClick}>
                             <p>Changer de suivi</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
-                        </button>
+                        </NavLink>
                     </div>
                     <span className={styles.border}></span>
                 </div>
@@ -145,24 +152,17 @@ function Menu({isOpen , onHamburgerClick}) {
                 {/* --- DÉCONNEXION --- */}
                 <div className={styles.logout_container}>
                     <div>
-                        <button onClick={() => { onHamburgerClick(); navigate('/signalement'); }} className={styles.logout_btn}>
-                            <p>Signaler un problème</p>
-                        </button>
-                    </div>
-                </div>
-                 <div className={styles.logout_container}>
-                    <div>
                         <button onClick={handleLogout} className={styles.logout_btn}>
                             <p>Déconnexion</p>
                         </button>
                     </div>
                 </div>
             </div>
-                
+
             <div className={styles.background} onClick={onHamburgerClick}></div>
         </div>
         
-        <AddMembre 
+        {/* <AddMembre 
             isOpen={addMembreOpen}
             onClose ={() => setAddMembreOpen(false)}
         />
@@ -173,7 +173,7 @@ function Menu({isOpen , onHamburgerClick}) {
         <AuditLog 
             isOpen={logOpen}
             onClose ={() => setLogOpen(false)}
-        />
+        /> */}
 
         </>
     )

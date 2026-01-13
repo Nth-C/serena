@@ -1,8 +1,7 @@
-import styles from './RoleMembre.module.css';
 import { useState, useEffect } from 'react'
-import LayoutMenu from '../../LayoutMenu'
+import LayoutMenu from '../LayoutMenu'
 
-import Slide from '../slide/Slide'
+import Slide from '../components/slide/Slide'
 
 // Il ne faut pas qu'on puisse afficher tout les aidants d'un coup (il faut une limite)
 const RoleMembre = ({isOpen, onClose }) => {
@@ -101,15 +100,15 @@ console.error("Erreur réseau:", error);
             isOpen={isOpen} 
             onClose={onClose}
         >
-            <div className={styles.role_membre}>
-                <div className={styles.container_search}>
+            <div className='role_membre'>
+                <div className='container_search'>
                     <input type="search" placeholder="Rechercher"/>
                 </div>
 
-                <div className={styles.membre_list}>
+                <div className='membre_list'>
                 {membresFamille.map((membre) => (
                     <div key={membre.id}>
-                        <div className={styles.container_name}>
+                        <div className='container_name'>
                             <p>{membre.nom} {membre.prenom}</p>
                             <p>{membre.role}</p>
                         </div>
@@ -135,7 +134,7 @@ console.error("Erreur réseau:", error);
             toggleOpen={() => setSettingsOfOpen(false)}
             zIndex={"9999"}
         >
-            <form className={styles.form_role_membre} onSubmit={UpdateRole}>
+            <form className='form_role_membre' onSubmit={UpdateRole}>
                 <div>
                     <label>Role :</label>
                     <select

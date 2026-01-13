@@ -231,7 +231,7 @@ input::placeholder {
 
 .page_menu {
     position: relative;
-    display: none;
+    display: flex;
     position: fixed;
     top: 0;
     left: 0;
@@ -1070,6 +1070,102 @@ progress.blue_bar::-moz-progress-bar {
   justify-content: end;
 }
 
+/* ---------------------------------- */
+/* ----------- add membre ----------- */
+/* ---------------------------------- */
+
+.add_membre .container_search {
+    padding: 0 3rem 2rem 3rem;
+}
+
+.add_membre .membre_list > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--gray);
+    padding: .5rem 3rem;
+}
+
+.add_membre .membre_list > div:last-child {
+    border-width: 1px 0 1px 0;
+    border-color: var(--gray);
+    border-style: solid;
+}
+
+.add_membre .membre_list .container_name {
+    display: flex;
+    gap: 2rem;
+}
+
+.add_membre .membre_list .container_name p:first-child {
+    font-weight: 600;
+}
+
+.add_membre .membre_list svg {
+    width: 2.5rem;
+    fill: var(--blue);
+}
+
+.add_membre .container_btn_invite {
+    position: absolute;
+    text-align: center;
+    bottom: 3rem;
+    width: 100%;
+}
+
+.add_membre .container_btn_invite button {
+    width: 80%;
+}
+
+
+/* ----------------------------------- */
+/* ----------- Role membre ----------- */
+/* ----------------------------------- */
+
+.role_membre .container_search {
+    padding: 0 3rem 2rem 3rem;
+}
+
+.role_membre .membre_list > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--gray);
+    padding: .5rem 3rem;
+}
+
+.role_membre .membre_list > div:last-child {
+    border-width: 1px 0 1px 0;
+    border-color: var(--gray);
+    border-style: solid;
+}
+
+.role_membre .membre_list .container_name {
+    display: flex;
+    gap: 2rem;
+}
+
+.role_membre .membre_list .container_name p:first-child {
+    font-weight: 600;
+}
+
+.role_membre .membre_list svg {
+    width: 2.5rem;
+    fill: var(--black);
+}
+
+.form_role_membre > div:last-child {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.form_role_membre > div:last-child > div:last-child {
+    display: flex;
+    gap: 2rem;
+}
+
+
+
 /* ----------------------------- */
 /* ----------- FONTS ----------- */
 /* ----------------------------- */
@@ -1113,4 +1209,3 @@ progress.blue_bar::-moz-progress-bar {
   font-weight: 700;
   font-style: normal;
 }
-

@@ -1,6 +1,5 @@
-import styles from './AddMembre.module.css';
 import { useState, useEffect } from 'react'
-import LayoutMenu from '../../LayoutMenu'
+import LayoutMenu from '../LayoutMenu'
 
 // Il ne faut pas qu'on puisse afficher tout les aidants d'un coup (il faut une limite)
 const AddMembre = ({isOpen, onClose }) => {
@@ -69,8 +68,8 @@ useEffect(() => {
             isOpen={isOpen} 
             onClose={onClose}
         >
-            <div className={styles.add_membre}>
-                <div className={styles.container_search}>
+            <div className='add_membre'>
+                <div className='container_search'>
                     <input type="search" placeholder="Rechercher"
                     onChange={(e) => {
                     setUsernameSearch(e.target.value);
@@ -80,10 +79,10 @@ useEffect(() => {
                     />
                 </div>
 
-                <div className={styles.membre_list}>
+                <div className='membre_list'>
                     {membresFamille.map((membre) => (
                         <div key={membre.id}>
-                            <div className={styles.container_name}>
+                            <div className='container_name'>
                                 <p>{membre.nom} {membre.prenom}</p>
                                 <p>{membre.username}</p>
                             </div>
@@ -96,7 +95,7 @@ useEffect(() => {
                     ))}
                 </div>
 
-                <div className={styles.container_btn_invite}>
+                <div className='container_btn_invite'>
                     <button className='btn_blue'>Inviter un contact</button>
                 </div>
             </div>
