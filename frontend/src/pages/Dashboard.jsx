@@ -29,12 +29,13 @@ function Dashboard() {
   }
 
   const handleDelete = async (id) => {
-    try {
-      const response = await fetch(`${apiUrl}/?route=medicament/delete`, {
-        method: "POST", // pour envoyer des données
-        headers: { "Content-Type": "application/json" }, // type de donnée envoyer
-        body: JSON.stringify({ id: id }) // message a transmettre
-      });
+      try {
+        const response = await fetch(`${apiUrl}/?route=medicament/delete`, {
+          method: "POST", 
+          headers: { "Content-Type": "application/json" },
+          credentials: 'include',
+          body: JSON.stringify({ id: id }) 
+        });
 
       // recupere la reponse du fetch
       const result = await response.json();

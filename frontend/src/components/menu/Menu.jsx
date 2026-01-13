@@ -61,7 +61,7 @@ function Menu({isOpen , onHamburgerClick}) {
                     <div>
                         <h3>Administrateur</h3>
                         <button onClick={() => setLogOpen(true)}>
-                            <p>historique</p>
+                            <p>Historique</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </button>
                         <button onClick={() => setAddMembreOpen(true)}>
@@ -145,13 +145,20 @@ function Menu({isOpen , onHamburgerClick}) {
                 {/* --- DÉCONNEXION --- */}
                 <div className={styles.logout_container}>
                     <div>
+                        <button onClick={() => { onHamburgerClick(); navigate('/signalement'); }} className={styles.logout_btn}>
+                            <p>Signaler un problème</p>
+                        </button>
+                    </div>
+                </div>
+                 <div className={styles.logout_container}>
+                    <div>
                         <button onClick={handleLogout} className={styles.logout_btn}>
                             <p>Déconnexion</p>
                         </button>
                     </div>
                 </div>
             </div>
-
+                
             <div className={styles.background} onClick={onHamburgerClick}></div>
         </div>
         

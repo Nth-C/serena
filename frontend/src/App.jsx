@@ -16,6 +16,7 @@ import Layout from './Layout'
 import AcceSuivi from './pages/AcceSuivi';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import Signalement from './pages/Signalement';
 
 const ProtectedRoute = ({ children, requireFamily = true }) => {
   const isConnected = sessionStorage.getItem('isConnected') === 'true';
@@ -81,7 +82,6 @@ function App() {
             />
           </ProtectedRoute>
         }>
-          {/* quand on est sur /home dans l'url on redirige vers dashboard */}
           <Route index element={<Navigate to="dashboard" replace />} />
           
           {/* routes pour les sous partie avec leurs contenu */}
@@ -90,7 +90,6 @@ function App() {
           <Route path="last_visit_report" element={<LastVisitReport  />} />
         </Route>
 
-        {/* AGENDA */}
         <Route path="agenda" element={
           <ProtectedRoute>
             <Layout submenu={[]} />
@@ -109,15 +108,12 @@ function App() {
           </ProtectedRoute>
           }>
           
-          {/* quand on est sur /suivi dans l'url on redirige vers visit_report */}
           <Route index element={<Navigate to="visit_report" replace />}/>
 
-          {/* routes pour les sous partie avec leurs contenu */}
           <Route path="visit_report" element={<VisitReport />} />
           <Route path="medicine" element={<Medecine />} />
         </Route>
 
-        {/* DOCUMENT */}
         <Route path="document" element= {
           <ProtectedRoute>
             <Layout submenu={[
@@ -127,18 +123,30 @@ function App() {
           </ProtectedRoute>
           }>
           
-          {/* quand on est sur /suivi dans l'url on redirige vers visit_report */}
           <Route index element={<Navigate to="explorateur" replace />}/>
 
-          {/* routes pour les sous partie avec leurs contenu */}
           <Route path="explorateur" element={<FileExplorer />} />
           <Route path="aides" element={<Assistance />} />
         </Route>
 
+      
+        <Route path="signalement" element={
+            <ProtectedRoute>
+              <Layout submenu={[
+                  { label: "Signalement", path: "/signalement" },
+                ]}/>
+            </ProtectedRoute>
+          }>
+            <Route index element={<Signalement />} />
+        </Route>
+
         <Route path="*" element={<Navigate to="/login" replace />} />
+        
+
       </Routes>
     </>
   )
 }
+ 
 
 export default App

@@ -1,6 +1,7 @@
 <?php
 require_once(__DIR__ . '/model/planning.class.php');
 require_once(__DIR__ . '/model/personneDAO.class.php');
+require_once(__DIR__ . '/model/dal.class.php'); 
 
 class App
 {
@@ -16,18 +17,38 @@ class App
         }    
 
         $this->connected = $_SESSION['connected'] ?? false;
-        $username = $_SESSION['username'] ?? '';
-
-        if ($username != '') {
-            $dao = new PersonneDAO();
-            $this->personne = $dao->findByUsername($username);
-        } else {
-            $this->personne = null;
-        }
-
+        $username_session = $_SESSION['username'] ?? '';
+        
+        // Initialisation par défaut
+        $this->personne = null;
         $this->id_famille = $_SESSION['id_famille_active'] ?? 0;
-
         $this->planning = new Planning();
+
+        // Si on a un username en session
+        if ($username_session != '') {
+            $dao = new PersonneDAO();
+            $this->personne = $dao->findByUsername($username_session);
+
+            if ($this->personne) {
+                try {
+                    $dal = DAL::get();
+                    
+                    // ON PREND LE USERNAME BRUT (sans regex pour tester)
+                    // Le prepared statement (:user) protège déjà des injections SQL
+                    $userToLog = $this->personne->username;
+                    
+                    // DEBUG : Si vous regardez les logs PHP (error.log), vous verrez si ça passe ici
+                    // error_log("App.php : Envoi de l'utilisateur audit -> " . $userToLog);
+
+                    // Envoi à PostgreSQL
+                    $stmt = $dal->prepare("SELECT set_config('app.current_user', :user, false)");
+                    $stmt->execute(['user' => $userToLog]);
+                    
+                } catch (Exception $e) {
+                    error_log("ERREUR AUDIT : " . $e->getMessage());
+                }
+            }
+        }
     }
 
     public function __destruct()
@@ -54,20 +75,20 @@ class App
     }
 
 
-public function logout() {
-    $_SESSION = array();
+    public function logout() {
+        $_SESSION = array();
 
-    if (ini_get("session.use_cookies")) {
-        $params = session_get_cookie_params();
-        setcookie(session_name(), '', time() - 42000,
-            $params["path"], $params["domain"],
-            $params["secure"], $params["httponly"]
-        );
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+            );
+        }
+        session_destroy();
+        $this->connected = false;
+        $this->id_famille = "";
     }
-    session_destroy();
-    $this->connected = false;
-    $this->id_famille = "";
-}
 
     public function setFamilleActive( $id_famille)
     {
