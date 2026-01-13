@@ -172,7 +172,39 @@ function AcceSuivi() {
         setOpenInvitationId(openInvitationId === id ? null : id);
     };
 
-    
+    const handleAccepter = async (id_famille) => {
+        try {
+            const response = await fetch(`${apiUrl}/?route=invitation/accepter`, { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include', 
+                body: JSON.stringify({ id_famille })
+            });
+            const data = await response.json();
+            if (data.success) {
+                fetchInvites();
+            }
+        } catch (error) {
+            console.error("Erreur selection famille", error);
+        }
+    };
+
+    const handleRefuser = async (id_famille) => {
+        try {
+            const response = await fetch(`${apiUrl}/?route=invitation/refuser`, { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include', 
+                body: JSON.stringify({ id_famille })
+            });
+            const data = await response.json();
+            if (data.success) {
+                fetchInvites();
+            }
+        } catch (error) {
+            console.error("Erreur selection famille", error);
+        }
+    };
 
     const handleAcceder = async (id_famille) => {
         try {
@@ -297,8 +329,8 @@ function AcceSuivi() {
                         <InvitationItem
                             key={invitation.id_invitation}
                             invitation={invitation}
-                            onModifier={handleOpenModif}
-                            onAcceder={handleAcceder}
+                            onModifier={handleRefuser}
+                            onAcceder={handleAccepter}
                             isOpen={openInvitationId === invitation.id_invitation}
                             onToggle={() => toggleInvitation(invitation.id_invitation)}
                         />
