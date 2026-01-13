@@ -6,7 +6,7 @@ function Login() {
     const [formData, setFormData] = useState({ username: '', mdp: '' });
     const [message, setMessage] = useState('');
 
-    const apiUrl = import.meta.env.VITE_API_URL;
+    const apiUrl = import.meta.env.VITE_API_URL; 
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -18,15 +18,15 @@ function Login() {
             const response = await fetch(`${apiUrl}/?route=login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({ username: formData.username, mdp: formData.mdp })
+                credentials: 'include', 
+                body: JSON.stringify({ username : formData.username, mdp : formData.mdp  })
             });
             const data = await response.json();
-
+            
             if (data.success) {
                 localStorage.setItem('user', JSON.stringify(data.user));
                 sessionStorage.setItem('isConnected', 'true');
-                navigate('/acce_suivi');
+                navigate('/acce_suivi'); 
             } else {
                 setMessage(data.message || 'Identifiants incorrects');
             }
@@ -40,7 +40,7 @@ function Login() {
             <img src="/img/logo-name.png" alt="" />
 
             <h1>Se connecter</h1>
-            {message && <p className="error_message" style={{ color: 'red' }}>{message}</p>}
+            {message && <p className="error_message" style={{color: 'red'}}>{message}</p>}
 
             <form onSubmit={handleSubmit}>
                 <div>
@@ -63,13 +63,10 @@ function Login() {
             </form>
 
             <span className='border'></span>
-            <div>
-                <NavLink className="btn_border" to={"/create_account"}>
-                    Créer un compte
-                </NavLink>
-            </div>
 
-
+            <NavLink className="btn_border" to={"/create_account"}>
+                Créer un compte
+            </NavLink>
 
             <img src="/img/logo.svg" alt="" />
         </div>

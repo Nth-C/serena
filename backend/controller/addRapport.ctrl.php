@@ -2,30 +2,34 @@
 require_once('model/rapportDAO.class.php');
 require_once(__DIR__ . '/../app.php');
 
+header("Content-Type: application/json");
+
 $app = new App();
-$data = json_decode(file_get_contents('php://input'), true);
+
+if (!$app->connected || !$app->id_famille) {
+    echo json_encode(["success" => false, "error" => "Session invalide ou famille non sélectionnée"]);
+    exit;
+}
 
 try {
+    $json = file_get_contents('php://input'); 
+    $data = json_decode($json, true); 
+
+    if (empty($data['description']) || empty($data['nom'])) {
+        throw new Exception("Le nom et la description sont obligatoires.");
+    }
+
     $model = new RapportDAO();
     
-    $id_rapport = $model->addRapport(
+    $success = $model->addRapport(
         $app->id_famille, 
         $app->personne->id, 
-        $data['description'], 
+        $data['description'],
         $data['nom']
     );
 
-    if (!$id_rapport) {
-        throw new Exception("Erreur création rapport");
-    }
+    echo json_encode(["success" => $success]);
 
-    if (!empty($data['medicaments'])) {
-        foreach ($data['medicaments'] as $med) {
-            $model->addMedicToConso($med['id_med'], $id_rapport, $med['quantite']);
-        }
-    }
-
-    echo json_encode(["success" => true]);
 } catch (Exception $e) {
     echo json_encode(["success" => false, "error" => $e->getMessage()]);
 }

@@ -15,7 +15,7 @@ function FamilleItem({ famille, onModifier, onAcceder, isOpen, onToggle }) {
                         <button
                             className="btn_border"
                             onClick={(e) => {
-                                e.stopPropagation();
+                                e.stopProxpagation();
                                 onModifier(famille);
                             }}
                         >
@@ -37,50 +37,11 @@ function FamilleItem({ famille, onModifier, onAcceder, isOpen, onToggle }) {
     );
 }
 
-
-function InvitationItem({ invitation, onModifier, onAcceder, isOpen, onToggle }) {
-    return (
-        <div className={`container_suivi_groupe ${isOpen ? 'open' : ''}`}>
-            <div className="principal_infos" onClick={onToggle}>
-                <p>invitation de {invitation.id_invitation} dans la famille : {invitation.nom_famille}</p> 
-            </div>
-
-            {isOpen && (
-                <div className="drop">
-                    <p>{invitation.desc}</p>                     
-                    <div className="actions_buttons">
-                        <button
-                            className="btn_border"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onModifier(invitation);
-                            }}
-                        >
-                            Refuser
-                        </button>
-                        <button 
-                            className="btn_blue" 
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onAcceder(invitation.id_famille_invitee);
-                            }}
-                        >
-                            Accepter
-                        </button>                    
-                    </div>
-                </div>
-            )}
-        </div>
-    );
-}
-
 function AcceSuivi() {
     const [message, setMessage] = useState("");
     const apiUrl = import.meta.env.VITE_API_URL;
     const [familles, setFamilles] = useState([]);
-    const [invitations, setInvitations] = useState([]);
     const [openFamilleId, setOpenFamilleId] = useState(null);
-    const [openInvitationId, setOpenInvitationId] = useState(null);
     
     // État pour le nom affiché
     const [nomComplet, setNomComplet] = useState(""); 
@@ -107,21 +68,8 @@ function AcceSuivi() {
         }
     };
 
-    const fetchInvites = async () => {
-        try {
-            const response = await fetch(`${apiUrl}/?route=invitation/view`, {
-                credentials: 'include' 
-            });
-            const data = await response.json();
-            setInvitations(Array.isArray(data) ? data : []);
-        } catch (error) {
-            console.error("Erreur chargement invitations:", error);
-        }
-    };
-
     useEffect(() => {
         fetchFamilles();
-        fetchInvites();
 
         // --- LOGIQUE DE NOM MODIFIEE ---
         const userStored = localStorage.getItem('user');
@@ -166,45 +114,6 @@ function AcceSuivi() {
 
     const toggleFamille = (id) => {
         setOpenFamilleId(openFamilleId === id ? null : id);
-    };
-
-    const toggleInvitation = (id) => {
-        setOpenInvitationId(openInvitationId === id ? null : id);
-    };
-
-    const handleAccepter = async (id_famille) => {
-        try {
-            const response = await fetch(`${apiUrl}/?route=invitation/accepter`, { 
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include', 
-                body: JSON.stringify({ id_famille })
-            });
-            const data = await response.json();
-            if (data.success) {
-                fetchInvites();
-                fetchFamilles();
-            }
-        } catch (error) {
-            console.error("Erreur selection famille", error);
-        }
-    };
-
-    const handleRefuser = async (id_famille) => {
-        try {
-            const response = await fetch(`${apiUrl}/?route=invitation/refuser`, { 
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include', 
-                body: JSON.stringify({ id_famille })
-            });
-            const data = await response.json();
-            if (data.success) {
-                fetchInvites();
-            }
-        } catch (error) {
-            console.error("Erreur selection famille", error);
-        }
     };
 
     const handleAcceder = async (id_famille) => {
@@ -275,24 +184,6 @@ function AcceSuivi() {
         }
     };
 
-    const handleQuitterFamille = async (id_famille) => {
-        try {
-            const response = await fetch(`${apiUrl}/?route=famille/quitter`, { 
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include', 
-                body: JSON.stringify({ id_famille })
-            });
-            const data = await response.json();
-            if (data.success) {
-                setIsModifSuiviOpen(false);
-                fetchFamilles();
-            }
-        } catch (error) {
-            console.error("Erreur selection famille", error);
-        }
-    };
-
     const handleOpenModif = (famille) => {
         setFormData({
             id_famille: famille.id_famille,
@@ -339,26 +230,6 @@ function AcceSuivi() {
                 )}
             </div>
 
-
-            <h1>Invitations en attente</h1>
-
-            <div className="list">
-                {invitations.length > 0 ? (
-                    invitations.map((invitation) => (
-                        <InvitationItem
-                            key={invitation.id_invitation}
-                            invitation={invitation}
-                            onModifier={handleRefuser}
-                            onAcceder={handleAccepter}
-                            isOpen={openInvitationId === invitation.id_invitation}
-                            onToggle={() => toggleInvitation(invitation.id_invitation)}
-                        />
-                    ))
-                ) : (
-                    <p className="aucun">Aucune Invitation.</p>
-                )}
-            </div>
-
             <span className='border'></span>
 
             <button className="btn_blue creer_suivi" onClick={toggleNewSuvi}>Créer une nouvelle famille</button>
@@ -400,7 +271,7 @@ function AcceSuivi() {
                         <textarea name="description" value={formData.description} onChange={handleChange}></textarea>
                     </div>
                     <div className="form-actions">
-                        <button type="button" className="btn_red" onClick={() => handleQuitterFamille(formData.id_famille)}>Quitter la famille</button>
+                        <button type="button" className="btn_red">Supprimer</button>
                         <div>
                             <button type="button" className="btn_border" onClick={() => setIsModifSuiviOpen(false)}>Annuler</button>
                             <button type="submit" className="btn_blue">Enregistrer</button>

@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom';
 import styles from './Menu.module.css';
 
+import AddMembre from '../add_membre/AddMembre'
+import RoleMembre from '../role_membre/RoleMembre'
+import AuditLog from '../audit_logs/AuditLog'
+
 function Menu({isOpen , onHamburgerClick}) {
-    /*
     const [addMembreOpen, setAddMembreOpen] = useState(false)
     const [roleMembreOpen, setRoleMembreOpen] = useState(false)
     const [logOpen, setLogOpen] = useState(false)
-    */
 
     const navigate = useNavigate();
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -58,27 +60,8 @@ function Menu({isOpen , onHamburgerClick}) {
                 <div className={styles.admin_container}>
                     <div>
                         <h3>Administrateur</h3>
-<<<<<<< HEAD
                         <button onClick={() => setLogOpen(true)}>
                             <p>Historique</p>
-=======
-
-                        <NavLink to="/logs" onClick={onHamburgerClick}>
-                            <p>Historique</p>
-                            <img src="/icons/chevron_right.svg" alt=">" />
-                        </NavLink>
-                        <NavLink to={"/add_contact"} onClick={onHamburgerClick}>
-                            <p>Inviter des contact</p>
-                            <img src="/icons/chevron_right.svg" alt=">" />
-                        </NavLink>
-                        <NavLink to={"/role_membre"} onClick={onHamburgerClick}>
-                            <p>Gérer les roles</p>
-                            <img src="/icons/chevron_right.svg" alt=">" />
-                        </NavLink>
-
-                        {/* <button onClick={() => setLogOpen(true)}>
-                            <p>Logs</p>
->>>>>>> 94b79c7f83332e3ea7332120834d3a129ef2f908
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </button>
                         <button onClick={() => setAddMembreOpen(true)}>
@@ -88,7 +71,7 @@ function Menu({isOpen , onHamburgerClick}) {
                         <button onClick={() => setRoleMembreOpen(true)}>
                             <p>Gérer les roles</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
-                        </button> */}
+                        </button>
                     </div >
                     <span className={styles.border}></span>
                 </div>
@@ -179,7 +162,7 @@ function Menu({isOpen , onHamburgerClick}) {
             <div className={styles.background} onClick={onHamburgerClick}></div>
         </div>
         
-        {/* <AddMembre 
+        <AddMembre 
             isOpen={addMembreOpen}
             onClose ={() => setAddMembreOpen(false)}
         />
@@ -190,7 +173,7 @@ function Menu({isOpen , onHamburgerClick}) {
         <AuditLog 
             isOpen={logOpen}
             onClose ={() => setLogOpen(false)}
-        /> */}
+        />
 
         </>
     )
