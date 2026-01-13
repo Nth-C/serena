@@ -41,9 +41,9 @@ if (empty($app->id_famille)) {
 try {
     $auditDAO = new auditDAO();
     
-    $logs = $auditDAO->getAllAudit($app->id_famille);
+    $historique = $auditDAO->getAllAudit($app->id_famille);
     
-    echo json_encode($logs ?: []);
+    echo json_encode($historique ?: []);
 
 } catch (Exception $e) {
     http_response_code(500);

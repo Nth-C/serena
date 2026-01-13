@@ -27,7 +27,8 @@ try {
             'id_event' => $ev->id_event, // Assure-toi que ta classe Evenement a cet attribut public ou un getter
             'nom' => $ev->nom, // ou $ev->getNom() selon ta classe
             'date_deb' => $ev->date_deb,
-            'date_fin' => $ev->date_fin
+            'date_fin' => $ev->date_fin,
+            'lieu' => $ev->lieu
         ];
     }
 

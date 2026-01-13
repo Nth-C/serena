@@ -36,66 +36,56 @@ class MedicamentDAO {
         return $medicaments;
     }
 
-    public function searchNomMedicament($texteNomMedicament): array {
-    // 1. On récupère les noms DISTINCTS
-    $queryDistinct = 'SELECT DISTINCT denomination_substance 
-                      FROM CAT_MEDICS 
-                      WHERE denomination_substance ILIKE :search';
+    public function searchNomMedicament($texte): array {
+    // On récupère uniquement les noms de médicaments sans doublons
+    $query = 'SELECT DISTINCT denomination_substance 
+              FROM CAT_MEDICS 
+              WHERE denomination_substance ILIKE :search 
+              ORDER BY denomination_substance ASC 
+              LIMIT 10';
     
-    $stmt = $this->dal->prepare($queryDistinct);
-    $stmt->execute(['search' => '%' . $texteNomMedicament . '%']);
-    $nomsDistincts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = $this->dal->prepare($query);
+    // On cherche ce qui COMMENCE par le texte pour une meilleure suggestion
+    $stmt->execute(['search' => $texte . '%']);
+    
+    $resultats = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    if (empty($nomsDistincts)) {
-        return ["resultats" => [], "isUnique" => false];
-    }
+    return [
+        "resultats" => $resultats,
+    ];
+}
 
-    // --- AJOUT : Vérification de correspondance exacte ---
-    $nomExact = null;
-    foreach ($nomsDistincts as $row) {
-        // strcasecmp compare sans tenir compte de la casse (A = a)
-        if (strcasecmp($row['denomination_substance'], $texteNomMedicament) === 0) {
-            $nomExact = $row['denomination_substance'];
-            break;
-        }
-    }
+    public function isGoodName($texte): bool {
+    // On compte si le nom existe exactement dans la table
+    $query = 'SELECT 1 
+              FROM CAT_MEDICS 
+              WHERE denomination_substance = :search 
+              LIMIT 1';
+    
+    $stmt = $this->dal->prepare($query);
+    $stmt->execute(['search' => $texte]);
+    
+    // fetchColumn renvoie la valeur (1) ou false si rien n'est trouvé
+    return $stmt->fetchColumn() !== false;
+}
 
-    $nbNoms = count($nomsDistincts);
-
-    // On va dans le bloc "UNIQUE" si on a trouvé un nom exact 
-    // OU s'il n'y a qu'un seul résultat dans la liste.
-    if ($nomExact !== null || $nbNoms === 1) {
-        
-        // On prend soit le nom exact trouvé, soit le seul nom de la liste
-        $nomUnique = ($nomExact !== null) ? $nomExact : $nomsDistincts[0]['denomination_substance'];
-
-        $queryDetails = 'SELECT DISTINCT ON (designation_elem_pharma) id_medics, designation_elem_pharma, denomination_substance
-                         FROM CAT_MEDICS 
-                         WHERE denomination_substance = :nomUnique';
-        
-        $stmtDetails = $this->dal->prepare($queryDetails);
-        $stmtDetails->execute(['nomUnique' => $nomUnique]);
-        
-        return [
-            "resultats" => $stmtDetails->fetchAll(PDO::FETCH_ASSOC),
-            "isUnique" => true
-        ];
-
-    } else {
-        // CAS MULTIPLE : On liste les suggestions (LIMIT 5)
-        // Note: Ici j'ai gardé ton LIKE sans les % autour pour suggérer ce qui COMMENCE par le texte
-        $querySimple = 'SELECT DISTINCT denomination_substance 
-                        FROM CAT_MEDICS 
-                        WHERE denomination_substance ILIKE :search 
-                        LIMIT 5';
-        $stmtSimple = $this->dal->prepare($querySimple);
-        $stmtSimple->execute(['search' => $texteNomMedicament . '%']);
-        
-        return [
-            "resultats" => $stmtSimple->fetchAll(PDO::FETCH_ASSOC),
-            "isUnique" => false
-        ];
-    }
+/**
+ * Récupère les types uniques en utilisant DISTINCT ON (PostgreSQL spécifique)
+ */
+public function getTypesByNomExact($nomExact): array {
+    // DISTINCT ON garantit un seul résultat par désignation
+    // On doit ordonner par la même colonne que le DISTINCT ON en premier
+    $query = 'SELECT DISTINCT ON (designation_elem_pharma) 
+                     id_medics, 
+                     designation_elem_pharma 
+              FROM CAT_MEDICS 
+              WHERE denomination_substance = :nom 
+              ORDER BY designation_elem_pharma ASC, id_medics ASC';
+    
+    $stmt = $this->dal->prepare($query);
+    $stmt->execute(['nom' => $nomExact]);
+    
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
     public function updateMedecine($id_famille, $nouveauStock, $id_medicament): bool {

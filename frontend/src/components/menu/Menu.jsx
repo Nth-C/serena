@@ -14,6 +14,11 @@ function Menu({isOpen , onHamburgerClick}) {
     const navigate = useNavigate();
     const apiUrl = import.meta.env.VITE_API_URL;
 
+    const handleSwitchFamille = () => {
+        sessionStorage.removeItem('id_famille');
+        navigate('/acce_suivi');
+    }
+
     const handleLogout = async () => {
         try {
             await fetch(`${apiUrl}/?route=logout`, {
@@ -56,7 +61,7 @@ function Menu({isOpen , onHamburgerClick}) {
                     <div>
                         <h3>Administrateur</h3>
                         <button onClick={() => setLogOpen(true)}>
-                            <p>Logs</p>
+                            <p>historique</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </button>
                         <button onClick={() => setAddMembreOpen(true)}>
@@ -129,10 +134,10 @@ function Menu({isOpen , onHamburgerClick}) {
                 {/* --- CHANGER DE SUIVI --- */}
                 <div className={styles.change_container}>
                     <div>
-                        <NavLink to={"/acce_suivi"} onClick={onHamburgerClick}>
+                        <button onClick={handleSwitchFamille}>
                             <p>Changer de suivi</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
-                        </NavLink>
+                        </button>
                     </div>
                     <span className={styles.border}></span>
                 </div>

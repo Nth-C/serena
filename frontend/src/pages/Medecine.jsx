@@ -195,9 +195,12 @@ function Medecine() {
       setListNomMedecine(result.resultats)
       if (result.isUnique) {
         console.log(result.resultats)
-        setListTypeMedecine(result.resultats)
+        setListTypeMedecine(result.types)
         setIsNameGood(true)
+        
+
       } else {
+        setListTypeMedecine([])
         setIdCatalogueMedecine("") 
         setIsNameGood(false);
       }
@@ -313,6 +316,9 @@ function Medecine() {
               list="medication-suggestions"
               value={nameMedecine}
               onChange={(e) => {
+                setCurrentStock("");
+                setInitialStock("");
+                setIdCatalogueMedecine("");
                 setNameMedecine(e.target.value);
                 if(e.target.value != ""){
                   handleSearchMedecine(e.target.value);
@@ -336,7 +342,7 @@ function Medecine() {
             
             }}
               required
-              disabled={!isNameGood && isEditing}>
+              disabled={!isNameGood || isEditing}>
               <option value=""></option>
               {listTypeMedecine.map((listeMedicament) => (
                 <option key={listeMedicament.id_medics} value={listeMedicament.id_medics}>
@@ -352,7 +358,7 @@ function Medecine() {
               value={initialStock}
               onChange={(e) => setInitialStock(e.target.value)}
               required
-              disabled={isEditing} // on ne peut pas modifier l'input si on modifie un medicament
+              disabled={!isNameGood || isEditing} // on ne peut pas modifier l'input si on modifie un medicament
             />
           </div>
           <div>
@@ -362,6 +368,7 @@ function Medecine() {
               value={currentStock}
               onChange={(e) => setCurrentStock(e.target.value)}
               required
+              disabled={!isNameGood}
             />
           </div>
           <div>
