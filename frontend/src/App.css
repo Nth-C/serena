@@ -17,8 +17,8 @@
 :root {
   --black: #252525;
   --white: #FFFBF2;
-  --blue: #4C79CC;;
-  --pink: #FF9593;
+  --blue: #759BE1;;
+  --pink: #FFBABA;
   --red: #BF443D;
   --gray: #B1B1B1;
   --bg-black: rgba(37, 37, 37, .2);
@@ -527,6 +527,10 @@ button.creer_suivi, .acce_suivi .form-actions {
 .search_report, 
 .search_document {
   gap: 20px;
+  padding: 1rem 0 3rem 0;
+}
+
+.search_report {
   padding: 1rem 3rem 3rem 3rem;
 }
 
