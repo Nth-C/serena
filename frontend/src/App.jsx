@@ -57,10 +57,7 @@ function App() {
         {/* RÉINITIALISATION (Nouveau mot de passe) */}
         <Route path="reset-password" element={<ResetPassword />} > </Route>
         {/* CREER UN COMPTE */}
-        <Route path="create-account" element={
-          <CreateAccount />
-        }>
-        </Route>
+        <Route path="create_account" element={<CreateAccount />} > </Route>
 
         {/* ACCE AU SUIVI DES GROUPES */}
         <Route path="acce_suivi" element={

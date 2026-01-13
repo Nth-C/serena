@@ -28,12 +28,13 @@
   --font-lg: 2.0rem;
 }
 
-html {
+ html {
   font-size: 62.5%;
   font-family: 'DM Sans', sans-serif;
   background: var(--white); 
   color: var(--black);
-}
+} 
+
 
 /* supprime le scroll quand le menu est ouvert */
 .menu-active {
