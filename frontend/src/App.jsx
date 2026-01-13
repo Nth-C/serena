@@ -55,9 +55,9 @@ function App() {
         <Route path="forgot_password" element={<ForgotPassword />} > </Route>
 
         {/* RÉINITIALISATION (Nouveau mot de passe) */}
-        <Route path="reset_password" element={<ResetPassword />} > </Route>
+        <Route path="reset-password" element={<ResetPassword />} > </Route>
         {/* CREER UN COMPTE */}
-        <Route path="create_account" element={
+        <Route path="create-account" element={
           <CreateAccount />
         }>
         </Route>
