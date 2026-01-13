@@ -62,7 +62,7 @@ function Dashboard() {
       <h1>Journal de bord</h1>
 
       {medicaments.length === 0 ? (
-        <p>Aucun médicament</p>
+        <p className="aucun">Aucun médicament</p>
       ) : (
         <table>
           <thead>

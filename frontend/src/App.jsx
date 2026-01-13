@@ -16,7 +16,14 @@ import Layout from './Layout'
 import AcceSuivi from './pages/AcceSuivi';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+<<<<<<< HEAD
 import Signalement from './pages/Signalement';
+=======
+import AuditLog from './pages/AuditLog';
+import AddMembre from './pages/AddMembre';
+import RoleMembre from './pages/RoleMembre';
+
+>>>>>>> 94b79c7f83332e3ea7332120834d3a129ef2f908
 
 const ProtectedRoute = ({ children, requireFamily = true }) => {
   const isConnected = sessionStorage.getItem('isConnected') === 'true';
@@ -45,6 +52,18 @@ function App() {
           {/* quand on est sur / dans l'url on redirige vers home/dashboard */}
           <Route index element={<Navigate to="login" replace />} />
         </Route>
+
+      {/* page menu */}
+        <Route path="logs"
+          element={<AuditLog />}>
+        </Route>
+        <Route path="add_contact" 
+          element={<AddMembre />}>
+        </Route>
+        <Route path="role_membre" 
+          element={<RoleMembre />}>
+        </Route>
+
         
         
         {/* SE CONNECTER */}
@@ -58,10 +77,7 @@ function App() {
         {/* RÉINITIALISATION (Nouveau mot de passe) */}
         <Route path="reset-password" element={<ResetPassword />} > </Route>
         {/* CREER UN COMPTE */}
-        <Route path="create-account" element={
-          <CreateAccount />
-        }>
-        </Route>
+        <Route path="create_account" element={<CreateAccount />} > </Route>
 
         {/* ACCE AU SUIVI DES GROUPES */}
         <Route path="acce_suivi" element={
