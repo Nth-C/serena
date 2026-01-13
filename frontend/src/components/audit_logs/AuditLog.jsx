@@ -229,7 +229,7 @@ const AuditLog = ({ isOpen, onClose }) => {
                                     <th>Utilisateur</th>
                                     <th>Action</th>
                                     <th>Cible</th>
-                                    <th>Description</th> {/* Changé "Détails" en "Description" */}
+                                    <th>Description</th> {}
                                 </tr>
                             </thead>
                             <tbody>
