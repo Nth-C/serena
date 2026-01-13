@@ -197,8 +197,8 @@ const AuditLog = ({ isOpen, onClose }) => {
                         </button>
 
                         <button 
-                            className='refresh_btn'
-                            onClick={getLogs} 
+                            className='refresh_btn' 
+                            onClick={gethistorique} 
                             disabled={loading}
                             title="Actualiser la liste"
                         >
@@ -210,18 +210,16 @@ const AuditLog = ({ isOpen, onClose }) => {
                     </div>
                 </div>
 
-                {loading && listLogs.length === 0 ? (
+                {loading && listhistorique.length === 0 ? (
                     <p className='loading'>Chargement de l'historique...</p>
                 ) : error ? (
-                    </div>
-                ) : filteredAndSortedLogs.length > 0 ? (
-                    <div className='table_container'>
-                        <table className='audit_table'>
-                        <button onClick={gethistorique} className={styles.retry_btn}>Réessayer</button>
+                    <div className='error'>
+                        <p>{error}</p>
+                        <button onClick={gethistorique} className='retry_btn'>Réessayer</button>
                     </div>
                 ) : filteredAndSortedhistorique.length > 0 ? (
-                    <div className={styles.table_container}>
-                        <table className={styles.audit_table}>
+                    <div className='table_container'>
+                        <table className='audit_table'>
                             <thead>
                                 <tr>
                                     <th>Date</th>
@@ -249,7 +247,7 @@ const AuditLog = ({ isOpen, onClose }) => {
                     </div>
                 ) : (
                     <p className='empty'>
-                        {listLogs.length === 0 
+                        {listhistorique.length === 0 
                             ? "Aucun historique disponible." 
                             : "Aucun résultat pour ces filtres."}
                     </p>
