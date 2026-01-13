@@ -4,10 +4,8 @@ import Slide from '../components/slide/Slide';
 import PopUpDelete from '../components/popup_delete/PopUpDelete'
 import PopUpConfirmation from '../components/popup_confirmation/PopUpConfirmation'
 
-function MedicItem({ medicament, isOpen, onToggle }) {
+function MedicItem({ medicament, isOpen, onToggle, onAdd }) {
   return (
-
-
     <div className={`container_medecine ${isOpen ? 'open' : ''}`}>
       <div className="principal_infos" onClick={onToggle}>
         <p>{medicament.nomMedicament}</p>
@@ -17,7 +15,7 @@ function MedicItem({ medicament, isOpen, onToggle }) {
         <div className="drop">
           <p>{medicament.type}...</p>
           <div>
-            <button className="btn_blue">Ajouter</button>
+            <button className="btn_blue" onClick={() => onAdd(medicament)}>Ajouter au rapport</button>
           </div>
         </div>
       )}
@@ -26,7 +24,6 @@ function MedicItem({ medicament, isOpen, onToggle }) {
 }
 
 function LastVisitReport() {
-  // États de base et listes
   const [rapports, setRapports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
@@ -36,7 +33,6 @@ function LastVisitReport() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState(null)
 
-  // États des Slides et Popups
   const [isNewRapportOpen, setIsNewRapportOpen] = useState(false);
   const [isNewMedicineOpen, setIsMedicineOpen] = useState(false);
   const [listNomMedecine, setListNomMedecine] = useState([])
@@ -47,26 +43,23 @@ function LastVisitReport() {
   const [isDetailsReportOpen, setIsDetailsReportpen] = useState(false);
   const [isPopUpDeleteOpen, setIsPopUpDeleteOpen] = useState(false);
 
+  const [selectedMedicsForReport, setSelectedMedicsForReport] = useState([]);
+
   const [nameMedecineToDisplay, setNameMedecineToDisplay] = useState('')
 
-  // Gestion de la sélection et du mode édition
   const [selectedRapport, setSelectedRapport] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
-  // États Formulaire Rapport
   const [nomRapport, setNomRapport] = useState("");
   const [descRapport, setDescRapport] = useState("");
 
-  // États Suppression
   const [idCurrentRapport, setIdCurrentRapport] = useState(null);
   const [nameToDelete, setNameToDelete] = useState("");
 
-  // États Notifications
   const [isShowRemove, setIsShowRemove] = useState(false);
   const [isShowAdd, setIsShowAdd] = useState(false);
   const [isShowModify, setIsShowModify] = useState(false);
 
-  // États Formulaire Médicament
   const [nameMedecine, setNameMedecine] = useState("");
   const [typeMedecine, setTypeMedecine] = useState("");
   const [initialStock, setInitialStock] = useState("");
@@ -88,7 +81,6 @@ function LastVisitReport() {
     setInitialStock("")
   }
 
-  // --- FONCTIONS DE CHARGEMENT ---
   const fetchRapports = async () => {
     try {
       const response = await fetch(`${apiUrl}/?route=rapport/list`, {
@@ -115,15 +107,13 @@ function LastVisitReport() {
         throw new Error(data.error);
       }
 
-      // On vérifie si data est un tableau, sinon on met un tableau vide
       setListMedecine(Array.isArray(data) ? data : []);
       setError(null);
     } catch (err) {
       console.error("Erreur de récupération:", err.message);
       setError(err.message || "Impossible de contacter le serveur");
-      setListMedecine([]); // Évite le crash du .map() en cas d'erreur
+      setListMedecine([]);
     } finally {
-      // Si tu as un état de chargement, tu peux le stopper ici
       setLoading(false);
     }
   }
@@ -138,7 +128,6 @@ function LastVisitReport() {
       stockTotal: initialStock
     }
 
-    // change le controleur appeler en fonction de (créer / modifier)
     const route = isEditing ? 'medicament/update' : 'medicament/add';
 
     try {
@@ -147,7 +136,6 @@ function LastVisitReport() {
         credentials: 'include',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
-          // change les donné envoyer (créer / modifier)
           !isEditing
             ? nouveauMedoc
             : {
@@ -161,11 +149,8 @@ function LastVisitReport() {
 
       if (result.success) {
         handleResetForm()
-        // mettre a jour la liste
         getMedecine()
-        // fermer le slide
         setIsMedicineOpen(false)
-        // affiche le message d'ajout
         !isEditing ? setIsShowAdd(true) : setIsShowModify(true)
         setNameMedecineToDisplay(nameMedecine)
       } else {
@@ -178,11 +163,6 @@ function LastVisitReport() {
   };
 
   const handleSearchMedecine = async (e) => {
-
-
-    console.log(e);
-
-    // change le controleur appeler en fonction de (créer / modifier)
     const route = 'nommedicament/search';
 
     try {
@@ -191,7 +171,6 @@ function LastVisitReport() {
         credentials: 'include',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
-          // change les donné envoyer (créer / modifier)
           {
             texteNomMedicament: e
           }
@@ -199,10 +178,8 @@ function LastVisitReport() {
       });
 
       const result = await response.json();
-      console.log(result);
       setListNomMedecine(result.resultats)
       if (result.isUnique) {
-        console.log(result.resultats)
         setListTypeMedecine(result.resultats)
         setIsNameGood(true)
       } else {
@@ -215,7 +192,26 @@ function LastVisitReport() {
     }
   };
 
-  // --- GESTION DES DÉTAILS ---
+  const addMedicToSelection = (medicament) => {
+    if (!selectedMedicsForReport.find(m => m.id_medicament === medicament.id_medicament)) {
+      setSelectedMedicsForReport([...selectedMedicsForReport, { 
+        ...medicament, 
+        quantite: "1 dose" 
+      }]);
+    }
+    setIsPopupOpen(false);
+  };
+
+  const removeMedicFromSelection = (id) => {
+    setSelectedMedicsForReport(selectedMedicsForReport.filter(m => m.id_medicament !== id));
+  };
+
+  const updateMedicQuantite = (id, value) => {
+    setSelectedMedicsForReport(selectedMedicsForReport.map(m => 
+      m.id_medicament === id ? { ...m, quantite: value } : m
+    ));
+  };
+
   const handleOpenDetails = (rapport) => {
     setSelectedRapport(rapport);
     setIsDetailsReportpen(true);
@@ -226,10 +222,10 @@ function LastVisitReport() {
     setIsDetailsReportpen(!isDetailsReportOpen);
   };
 
-  // --- GESTION DES FORMULAIRES (AJOUT & MODIF) ---
   const toggleNewRapport = () => {
     if (isNewRapportOpen) {
       handleResetRapport();
+      setSelectedMedicsForReport([]);
       setIsEditing(false);
     }
     setIsNewRapportOpen(!isNewRapportOpen);
@@ -249,7 +245,11 @@ function LastVisitReport() {
     const bodyData = {
       nom: nomRapport,
       description: descRapport,
-      id_rapport: isEditing ? selectedRapport.id_rapport : null
+      id_rapport: isEditing ? selectedRapport.id_rapport : null,
+      medicaments: selectedMedicsForReport.map(m => ({
+        id_med: m.id_medicament,
+        quantite: m.quantite
+      }))
     };
 
     try {
@@ -264,6 +264,7 @@ function LastVisitReport() {
         setIsNewRapportOpen(false);
         isEditing ? setIsShowModify(true) : setIsShowAdd(true);
         handleResetRapport();
+        setSelectedMedicsForReport([]);
         setIsEditing(false);
         fetchRapports();
       }
@@ -272,7 +273,6 @@ function LastVisitReport() {
     }
   };
 
-  // --- SUPPRESSION ---
   const togglePopUpDelete = () => setIsPopUpDeleteOpen(!isPopUpDeleteOpen);
 
   const handleDeleteRapport = async () => {
@@ -296,7 +296,6 @@ function LastVisitReport() {
     }
   };
 
-  // --- MÉDICAMENTS ---
   const toggleNewMedicine = () => setIsMedicineOpen(!isNewMedicineOpen);
   const togglePopup = (e) => { if (e) e.preventDefault(); setIsPopupOpen(!isNewPopupOpen); }
   const handleResetRapport = () => { setNomRapport(""); setDescRapport(""); };
@@ -348,7 +347,6 @@ function LastVisitReport() {
         </svg>
       </button>
 
-      {/* popup médicaments */}
       {mounted && isNewPopupOpen && createPortal(
         <div className={`popup_report_add_medicament ${isNewPopupOpen ? 'popu-medi-active' : ''}`}>
           <div className="search_report">
@@ -372,6 +370,7 @@ function LastVisitReport() {
                 medicament={med}
                 isOpen={openMedicId === med.id_medicament}
                 onToggle={() => toggleMedic(med.id_medicament)}
+                onAdd={addMedicToSelection}
               />
 
             ))}
@@ -380,7 +379,6 @@ function LastVisitReport() {
         document.body
       )}
 
-      {/* Slide Ajout Médicament */}
       <Slide title={"Ajouter un médicament"} isOpen={isNewMedicineOpen} toggleOpen={toggleNewMedicine} zIndex={700}>
         <form className="new_medecine" onSubmit={handleMedecine}>
 
@@ -399,18 +397,14 @@ function LastVisitReport() {
 
               }}
               required
-              disabled={isEditing} // on ne peut pas modifier l'input si on modifie un medicament
+              disabled={isEditing}
             />
             <datalist id="medication-suggestions">
-              {/* On boucle sur les résultats de votre recherche PHP */}
-              {listNomMedecine?.map((suggestion) => (
-                <option value={suggestion.denomination_substance} />
+              {listNomMedecine?.map((suggestion, i) => (
+                <option key={i} value={suggestion.denomination_substance} />
               ))}
             </datalist>
           </div>
-
-
-
 
           <div>
             <label>Type de médicament : </label>
@@ -439,7 +433,6 @@ function LastVisitReport() {
         </form>
       </Slide>
 
-      {/* Slide Nouveau/Modif Rapport */}
       <Slide title={isEditing ? "Modifier le rapport" : "Créer un rapport de visite"} isOpen={isNewRapportOpen} toggleOpen={toggleNewRapport} zIndex={500}>
         <form className="add_report" onSubmit={handleSubmitRapport}>
           <div>
@@ -449,6 +442,22 @@ function LastVisitReport() {
           {!isEditing && (
             <div>
               <label>Médicaments pris : </label>
+              <div className="selected_medics_container">
+                {selectedMedicsForReport.map((m) => (
+                  <div key={m.id_medicament} className="list_medicament_report">
+                    <div>
+                      <p>{m.nomMedicament}</p>
+                      <input 
+                        type="text" 
+                        placeholder="Posologie" 
+                        value={m.quantite}
+                        onChange={(e) => updateMedicQuantite(m.id_medicament, e.target.value)}
+                      />
+                      <button type="button" onClick={() => removeMedicFromSelection(m.id_medicament)}>✕</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
               <button type="button" className="btn_blue add_medi" onClick={() => {
                 togglePopup();
                 getMedecine()
@@ -467,7 +476,6 @@ function LastVisitReport() {
         </form>
       </Slide>
 
-      {/* Slide Détails Rapport */}
       <Slide title={selectedRapport ? selectedRapport.nom : "Détails"} isOpen={isDetailsReportOpen} toggleOpen={toggleDetailsReport} zIndex={100}>
         {selectedRapport ? (
           <div className="details_report">
@@ -502,7 +510,6 @@ function LastVisitReport() {
         ) : null}
       </Slide>
 
-      {/* Popups de confirmation et suppression */}
       <PopUpDelete
         toDelete={nameToDelete}
         handleDelete={handleDeleteRapport}
