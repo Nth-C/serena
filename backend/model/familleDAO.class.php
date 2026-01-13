@@ -164,7 +164,13 @@ class FamilleDAO {
     public function getInvitationDetails($id_personne): array {
     // Jointure triple pour avoir l'invitation, l'expéditeur et la famille
     $query = 'SELECT 
-                *
+                i.id_invitation,
+                i.id_famille_invitee,
+                f.nom AS nom_famille,
+                f.description AS desc_famille,
+                p.nom AS nom_expediteur,
+                p.prenom AS prenom_expediteur,
+                p.username AS id_invitation
               FROM invitation i
               JOIN Fams f ON f.id_famille = i.id_famille_invitee
               JOIN PERSONNES p ON p.id_personne = i.id_pers_qui_invite
