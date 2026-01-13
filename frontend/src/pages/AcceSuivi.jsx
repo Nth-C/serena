@@ -15,7 +15,7 @@ function FamilleItem({ famille, onModifier, onAcceder, isOpen, onToggle }) {
                         <button
                             className="btn_border"
                             onClick={(e) => {
-                                e.stopProxpagation();
+                                e.stopPropagation();
                                 onModifier(famille);
                             }}
                         >
@@ -183,6 +183,7 @@ function AcceSuivi() {
             const data = await response.json();
             if (data.success) {
                 fetchInvites();
+                fetchFamilles();
             }
         } catch (error) {
             console.error("Erreur selection famille", error);
@@ -271,6 +272,24 @@ function AcceSuivi() {
             }
         } catch (error) {
             console.error("Erreur mise à jour:", error);
+        }
+    };
+
+    const handleQuitterFamille = async (id_famille) => {
+        try {
+            const response = await fetch(`${apiUrl}/?route=famille/quitter`, { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include', 
+                body: JSON.stringify({ id_famille })
+            });
+            const data = await response.json();
+            if (data.success) {
+                setIsModifSuiviOpen(false);
+                fetchFamilles();
+            }
+        } catch (error) {
+            console.error("Erreur selection famille", error);
         }
     };
 
@@ -381,7 +400,7 @@ function AcceSuivi() {
                         <textarea name="description" value={formData.description} onChange={handleChange}></textarea>
                     </div>
                     <div className="form-actions">
-                        <button type="button" className="btn_red">Supprimer</button>
+                        <button type="button" className="btn_red" onClick={() => handleQuitterFamille(formData.id_famille)}>Quitter la famille</button>
                         <div>
                             <button type="button" className="btn_border" onClick={() => setIsModifSuiviOpen(false)}>Annuler</button>
                             <button type="submit" className="btn_blue">Enregistrer</button>
