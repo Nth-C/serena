@@ -179,6 +179,65 @@ class FamilleDAO {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+    public function AccepterInvitation($id_personne, $id_famille): bool {
+    try {
+        // 1. On commence une transaction pour s'assurer que si une étape échoue, rien n'est modifié
+        $this->dal->beginTransaction();
+
+        // 2. On ajoute la personne à la famille (Lien n-n)
+        // Note : Vérifiez le nom de votre table de liaison (ici 'appartient_a')
+        $queryInsert = 'INSERT INTO appartient_a (id_famille, id_personne,role) 
+                        VALUES (:id_f, :id_p,\'test\')';
+        $stmtInsert = $this->dal->prepare($queryInsert);
+        $stmtInsert->execute([
+            ':id_f' => $id_famille,
+            ':id_p' => $id_personne
+        ]);
+
+        // 3. On supprime l'invitation maintenant qu'elle est acceptée
+        $queryDelete = 'DELETE FROM invitation 
+                        WHERE id_famille_invitee = :id_f 
+                        AND id_pers_invitee = :id_p';
+        $stmtDelete = $this->dal->prepare($queryDelete);
+        $stmtDelete->execute([
+            ':id_f' => $id_famille,
+            ':id_p' => $id_personne
+        ]);
+
+        // 4. On valide les changements
+        return $this->dal->commit();
+
+    } catch (Exception $e) {
+    $this->dal->rollBack();
+    // Renvoie l'erreur réelle pour le debug (à enlever en production)
+    throw new Exception("SQL Error: " . $e->getMessage());
+}
+}
+
+public function RefuserInvitation($id_personne, $id_famille): bool {
+    try {
+        $this->dal->beginTransaction();
+
+        // On supprime simplement l'invitation correspondante
+        $queryDelete = 'DELETE FROM invitation 
+                        WHERE id_famille_invitee = :id_f 
+                        AND id_pers_invitee = :id_p';
+        
+        $stmtDelete = $this->dal->prepare($queryDelete);
+        $stmtDelete->execute([
+            ':id_f' => $id_famille,
+            ':id_p' => $id_personne
+        ]);
+
+        return $this->dal->commit();
+
+    } catch (Exception $e) {
+        if ($this->dal) $this->dal->rollBack();
+        // Debug : à loguer ou envoyer selon tes besoins
+        throw new Exception("SQL Error (Refuser): " . $e->getMessage());
+    }
+}
+
 
 
     public function getLastInsertedId(): string {

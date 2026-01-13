@@ -28,7 +28,21 @@ try {
         $data['nom']
     );
 
-    echo json_encode(["success" => $success]);
+    if (!$id_rapport) {
+        throw new Exception("Erreur lors de la création du rapport.");
+    }
+
+    if (!empty($data['medicaments']) && is_array($data['medicaments'])) {
+        foreach ($data['medicaments'] as $med) {
+            $model->addMedicRapport(
+                $med['id_med'], 
+                $id_rapport, 
+                $med['quantite']
+            );
+        }
+    }
+
+    echo json_encode(["success" => true, "id_rapport" => $id_rapport]);
 
 } catch (Exception $e) {
     echo json_encode(["success" => false, "error" => $e->getMessage()]);
