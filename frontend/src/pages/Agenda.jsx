@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import Slide from '../components/slide/Slide';
-import { getFormatDate } from '../utils/utils';
+import { getFormatDate, getFormatTime } from '../utils/utils';
 
 import Calendar from '../components/calendar/Calendar'
 import PopUpSelectDate from '../components/pop_up_select_date/PopUpSelectDate'
@@ -14,6 +14,9 @@ function Agenda() {
   const [listeEvenements, setListeEvenements] = useState([])
   const [eventsForCalendar, setEventsForCalendar] = useState([])
 
+  // ouvrir la popup d'evenement
+  const [eventOpen, setEventOpen] = useState(false)
+  const [currentEvent, setCurrentEvent] = useState(null)
 
   const [date, setDate] = useState(new Date())
   const [popUpDateOpen, setPopUpDateOpen] = useState(false)
@@ -188,11 +191,12 @@ function Agenda() {
 
             return {
               // on peut rajouter des infos utile a afficher ici
+              lieu: ev.lieu,
               titre: ev.nom,
               dateStart: startDate,
               dateEnd: endDate,
-            };
-        });
+            }
+        })
 
     setEventsForCalendar(filtered);
   }, [listeEvenements, date]);
@@ -218,7 +222,12 @@ function Agenda() {
       <Calendar 
           date={date}
           isCalendarWeek={isCalendarWeek}
-          events={eventsForCalendar} 
+          events={eventsForCalendar}
+          toggleEventOpen={() => {
+            console.log()
+            setEventOpen(!eventOpen)
+          }}
+          setCurrentEvent={setCurrentEvent}
       />
 
       {/* message d'erreur */}
@@ -424,7 +433,46 @@ function Agenda() {
       handlerValid={setDate}
       startDate={date}
     />
-      
+    
+    <Slide
+        title={currentEvent ? currentEvent.titre : "Détails"}
+        isOpen={eventOpen}
+        toggleOpen={() => setEventOpen(false)}
+    >
+        {currentEvent && (
+            <div className='event_details'>
+                <div className='detail_item'>
+                    <strong>Lieu:</strong>
+                    <p>{currentEvent.lieu || "Non spécifié"}</p>
+                </div>
+                
+                <div className='detail_item'>
+                    <strong>Horaire:</strong>
+                    <p>
+                        De {getFormatDate(currentEvent.dateStart)}
+                        à {getFormatTime(currentEvent.dateStart)}
+                    </p>
+                    <p>
+                        De {getFormatDate(currentEvent.dateEnd)}
+                        à {getFormatTime(currentEvent.dateEnd)}
+                    </p>
+                </div>
+
+                {currentEvent.description && (
+                    <div className='detail_item'>
+                        <strong>Notes:</strong>
+                        <p>{currentEvent.description}</p>
+                    </div>
+                )}
+
+                <div className='actions'>
+                    <button className="btn_red">Supprimer</button>
+                    <button className="btn_border" onClick={() => setEventOpen(false)}>Fermer</button>
+                </div>
+            </div>
+        )}
+    </Slide>
+
     </>
   )
 }

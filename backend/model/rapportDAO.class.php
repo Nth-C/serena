@@ -17,12 +17,11 @@ class RapportDAO {
                 ORDER BY r.date DESC, r.heure DESC';
         
         $stmt = $this->dal->prepare($query);
-        $stmt->execute(['id_famille' => $id_famille]); // $id_famille doit être une string (UUID)
+        $stmt->execute(['id_famille' => $id_famille]); 
         return $stmt->fetchAll(); 
     }
 
     public function addRapport($id_famille, $id_personne, $description, $nom): bool {
-        // L'id_rapport est généré automatiquement par PostgreSQL (ex: DEFAULT gen_random_uuid())
         $query = 'INSERT INTO RAPPORTS (nom, description, date, heure, id_famille, id_personne) 
                   VALUES (:nom, :description, CURRENT_DATE, CURRENT_TIME, :id_famille, :id_personne)';
 
@@ -31,8 +30,8 @@ class RapportDAO {
         return $stmt->execute([
             'nom'         => $nom,
             'description' => $description, 
-            'id_famille'  => $id_famille,  // String UUID
-            'id_personne' => $id_personne  // String UUID
+            'id_famille'  => $id_famille, 
+            'id_personne' => $id_personne  
         ]);
     }
 
@@ -55,6 +54,17 @@ class RapportDAO {
             'desc' => $desc,
             'id_r' => $id_rapport,
             'id_f' => $id_famille
+        ]);
+    }
+
+    public function addMedicRapport($id_medicament, $id_rapport, $nombre) {
+        $query = 'INSERT INTO "public"."conso" ("id_medicament","id_rapport","nombre_medic_conso")
+					VALUES (:id_medicament, :id_rapport, :nombre)';
+        $stmt = $this->dal->prepare($query);
+        return $stmt->execute([
+            'id_medicament'         => $id_medicament,
+            'id_rapport'            => $id_rapport,
+            'nombre_medic_conso'    => $nombre
         ]);
     }
 }

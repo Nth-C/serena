@@ -4,26 +4,12 @@ require_once(__DIR__ . '/dal.class.php');
 class FamilleDAO {
     private DAL $dal;
 
-    // Dans FamilleDAO.class.php
     public function __construct(?DAL $dal = null) {
     $this->dal = $dal ?: DAL::get();
 }
-    /*
-    public function insert(Famille $famille): bool {
-        $query = 'INSERT INTO fams (nom, description, nom_aide) 
-                  VALUES (:nom, :description, :nom_aide)';
-        
-        $stmt = $this->dal->prepare($query);
 
-        return $stmt->execute([
-            ':nom'            => $famille->nom,
-            ':description'         => $famille->desc,
-            ':nom_aide'           => $famille->nom_aide 
-        ]);
-    }*/
 
     public function insert(Famille $famille) {
-    // On ajoute RETURNING id_famille à la fin de la requête
     $query = "INSERT INTO fams (nom, description, nom_aide) 
               VALUES (:nom, :description, :nom_aide) 
               RETURNING id_famille";
@@ -37,7 +23,6 @@ class FamilleDAO {
         ]);
 
     if ($res) {
-        // On récupère l'ID généré directement dans le jeu de résultats
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row['id_famille'];
     }
@@ -106,7 +91,6 @@ class FamilleDAO {
     }
 
     public function getPersFam($id_famille): array {
-    // CORRECTION : On joint PERSONNES avec APPARTIENT_A
     $query = 'SELECT p.*,a.role  FROM PERSONNES p
               JOIN APPARTIENT_A a ON p.id_personne = a.id_personne
               WHERE a.id_famille = :id_famille';
@@ -137,7 +121,6 @@ class FamilleDAO {
 
 
     public function UpdateRolePersFam($id_famille, $id_personne, $role): bool {
-    // On met à jour le champ 'role' là où l'id_famille ET l'id_personne correspondent
     $query = 'UPDATE appartient_a 
               SET role = :role 
               WHERE id_famille = :id_f 
@@ -153,7 +136,6 @@ class FamilleDAO {
     }
 
     public function deletePersonneDeFamille($id_famille, $id_personne): bool {
-    // On supprime la ligne qui correspond au couple famille / personne
     $query = 'DELETE FROM appartient_a 
               WHERE id_famille = :id_f 
               AND id_personne = :id_p';
@@ -167,7 +149,6 @@ class FamilleDAO {
     }
 
     public function inviterPersonneDansFamille($id_famille_invitee, $id_pers_invitee, $id_pers_qui_invite): bool {
-    // On utilise INSERT pour créer l'invitation
     $query = 'INSERT INTO invitation (id_famille_invitee, id_pers_invitee, id_pers_qui_invite) 
               VALUES (:id_f, :id_p_invitee, :id_p_qui_invite)';
               
