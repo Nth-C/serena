@@ -61,7 +61,7 @@ function Menu({isOpen , onHamburgerClick}) {
                     <div>
                         <h3>Administrateur</h3>
                         <button onClick={() => setLogOpen(true)}>
-                            <p>Logs</p>
+                            <p>historique</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </button>
                         <button onClick={() => setAddMembreOpen(true)}>
