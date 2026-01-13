@@ -51,6 +51,14 @@ function FileExplorer() {
     setIsFileError(false);
   }
 
+  const handleResetUploadFile = () => {
+    setNameDocument('');
+    setTypeDocument('')
+    setSelectedFile(null);
+    setIsUploaded(false);
+    setIsFileError(false);
+  }
+
   const handleResetCategorie = () => {
     setNameCategorie('');
   }
@@ -133,18 +141,19 @@ function FileExplorer() {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const allowedMimeTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+      const allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf'];
       const extension = file.name.split('.').pop().toLowerCase();
-      if (!allowedMimeTypes.includes(file.type)) {
+      if (allowedExtensions.includes(extension)) {
+        setIsFileError(false);
+      } else {
         setIsFileError(true);
       }
 
       setSelectedFile(file);
       setIsUploaded(true);
-      setIsFileError(true);
 
       if (!nameDocument) setNameDocument(file.name);
-      if (!typeDocument) setTypeDocument(extension)
+      if (!typeDocument) setTypeDocument(extension);
     }
   };
 
@@ -265,10 +274,10 @@ function FileExplorer() {
                 ) : (
                   <>
                     <div>
-                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z"/></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z" /></svg>
                       <p className="doc_type_erreur">Les document en .{typeDocument} ne sont pas pris en compte seule les images et les PDF sont autorisés</p>
                     </div>
-                    <button type="button" onClick={() => { setIsUploaded(false); setIsFileError(false); }} className="btn_blue">Changer de fichier</button>
+                    <button type="button" onClick={() =>  handleResetUploadFile()} className="btn_blue">Changer de fichier</button>
                   </>
 
                 )}

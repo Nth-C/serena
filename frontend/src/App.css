@@ -412,8 +412,12 @@ input::placeholder {
 
 .create_account form > div:last-child {
   flex-direction: row;
-  justify-content: end;
   gap: 1rem;
+}
+
+.create_account form > div:last-child button,
+.create_account form > div:last-child a {
+  flex-basis: 50%;
 }
 
 .create_account form > div:nth-child(4) {
@@ -424,6 +428,12 @@ input::placeholder {
 .create_account form > div:nth-child(4) > div {
   display: flex;
   flex-direction: column;
+  flex-basis: 50%;
+  max-width: 48%;
+}
+
+.create_account h1 {
+  padding: 0;
 }
 
 /* ----------------------------- */
@@ -447,16 +457,12 @@ input::placeholder {
   padding-left: 3rem;
 }
 
-.acce_suivi .btn_blue,
-.acce_suivi .btn_border,
-.acce_suivi .btn_red {
-  min-width: 100px;
-  max-width: 177px;
-
-}
-
 button.creer_suivi, .acce_suivi .form-actions {
   margin: 0 auto 0 auto;
+}
+
+button.creer_suivi {
+  width: 60%;
 }
 
 .acce_suivi form div:last-child {
@@ -510,12 +516,19 @@ button.creer_suivi, .acce_suivi .form-actions {
 
 .acce_suivi .drop > div {
   display: flex;
-  justify-content: end;
   gap: 1rem;
+}
+
+.acce_suivi .drop > div button {
+  flex-basis: 50%;
 }
 
 .acce_suivi .principal_infos div {
   display: flex;
+}
+
+.acce_suivi .list {
+  padding-bottom: 5rem;
 }
 
 /* -------------------------------- */

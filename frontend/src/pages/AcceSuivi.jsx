@@ -340,7 +340,7 @@ function AcceSuivi() {
             </div>
 
 
-            <h1>Liste des inviations</h1>
+            <h1>Invitations en attente</h1>
 
             <div className="list">
                 {invitations.length > 0 ? (
