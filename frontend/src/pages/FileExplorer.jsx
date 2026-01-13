@@ -276,7 +276,7 @@ function FileExplorer() {
             )}
           </div>
           <div>
-            <label>Emplacement : </label>
+            <label>Choisir la catégorie : </label>
             <select value={emplacementDocument} onChange={(e) => setEmplacementDocument(e.target.value)} required>
               <option value=""></option>
               {listDocument.map((cat) => (
@@ -295,10 +295,10 @@ function FileExplorer() {
         </form>
       </Slide>
 
-      <Slide title={"Créer un répertoire"} isOpen={isNewCategorieOpen} toggleOpen={toggleNewCategorie}>
+      <Slide title={"Créer une catégorie"} isOpen={isNewCategorieOpen} toggleOpen={toggleNewCategorie}>
         <form className="new_categorie" onSubmit={handleAddCategorie}>
           <div>
-            <label>Nom du répertoire : </label>
+            <label>Nom de la catégorie : </label>
             <input type="text" value={nameCategorie} onChange={(e) => setNameCategorie(e.target.value)} required />
           </div>
           <div>
