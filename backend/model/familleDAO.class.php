@@ -238,6 +238,30 @@ public function RefuserInvitation($id_personne, $id_famille): bool {
     }
 }
 
+public function QuitterFamille(string $id_personne, string $id_famille): bool {
+    try {
+        $this->dal->beginTransaction();
+
+        // On supprime la ligne qui lie cet utilisateur à cette famille
+        $query = 'DELETE FROM appartient_a 
+                  WHERE id_famille = :id_f 
+                  AND id_personne = :id_p';
+        
+        $stmt = $this->dal->prepare($query);
+        $res = $stmt->execute([
+            ':id_f' => $id_famille,
+            ':id_p' => $id_personne
+        ]);
+
+        // Si la suppression a fonctionné, on valide
+        return $this->dal->commit();
+
+    } catch (Exception $e) {
+        if ($this->dal) $this->dal->rollBack();
+        throw new Exception("Erreur SQL (Quitter): " . $e->getMessage());
+    }
+}
+
 
 
     public function getLastInsertedId(): string {
