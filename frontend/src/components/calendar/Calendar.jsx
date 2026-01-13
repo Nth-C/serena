@@ -1,6 +1,6 @@
 import styles from './Calendar.module.css';
 
-const Calendar = ({ events = [], isCalendarWeek = false }) => {
+const Calendar = ({ events = [], toggleEventOpen, setCurrentEvent, isCalendarWeek = false }) => {
     const weekDays = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
     const hourHeight = 60; // 1 heure = 60px
 
@@ -92,17 +92,23 @@ const Calendar = ({ events = [], isCalendarWeek = false }) => {
                         }
 
                         return (
-                            <div key={i} className={styles.event} style={eventStyle}>
+                            <div key={i} className={styles.event} style={eventStyle} 
+                            onClick={() => {
+                                setCurrentEvent(event);
+                                console.log(event)
+                                toggleEventOpen();
+                            }}>
+
                                 {event.titre}
                             </div>
-                        );
+                        )
                     })}
                 </div>
 
             </div>
         ): ( // semaine
             <>
-            
+ 
             </>
         )}
         </>
