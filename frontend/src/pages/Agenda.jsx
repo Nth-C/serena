@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import Slide from '../components/slide/Slide';
 import { getFormatDate } from '../utils/utils';
 
@@ -12,6 +12,8 @@ function Agenda() {
   
   // State pour stocker la liste des événements
   const [listeEvenements, setListeEvenements] = useState([])
+  const [eventsForCalendar, setEventsForCalendar] = useState([])
+
 
   const [date, setDate] = useState(new Date())
   const [popUpDateOpen, setPopUpDateOpen] = useState(false)
@@ -40,52 +42,44 @@ function Agenda() {
     id_event: ''         // ID de l'événement lié
   })
 
-  const toggleNewEvent = () => {
-    setNewEventOpen(!newEventOpen)
+  const fetchMembres = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/?route=getfamillepersonne`, {
+          credentials: 'include' 
+      });
+      const data = await response.json()
+      
+      if (data.success) {
+        setMembresFamille(data.membres)
+      }
+    } catch (error) {
+      console.error("Erreur chargement famille", error)
+    }
+  };
+
+
+  const fetchEvents = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/?route=getevents`, {
+          credentials: 'include' 
+      });
+      const data = await response.json()
+      
+      if (data.success) {
+        setListeEvenements(data.evenements)
+        
+        //console.log('event : ', data.evenements)
+      }
+    } catch (error) {
+      console.error("Erreur chargement événements", error)
+    }
   }
 
-  // --- 1. Chargement des membres de la famille ---
+  // quand la page se lance on recupere les données
   useEffect(() => {
-    const fetchMembres = async () => {
-      try {
-        const response = await fetch(`${apiUrl}/?route=getfamillepersonne`, {
-            credentials: 'include' 
-        });
-        const data = await response.json()
-        
-        if (data.success) {
-          setMembresFamille(data.membres)
-        }
-      } catch (error) {
-        console.error("Erreur chargement famille", error)
-      }
-    };
-
-    fetchMembres();
-  }, [apiUrl]);
-
-  // --- 2. Chargement des événements pour le select ---
-  useEffect(() => {
-    const fetchEvents = async () => {
-      if (!newEventOpen) return;
-
-      try {
-        const response = await fetch(`${apiUrl}/?route=getevents`, {
-            credentials: 'include' 
-        });
-        const data = await response.json()
-        
-        if (data.success) {
-          // console.log("Events reçus:", data.evenements); // Debug
-          setListeEvenements(data.evenements)
-        }
-      } catch (error) {
-        console.error("Erreur chargement événements", error)
-      }
-    };
-
-    fetchEvents();
-  }, [apiUrl, newEventOpen]);
+    fetchMembres()
+    fetchEvents()
+  }, []);
 
   // --- Gestion des changements dans les inputs ---
   const handleChange = (e) => {
@@ -148,6 +142,8 @@ function Agenda() {
         })
         setNewEventOpen(false); 
 
+        fetchEvents()
+
       } else {
         setStatus({ type: 'error', message: result.error || 'Une erreur est survenue' })
       }
@@ -157,6 +153,49 @@ function Agenda() {
       setStatus({ type: 'error', message: "Impossible de contacter le serveur" })
     }
   }
+
+  // si la date change ou que la liste d'evenement change on recupere les evenement associer au jour
+  useEffect(() => {
+    // on définit le début et la fin de la journée affichée (00:00:00 à 23:59:59)
+    const dayStart = new Date(date);
+    dayStart.setHours(0, 0, 0, 0);
+    
+    const dayEnd = new Date(date);
+    dayEnd.setHours(23, 59, 59, 999);
+
+    const filtered = listeEvenements
+        .filter(ev => {
+            const evStart = new Date(ev.date_deb.replace(" ", "T"));
+            const evEnd = new Date(ev.date_fin.replace(" ", "T"));
+
+            // Un événement doit s'afficher si :
+            // son début est avant la fin de journée ET sa fin est après le début de journée
+            return evStart <= dayEnd && evEnd >= dayStart;
+        })
+        .map(ev => {
+            let startDate = new Date(ev.date_deb.replace(" ", "T"));
+            let endDate = new Date(ev.date_fin.replace(" ", "T"));
+
+            // si l'event a commencé hier on force l'affichage à partir de 00:00
+            if (startDate < dayStart) {
+                startDate = dayStart;
+            }
+
+            // si l'event finit demain on force l'affichage jusqu'à 23:59
+            if (endDate > dayEnd) {
+                endDate = dayEnd;
+            }
+
+            return {
+              // on peut rajouter des infos utile a afficher ici
+              titre: ev.nom,
+              dateStart: startDate,
+              dateEnd: endDate,
+            };
+        });
+
+    setEventsForCalendar(filtered);
+  }, [listeEvenements, date]);
 
   return (
     <> 
@@ -177,8 +216,9 @@ function Agenda() {
       </div>
 
       <Calendar 
-        date={date}
-        isCalendarWeek={isCalendarWeek}
+          date={date}
+          isCalendarWeek={isCalendarWeek}
+          events={eventsForCalendar} 
       />
 
       {/* message d'erreur */}
@@ -195,14 +235,14 @@ function Agenda() {
       )}
 
       {/* ajouter un evenement */}
-      <button className="btn_add" onClick={toggleNewEvent}>
+      <button className="btn_add" onClick={() => setNewEventOpen(true)}>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
       </button>
 
       <Slide
         title={isTrajet ? "Nouveau Trajet" : "Nouvel Événement"} 
         isOpen={newEventOpen} 
-        toggleOpen={toggleNewEvent}
+        toggleOpen={() => setNewEventOpen(false)}
         validOnHeader={true}
         handlerValid={handleSubmit}
       >
