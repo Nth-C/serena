@@ -42,7 +42,7 @@ function InvitationItem({ invitation, onModifier, onAcceder, isOpen, onToggle })
     return (
         <div className={`container_suivi_groupe ${isOpen ? 'open' : ''}`}>
             <div className="principal_infos" onClick={onToggle}>
-                <p>invitation de la famille : {invitation.nom}</p> 
+                <p>invitation de {invitation.id_invitation} dans la famille : {invitation.nom_famille}</p> 
             </div>
 
             {isOpen && (

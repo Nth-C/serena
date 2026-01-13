@@ -196,7 +196,7 @@ function LastVisitReport() {
     if (!selectedMedicsForReport.find(m => m.id_medicament === medicament.id_medicament)) {
       setSelectedMedicsForReport([...selectedMedicsForReport, { 
         ...medicament, 
-        quantite: "1 dose" 
+        quantite: "" 
       }]);
     }
     setIsPopupOpen(false);
@@ -455,7 +455,7 @@ function LastVisitReport() {
                       <p>{m.nomMedicament}</p>
                       <input 
                         type="text" 
-                        placeholder="Posologie" 
+                        placeholder="" 
                         value={m.quantite}
                         onChange={(e) => updateMedicQuantite(m.id_medicament, e.target.value)}
                       />
@@ -494,15 +494,14 @@ function LastVisitReport() {
             <div className="list-medic">
               <h2>Médicaments pris :</h2>
               <ul>
-                {/* On affiche le nom et la posologie enregistrés */}
                 {selectedRapport.medics_details && selectedRapport.medics_details.length > 0 ? (
-                    selectedRapport.medics_details.map((m, i) => (
-                        <li key={i}><strong>{m.nom}</strong> : {m.quantite}</li>
-                    ))
-                ) : selectedRapport.medics_list ? (
-                    selectedRapport.medics_list.map((m, i) => <li key={i}>{m}</li>)
+                  selectedRapport.medics_details.map((m, i) => (
+                    <li key={i}>
+                      <strong>{m.nom}</strong> : {m.quantite}
+                    </li>
+                  ))
                 ) : (
-                    <li>Aucun médicament</li>
+                  <li>Aucun médicament enregistré.</li>
                 )}
               </ul>
             </div>
