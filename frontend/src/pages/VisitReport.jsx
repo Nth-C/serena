@@ -347,6 +347,7 @@ function LastVisitReport() {
         </svg>
       </button>
 
+      {/* popup médicaments */}
       {mounted && isNewPopupOpen && createPortal(
         <div className={`popup_report_add_medicament ${isNewPopupOpen ? 'popu-medi-active' : ''}`}>
           <div className="search_report">
@@ -379,6 +380,7 @@ function LastVisitReport() {
         document.body
       )}
 
+      {/* Slide Ajout Médicament */}
       <Slide title={"Ajouter un médicament"} isOpen={isNewMedicineOpen} toggleOpen={toggleNewMedicine} zIndex={700}>
         <form className="new_medecine" onSubmit={handleMedecine}>
 
@@ -405,6 +407,9 @@ function LastVisitReport() {
               ))}
             </datalist>
           </div>
+
+
+
 
           <div>
             <label>Type de médicament : </label>
@@ -433,6 +438,7 @@ function LastVisitReport() {
         </form>
       </Slide>
 
+      {/* Slide Nouveau/Modif Rapport */}
       <Slide title={isEditing ? "Modifier le rapport" : "Créer un rapport de visite"} isOpen={isNewRapportOpen} toggleOpen={toggleNewRapport} zIndex={500}>
         <form className="add_report" onSubmit={handleSubmitRapport}>
           <div>
@@ -476,6 +482,7 @@ function LastVisitReport() {
         </form>
       </Slide>
 
+      {/* Slide Détails Rapport */}
       <Slide title={selectedRapport ? selectedRapport.nom : "Détails"} isOpen={isDetailsReportOpen} toggleOpen={toggleDetailsReport} zIndex={100}>
         {selectedRapport ? (
           <div className="details_report">
@@ -487,10 +494,15 @@ function LastVisitReport() {
             <div className="list-medic">
               <h2>Médicaments pris :</h2>
               <ul>
-                {selectedRapport.medics_list ? (
-                  selectedRapport.medics_list.map((m, i) => <li key={i}>{m}</li>)
+                {/* On affiche le nom et la posologie enregistrés */}
+                {selectedRapport.medics_details && selectedRapport.medics_details.length > 0 ? (
+                    selectedRapport.medics_details.map((m, i) => (
+                        <li key={i}><strong>{m.nom}</strong> : {m.quantite}</li>
+                    ))
+                ) : selectedRapport.medics_list ? (
+                    selectedRapport.medics_list.map((m, i) => <li key={i}>{m}</li>)
                 ) : (
-                  <li>Aucun médicament</li>
+                    <li>Aucun médicament</li>
                 )}
               </ul>
             </div>
@@ -510,6 +522,7 @@ function LastVisitReport() {
         ) : null}
       </Slide>
 
+      {/* Popups de confirmation et suppression */}
       <PopUpDelete
         toDelete={nameToDelete}
         handleDelete={handleDeleteRapport}
