@@ -28,10 +28,24 @@
   --font-lg: 1.8rem;
 }
 
-html {
+/* html {
   font-size: 62.5%;
   font-family: 'DM Sans', sans-serif;
   background: var(--white); 
+  color: var(--black);
+} */
+ html {
+  font-size: 62.5%;
+  font-family: 'DM Sans', sans-serif;
+  
+  /* --- DEBUT MODIFICATION --- */
+  background-image: url('https://media.discordapp.net/attachments/1109815733082398781/1139979994223878224/image_2.gif?ex=69672f5a&is=6965ddda&hm=e2f047e5de2a68a315f5835d220cc1ffb9e5a8b6ce485fcb1b2c2c0af2b58ab7&');
+  background-size: cover;       /* L'image couvre tout l'écran */
+  background-position: center;  /* L'image est centrée */
+  background-repeat: no-repeat; /* L'image ne se répète pas */
+  background-attachment: fixed; /* L'image reste fixe quand on scroll */
+  /* --- FIN MODIFICATION --- */
+
   color: var(--black);
 }
 
