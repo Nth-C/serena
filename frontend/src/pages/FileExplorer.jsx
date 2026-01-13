@@ -5,10 +5,11 @@ import PopUpConfirmation from '../components/popup_confirmation/PopUpConfirmatio
 
 function FileExplorer() {
   const [listDocument, setListDocument] = useState([])
-  
+
   const [isNewDocumentOpen, setIsNewDocumentOpen] = useState(false) // page
   const [selectedFile, setSelectedFile] = useState(null); // C'est le fichier à envoyé
   const [nameDocument, setNameDocument] = useState("")
+  const [typeDocument, setTypeDocument] = useState("")
   const [emplacementDocument, setEmplacementDocument] = useState("")
 
   const [isNewCategorieOpen, setIsNewCategorieOpen] = useState(false) // page
@@ -22,9 +23,11 @@ function FileExplorer() {
   const [isPopUpDeleteOpen, setIsPopUpDeleteOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
   const [nameToDelete, setNameToDelete] = useState("");
-  
+
   const [isShowRemove, setIsShowRemove] = useState(false);
   const [isShowAdd, setIsShowAdd] = useState(false);
+
+  const [isFileError, setIsFileError] = useState(false);
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -40,20 +43,30 @@ function FileExplorer() {
   }
 
   const handleResetForm = () => {
-        setNameDocument('');
-        setEmplacementDocument('');
-        setSelectedFile(null); 
-        setIsUploaded(false); 
+    setNameDocument('');
+    setTypeDocument('')
+    setEmplacementDocument('');
+    setSelectedFile(null);
+    setIsUploaded(false);
+    setIsFileError(false);
+  }
+
+  const handleResetUploadFile = () => {
+    setNameDocument('');
+    setTypeDocument('')
+    setSelectedFile(null);
+    setIsUploaded(false);
+    setIsFileError(false);
   }
 
   const handleResetCategorie = () => {
-        setNameCategorie('');
+    setNameCategorie('');
   }
 
   const getDocument = async () => {
     try {
       const response = await fetch(`${apiUrl}/?route=document/list`, {
-        credentials: 'include' 
+        credentials: 'include'
       });
       const data = await response.json();
       if (data.error) throw new Error(data.error);
@@ -78,22 +91,22 @@ function FileExplorer() {
     }
 
     const formData = new FormData();
-    formData.append('document', selectedFile); 
-    formData.append('name', nameDocument);      
-    formData.append('id_categorie', emplacementDocument); 
+    formData.append('document', selectedFile);
+    formData.append('name', nameDocument);
+    formData.append('id_categorie', emplacementDocument);
 
     try {
       const response = await fetch(`${apiUrl}/?route=document/add`, {
         method: "POST",
         credentials: 'include',
-        body: formData 
+        body: formData
       });
       const result = await response.json();
       if (result.success) {
         setIsShowAdd(true); // Confirmation ajout
         handleResetForm();
-        getDocument();          
-        toggleNewDocument();    
+        getDocument();
+        toggleNewDocument();
       } else {
         setMessage("Erreur: " + result.error);
       }
@@ -126,11 +139,21 @@ function FileExplorer() {
   };
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0]; 
+    const file = e.target.files[0];
     if (file) {
-      setSelectedFile(file); 
+      const allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf'];
+      const extension = file.name.split('.').pop().toLowerCase();
+      if (allowedExtensions.includes(extension)) {
+        setIsFileError(false);
+      } else {
+        setIsFileError(true);
+      }
+
+      setSelectedFile(file);
       setIsUploaded(true);
-      if(!nameDocument) setNameDocument(file.name);
+
+      if (!nameDocument) setNameDocument(file.name);
+      if (!typeDocument) setTypeDocument(extension);
     }
   };
 
@@ -153,12 +176,12 @@ function FileExplorer() {
         method: "GET",
         credentials: 'include'
       });
-      
+
       const result = await response.json();
       if (result.success) {
         setIsPopUpDeleteOpen(false);
         setIsShowRemove(true);
-        getDocument(); 
+        getDocument();
       } else {
         alert("Erreur: " + result.error);
       }
@@ -210,12 +233,12 @@ function FileExplorer() {
                       </div>
                       <div style={{ display: 'flex', gap: '10px' }}>
                         <div onClick={() => handleDownload(doc.url)} style={{ cursor: 'pointer' }}>
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#0000FF"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" /></svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#0000FF"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" /></svg>
                         </div>
-                        <img 
-                          src="/icons/bin.svg" 
-                          alt="bin" 
-                          style={{ cursor: 'pointer' }} 
+                        <img
+                          src="/icons/bin.svg"
+                          alt="bin"
+                          style={{ cursor: 'pointer' }}
                           onClick={() => openDeleteModal(doc)}
                         />
                       </div>
@@ -239,16 +262,30 @@ function FileExplorer() {
               </label>
             ) : (
               <div className="upload_success">
-                <div>
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M280-280h280v-80H280v80Zm0-160h400v-80H280v80Zm0-160h400v-80H280v80Zm-80 480q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z" /></svg>
-                  <p>Fichier prêt : {selectedFile?.name}</p>
-                </div>
-                <button type="button" onClick={() => setIsUploaded(false)} className="btn_blue">Changer de fichier</button>
+                {!isFileError ? (
+                  <>
+                    <div className="doc_warning">
+                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M280-280h280v-80H280v80Zm0-160h400v-80H280v80Zm0-160h400v-80H280v80Zm-80 480q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z" /></svg>
+                      <p>Le document : {selectedFile?.name} à bien été chargé</p>
+                    </div>
+                    <button type="button" onClick={() => setIsUploaded(false)} className="btn_blue">Changer de fichier</button>
+                  </>
+
+                ) : (
+                  <>
+                    <div>
+                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z" /></svg>
+                      <p className="doc_type_erreur">Les document en .{typeDocument} ne sont pas pris en compte seule les images et les PDF sont autorisés</p>
+                    </div>
+                    <button type="button" onClick={() =>  handleResetUploadFile()} className="btn_blue">Changer de fichier</button>
+                  </>
+
+                )}
               </div>
             )}
           </div>
           <div>
-            <label>Emplacement : </label>
+            <label>Choisir la catégorie : </label>
             <select value={emplacementDocument} onChange={(e) => setEmplacementDocument(e.target.value)} required>
               <option value=""></option>
               {listDocument.map((cat) => (
@@ -267,10 +304,10 @@ function FileExplorer() {
         </form>
       </Slide>
 
-      <Slide title={"Créer un répertoire"} isOpen={isNewCategorieOpen} toggleOpen={toggleNewCategorie}>
+      <Slide title={"Créer une catégorie"} isOpen={isNewCategorieOpen} toggleOpen={toggleNewCategorie}>
         <form className="new_categorie" onSubmit={handleAddCategorie}>
           <div>
-            <label>Nom du répertoire : </label>
+            <label>Nom de la catégorie : </label>
             <input type="text" value={nameCategorie} onChange={(e) => setNameCategorie(e.target.value)} required />
           </div>
           <div>
@@ -281,13 +318,13 @@ function FileExplorer() {
       </Slide>
 
       {/* --- POPUPS --- */}
-      <PopUpDelete 
-        toDelete={nameToDelete} 
-        handleDelete={handleDeleteConfirm} 
-        isOpen={isPopUpDeleteOpen} 
-        onClose={togglePopUpDelete} 
+      <PopUpDelete
+        toDelete={nameToDelete}
+        handleDelete={handleDeleteConfirm}
+        isOpen={isPopUpDeleteOpen}
+        onClose={togglePopUpDelete}
       />
-      
+
       <PopUpConfirmation sentence={`Le document "${nameToDelete}" a bien été supprimé.`} show={isShowRemove} setShow={setIsShowRemove} />
       <PopUpConfirmation sentence={`Le document a bien été ajouté.`} show={isShowAdd} setShow={setIsShowAdd} />
 

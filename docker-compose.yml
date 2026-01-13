@@ -22,6 +22,15 @@ services:
     build: ./backend
     env_file:
       - ./backend/.env
+    environment:
+      # --- CONFIGURATION ALWAYS DATA ---
+      - SMTP_HOST=smtp-sere-na.alwaysdata.net
+      - SMTP_PORT=587
+      # Attention : souvent l'identifiant complet est nécessaire (nom@alwaysdata.net)
+      # D'après tes infos, ton compte est 'sere-na', donc l'email par défaut est souvent :
+      - SMTP_USER=sere-na@alwaysdata.net 
+      # Tu dois mettre le mot de passe de ce compte email ici :
+      - SMTP_PASS=abraham38Rayan
     ports:
       - "8080:80"
     volumes:
