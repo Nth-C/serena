@@ -40,7 +40,6 @@ const AuditLog = ({ isOpen, onClose }) => {
         } catch (err) {
             console.error("Erreur Audit:", err);
             setError(err.message || "Impossible de récupérer l'historique");
-  
             if (listLogs.length === 0) setListLogs([]);
         } finally {
             setLoading(false);
@@ -92,14 +91,72 @@ const AuditLog = ({ isOpen, onClose }) => {
 
     const formatTableName = (table) => {
         const mapNames = {
-            'stock_medics': 'Stock Médoc',
+            'stock_medics': 'Médicament',
             'documents': 'Document',
             'ordonnances': 'Ordonnance',
             'personnes': 'Profil',
             'familles': 'Famille',
-            'evenements': 'Agenda'
+            'evenements': 'Agenda',
+            'rapports': 'Rapport'
         };
-        return mapNames[table] || table || 'Inconnu';
+        return mapNames[table] || table;
+    };
+
+
+    const formatLogDetails = (log) => {
+        try {
+            const oldData = log.old_values ? JSON.parse(log.old_values) : {};
+            const newData = log.new_values ? JSON.parse(log.new_values) : {};
+            
+            let nomItem = "Inconnu";
+            const dataToRead = log.operation === 'DELETE' ? oldData : newData;
+
+            switch (log.table_name) {
+                case 'stock_medics':
+                    nomItem = dataToRead.designation_med || dataToRead.nom || 'Médicament';
+                    break;
+                case 'documents':
+                    nomItem = dataToRead.nom_doc || 'Fichier';
+                    break;
+                case 'personnes':
+                    nomItem = (dataToRead.prenom && dataToRead.nom) 
+                        ? `${dataToRead.prenom} ${dataToRead.nom}` 
+                        : (dataToRead.username || 'Utilisateur');
+                    break;
+                case 'evenements':
+                    nomItem = dataToRead.titre || dataToRead.nom || 'Événement';
+                    break;
+                case 'rapports':
+                    nomItem = dataToRead.nom || 'Rapport';
+                    break;
+                default:
+                    nomItem = dataToRead.nom || dataToRead.titre || 'Élément';
+            }
+
+            if (log.operation === 'DELETE') {
+                return <span style={{color: 'var(--red)'}}>A supprimé : <strong>{nomItem}</strong></span>;
+            } else if (log.operation === 'INSERT') {
+                return <span style={{color: 'green'}}>A ajouté : <strong>{nomItem}</strong></span>;
+            } else if (log.operation === 'UPDATE') {
+
+                return (
+                    <span>
+                        A modifié : <strong>{nomItem}</strong>
+                        <div style={{fontSize: '0.8em', color: 'gray', marginTop: '4px'}}>
+                            {Object.keys(newData).map(key => {
+                                if (key.startsWith('id_') || key.includes('date') || key.includes('password') || key.includes('mdp')) return null;
+                                if (oldData[key] !== newData[key]) {
+                                    return <div key={key}>Change {key}: {oldData[key]} → {newData[key]}</div>
+                                }
+                                return null;
+                            })}
+                        </div>
+                    </span>
+                );
+            }
+        } catch (e) {
+            return <span style={{color: 'gray'}}>Détails techniques non disponibles</span>;
+        }
     };
 
     return (
@@ -110,10 +167,7 @@ const AuditLog = ({ isOpen, onClose }) => {
         >
             <div className={styles.audit_log}>
                 
-                {/* --- BARRE D'OUTILS --- */}
                 <div className={styles.filter_bar}>
-                    
-                    {/* Filtres Checkbox */}
                     <div className={styles.filter_group}>
                         <p><strong>Filtres :</strong></p>
                         <label className={styles.checkbox_label}>
@@ -130,7 +184,6 @@ const AuditLog = ({ isOpen, onClose }) => {
                         </label>
                     </div>
 
-                    {/* Boutons d'action (Tri + Refresh) */}
                     <div className={styles.filter_group}>
                         <button className={styles.sort_btn} onClick={toggleSort}>
                             {sortOrder === 'DESC' ? (
@@ -146,17 +199,13 @@ const AuditLog = ({ isOpen, onClose }) => {
                             )}
                         </button>
 
-                        {/* --- NOUVEAU BOUTON ACTUALISER --- */}
                         <button 
                             className={styles.refresh_btn} 
                             onClick={getLogs} 
                             disabled={loading}
                             title="Actualiser la liste"
                         >
-                            <svg 
-                                className={loading ? styles.spinning : ''} 
-                                viewBox="0 -960 960 960"
-                            >
+                            <svg className={loading ? styles.spinning : ''} viewBox="0 -960 960 960">
                                 <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/>
                             </svg>
                             {loading ? '...' : 'Actualiser'}
@@ -164,7 +213,6 @@ const AuditLog = ({ isOpen, onClose }) => {
                     </div>
                 </div>
 
-                {/* --- CONTENU --- */}
                 {loading && listLogs.length === 0 ? (
                     <p className={styles.loading}>Chargement de l'historique...</p>
                 ) : error ? (
@@ -181,54 +229,23 @@ const AuditLog = ({ isOpen, onClose }) => {
                                     <th>Utilisateur</th>
                                     <th>Action</th>
                                     <th>Cible</th>
-                                    <th>Détails</th>
+                                    <th>Description</th> {/* Changé "Détails" en "Description" */}
                                 </tr>
                             </thead>
-                        <tbody>
-                            {filteredAndSortedLogs.map((log) => (
-                                <tr key={log.id_audit || Math.random()}>
-                                    <td style={{whiteSpace: 'nowrap'}}>{formatDate(log.action_tstamp)}</td>
-                                    <td>{log.user_name}</td>
-                                    <td>{formatOperation(log.operation)}</td>
-                                    <td>{formatTableName(log.table_name)}</td>
-                                    <td>
-                                        {/* On vérifie s'il y a des données à afficher (old_values ou new_values) */}
-                                        {(log.old_values || log.new_values) ? (
-                                            <details className={styles.details}>
-                                                <summary>Voir</summary>
-                                                <div className={styles.json_box}>
-                                                    
-                                                    {/* CAS UPDATE : Avant / Après */}
-                                                    {log.operation === 'UPDATE' && (
-                                                        <>
-                                                            <strong>Avant :</strong> {log.old_values}
-                                                            <hr/>
-                                                            <strong>Après :</strong> {log.new_values}
-                                                        </>
-                                                    )}
-
-                                                    {/* CAS INSERT : On montre ce qui a été ajouté */}
-                                                    {log.operation === 'INSERT' && (
-                                                        <>
-                                                            <strong>Ajouté :</strong> {log.new_values}
-                                                        </>
-                                                    )}
-
-                                                    {/* CAS DELETE : On montre ce qui a été supprimé (old_values) */}
-                                                    {log.operation === 'DELETE' && (
-                                                        <>
-                                                            <strong>Supprimé :</strong> {log.old_values}
-                                                        </>
-                                                    )}
-                                                </div>
-                                            </details>
-                                        ) : (
-                                            <span style={{color: '#ccc'}}>-</span>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
+                            <tbody>
+                                {filteredAndSortedLogs.map((log) => (
+                                    <tr key={log.id_audit || Math.random()}>
+                                        <td style={{whiteSpace: 'nowrap'}}>{formatDate(log.action_tstamp)}</td>
+                                        <td>{log.user_name}</td>
+                                        <td>{formatOperation(log.operation)}</td>
+                                        <td>{formatTableName(log.table_name)}</td>
+                                        <td>
+                                            {/* On appelle notre nouvelle fonction de formatage */}
+                                            {formatLogDetails(log)}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
                         </table>
                     </div>
                 ) : (
@@ -243,4 +260,4 @@ const AuditLog = ({ isOpen, onClose }) => {
     );
 };
 
-export default AuditLog;    
+export default AuditLog;
