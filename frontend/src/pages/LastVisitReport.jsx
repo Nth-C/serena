@@ -15,7 +15,6 @@ function LastVisitReport() {
       .catch(err => console.error(err));
   }, []);
 
-  if (loading) return <p>Chargement...</p>;
 
   return (
     <div>
