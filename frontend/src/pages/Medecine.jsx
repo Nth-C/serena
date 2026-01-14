@@ -4,7 +4,6 @@ import PopUpDelete from '../components/popup_delete/PopUpDelete'
 import PopUpConfirmation from '../components/popup_confirmation/PopUpConfirmation'
 import PopUpAddStock from '../components/popup_add_stock/PopUpAddStock'
 
-
 function Medecine() {
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -14,10 +13,6 @@ function Medecine() {
   const [listMedecine , setListMedecine] = useState([])
   const [activeInList , setActiveInList] = useState(null)
   const [nameCurrentMedecine , setNameCurrentMedecine] = useState(null)
-
-  // pour mettre les erreurs
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState(null)
 
   // ajout medicament
   const [isNewMedecineOpen , setIsNewMedecineOpen] = useState(false) // page
@@ -30,25 +25,21 @@ function Medecine() {
   const [currentStock , setCurrentStock] = useState("")
 
   // ajout stock
-  const [isAddStockOpen , setIsAddStockOpen] = useState(false) // page
+  //const [isAddStockOpen , setIsAddStockOpen] = useState(false) // page
 
   // popup suppression
   const [isPopUpDeleteOpen , setIsPopUpDeleteOpen] = useState(false) // page
   const [idCurrentMedecine , setIdCurrentMedecine] = useState(null)
 
   // popup confirmation
-  const [isShowRemove , setIsShowRemove] = useState(false)
-  const [isShowAdd , setIsShowAdd] = useState(false)
-  const [isShowModify , setIsShowModify] = useState(false)
+  const [isShowConfirmation , setIsShowConfirmation] = useState(false)
+  const [msgConfirmation , setMsgConfirmation] = useState('')
 
-  const [nameMedecineToDisplay , setNameMedecineToDisplay] = useState('')
-
-  
   const apiUrl = import.meta.env.VITE_API_URL;
 
   const handleResetForm = () => {
     setNameMedecine("")
-    setIdCatalogueMedecine("") 
+    setIdCatalogueMedecine("")
     setCurrentStock("")
     setInitialStock("")
   }
@@ -56,16 +47,16 @@ function Medecine() {
   const handleEditMedecine = (med) => {
     // On passe en mode édition
     setIsEditing(true);
-    
+
     // pré-remplit les inputs avec les données du médicament
     setNameMedecine(med.nomMedicament);
     setIdCatalogueMedecine(med.type);
     setInitialStock(med.stockTotal);
     setCurrentStock(med.stock);
-    
+
     // stocke l'id pour savoir lequel modifier plus tard
     setIdCurrentMedecine(med.id_medicament);
-    
+
     // ouvrir le slide
     setIsNewMedecineOpen(true);
 };
@@ -83,14 +74,12 @@ function Medecine() {
 
     // On vérifie si data est un tableau, sinon on met un tableau vide
     setListMedecine(Array.isArray(data) ? data : []);
-    setError(null);
   } catch (err) {
     console.error("Erreur de récupération:", err.message);
-    setError(err.message || "Impossible de contacter le serveur");
     setListMedecine([]); // Évite le crash du .map() en cas d'erreur
   } finally {
     // Si tu as un état de chargement, tu peux le stopper ici
-    setLoading(false); 
+    setLoading(false);
   }
 }
 
@@ -109,6 +98,9 @@ function Medecine() {
       if (result.success) {
         // rafrechir les medicaments
         getMedecine();
+        // affichage confirmation
+        setMsgConfirmation(`Le médicament ${nameCurrentMedecine} a bien été supprimé.`)
+        setIsShowConfirmation(true)
       } else {
         alert("Erreur: " + result.error);
       }
@@ -139,10 +131,10 @@ function Medecine() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
           // change les donné envoyer (créer / modifier)
-          !isEditing 
+          !isEditing
           ? nouveauMedoc
-          : {  
-            id_medicament: activeInList, 
+          : {
+            id_medicament: activeInList,
             nouveauStock: currentStock
           }
         )
@@ -156,25 +148,28 @@ function Medecine() {
         getMedecine()
         // fermer le slide
         toggleNewMedecine()
-        // affiche le message d'ajout
-        !isEditing ? setIsShowAdd(true) : setIsShowModify(true)
-        setNameMedecineToDisplay(nameMedecine)
+        // affichage confirmation
+        if(!isEditing) {
+          setMsgConfirmation(`Le médicament ${nameMedecine} a bien été ajouter.`)
+        } else {
+          setMsgConfirmation(`Le médicament ${nameMedecine} a bien été modifier.`)
+        }
+        setIsShowConfirmation(true)
       } else {
-        setMessage("Erreur: " + result.error);
+        console.log("Erreur: " + result.error);
       }
     } catch (error) {
-      setMessage("error");
       console.error(error);
     }
   };
 
 
-  const handleSearchMedecine = async (e) => { 
+  const handleSearchMedecine = async (e) => {
     console.log(e);
 
     // change le controleur appeler en fonction de (créer / modifier)
     const route = 'nommedicament/search';
-    
+
     try {
       const response = await fetch(`${apiUrl}/?route=${route}`, {
         method: "POST",
@@ -182,7 +177,7 @@ function Medecine() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
           // change les donné envoyer (créer / modifier)
-          {  
+          {
             texteNomMedicament: e
           }
         )
@@ -195,11 +190,11 @@ function Medecine() {
         console.log(result.resultats)
         setListTypeMedecine(result.types)
         setIsNameGood(true)
-        
+
 
       } else {
         setListTypeMedecine([])
-        setIdCatalogueMedecine("") 
+        setIdCatalogueMedecine("")
         setIsNameGood(false);
       }
     } catch (error) {
@@ -216,16 +211,6 @@ function Medecine() {
     }
     setIsNewMedecineOpen(!isNewMedecineOpen);
   }
-  
-  /*
-  const toggleAddStock = () => {
-    setIsAddStockOpen(!isAddStockOpen)
-  }
-  */
-
-  const togglePopUpDelete = () => {
-    setIsPopUpDeleteOpen(!isPopUpDeleteOpen)
-  }
 
   // quand la page se lance on affiche les medicaments
   useEffect(() => {
@@ -240,7 +225,10 @@ function Medecine() {
     return 0
   }
 
+
+
   return (
+    <>
     <div className="medecine">
       <h1>Liste des médicaments</h1>
       <div className="list">
@@ -262,8 +250,8 @@ function Medecine() {
                     <progress
                     // met des class en fonction du pourcentage pour les bar de couleurs
                     className={
-                        calcProgressBar(med.stockTotal, med.stock) < 33 ? "red_bar" : 
-                        calcProgressBar(med.stockTotal, med.stock) < 66 ? "pink_bar" : 
+                        calcProgressBar(med.stockTotal, med.stock) < 33 ? "red_bar" :
+                        calcProgressBar(med.stockTotal, med.stock) < 66 ? "pink_bar" :
                         "blue_bar"
                       }
                       max="100"
@@ -282,10 +270,10 @@ function Medecine() {
                   <div>
                     <button className="btn_red" onClick={() => {
                       setIdCurrentMedecine(med.id_medicament)
-                      togglePopUpDelete()
+                      setIsPopUpDeleteOpen(true)
                     }}>Supprimer</button>
                     <button className="btn_blue" onClick={() => {
-                      /*toggleAddStock()*/
+                      /*setIsAddStockOpen(true)*/
                       handleEditMedecine(med)
                     }}>Modifier</button>
                   </div>
@@ -300,117 +288,106 @@ function Medecine() {
       </div>
 
       <button className="btn_add" onClick={toggleNewMedecine}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg></button>;
-
-      <Slide 
-        title={isEditing ? "Modifier le médicament" : "Ajouter un médicament"}
-        isOpen={isNewMedecineOpen}
-        toggleOpen={toggleNewMedecine}
-        >
-        <form className="new_medecine" onSubmit={handleMedecine}>
-          <div>
-            <label>Nom du médicament : </label>
-            <input
-              type="text"
-              list="medication-suggestions"
-              value={nameMedecine}
-              onChange={(e) => {
-                setCurrentStock("");
-                setInitialStock("");
-                setIdCatalogueMedecine("");
-                setNameMedecine(e.target.value);
-                if(e.target.value != ""){
-                  handleSearchMedecine(e.target.value);
-                }
-               
-              }}
-              required
-              disabled={isEditing} // on ne peut pas modifier l'input si on modifie un medicament
-            />
-            <datalist id="medication-suggestions">
-            {/* On boucle sur les résultats de votre recherche PHP */}
-            {listNomMedecine?.map((suggestion) => (
-            <option value={suggestion.denomination_substance} />
-            ))}
-            </datalist>
-          </div>
-
-          <div>
-            <label>Type de médicament : </label>
-            <select value={idCatalogueMedecine} onChange={(e) => {
-              setIdCatalogueMedecine(e.target.value)
-            
-            }}
-              required
-              disabled={!isNameGood || isEditing}>
-              <option value=""></option>
-              {listTypeMedecine.map((listeMedicament) => (
-                <option key={listeMedicament.id_medics} value={listeMedicament.id_medics}>
-                  {listeMedicament.designation_elem_pharma}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label>Stock initiale du médicament : </label>
-            <input
-              type="number"
-              value={initialStock}
-              onChange={(e) => setInitialStock(e.target.value)}
-              required
-              disabled={!isNameGood || isEditing} // on ne peut pas modifier l'input si on modifie un medicament
-            />
-          </div>
-          <div>
-            <label>Stock actuel du médicament :</label>
-            <input
-              type="number"
-              value={currentStock}
-              onChange={(e) => setCurrentStock(e.target.value)}
-              required
-              disabled={!isNameGood}
-            />
-          </div>
-          <div>
-            <button type="reset" className="btn_border" onClick={handleResetForm} disabled={isEditing}>Réinitialiser</button>
-            <button type="submit" className="btn_blue">{isEditing ? "Modifier" : "Ajouter"}</button>
-          </div>
-        </form>
-      </Slide>
-
-      {/* <PopUpAddStock
-        // il manque le handler pour ajouter le stock
-        nameMedecine={nameCurrentMedecine}
-        isOpen={isAddStockOpen}
-        toggleOpen={toggleAddStock}
-      /> */}
-
-      <PopUpDelete
-        toDelete={nameCurrentMedecine}
-        handleDelete={() => handleDeleteMedecine(idCurrentMedecine)}
-        isOpen={isPopUpDeleteOpen}
-        onClose={togglePopUpDelete}
-        showConfirmation={() => setIsShowRemove(true)} /*pas obligatoire*/
-      />
-
-      <PopUpConfirmation
-        sentence={`Le médicament ${nameCurrentMedecine} a bien été supprimé.`}
-        show={isShowRemove}
-        setShow={setIsShowRemove}
-      />
-
-      <PopUpConfirmation
-        sentence={`Le médicament ${nameMedecineToDisplay} a bien été ajouter.`}
-        show={isShowAdd}
-        setShow={setIsShowAdd}
-      />
-
-      <PopUpConfirmation
-        sentence={`Le médicament ${nameMedecineToDisplay} a bien été modifier.`}
-        show={isShowModify}
-        setShow={setIsShowModify}
-      />
     </div>
+
+    <Slide
+      title={isEditing ? "Modifier le médicament" : "Ajouter un médicament"}
+      isOpen={isNewMedecineOpen}
+      toggleOpen={toggleNewMedecine}
+      >
+      <form className="new_medecine" onSubmit={handleMedecine}>
+        <div>
+          <label>Nom du médicament : </label>
+          <input
+            type="text"
+            list="medication-suggestions"
+            value={nameMedecine}
+            onChange={(e) => {
+              setCurrentStock("");
+              setInitialStock("");
+              setIdCatalogueMedecine("");
+              setNameMedecine(e.target.value);
+              if(e.target.value != ""){
+                handleSearchMedecine(e.target.value);
+              }
+            }}
+            required
+            disabled={isEditing} // on ne peut pas modifier l'input si on modifie un medicament
+          />
+          <datalist id="medication-suggestions">
+          {/* On boucle sur les résultats de votre recherche PHP */}
+          {listNomMedecine?.map((suggestion) => (
+          <option value={suggestion.denomination_substance} />
+          ))}
+          </datalist>
+        </div>
+
+        <div>
+          <label>Type de médicament : </label>
+          <select value={idCatalogueMedecine} onChange={(e) => {
+            setIdCatalogueMedecine(e.target.value)
+          }}
+            required
+            disabled={!isNameGood || isEditing}>
+            <option value=""></option>
+            {listTypeMedecine.map((listeMedicament) => (
+              <option key={listeMedicament.id_medics} value={listeMedicament.id_medics}>
+                {listeMedicament.designation_elem_pharma}
+              </option>
+            ))}
+          </select>
+        </div>
+          
+        <div>
+          <label>Stock initiale du médicament : </label>
+          <input
+            type="number"
+            value={initialStock}
+            onChange={(e) => setInitialStock(e.target.value)}
+            required
+            disabled={!isNameGood || isEditing} // on ne peut pas modifier l'input si on modifie un medicament
+          />
+        </div>
+
+        <div>
+          <label>Stock actuel du médicament :</label>
+          <input
+            type="number"
+            value={currentStock}
+            onChange={(e) => setCurrentStock(e.target.value)}
+            required
+            disabled={!isNameGood}
+          />
+        </div>
+
+        <div>
+          <button type="reset" className="btn_border" onClick={handleResetForm} disabled={isEditing}>Réinitialiser</button>
+          <button type="submit" className="btn_blue">{isEditing ? "Modifier" : "Ajouter"}</button>
+        </div>
+      </form>
+    </Slide>
+
+    {/* <PopUpAddStock
+      // il manque le handler pour ajouter le stock
+      nameMedecine={nameCurrentMedecine}
+      isOpen={isAddStockOpen}
+      toggleOpen={() => setIsAddStockOpen(false)}
+    /> */}
+
+    <PopUpDelete
+      toDelete={nameCurrentMedecine}
+      handleDelete={() => handleDeleteMedecine(idCurrentMedecine)}
+      isOpen={isPopUpDeleteOpen}
+      onClose={() => setIsPopUpDeleteOpen(false)}
+    />
+
+    <PopUpConfirmation
+      sentence={msgConfirmation}
+      show={isShowConfirmation}
+      setShow={setIsShowConfirmation}
+    />
+
+    </>
   )
 }
 

@@ -51,6 +51,39 @@ public function getFutureEvenements($id_famille): array {
 
         return $stmt->execute(['nom' => $nom, 'date_deb' => $debut, 'date_fin' => $fin, 'lieu' => $lieu, 'note' => $description, 'id_famille' => $id_famille]);
     }
+
+    public function deleteEvenement($id_famille, $id_evenement): bool {
+    try {
+        $this->dal->beginTransaction();
+
+        // 1. On nettoie la table CHARGE (via les trajets de l'event)
+        $q0 = 'DELETE FROM CHARGE WHERE id_trajet IN (SELECT id_trajet FROM TRAJET WHERE id_event = :id_e)';
+        $this->dal->prepare($q0)->execute(['id_e' => $id_evenement]);
+
+        // 2. On nettoie la table EFFECTUE (via les trajets de l'event)
+        $q1 = 'DELETE FROM EFFECTUE WHERE id_trajet IN (SELECT id_trajet FROM TRAJET WHERE id_event = :id_e)';
+        $this->dal->prepare($q1)->execute(['id_e' => $id_evenement]);
+
+        // 3. On nettoie la table TRAJET
+        $q2 = 'DELETE FROM TRAJET WHERE id_event = :id_e';
+        $this->dal->prepare($q2)->execute(['id_e' => $id_evenement]);
+
+        // 4. On supprime l'événement final
+        $q3 = 'DELETE FROM EVENEMENTS WHERE id_famille = :id_f AND id_event = :id_e';
+        $stmt = $this->dal->prepare($q3);
+        $stmt->execute([
+            'id_f' => $id_famille,
+            'id_e' => $id_evenement
+        ]);
+
+        return $this->dal->commit();
+    } catch (Exception $e) {
+        $this->dal->rollBack();
+        throw $e; 
+    }
+}
+
+
     public function getAllEvenementsSemaine($id_famille, $date_debut, $date_fin): array {
     $query = 'SELECT * FROM EVENEMENTS 
               WHERE id_famille = :id_famille 

@@ -43,14 +43,14 @@
     margin: .5rem 0;
 }
 
-.slide :is(.hamburger_btn, .valid_btn) {
+.slide .hamburger_btn {
     position: relative;
     width: 2.5rem;
     height: 1.7rem;
     cursor: pointer;
 }
 
-.slide :is(.hamburger_btn, .valid_btn) span {
+.slide .hamburger_btn span {
     display: block;
     position: absolute;
     height: .3rem;
@@ -73,21 +73,6 @@
     transform: translate(-50%, -50%) rotate(-45deg);
 }
 
-/* btn valid */
-.slide .valid_btn span:first-child {
-    width: 50%;
-    bottom: 0;
-    left: 0;
-    transform: translate(0, -100%) rotate(45deg);
-}
-
-.slide .valid_btn span:last-child {
-    width: 85%;
-    bottom: 50%;
-    right: 50%;
-    transform: translate(70%, 50%) rotate(-45deg);
-}
-
 .slide .background {
     position: absolute;
     z-index: 90;
@@ -96,8 +81,4 @@
     background: var(--bg-black);
     width: 100%;
     height: 100%;
-}
-
-.slide h1 {
-    padding-left: 0;
 }
