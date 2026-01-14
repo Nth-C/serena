@@ -1,9 +1,59 @@
-const FormulaireAides = ({ isAssisAidant = true, isAssisProche = false, isDejaFait = false }) => {
+import { useState } from 'react';
+
+const FormulaireAides = ({ step, setStep, isDejaFait, setIsDejaFait }) => {
+
+    const [formData, setFormData] = useState({
+        statut_pro: "",
+        depenses: "",
+        fiscalite: "",
+        role: "",
+        age_aide: "",
+        gir: "",
+        situation_medicale: "",
+        aide_apa: false,
+        aide_pch: false,
+        aide_aucune: false,
+        objectif: ""
+    });
+
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setFormData({
+            ...formData,
+            [name]: type === "checkbox" ? checked : value
+        });
+    };
+
+    // pour empecher de refaire le formulaire sans le modifier
+    const finaliser = (e) => {
+        e.preventDefault();
+        const form = e.target.closest('form');
+        if (form.reportValidity()) {
+            setIsDejaFait(true); // block le formulaire
+        }
+        
+    };
+
+    // pour recommancer le formulaire
+    const recommancer = (e) => {
+        e.preventDefault();
+        setIsDejaFait(false); // block le formulaire
+        setStep(1)
+    };
+
+    // pour verifier le formulaire et passer à l'étape suivante
+    const handleNextStep = (e, nextStep) => {
+    const form = e.target.closest('form');
+    if (form.reportValidity()) { // verifie les required
+        setStep(nextStep);
+    }
+};
 
     return (
         <>
             {isDejaFait ? ( // si formulaire déja rempli
                 <>
+                <button onClick={recommancer}>Modifier le Formulaire</button>
                     <div className="list">
                         <div className="container_aide">
                             <div>
@@ -36,13 +86,13 @@ const FormulaireAides = ({ isAssisAidant = true, isAssisProche = false, isDejaFa
                         </div>
                     </div>
                 </>
-            ) : isAssisAidant ? (  // profil Aidant
+            ) : step === 1 ? (  // profil Aidant
                 <>
                     <div>
                         <h2>Profil de l'Aidant (Vous)</h2>
                         <div>
                             <label htmlFor="">Votre statut professionnel : </label>
-                            <select name="statut_pro" value="" required>
+                            <select name="statut_pro" value={formData.statut_pro} onChange={handleChange} required>
                                 <option value="">-- Choisir un statut --</option>
                                 <option value="Salarie">
                                     Salarié
@@ -63,7 +113,7 @@ const FormulaireAides = ({ isAssisAidant = true, isAssisProche = false, isDejaFa
                         </div>
                         <div>
                             <label htmlFor="">Vos dépenses : </label>
-                            <select name="statut_pro" value="" required>
+                            <select name="depenses" value={formData.depenses} onChange={handleChange} required>
                                 <option value="">-- Choisir une situation de dépenses --</option>
                                 <option value="DonneArgent">
                                     Je verse de l'argent à mon proche
@@ -79,11 +129,11 @@ const FormulaireAides = ({ isAssisAidant = true, isAssisProche = false, isDejaFa
                         <div>
                             <label htmlFor="">Votre fiscalité : </label>
                             <div className="selector_container">
-                                <input type="radio" name="fiscalité" value="imposable" id="imposable" />
+                                <input type="radio" name="fiscalite" value="imposable" id="imposable" checked={formData.fiscalite === "imposable"} onChange={handleChange} required/>
                                 <label htmlFor="imposable" className="card">
                                     <p>Je suis imposable</p>
                                 </label>
-                                <input type="radio" name="fiscalité" value="nonImposable" id="nonImposable" />
+                                <input type="radio" name="fiscalite" value="nonImposable" id="nonImposable" checked={formData.fiscalite === "nonImposable"} onChange={handleChange} required />
                                 <label htmlFor="nonImposable" className="card">
                                     <p>Je suis non-imposable</p>
                                 </label>
@@ -94,34 +144,31 @@ const FormulaireAides = ({ isAssisAidant = true, isAssisProche = false, isDejaFa
                             <h2>Lien avec l'aidé</h2>
                             <div className="selector_container">
                                 <div>
-                                    <input type="radio" name="role" value='conjoint' id='conjoint' />
+                                    <input type="radio" name="role" value='conjoint' id='conjoint' checked={formData.role === "conjoint"} onChange={handleChange} required/>
                                     <label htmlFor="conjoint" className='choice'>Conjoint</label>
                                 </div>
                                 <div>
-                                    <input type="radio" name="role" value='famille' id='famille' />
+                                    <input type="radio" name="role" value='famille' id='famille' checked={formData.role === "famille"} onChange={handleChange} required/>
                                     <label htmlFor="famille" className='choice'>Enfant-Famille</label>
                                 </div>
                                 <div>
-                                    <input type="radio" name="role" value='proche' id='proche' />
+                                    <input type="radio" name="role" value='proche' id='proche' checked={formData.role === "proche"} onChange={handleChange} required/>
                                     <label htmlFor="proche" className='choice'>Ami-Voisin</label>
                                 </div>
                             </div>
                         </div>
 
-                        <button className="btn_blue" onClick={() => {
-                            isAssisProche(true);
-                            isAssisAidant(false);
-                        }}>Continuer</button>
+                        <button className="btn_blue" onClick={(e) => handleNextStep(e, 2)}>Continuer</button>
                     </div>
 
                 </>
-            ) : isAssisProche ? (  // profil Aidé
+            ) : step === 2 ? (  // profil Aidé
                 <>
                     <div>
                         <h2>Information sur l'aidé</h2>
                         <div>
                             <label htmlFor="">Âge de l'aidé : </label>
-                            <select name="statut_pro" value="" required>
+                            <select name="age_aide" value={formData.age_aide} onChange={handleChange} required>
                                 <option value="">-- Choisir une situation de santée --</option>
                                 <option value="moinsLimiteAge">
                                     Moins de 70 ans
@@ -133,7 +180,7 @@ const FormulaireAides = ({ isAssisAidant = true, isAssisProche = false, isDejaFa
                         </div>
                         <div>
                             <label htmlFor="">Niveau de dépendance de l'aidé (GIR) : </label>
-                            <select name="statut_pro" value="" required>
+                            <select name="gir" value={formData.gir} onChange={handleChange} required>
                                 <option value="">-- Choisir un niveau de dépendance --</option>
                                 <option value="GIR 1-2">
                                     GIR 1-2
@@ -148,7 +195,7 @@ const FormulaireAides = ({ isAssisAidant = true, isAssisProche = false, isDejaFa
                         </div>
                         <div>
                             <label htmlFor="">Situation médicale de l'aidé : </label>
-                            <select name="statut_pro" value="" required>
+                            <select name="situation_medicale" value={formData.situation_medicale} onChange={handleChange} required>
                                 <option value="">-- Choisir une situation médical --</option>
                                 <option value="Vieillesse">
                                     Maladie-Vieillesse
@@ -161,32 +208,32 @@ const FormulaireAides = ({ isAssisAidant = true, isAssisProche = false, isDejaFa
                         <div>
                             <label htmlFor="">Aides déjà perçues par l'aidé : </label>
                             <div className="box_check">
-                                <input type="checkbox" name='aides' value="APA" id="APA" required />
+                                <input type="checkbox" name='aide_apa' id="APA" checked={formData.aide_apa} onChange={handleChange}/>
                                 <label htmlFor="APA">APA (Allocation Personnalisée d'Autonomie)</label>
                             </div>
                             <div className="box_check">
-                                <input type="checkbox" name='aides' value="PCH" id="PCH" required />
+                                <input type="checkbox" name='aide_pch' id="PCH" checked={formData.aide_pch} onChange={handleChange}/>
                                 <label htmlFor="PCH">PCH (Prestation de Compensation du Handicap)</label>
                             </div>
                             <div className="box_check">
-                                <input type="checkbox" name='aides' value="aucune" id="aucune" required />
+                                <input type="checkbox" name='aide_aucune' id="aucune" checked={formData.aide_aucune} onChange={handleChange}/>
                                 <label htmlFor="aucune">Aucune</label>
                             </div>
                         </div>
-                        <button className="btn_blue" onClick={() => {
-                            isAssisProche(false);
-                            isAssisAidant(false);
-                        }}>Continuer</button>
+                        <div>
+                            <button className="btn_border" onClick={() => setStep(1)}>Retour</button>
+                            <button className="btn_blue" onClick={(e) => handleNextStep(e, 3)}>Continuer</button>
+                        </div>
                     </div>
 
                 </>
-            ) : (  // Vos besoins
+            ) : step === 3 ? (  // Vos besoins
                 <>
                     <div>
                         <h2>Vos besoins</h2>
                         <div>
                             <label htmlFor="">Quel est votre objectif prioritaire : </label>
-                            <select name="statut_pro" value="" required>
+                            <select name="objectif" value={formData.objectif} onChange={handleChange} required>
                                 <option value="">-- Choisir un objectif --</option>
                                 <option value="compenser">
                                     Recevoir un revenu pour compenser un arrêt de travail
@@ -205,11 +252,14 @@ const FormulaireAides = ({ isAssisAidant = true, isAssisProche = false, isDejaFa
                                 </option>
                             </select>
                         </div>
-                        <button type="submit" className="btn_blue" onClick={() => isDejaFait(true)}>Finaliser</button>
+                        <div>
+                            <button className="btn_border" onClick={() => setStep(2)}>Retour</button>
+                            <button type="submit" className="btn_blue" onClick={finaliser}>Finaliser</button>
+                        </div>
                     </div>
 
                 </>
-            )}
+            ) : null}
         </>
     );
 

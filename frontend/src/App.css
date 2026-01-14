@@ -556,6 +556,23 @@ button.creer_suivi {
   justify-content: space-between;
 }
 
+.new_categories {
+  padding-right: 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.new_categories div {
+  display: flex;
+  color: var(--blue);
+  gap: 5px;
+  cursor: pointer;
+}
+
+.new_categories div svg {
+  fill: var(--blue);
+}
 
 .search_report,
 .search_document {
@@ -1008,8 +1025,10 @@ progress.blue_bar::-moz-progress-bar {
 }
 
 .file_explorer .case_categorie svg {
-  fill: var(--gray);
+  fill: var(--black);
   cursor: pointer;
+  width: 30px;
+  height: 30px;
 }
 
 .file_explorer .case_document {
@@ -1028,7 +1047,8 @@ progress.blue_bar::-moz-progress-bar {
 
 .file_explorer .case_document img,
 .file_explorer .case_document svg {
-  width: 24px;
+  width: 30px;
+  height: 30px;
   cursor: pointer;
 }
 
@@ -1330,7 +1350,11 @@ progress.blue_bar::-moz-progress-bar {
   height: .9rem;
 }
 
-
+.last_report {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
 .last_report > div {
   border: 2px solid var(--blue);
