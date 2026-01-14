@@ -120,7 +120,7 @@ function Menu({isOpen , onHamburgerClick}) {
                             <p>Accessibilité</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
-                        <NavLink to={"/"} onClick={onHamburgerClick}>
+                        <NavLink to={"/liste_membre"} onClick={onHamburgerClick}>
                             <p>Liste membres</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>

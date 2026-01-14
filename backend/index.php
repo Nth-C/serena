@@ -33,6 +33,7 @@ const _ROUTES = array(
   'famille/quitter' => 'quitterFamille',  
   'deletefamillepersonne' => 'deleteFamillePersonne',
   'invitepersonnefamille/add' => 'addInviteFamille',
+  'invitepersonnefamille/delete' => 'removeInviteFamille',
   'invitefamille/view' => 'viewInviteFamille',
   'invitation/view' => 'viewInvitation',
   'invitation/accepter' => 'accepterInvitation',
@@ -50,7 +51,9 @@ const _ROUTES = array(
   'rolepersonne/update' => 'updateRolePersonne',
   'getevents' => 'getevents',
   'forgot_password' => 'forgotPassword',
-  'reset_password' => 'resetPassword'
+  'reset_password' => 'resetPassword',
+  'liste_membre' => 'liste_membre',
+  'dashboard/view' => 'viewDashboard'
 );
 
 if (!array_key_exists($route, _ROUTES)) {
