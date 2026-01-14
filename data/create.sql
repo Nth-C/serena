@@ -153,7 +153,6 @@ CREATE TABLE AUDIT_LOGS (
 
     CREATE TABLE TRAJET (
         id_trajet UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-        demande_trajet BOOLEAN,
         date_deb DATE,
         date_fin DATE,
         lieu_dep VARCHAR(255),
