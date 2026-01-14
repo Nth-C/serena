@@ -23,17 +23,18 @@
   --gray: #B1B1B1;
   --bg-black: rgba(37, 37, 37, .2);
   --bezier: cubic-bezier(0.16, 1, 0.3, 1);
-  --font-sm: 1.2rem;
-  --font-md: 1.5rem;
-  --font-lg: 1.8rem;
+  --font-sm: 1.5rem;
+  --font-md: 1.8rem;
+  --font-lg: 2.0rem;
 }
 
-html {
+ html {
   font-size: 62.5%;
   font-family: 'DM Sans', sans-serif;
   background: var(--white); 
   color: var(--black);
-}
+} 
+
 
 /* supprime le scroll quand le menu est ouvert */
 .menu-active {
@@ -69,7 +70,7 @@ h1 {
 }
 
 h2 {
-  font-size: var(--font-lg);
+  font-size: var(--font-md);
 }
 
 label,
@@ -170,6 +171,7 @@ textarea {
   padding: .5rem 2.5rem;
   cursor: pointer;
   text-align: center;
+  min-height: 35px;
   font-size: var(--font-sm);
 }
 
@@ -241,10 +243,6 @@ input::placeholder {
     z-index: 1000;
     flex-direction: column;
     gap: 2rem;
-}
-
-.page_menu.active {
-    display: flex;
 }
 
 .page_menu .params_header {
@@ -355,9 +353,18 @@ input::placeholder {
   text-align: end;
 }
 
+.login > div {
+  display: flex;
+  justify-content: center;
+}
+
+.login > div > a {
+  display: block;
+}
+
 .login form button,
-.login > a {
-  width: 15rem;
+.login > div > a {
+  width: 60%;
 }
 
 .login h1 {
@@ -391,14 +398,22 @@ input::placeholder {
   background-image: url('/icons/mail.svg');
 }
 
+.login > div {
+  width: 95%;
+}
+
 /* --------------------------------- */
 /* --------- CREATE ACCOUNT -------- */
 /* --------------------------------- */
 
 .create_account form > div:last-child {
   flex-direction: row;
-  justify-content: end;
-  gap: 1.7rem;
+  gap: 1rem;
+}
+
+.create_account form > div:last-child button,
+.create_account form > div:last-child a {
+  flex-basis: 50%;
 }
 
 .create_account form > div:nth-child(4) {
@@ -409,6 +424,12 @@ input::placeholder {
 .create_account form > div:nth-child(4) > div {
   display: flex;
   flex-direction: column;
+  flex-basis: 50%;
+  max-width: 48%;
+}
+
+.create_account h1 {
+  padding: 0;
 }
 
 /* ----------------------------- */
@@ -432,23 +453,18 @@ input::placeholder {
   padding-left: 3rem;
 }
 
-.acce_suivi .btn_blue,
-.acce_suivi .btn_border,
-.acce_suivi .btn_red {
-  min-width: 100px;
-  max-width: 177px;
-
-}
-
 button.creer_suivi, .acce_suivi .form-actions {
   margin: 0 auto 0 auto;
+}
+
+button.creer_suivi {
+  width: 60%;
 }
 
 .acce_suivi form div:last-child {
   display: flex;
   flex-direction: row;
-  justify-content: end;
-  gap: 20px;
+  gap: 1rem;
 }
 
 .acce_suivi .principal_infos {
@@ -496,12 +512,19 @@ button.creer_suivi, .acce_suivi .form-actions {
 
 .acce_suivi .drop > div {
   display: flex;
-  justify-content: end;
   gap: 1rem;
+}
+
+.acce_suivi .drop > div button {
+  flex-basis: 50%;
 }
 
 .acce_suivi .principal_infos div {
   display: flex;
+}
+
+.acce_suivi .list {
+  padding-bottom: 5rem;
 }
 
 /* -------------------------------- */
@@ -549,7 +572,10 @@ button.creer_suivi, .acce_suivi .form-actions {
 .add_report div:last-child {
   display: flex;
   flex-direction: row;
-  justify-content: end;
+}
+
+.add_report div:last-child button {
+  flex-basis: 50%;
 }
 
 .report_case {
@@ -608,7 +634,7 @@ button.creer_suivi, .acce_suivi .form-actions {
 }
 
 button.add_medi {
-  width: 180px;
+  width: 100%;
   margin: 1rem 0 0 auto;
 }
 
@@ -660,8 +686,12 @@ button.add_medi {
 
 .details_report div:last-child {
   display: flex;
-  gap: 20px;
-  justify-content: end;
+  flex-direction: row;
+  gap: 15px;
+}
+
+.details_report div:last-child button {
+  flex-basis: 50%;
 }
 
 .details_report div:nth-child(3) p,
@@ -717,6 +747,10 @@ button.add_medi {
   display: flex;
   justify-content: end;
   gap: 1rem;
+}
+
+.popup_report_add_medicament .drop > div button {
+  width: 100%;
 }
 
 .popup_report_add_medicament .principal_infos div {
@@ -821,8 +855,11 @@ progress.blue_bar::-moz-progress-bar {
 
 .medecine .drop > div {
   display: flex;
-  justify-content: end;
   gap: 1rem;
+}
+
+.medecine .drop > div button {
+  flex-basis: 50%;
 }
 
 .medecine .principal_infos > div:first-child > p:first-child {
@@ -833,8 +870,11 @@ progress.blue_bar::-moz-progress-bar {
 
 .new_medecine > div:last-child {
   flex-direction: row;
-  justify-content: end;
-  gap: 1.7rem;
+  gap: 1rem;
+}
+
+.new_medecine > div:last-child button {
+  flex-basis: 50%;
 }
 
 /* ------------------------------ */
@@ -987,7 +1027,10 @@ progress.blue_bar::-moz-progress-bar {
 .new_document > div:last-child {
   display: flex;
   flex-direction: row;
-  justify-content: end;
+}
+
+.new_document > div:last-child button {
+  flex-basis: 50%;
 }
 
 .drop_zone {
@@ -1034,7 +1077,24 @@ progress.blue_bar::-moz-progress-bar {
 .upload_success > div {
   display: flex;
   align-items: center;
+  flex-direction: column;
   gap: 5px;
+}
+
+.upload_success > div svg {
+  fill: var(--red);
+}
+
+.doc_type_erreur {
+  text-align: center;
+}
+
+.new_categorie div:last-child {
+  flex-direction: row;
+}
+
+.new_categorie div:last-child button {
+  flex-basis: 50%;
 }
 
 /* ----------------------------- */
@@ -1067,12 +1127,55 @@ progress.blue_bar::-moz-progress-bar {
 
 .assistance > form  > div:last-child {
   flex-direction: row;
-  justify-content: end;
 }
 
-/* ---------------------------------- */
-/* ----------- add membre ----------- */
-/* ---------------------------------- */
+.assistance > form  > div:last-child button {
+  flex-basis: 50%;
+}
+
+/* ----------------------------- */
+/* ----------- FONTS ----------- */
+/* ----------------------------- */
+
+/* Extra Light */
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/DM_sans/DMSans-ExtraLight.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+}
+
+/* Regular */
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/DM_sans/DMSans-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* Medium */
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/DM_sans/DMSans-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+/* Semi Bold */
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/DM_sans/DMSans-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+/* Bold */
+@font-face {
+  font-family: 'DM Sans';
+  src: url('/fonts/DM_sans/DMSans-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
 
 .add_membre .container_search {
     padding: 0 3rem 2rem 3rem;
@@ -1117,10 +1220,7 @@ progress.blue_bar::-moz-progress-bar {
     width: 80%;
 }
 
-
-/* ----------------------------------- */
-/* ----------- Role membre ----------- */
-/* ----------------------------------- */
+/*-------------------------------------*/
 
 .role_membre .container_search {
     padding: 0 3rem 2rem 3rem;
@@ -1162,50 +1262,4 @@ progress.blue_bar::-moz-progress-bar {
 .form_role_membre > div:last-child > div:last-child {
     display: flex;
     gap: 2rem;
-}
-
-
-
-/* ----------------------------- */
-/* ----------- FONTS ----------- */
-/* ----------------------------- */
-
-/* Extra Light */
-@font-face {
-  font-family: 'DM Sans';
-  src: url('/fonts/DM_sans/DMSans-ExtraLight.ttf') format('truetype');
-  font-weight: 200;
-  font-style: normal;
-}
-
-/* Regular */
-@font-face {
-  font-family: 'DM Sans';
-  src: url('/fonts/DM_sans/DMSans-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-}
-
-/* Medium */
-@font-face {
-  font-family: 'DM Sans';
-  src: url('/fonts/DM_sans/DMSans-Medium.ttf') format('truetype');
-  font-weight: 500;
-  font-style: normal;
-}
-
-/* Semi Bold */
-@font-face {
-  font-family: 'DM Sans';
-  src: url('/fonts/DM_sans/DMSans-SemiBold.ttf') format('truetype');
-  font-weight: 600;
-  font-style: normal;
-}
-
-/* Bold */
-@font-face {
-  font-family: 'DM Sans';
-  src: url('/fonts/DM_sans/DMSans-Bold.ttf') format('truetype');
-  font-weight: 700;
-  font-style: normal;
 }

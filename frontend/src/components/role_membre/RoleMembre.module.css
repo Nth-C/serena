@@ -1,0 +1,41 @@
+.role_membre .container_search {
+    padding: 0 3rem 2rem 3rem;
+}
+
+.role_membre .membre_list > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--gray);
+    padding: .5rem 3rem;
+}
+
+.role_membre .membre_list > div:last-child {
+    border-width: 1px 0 1px 0;
+    border-color: var(--gray);
+    border-style: solid;
+}
+
+.role_membre .membre_list .container_name {
+    display: flex;
+    gap: 2rem;
+}
+
+.role_membre .membre_list .container_name p:first-child {
+    font-weight: 600;
+}
+
+.role_membre .membre_list svg {
+    width: 2.5rem;
+    fill: var(--black);
+}
+
+.form_role_membre > div:last-child {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.form_role_membre > div:last-child > div:last-child {
+    display: flex;
+    gap: 2rem;
+}

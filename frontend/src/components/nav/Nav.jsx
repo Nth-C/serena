@@ -33,7 +33,6 @@ function Nav() {
           </svg>
           <p>Document</p>
         </NavLink>
-       
       </div>
     </nav>
   )

@@ -1,0 +1,42 @@
+.add_membre .container_search {
+    padding: 0 3rem 2rem 3rem;
+}
+
+.add_membre .membre_list > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--gray);
+    padding: .5rem 3rem;
+}
+
+.add_membre .membre_list > div:last-child {
+    border-width: 1px 0 1px 0;
+    border-color: var(--gray);
+    border-style: solid;
+}
+
+.add_membre .membre_list .container_name {
+    display: flex;
+    gap: 2rem;
+}
+
+.add_membre .membre_list .container_name p:first-child {
+    font-weight: 600;
+}
+
+.add_membre .membre_list svg {
+    width: 2.5rem;
+    fill: var(--blue);
+}
+
+.add_membre .container_btn_invite {
+    position: absolute;
+    text-align: center;
+    bottom: 3rem;
+    width: 100%;
+}
+
+.add_membre .container_btn_invite button{
+    width: 80%;
+}

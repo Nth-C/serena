@@ -16,7 +16,6 @@ import Layout from './Layout'
 import AcceSuivi from './pages/AcceSuivi';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
-import Signalement from './pages/Signalement';
 import AuditLog from './pages/AuditLog';
 import AddMembre from './pages/AddMembre';
 import RoleMembre from './pages/RoleMembre';
@@ -49,8 +48,8 @@ function App() {
           {/* quand on est sur / dans l'url on redirige vers home/dashboard */}
           <Route index element={<Navigate to="login" replace />} />
         </Route>
-        
-        {/* page menu */}
+
+      {/* page menu */}
         <Route path="logs"
           element={<AuditLog />}>
         </Route>
@@ -61,7 +60,8 @@ function App() {
           element={<RoleMembre />}>
         </Route>
 
-
+        
+        
         {/* SE CONNECTER */}
         <Route path="login" element={
           <Login setAuth={setAuth} />
@@ -73,10 +73,7 @@ function App() {
         {/* RÉINITIALISATION (Nouveau mot de passe) */}
         <Route path="reset-password" element={<ResetPassword />} > </Route>
         {/* CREER UN COMPTE */}
-        <Route path="create-account" element={
-          <CreateAccount />
-        }>
-        </Route>
+        <Route path="create_account" element={<CreateAccount />} > </Route>
 
         {/* ACCE AU SUIVI DES GROUPES */}
         <Route path="acce_suivi" element={
@@ -97,6 +94,7 @@ function App() {
             />
           </ProtectedRoute>
         }>
+          {/* quand on est sur /home dans l'url on redirige vers dashboard */}
           <Route index element={<Navigate to="dashboard" replace />} />
           
           {/* routes pour les sous partie avec leurs contenu */}
@@ -105,6 +103,7 @@ function App() {
           <Route path="last_visit_report" element={<LastVisitReport  />} />
         </Route>
 
+        {/* AGENDA */}
         <Route path="agenda" element={
           <ProtectedRoute>
             <Layout submenu={[]} />
@@ -123,12 +122,15 @@ function App() {
           </ProtectedRoute>
           }>
           
+          {/* quand on est sur /suivi dans l'url on redirige vers visit_report */}
           <Route index element={<Navigate to="visit_report" replace />}/>
 
+          {/* routes pour les sous partie avec leurs contenu */}
           <Route path="visit_report" element={<VisitReport />} />
           <Route path="medicine" element={<Medecine />} />
         </Route>
 
+        {/* DOCUMENT */}
         <Route path="document" element= {
           <ProtectedRoute>
             <Layout submenu={[
@@ -138,30 +140,18 @@ function App() {
           </ProtectedRoute>
           }>
           
+          {/* quand on est sur /suivi dans l'url on redirige vers visit_report */}
           <Route index element={<Navigate to="explorateur" replace />}/>
 
+          {/* routes pour les sous partie avec leurs contenu */}
           <Route path="explorateur" element={<FileExplorer />} />
           <Route path="aides" element={<Assistance />} />
         </Route>
 
-      
-        <Route path="signalement" element={
-            <ProtectedRoute>
-              <Layout submenu={[
-                  { label: "Signalement", path: "/signalement" },
-                ]}/>
-            </ProtectedRoute>
-          }>
-            <Route index element={<Signalement />} />
-        </Route>
-
         <Route path="*" element={<Navigate to="/login" replace />} />
-        
-
       </Routes>
     </>
   )
 }
- 
 
 export default App

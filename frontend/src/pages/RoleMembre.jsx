@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import LayoutMenu from '../LayoutMenu'
+import React, { useEffect, useState } from 'react';
+import LayoutMenu from '../LayoutMenu';
 
 import Slide from '../components/slide/Slide'
 
@@ -100,7 +100,7 @@ console.error("Erreur réseau:", error);
             isOpen={isOpen} 
             onClose={onClose}
         >
-            <div className='role_membre'>
+            <div className='.role_membre'>
                 <div className='container_search'>
                     <input type="search" placeholder="Rechercher"/>
                 </div>

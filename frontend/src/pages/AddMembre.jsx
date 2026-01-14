@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import LayoutMenu from '../LayoutMenu'
+import React, { useEffect, useState } from 'react';
+import LayoutMenu from '../LayoutMenu';
 
 // Il ne faut pas qu'on puisse afficher tout les aidants d'un coup (il faut une limite)
 const AddMembre = ({isOpen, onClose }) => {
@@ -65,8 +65,6 @@ useEffect(() => {
     return (
         <LayoutMenu
             title={"Inviter des contact"} 
-            isOpen={isOpen} 
-            onClose={onClose}
         >
             <div className='add_membre'>
                 <div className='container_search'>

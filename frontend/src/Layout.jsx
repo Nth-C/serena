@@ -25,11 +25,10 @@ function Layout({submenu}) {
         { path : "/suivi/medicine", breadcrumb: "Suivi > Médicament" },
         // document
         { path : "/document/explorateur", breadcrumb: "Document > Explorateur" },
-        { path : "/document/aides", breadcrumb: "Document > Aides" },
-        //signalement
-        { path : "/signalement", breadcrumb: "Signalement" }
+        { path : "/document/aides", breadcrumb: "Document > Aides" }
     ]
 
+    // recupere le bon file d'ariane en fonction le l'url
     const breadcrumb = () => {
         let i = 0
 
