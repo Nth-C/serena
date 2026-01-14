@@ -161,6 +161,22 @@ class FamilleDAO {
     ]);
 }
 
+public function deleteInviterPersonneDansFamille($id_famille_invitee, $id_pers_invitee, $id_pers_qui_invite): bool {
+    // On supprime la ligne où les trois IDs correspondent
+    $query = 'DELETE FROM invitation 
+              WHERE id_famille_invitee = :id_f 
+              AND id_pers_invitee = :id_p_invitee 
+              AND id_pers_qui_invite = :id_p_qui_invite';
+              
+    $stmt = $this->dal->prepare($query);
+    
+    return $stmt->execute([
+        ':id_f'           => $id_famille_invitee,
+        ':id_p_invitee'    => $id_pers_invitee,
+        ':id_p_qui_invite' => $id_pers_qui_invite
+    ]);
+}
+
     public function getInvitationDetails($id_personne): array {
     // Jointure triple pour avoir l'invitation, l'expéditeur et la famille
     $query = 'SELECT 

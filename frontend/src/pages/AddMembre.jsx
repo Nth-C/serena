@@ -33,6 +33,29 @@ const AddMembre = ({isOpen, onClose }) => {
     }
 };
 
+const handleRemoveInvitePersonne = async (id) => {
+    // Petit ajout de sécurité : confirmer la suppression
+    
+    try {
+        const response = await fetch(`${apiUrl}/?route=invitepersonnefamille/delete`, {
+            method: "POST", // Indispensable pour envoyer un body
+            credentials: 'include',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username: id }) // On envoie un objet structuré
+        });
+        
+        const data = await response.json();
+
+        if (data.success) {
+            fetchMembres(); // Rafraîchit la liste des membres
+        } else {
+            console.error("Erreur : " + data.error);
+        }
+    } catch (error) {
+        console.error("Erreur lors de la demande invité :", error);
+    }
+};
+
 
     const fetchMembres = async (valeur = usernameSearch) => {
     try {
@@ -79,15 +102,36 @@ useEffect(() => {
 
                 <div className='membre_list'>
                     {membresFamille.map((membre) => (
-                        <div key={membre.id}>
+                        <div key={membre.id_personne}>
                             <div className='container_name'>
                                 <p>{membre.nom} {membre.prenom}</p>
                                 <p>{membre.username}</p>
                             </div>
-                            <button onClick={() => {
-                                handleAddInvitePersonne(membre.username)
-                            }}>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-280h80v-160h160v-80H520v-160h-80v160H280v80h160v160Zm40 200q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>
+                            
+                            <button 
+                                onClick={() => {
+                                    if (membre.invite) {
+                                        // Si déjà invité, on appelle la suppression
+                                        handleRemoveInvitePersonne(membre.username);
+                                    } else {
+                                        // Sinon, on invite
+                                        handleAddInvitePersonne(membre.username);
+                                    }
+                                }}
+                                className={membre.invite ? 'btn-invited' : 'btn-add'}
+                                /* On ne désactive plus le bouton pour permettre l'annulation */
+                            >
+                                {membre.invite ? (
+                                    /* Icône de confirmation (Check) - Indique qu'on peut annuler */
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#4caf50">
+                                        <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
+                                    </svg>
+                                ) : (
+                                    /* Icône Plus pour inviter */
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
+                                        <path d="M440-280h80v-160h160v-80H520v-160h-80v160H280v80h160v160Zm40 200q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
+                                    </svg>
+                                )}
                             </button>
                         </div>
                     ))}
