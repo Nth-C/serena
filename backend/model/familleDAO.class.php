@@ -289,4 +289,34 @@ public function QuitterFamille(string $id_personne, string $id_famille): bool {
     public function getLastInsertedId(): string {
         return $this->dal->lastInsertId();
     }
+
+
+    /**
+ * Récupère le rôle d'un utilisateur au sein d'une famille spécifique
+ */
+public function getRoleInFamily(string $userId, string $familleId): string 
+{
+    // La requête SQL qui va chercher la colonne 'role'
+    $sql = "SELECT role 
+            FROM appartient_a 
+            WHERE id_personne = :id_user 
+            AND id_famille = :id_famille";
+
+    try {
+        $stmt = $this->dal->prepare($sql);
+        $stmt->execute([
+            'id_user'    => $userId,
+            'id_famille' => $familleId
+        ]);
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Si on trouve une ligne, on renvoie le rôle, sinon 'guest' (invité/aucun droit)
+        return $result['role'] ?? 'Visiteur';
+
+    } catch (PDOException $e) {
+        // En cas d'erreur SQL, on renvoie 'guest' par sécurité
+        return 'Visiteur';
+    }
+}
 }

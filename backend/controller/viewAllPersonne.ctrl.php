@@ -8,8 +8,18 @@ header("Content-Type: application/json"); // Précise que tu réponds en JSON
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
-
 $app = new App();
+
+
+//code vérification de role
+if (!$app->checkRole('createur')) {
+    header('HTTP/1.1 403 Forbidden');
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Erreur : Vous devez être chef de famille pour faire ça.'
+    ]);
+    exit; 
+}
 
 try {
     // 1. On essaie de récupérer le texte soit en POST JSON, soit en GET
