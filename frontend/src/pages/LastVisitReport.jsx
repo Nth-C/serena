@@ -6,7 +6,7 @@ function LastVisitReport() {
   const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    fetch(`${apiUrl}/?route=rapport/home`, { credentials: 'include' })
+    fetch(`${apiUrl}/?route=rapport/last`, { credentials: 'include' })
       .then(res => res.json())
       .then(data => {
         setRapports(Array.isArray(data) ? data : []);
@@ -18,44 +18,40 @@ function LastVisitReport() {
   if (loading) return <p>Chargement...</p>;
 
   return (
-    <div className="last_visit_report">
+    <div>
       {rapports.map((rapport) => (
-        <div key={rapport.id_rapport} className="report_container">
+        <div key={rapport.id_rapport}>
           
-          {/* Ligne : Nom du rapport et Heure */}
-          <div className="report_header">
+          <div>
             <h2>{rapport.nom}</h2>
-            <p className="time">{rapport.heure.substring(0, 5)}</p>
+            <p>{rapport.heure ? rapport.heure.substring(0, 5) : "--:--"}</p>
           </div>
 
-          {/* Section Médicaments */}
-          <div className="report_section">
+          <div>
             <h3>Médicaments pris :</h3>
-            <div className="medics_list">
-              {rapport.medics_details && rapport.medics_details.length > 0 ? (
-                <ul>
-                  {rapport.medics_details.map((m, i) => (
-                    <li key={i}>
-                      <strong>{m.quantite}</strong> {m.nom}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>Aucun médicament pris.</p>
-              )}
-            </div>
+            {rapport.medics_details && rapport.medics_details.length > 0 ? (
+              <ul>
+                {rapport.medics_details.map((m, i) => (
+                  <li key={i}>
+                    {m.quantite} {m.nom}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>Aucun médicament enregistré.</p>
+            )}
           </div>
 
-          {/* Section Notes (Description) */}
-          <div className="report_section">
+          <div>
             <h3>Notes :</h3>
-            <p className="description">{rapport.description}</p>
+            <p>{rapport.description}</p>
           </div>
 
+          <hr />
         </div>
       ))}
     </div>
   )
 }
 
-export default LastVisitReport
+export default LastVisitReport;

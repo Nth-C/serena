@@ -43,6 +43,7 @@ const _ROUTES = array(
   'rapport/add' => 'addRapport',
   'rapport/delete' => 'deleteRapport',
   'rapport/update' => 'updateRapport',
+  'rapport/last' => 'viewLastReport',
   'document/list' => 'viewDocument',
   'document/add' => 'addDocument',
   'document/delete' => 'deleteDocument',
