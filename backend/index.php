@@ -54,6 +54,7 @@ const _ROUTES = array(
   'reset_password' => 'resetPassword',
   'liste_membre' => 'liste_membre',
   'trajet/add' => 'addTrajet'
+  'dashboard/view' => 'viewDashboard'
 );
 
 if (!array_key_exists($route, _ROUTES)) {

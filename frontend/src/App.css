@@ -7,17 +7,20 @@
   text-decoration: none;
   box-sizing: border-box;
 
-  /* ---- debug responsive ----   border: 1px solid red !important; */ 
+  /* ---- debug responsive ----   border: 1px solid red !important; */
 }
 
-*, ::before, ::after {
+*,
+::before,
+::after {
   box-sizing: border-box;
 }
 
 :root {
   --black: #252525;
   --white: #FFFBF2;
-  --blue: #759BE1;;
+  --blue: #759BE1;
+  ;
   --pink: #FFBABA;
   --red: #BF443D;
   --gray: #B1B1B1;
@@ -28,12 +31,12 @@
   --font-lg: 2.0rem;
 }
 
- html {
+html {
   font-size: 62.5%;
   font-family: 'DM Sans', sans-serif;
-  background: var(--white); 
+  background: var(--white);
   color: var(--black);
-} 
+}
 
 
 /* supprime le scroll quand le menu est ouvert */
@@ -99,7 +102,7 @@ form {
   gap: 2rem;
 }
 
-form > div {
+form>div {
   display: flex;
   flex-direction: column;
   gap: .5rem;
@@ -133,18 +136,18 @@ textarea:focus {
 }
 
 /* selectionne le label au dessus de l'input ou du select */
-form > div:has(input:focus, select:focus) label {
+form > div:has(input:not([type="checkbox"]):not([type="radio"]):focus, select:focus) > label {
   color: var(--blue);
 }
 
 /* pour enlever la couleur bleu des label des radio*/
-form > div > div:has([type=radio]) label {
+form>div>div:has([type=radio]) label {
   color: var(--black);
 }
 
-form > div > div:has([type=radio]) {
+form>div>div:has([type=radio]) {
   display: flex;
-  align-items: center;  
+  align-items: center;
   gap: .5rem;
 }
 
@@ -232,39 +235,39 @@ input::placeholder {
 /* ----------------------------------- */
 
 .page_menu {
-    position: relative;
-    display: flex;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: var(--white);
-    z-index: 1000;
-    flex-direction: column;
-    gap: 2rem;
+  position: relative;
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--white);
+  z-index: 1000;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 .page_menu .params_header {
-    position: relative;
-    display: flex;
-    align-items: center;
-    width: 100%;
-    height: 5rem;
-    padding: 0 1.5rem;
-    border-bottom: 1px solid var(--gray);
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 5rem;
+  padding: 0 1.5rem;
+  border-bottom: 1px solid var(--gray);
 }
 
 .page_menu h2 {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .page_menu .params_header svg {
-    fill: var(--black);
-    width: 2.5rem;
+  fill: var(--black);
+  width: 2.5rem;
 }
 
 /* --------------------------------------------------- */
@@ -288,7 +291,7 @@ input::placeholder {
 
 .login .border,
 .acce_suivi .border {
-  display: block; 
+  display: block;
   width: 70%;
   height: 1px;
   background: var(--gray);
@@ -341,29 +344,29 @@ input::placeholder {
 /* ----------- LOGIN ----------- */
 /* ----------------------------- */
 
-.login form > div:last-child {
+.login form>div:last-child {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.login form > div p {
+.login form>div p {
   color: var(--blue);
   text-decoration: underline;
   text-align: end;
 }
 
-.login > div {
+.login>div {
   display: flex;
   justify-content: center;
 }
 
-.login > div > a {
+.login>div>a {
   display: block;
 }
 
 .login form button,
-.login > div > a {
+.login>div>a {
   width: 60%;
 }
 
@@ -373,7 +376,7 @@ input::placeholder {
 
 .login input[type=text],
 .login input[type=password],
-.login input[type=email], 
+.login input[type=email],
 .create_account input[type=text],
 .create_account input[type=password],
 .create_account input[type=email] {
@@ -398,7 +401,7 @@ input::placeholder {
   background-image: url('/icons/mail.svg');
 }
 
-.login > div {
+.login>div {
   width: 95%;
 }
 
@@ -406,22 +409,22 @@ input::placeholder {
 /* --------- CREATE ACCOUNT -------- */
 /* --------------------------------- */
 
-.create_account form > div:last-child {
+.create_account form>div:last-child {
   flex-direction: row;
   gap: 1rem;
 }
 
-.create_account form > div:last-child button,
-.create_account form > div:last-child a {
+.create_account form>div:last-child button,
+.create_account form>div:last-child a {
   flex-basis: 50%;
 }
 
-.create_account form > div:nth-child(4) {
+.create_account form>div:nth-child(4) {
   flex-direction: row;
   justify-content: space-between;
 }
 
-.create_account form > div:nth-child(4) > div {
+.create_account form>div:nth-child(4)>div {
   display: flex;
   flex-direction: column;
   flex-basis: 50%;
@@ -449,11 +452,12 @@ input::placeholder {
   margin-left: auto;
 }
 
-.acce_suivi > h1 {
+.acce_suivi>h1 {
   padding-left: 3rem;
 }
 
-button.creer_suivi, .acce_suivi .form-actions {
+button.creer_suivi,
+.acce_suivi .form-actions {
   margin: 0 auto 0 auto;
 }
 
@@ -477,13 +481,13 @@ button.creer_suivi {
 }
 
 .acce_suivi .container_suivi_groupe {
-  border-width: 1px 0 0 0; 
+  border-width: 1px 0 0 0;
   border-color: var(--gray);
   border-style: solid;
 }
 
 .acce_suivi .container_suivi_groupe:last-child {
-    border-width: 1px 0 1px 0; 
+  border-width: 1px 0 1px 0;
 }
 
 .acce_suivi .drop {
@@ -510,12 +514,12 @@ button.creer_suivi {
   left: 0;
 }
 
-.acce_suivi .drop > div {
+.acce_suivi .drop>div {
   display: flex;
   gap: 1rem;
 }
 
-.acce_suivi .drop > div button {
+.acce_suivi .drop>div button {
   flex-basis: 50%;
 }
 
@@ -547,7 +551,7 @@ button.creer_suivi {
 }
 
 
-.search_report, 
+.search_report,
 .search_document {
   gap: 20px;
   padding: 1rem 0 3rem 0;
@@ -589,7 +593,7 @@ button.creer_suivi {
   overflow: hidden;
 }
 
-.report_case p{
+.report_case p {
   text-overflow: ellipsis;
   height: 18px;
   overflow: hidden;
@@ -638,13 +642,13 @@ button.add_medi {
   margin: 1rem 0 0 auto;
 }
 
-.last_visit_report form > div:last-child{
+.last_visit_report form>div:last-child {
   display: flex;
   flex-direction: row;
   justify-content: end;
 }
 
-.last_visit_report form > div:last-child button {
+.last_visit_report form>div:last-child button {
   min-width: 120px;
 }
 
@@ -676,7 +680,7 @@ button.add_medi {
   gap: 20px;
 }
 
-.details_report .list-medic li{
+.details_report .list-medic li {
   list-style: inside;
 }
 
@@ -695,7 +699,7 @@ button.add_medi {
 }
 
 .details_report div:nth-child(3) p,
-.details_report li{
+.details_report li {
   padding-left: 2%;
   text-align: justify;
 }
@@ -710,13 +714,13 @@ button.add_medi {
 }
 
 .popup_report_add_medicament .container_medecine {
-  border-width: 1px 0 0 0; 
+  border-width: 1px 0 0 0;
   border-color: var(--gray);
   border-style: solid;
 }
 
 .popup_report_add_medicament .container_medecine:last-child {
-    border-width: 1px 0 1px 0; 
+  border-width: 1px 0 1px 0;
 }
 
 .popup_report_add_medicament .drop {
@@ -743,13 +747,13 @@ button.add_medi {
   left: 0;
 }
 
-.popup_report_add_medicament .drop > div {
+.popup_report_add_medicament .drop>div {
   display: flex;
   justify-content: end;
   gap: 1rem;
 }
 
-.popup_report_add_medicament .drop > div button {
+.popup_report_add_medicament .drop>div button {
   width: 100%;
 }
 
@@ -778,13 +782,13 @@ button.add_medi {
 
 .medecine .container_medecine {
   position: relative;
-  border-width: 0 0 1px 0; 
+  border-width: 0 0 1px 0;
   border-color: var(--gray);
   border-style: solid;
 }
 
 .medecine .container_medecine:first-child {
-  border-width: 1px 0 1px 0; 
+  border-width: 1px 0 1px 0;
 }
 
 .medecine .principal_infos {
@@ -853,27 +857,27 @@ progress.blue_bar::-moz-progress-bar {
   left: 0;
 }
 
-.medecine .drop > div {
+.medecine .drop>div {
   display: flex;
   gap: 1rem;
 }
 
-.medecine .drop > div button {
+.medecine .drop>div button {
   flex-basis: 50%;
 }
 
-.medecine .principal_infos > div:first-child > p:first-child {
+.medecine .principal_infos>div:first-child>p:first-child {
   font-weight: 600;
 }
 
 /* add medicament */
 
-.new_medecine > div:last-child {
+.new_medecine>div:last-child {
   flex-direction: row;
   gap: 1rem;
 }
 
-.new_medecine > div:last-child button {
+.new_medecine>div:last-child button {
   flex-basis: 50%;
 }
 
@@ -893,7 +897,7 @@ progress.blue_bar::-moz-progress-bar {
   gap: 2rem;
 }
 
-.agenda .container_date > button:first-child {
+.agenda .container_date>button:first-child {
   display: flex;
   gap: .5rem;
   cursor: pointer;
@@ -903,16 +907,14 @@ progress.blue_bar::-moz-progress-bar {
   padding: 0;
 }
 
-.agenda .container_date > button:first-child img {
+.agenda .container_date>button:first-child img {
   width: 1.5rem;
 }
 
 /* calandar */
 
 /*  slide event */
-.add_event {
-
-}
+.add_event {}
 
 :is(.switch_event, .switch_calendar) {
   /*margin-bottom: 2rem;*/
@@ -1024,12 +1026,12 @@ progress.blue_bar::-moz-progress-bar {
   cursor: pointer;
 }
 
-.new_document > div:last-child {
+.new_document>div:last-child {
   display: flex;
   flex-direction: row;
 }
 
-.new_document > div:last-child button {
+.new_document>div:last-child button {
   flex-basis: 50%;
 }
 
@@ -1074,14 +1076,14 @@ progress.blue_bar::-moz-progress-bar {
   gap: 40px;
 }
 
-.upload_success > div {
+.upload_success>div {
   display: flex;
   align-items: center;
   flex-direction: column;
   gap: 5px;
 }
 
-.upload_success > div svg {
+.upload_success>div svg {
   fill: var(--red);
 }
 
@@ -1102,7 +1104,7 @@ progress.blue_bar::-moz-progress-bar {
 /* ----------------------------- */
 
 .assistance {
-  padding : 0 3rem 0 3rem;
+  padding: 0 3rem 0 3rem;
 }
 
 .assistance h1 {
@@ -1113,25 +1115,124 @@ progress.blue_bar::-moz-progress-bar {
   padding: 2rem 0 0 0;
 }
 
-.assistance > form  > div {
+.assistance .container_assistance {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: 2rem;
+}
+
+.switch_assis_categorie {
+  border-radius: 8px;
+  flex-grow: 1;
+}
+
+.switch_assis_categorie button {
+  width: 33%;
+  padding: 0.5rem 3rem;
+  cursor: pointer;
+  background-color: var(--bg-black);
+  color: var(--white);
+}
+
+.switch_assis_categorie button.active {
+  background-color: var(--blue);
+}
+
+.switch_assis_categorie button:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.switch_assis_categorie button:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+
+.assistance>form>div {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.assistance > form  > div > div {
+.assistance>form>div>div {
   display: flex;
   flex-direction: column;
   gap: 5px;
 }
 
-.assistance > form  > div:last-child {
-  flex-direction: row;
+.assistance form>div>div:has([type="radio"]) {
+  align-items: start;
 }
 
-.assistance > form  > div:last-child button {
+.assistance>form>div:last-child button {
   flex-basis: 50%;
 }
+
+.assistance .selector_container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.assistance input[type="radio"] {
+  display: none;
+}
+
+.assistance .selector_container .card {
+  width: 150px;
+  height: 150px;
+  border: 1px solid var(--black);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-align: center;
+  padding: 10px;
+  font-size: var(--font-md);
+  color: var(--black);
+}
+
+.assistance .selector_container input[type="radio"]:checked+.card,
+.assistance .selector_container input[type="radio"]:checked+.choice {
+  background-color: var(--blue);
+  border: 1px solid var(--blue);
+  color: var(--white);
+}
+
+.assistance .selector_container .choice {
+  padding: 1rem;
+  font-size: var(--font-sm);
+  border-radius: 4px;
+  color: var(--black);
+  border: 1px solid var(--black);
+  text-wrap: nowrap;
+  cursor: pointer;
+}
+
+.assistance .lien_aide {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-bottom: 15%;
+}
+
+.assistance .box_check {
+  display: flex;
+  align-items: start;
+  gap: 20px;
+}
+
+.assistance .box_check input {
+  height: 23px;
+}
+
+.assistance > form > div > div:has(select:focus) label {
+  color: var(--blue);
+}
+
 
 /* ----------------------------- */
 /* ----------- FONTS ----------- */
@@ -1178,88 +1279,88 @@ progress.blue_bar::-moz-progress-bar {
 }
 
 .add_membre .container_search {
-    padding: 0 3rem 2rem 3rem;
+  padding: 0 3rem 2rem 3rem;
 }
 
-.add_membre .membre_list > div {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid var(--gray);
-    padding: .5rem 3rem;
+.add_membre .membre_list>div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--gray);
+  padding: .5rem 3rem;
 }
 
-.add_membre .membre_list > div:last-child {
-    border-width: 1px 0 1px 0;
-    border-color: var(--gray);
-    border-style: solid;
+.add_membre .membre_list>div:last-child {
+  border-width: 1px 0 1px 0;
+  border-color: var(--gray);
+  border-style: solid;
 }
 
 .add_membre .membre_list .container_name {
-    display: flex;
-    gap: 2rem;
+  display: flex;
+  gap: 2rem;
 }
 
 .add_membre .membre_list .container_name p:first-child {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 .add_membre .membre_list svg {
-    width: 2.5rem;
-    fill: var(--blue);
+  width: 2.5rem;
+  fill: var(--blue);
 }
 
 .add_membre .container_btn_invite {
-    position: absolute;
-    text-align: center;
-    bottom: 3rem;
-    width: 100%;
+  position: absolute;
+  text-align: center;
+  bottom: 3rem;
+  width: 100%;
 }
 
 .add_membre .container_btn_invite button {
-    width: 80%;
+  width: 80%;
 }
 
 /*-------------------------------------*/
 
 .role_membre .container_search {
-    padding: 0 3rem 2rem 3rem;
+  padding: 0 3rem 2rem 3rem;
 }
 
-.role_membre .membre_list > div {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid var(--gray);
-    padding: .5rem 3rem;
+.role_membre .membre_list>div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--gray);
+  padding: .5rem 3rem;
 }
 
-.role_membre .membre_list > div:last-child {
-    border-width: 1px 0 1px 0;
-    border-color: var(--gray);
-    border-style: solid;
+.role_membre .membre_list>div:last-child {
+  border-width: 1px 0 1px 0;
+  border-color: var(--gray);
+  border-style: solid;
 }
 
 .role_membre .membre_list .container_name {
-    display: flex;
-    gap: 2rem;
+  display: flex;
+  gap: 2rem;
 }
 
 .role_membre .membre_list .container_name p:first-child {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 .role_membre .membre_list svg {
-    width: 2.5rem;
-    fill: var(--black);
+  width: 2.5rem;
+  fill: var(--black);
 }
 
-.form_role_membre > div:last-child {
-    flex-direction: row;
-    justify-content: space-between;
+.form_role_membre>div:last-child {
+  flex-direction: row;
+  justify-content: space-between;
 }
 
-.form_role_membre > div:last-child > div:last-child {
-    display: flex;
-    gap: 2rem;
+.form_role_membre>div:last-child>div:last-child {
+  display: flex;
+  gap: 2rem;
 }

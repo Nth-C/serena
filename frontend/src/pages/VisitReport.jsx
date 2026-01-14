@@ -135,14 +135,7 @@ function LastVisitReport() {
         method: "POST",
         credentials: 'include',
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(
-          !isEditing
-            ? nouveauMedoc
-            : {
-              id_medicament: activeInList,
-              nouveauStock: currentStock
-            }
-        )
+        body: JSON.stringify(nouveauMedoc)
       });
 
       const result = await response.json();
@@ -162,28 +155,37 @@ function LastVisitReport() {
     }
   };
 
-  const handleSearchMedecine = async (e) => {
-    const route = 'nommedicament/search';
+  const handleSearchMedecine = async (e) => { 
+    console.log(e);
 
+    // change le controleur appeler en fonction de (créer / modifier)
+    const route = 'nommedicament/search';
+    
     try {
       const response = await fetch(`${apiUrl}/?route=${route}`, {
         method: "POST",
         credentials: 'include',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
-          {
+          // change les donné envoyer (créer / modifier)
+          {  
             texteNomMedicament: e
           }
         )
       });
 
       const result = await response.json();
+      console.log(result);
       setListNomMedecine(result.resultats)
       if (result.isUnique) {
-        setListTypeMedecine(result.resultats)
+        console.log(result.resultats)
+        setListTypeMedecine(result.types)
         setIsNameGood(true)
+        
+
       } else {
-        setIdCatalogueMedecine("")
+        setListTypeMedecine([])
+        setIdCatalogueMedecine("") 
         setIsNameGood(false);
       }
     } catch (error) {
@@ -193,9 +195,10 @@ function LastVisitReport() {
   };
 
   const addMedicToSelection = (medicament) => {
-    if (!selectedMedicsForReport.find(m => m.id_medicament === medicament.id_medicament)) {
+    if (!selectedMedicsForReport.find(m => (m.id_med || m.id_medicament) === medicament.id_medicament)) {
       setSelectedMedicsForReport([...selectedMedicsForReport, { 
-        ...medicament, 
+        id_med: medicament.id_medicament,
+        nomMedicament: medicament.nomMedicament, 
         quantite: "" 
       }]);
     }
@@ -203,12 +206,12 @@ function LastVisitReport() {
   };
 
   const removeMedicFromSelection = (id) => {
-    setSelectedMedicsForReport(selectedMedicsForReport.filter(m => m.id_medicament !== id));
+    setSelectedMedicsForReport(selectedMedicsForReport.filter(m => (m.id_med || m.id_medicament) !== id));
   };
 
   const updateMedicQuantite = (id, value) => {
     setSelectedMedicsForReport(selectedMedicsForReport.map(m => 
-      m.id_medicament === id ? { ...m, quantite: value } : m
+      (m.id_med || m.id_medicament) === id ? { ...m, quantite: value } : m
     ));
   };
 
@@ -234,6 +237,17 @@ function LastVisitReport() {
   const handleEditClick = () => {
     setNomRapport(selectedRapport.nom);
     setDescRapport(selectedRapport.description);
+    
+    // Ajout : Charger les médicaments existants pour la modification
+    if (selectedRapport.medics_details) {
+      const medicsToEdit = selectedRapport.medics_details.map(m => ({
+        id_med: m.id_medicament,
+        nomMedicament: m.nom,
+        quantite: m.quantite
+      }));
+      setSelectedMedicsForReport(medicsToEdit);
+    }
+
     setIsEditing(true);
     setIsDetailsReportpen(false);
     setIsNewRapportOpen(true);
@@ -241,13 +255,17 @@ function LastVisitReport() {
 
   const handleSubmitRapport = async (e) => {
     e.preventDefault();
+    
+    // Ajout : Sauvegarder le nom avant le reset pour la popup
+    const nomPourNotification = nomRapport; 
+    
     const route = isEditing ? 'rapport/update' : 'rapport/add';
     const bodyData = {
       nom: nomRapport,
       description: descRapport,
       id_rapport: isEditing ? selectedRapport.id_rapport : null,
       medicaments: selectedMedicsForReport.map(m => ({
-        id_med: m.id_medicament,
+        id_med: m.id_med || m.id_medicament,
         quantite: m.quantite
       }))
     };
@@ -262,8 +280,12 @@ function LastVisitReport() {
       const result = await response.json();
       if (result.success) {
         setIsNewRapportOpen(false);
+        
+        // Ajout : Utiliser le nom sauvegardé
+        setNameToDelete(nomPourNotification); 
+        
         isEditing ? setIsShowModify(true) : setIsShowAdd(true);
-        handleResetRapport();
+        handleResetRapport(); 
         setSelectedMedicsForReport([]);
         setIsEditing(false);
         fetchRapports();
@@ -392,11 +414,14 @@ function LastVisitReport() {
               list="medication-suggestions"
               value={nameMedecine}
               onChange={(e) => {
+                setCurrentStock("");
+                setInitialStock("");
+                setIdCatalogueMedecine("");
                 setNameMedecine(e.target.value);
-                if (e.target.value != "") {
+                if(e.target.value != ""){
                   handleSearchMedecine(e.target.value);
                 }
-
+               
               }}
               required
               disabled={isEditing}
@@ -429,10 +454,29 @@ function LastVisitReport() {
           </div>
 
 
-          <div><label>Stock initial : </label><input type="number" value={initialStock} onChange={(e) => setInitialStock(e.target.value)} required /></div>
-          <div><label>Stock actuel : </label><input type="number" value={currentStock} onChange={(e) => setCurrentStock(e.target.value)} required /></div>
+         <div>
+            <label>Stock initiale du médicament : </label>
+            <input
+              type="number"
+              value={initialStock}
+              onChange={(e) => setInitialStock(e.target.value)}
+              required
+              disabled={!isNameGood || isEditing} // on ne peut pas modifier l'input si on modifie un medicament
+            />
+          </div>
+          
           <div>
-            <button type="button" className="btn_border" onClick={handleResetMedecine}>Réinitialiser</button>
+            <label>Stock actuel du médicament :</label>
+            <input
+              type="number"
+              value={currentStock}
+              onChange={(e) => setCurrentStock(e.target.value)}
+              required
+              disabled={!isNameGood}
+            />
+          </div>
+          <div>
+            <button type="reset" className="btn_border" onClick={handleResetMedecine}>Réinitialiser</button>
             <button type="submit" className="btn_blue">Ajouter</button>
           </div>
         </form>
@@ -445,32 +489,33 @@ function LastVisitReport() {
             <label>Nom du rapport : </label>
             <input type="text" value={nomRapport} onChange={(e) => setNomRapport(e.target.value)} required />
           </div>
-          {!isEditing && (
-            <div>
-              <label>Médicaments pris : </label>
-              <div className="selected_medics_container">
-                {selectedMedicsForReport.map((m) => (
-                  <div key={m.id_medicament} className="list_medicament_report">
+          <div>
+            <label>Médicaments pris : </label>
+            <div className="selected_medics_container">
+              {selectedMedicsForReport.map((m) => {
+                const id = m.id_med || m.id_medicament;
+                return (
+                  <div key={id} className="list_medicament_report">
                     <div>
                       <p>{m.nomMedicament}</p>
                       <input 
                         type="text" 
                         placeholder="" 
                         value={m.quantite}
-                        onChange={(e) => updateMedicQuantite(m.id_medicament, e.target.value)}
+                        onChange={(e) => updateMedicQuantite(id, e.target.value)}
                       />
-                      <button type="button" onClick={() => removeMedicFromSelection(m.id_medicament)}>✕</button>
+                      <button type="button" onClick={() => removeMedicFromSelection(id)}>✕</button>
                     </div>
                   </div>
-                ))}
-              </div>
-              <button type="button" className="btn_blue add_medi" onClick={() => {
-                togglePopup();
-                getMedecine()
-              }}
-              >Ajouter médicament</button>
+                );
+              })}
             </div>
-          )}
+            <button type="button" className="btn_blue add_medi" onClick={() => {
+              togglePopup();
+              getMedecine()
+            }}
+            >Ajouter médicament</button>
+          </div>
           <div>
             <label>Information supplémentaire : </label>
             <textarea value={descRapport} onChange={(e) => setDescRapport(e.target.value)} required></textarea>
@@ -529,9 +574,9 @@ function LastVisitReport() {
         onClose={togglePopUpDelete}
       />
 
-      <PopUpConfirmation sentence={`Le rapport "${nameToDelete}" a bien été supprimé.`} show={isShowRemove} setShow={setIsShowRemove} />
-      <PopUpConfirmation sentence={`Le rapport "${nomRapport}" a bien été ajouté.`} show={isShowAdd} setShow={setIsShowAdd} />
-      <PopUpConfirmation sentence={`Le rapport a bien été modifié.`} show={isShowModify} setShow={setIsShowModify} />
+      <PopUpConfirmation sentence={`Le rapport ${nameToDelete} a bien été supprimé.`} show={isShowRemove} setShow={setIsShowRemove} />
+      <PopUpConfirmation sentence={`Le rapport ${nameToDelete} a bien été ajouté.`} show={isShowAdd} setShow={setIsShowAdd} />
+      <PopUpConfirmation sentence={`Le rapport ${nameToDelete} a bien été modifié.`} show={isShowModify} setShow={setIsShowModify} />
     </div>
   )
 }

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 
 function AssistanceDisponnible() {
-      const [isDetailsAssistanceOpen, setIsDetailsAssistancepen] = useState(false);
+    const [isDetailsAssistanceOpen, setIsDetailsAssistancepen] = useState(false);
 
-      const toggleDetailsAssistance = () => setIsDetailsAssistancepen(!isDetailsAssistanceOpen);
+    const toggleDetailsAssistance = () => setIsDetailsAssistancepen(!isDetailsAssistanceOpen);
     return (
         <div className="assistance_dispo">
             <div className="list">
@@ -31,31 +31,31 @@ function AssistanceDisponnible() {
 
             {/* Slide Détails des aides */}
             <Slide title="Nom de l'aide" isOpen={isDetailsAssistanceOpen} toggleOpen={toggleDetailsAssistance}>
-                    <div className="details_assistance">
-                        <div>
-                            <p>Description / ce que tu gagner / organisme</p>
-                        </div>
-                        <div >
-                            <h2>Qui a Accès ?</h2>
-                            <p>Lorem ipsum</p>
-                        </div>
-                        <div >
-                            <h2>Comment l'obtenir</h2>
-                            <ul>
-                                <li>lorem ipsum dolor</li>
-                                <li>lorem ipsum dolor</li>
-                                <li>lorem ipsum dolor</li>
-                                <li>lorem ipsum dolor</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h2>Document requis</h2>
-                            <ul>
-                                <li>lorem ipsum dolor</li>
-                                <li>lorem ipsum dolor</li>
-                            </ul>
-                        </div>
+                <div className="details_assistance">
+                    <div>
+                        <p>Description / ce que tu gagner / organisme</p>
                     </div>
+                    <div >
+                        <h2>Qui a Accès ?</h2>
+                        <p>Lorem ipsum</p>
+                    </div>
+                    <div >
+                        <h2>Comment l'obtenir</h2>
+                        <ul>
+                            <li>lorem ipsum dolor</li>
+                            <li>lorem ipsum dolor</li>
+                            <li>lorem ipsum dolor</li>
+                            <li>lorem ipsum dolor</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h2>Document requis</h2>
+                        <ul>
+                            <li>lorem ipsum dolor</li>
+                            <li>lorem ipsum dolor</li>
+                        </ul>
+                    </div>
+                </div>
             </Slide>
         </div>
     )
