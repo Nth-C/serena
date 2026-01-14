@@ -4,6 +4,7 @@ import { getFormatDate, getFormatTime } from '../utils/utils';
 
 import Calendar from '../components/calendar/Calendar'
 import PopUpSelectDate from '../components/pop_up_select_date/PopUpSelectDate'
+import PopUpConfirmation from '../components/popup_confirmation/PopUpConfirmation'
 
 function Agenda() {
   const [newEventOpen, setNewEventOpen] = useState(false)
@@ -21,12 +22,12 @@ function Agenda() {
   const [date, setDate] = useState(new Date())
   const [popUpDateOpen, setPopUpDateOpen] = useState(false)
   const [isCalendarWeek, setIsCalendarWeek] = useState(false)
-  const [status, setStatus] = useState({ type: null, message: '' })
+
+  // popup confirmation
+  const [isShowConfirmation , setIsShowConfirmation] = useState(false)
+  const [msgConfirmation , setMsgConfirmation] = useState('')
   
   const apiUrl = import.meta.env.VITE_API_URL
-
-  // Génère une chaîne comme "2026-01-14T12:30"
-  const now = new Date().toISOString().slice(0, 16);
 
   // --- Initialisation du State ---
   const [formData, setFormData] = useState({
@@ -99,7 +100,6 @@ function Agenda() {
   // --- Handler pour l'ÉVÉNEMENT ---
   const handleAddEvent = async (e) => {
       if (e) e.preventDefault(); // Empêche le rechargement si appelé via un bouton type submit
-      setStatus({ type: null, message: '' });
 
       // Préparation du payload spécifique à l'événement
       const payload = {
@@ -128,20 +128,18 @@ function Agenda() {
           const result = await response.json();
 
           if (result.success) {
-              handleSuccess('Événement ajouté avec succès !');
+              handleSuccess(`L'événement ${formData.titre} a bien été ajouter.`);
           } else {
-              setStatus({ type: 'error', message: result.error || 'Erreur lors de l\'ajout de l\'événement' });
+              console.error('Erreur lors de l\'ajout de l\'événement',  result.error);
           }
       } catch (error) {
           console.error("Erreur réseau Event:", error);
-          setStatus({ type: 'error', message: "Serveur injoignable" });
       }
   };
 
   // --- Handler pour le TRAJET ---
   const handleAddTrajet = async (e) => {
       if (e) e.preventDefault();
-      setStatus({ type: null, message: '' });
 
       // Préparation du payload spécifique au trajet (mapping avec tes noms de colonnes SQL)
       const payload = {
@@ -171,23 +169,37 @@ function Agenda() {
           if (result.success) {
               handleSuccess('Trajet ajouté avec succès !');
           } else {
-              setStatus({ type: 'error', message: result.error || 'Erreur lors de l\'ajout du trajet' });
+              console.error('Erreur lors de l\'ajout du trajet', result.error);
           }
       } catch (error) {
           console.error("Erreur réseau Trajet:", error);
-          setStatus({ type: 'error', message: "Serveur injoignable" });
       }
   };
 
   // --- Fonction utilitaire pour éviter de répéter le reset ---
   const handleSuccess = (msg) => {
-      setStatus({ type: 'success', message: msg });
-      setFormData({
-          titre: '', lieu: '', accompagnants: '', debut: '', fin: '', recurrence: '', description: '',
-          effectue: 'aidant', aidantAffecte: '', societe: '', lieuDepart: '', lieuArrivee: '', id_event: ''
-      });
-      setNewEventOpen(false);
+      setMsgConfirmation(msg)
+      setIsShowConfirmation(true)
       fetchEvents();
+      setNewEventOpen(false);
+      setFormData({
+        // Champs Événement
+        titre: '',
+        lieu: '',
+        accompagnants: '', 
+        debut: '',
+        fin: '',
+        recurrence: '',   
+        description: '',
+
+        // Champs Trajet
+        effectue: 'aidant',
+        aidantAffecte: '',
+        societe: '',
+        lieuDepart: '',
+        lieuArrivee: '',
+        id_event: ''
+    })
   };
 
   // si la date change ou que la liste d'evenement change on recupere les evenement associer au jour
@@ -261,19 +273,6 @@ function Agenda() {
           }}
           setCurrentEvent={setCurrentEvent}
       />
-
-      {/* message d'erreur */}
-      {status.message && (
-        <div style={{ 
-          padding: '10px', 
-          marginBottom: '15px',
-          backgroundColor: status.type === 'error' ? '#f8d7da' : '#d4edda',
-          color: status.type === 'error' ? '#721c24' : '#155724',
-          borderRadius: '4px'
-        }}>
-          {status.message}
-        </div>
-      )}
 
       {/* ajouter un evenement */}
       <button className="btn_add" onClick={() => setNewEventOpen(true)}>
@@ -508,6 +507,12 @@ function Agenda() {
             </div>
         )}
     </Slide>
+
+    <PopUpConfirmation
+        sentence={msgConfirmation}
+        show={isShowConfirmation}
+        setShow={setIsShowConfirmation}
+    />
 
     </>
   )

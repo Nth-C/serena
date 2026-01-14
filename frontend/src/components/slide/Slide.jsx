@@ -1,9 +1,9 @@
 import { createPortal } from 'react-dom';
 import styles from './Silde.module.css';
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 
-function Slide({children, title, isOpen, toggleOpen, zIndex = 500, validOnHeader = false , handlerValid = null}) {
+function Slide({children, title, isOpen, toggleOpen, zIndex = 500}) {
     //supprimer le scroll de la page
   useEffect(() => {  
     if (isOpen) {
@@ -23,27 +23,11 @@ function Slide({children, title, isOpen, toggleOpen, zIndex = 500, validOnHeader
 
       <div className={styles.main_container}>
         <div>
-          {!validOnHeader ? (
-            <>
-            <h1>{title}</h1>
+            <h2>{title}</h2>
             <button className={styles.hamburger_btn} onClick={toggleOpen}>
               <span></span>
               <span></span>
             </button>
-            </>
-          ) : (
-            <>
-            <button className={styles.hamburger_btn} onClick={toggleOpen}>
-              <span></span>
-              <span></span>
-            </button>
-            <h1>{title}</h1>
-            <button className={styles.valid_btn} onClick={handlerValid}>
-              <span></span>
-              <span></span>
-            </button>
-            </>
-          )}
           </div>
         <div>
           {children}
