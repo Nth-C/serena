@@ -25,6 +25,9 @@ function Agenda() {
   
   const apiUrl = import.meta.env.VITE_API_URL
 
+  // Génère une chaîne comme "2026-01-14T12:30"
+  const now = new Date().toISOString().slice(0, 16);
+
   // --- Initialisation du State ---
   const [formData, setFormData] = useState({
     // Champs Événement
@@ -298,11 +301,11 @@ function Agenda() {
             
               <div>
                 <label>Début :</label>
-                <input type="datetime-local" name="debut" value={formData.debut} onChange={handleChange} required />
+                <input type="datetime-local" name="debut" value={formData.debut} onChange={handleChange} min={now} required />
               </div>
               <div>
                 <label>Fin :</label>
-                <input type="datetime-local" name="fin" value={formData.fin} onChange={handleChange} required />
+                <input type="datetime-local" name="fin" value={formData.fin} onChange={handleChange} min={now} required />
               </div>
             
 
@@ -398,7 +401,7 @@ function Agenda() {
               <label>Date et heure du trajet :</label>
               <input 
                 type="datetime-local" name="debut" 
-                value={formData.debut} onChange={handleChange} required 
+                value={formData.debut} onChange={handleChange} min={now} required 
               />
             </div>
 
