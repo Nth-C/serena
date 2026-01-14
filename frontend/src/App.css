@@ -97,6 +97,7 @@ li {
 
 button {
   cursor: pointer;
+  font-size: var(--font-sm);
 }
 
 /* style form */

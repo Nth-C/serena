@@ -11,6 +11,12 @@
     transform: translateX(0);
 }
 
+.menu .main_container > div:not(:first-child) > div {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
 .menu .main_container {
     position: fixed;
     z-index: 100;
@@ -67,7 +73,7 @@
 .menu .logout_container {
     display: flex;
     align-items: center;
-    height: 6rem;
+    padding: 2rem 0 5rem 0;
 }
 
 .menu .main_container div div {
@@ -75,9 +81,7 @@
 }
 
 .menu .legal_container  {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1; /* pour mettre la partie en bas */
+    flex-grow: 1;
 }
 
 .menu h3 {
@@ -86,7 +90,7 @@
 }
 
 .menu .main_container a,
-.menu .main_container > div:not(:first-child) button {
+.menu .main_container > div:not(:first-child, :last-child) button {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -103,6 +107,10 @@
 }
 
 .menu .logout_container p {
+    font-weight: 600;
+}
+
+.menu .logout_container button {
     color: var(--red);
 }
 

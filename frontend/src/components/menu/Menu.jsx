@@ -8,6 +8,16 @@ function Menu({isOpen , onHamburgerClick}) {
     const apiUrl = import.meta.env.VITE_API_URL;
     const isAdmin = (sessionStorage.getItem('role') === "Createur")
 
+    const [username, setUsername] = useState(null);
+
+    useEffect(() => {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            let name = `${JSON.parse(userData).nom} ${JSON.parse(userData).prenom}`
+            setUsername(name);
+        }
+    }, []);
+    
     const handleSwitchFamille = () => {
         sessionStorage.removeItem('id_famille');
         navigate('/acce_suivi');
@@ -137,8 +147,12 @@ function Menu({isOpen , onHamburgerClick}) {
                 {/* --- DÉCONNEXION --- */}
                 <div className={styles.logout_container}>
                     <div>
+                        {/* verifie si il y a un username de connu */}
+                        {username && (
+                            <p>{username}</p>
+                        )}
                         <button onClick={handleLogout} className={styles.logout_btn}>
-                            <p>Déconnexion</p>
+                            Déconnexion
                         </button>
                     </div>
                 </div>
