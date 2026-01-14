@@ -50,7 +50,8 @@ const _ROUTES = array(
   'rolepersonne/update' => 'updateRolePersonne',
   'getevents' => 'getevents',
   'forgot_password' => 'forgotPassword',
-  'reset_password' => 'resetPassword'
+  'reset_password' => 'resetPassword',
+  'liste_membre' => 'liste_membre'
 );
 
 if (!array_key_exists($route, _ROUTES)) {
