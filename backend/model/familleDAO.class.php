@@ -208,7 +208,7 @@ public function deleteInviterPersonneDansFamille($id_famille_invitee, $id_pers_i
         // 2. On ajoute la personne à la famille (Lien n-n)
         // Note : Vérifiez le nom de votre table de liaison (ici 'appartient_a')
         $queryInsert = 'INSERT INTO appartient_a (id_famille, id_personne,role) 
-                        VALUES (:id_f, :id_p,\':role\')';
+                        VALUES (:id_f, :id_p, :role)';
         $stmtInsert = $this->dal->prepare($queryInsert);
         $stmtInsert->execute([
             ':id_f' => $id_famille,
