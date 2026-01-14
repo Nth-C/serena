@@ -27,9 +27,68 @@
     background: var(--bg-black);
 }
 
-.calendar_day .event {
+:is(.calendar_day, .calendar_week) .event {
     position: absolute;
     background: var(--blue);
     border-radius: 8px;
     cursor: pointer;
+}
+
+/* week */
+
+.calendar_week {
+    display: flex;
+    gap: 1rem;
+    background: var(--white);
+    border-radius: 12px;
+}
+
+.calendar_week :is(.hours p, .events_zone > div) {
+    height: 6rem;
+}
+
+.calendar_week .events_zone {
+    border-width: 0 1px 0 1px;
+    border-color: var(--bg-black);
+    border-style: solid;
+}
+
+/* decalage pour le header des jours */
+.calendar_week .hours {
+    margin-top: 5rem;
+}
+
+.calendar_week .events_zone > div:not(.event) {
+    position: relative;
+}
+
+.calendar_week .grid_line {
+    position: absolute;
+    top: 8px;
+    display: block;
+    height: 1px;
+    width: 100%;
+    background: var(--bg-black);
+}
+
+.week_grid {
+    display: flex;
+    flex-grow: 1;
+}
+
+.day_column {
+    width: 100%;
+    border-right: 1px solid var(--border-color);
+}
+
+.day_header {
+    height: 50px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    background: var(--bg-white);
+}
+
+.events_zone {
+    position: relative;
 }

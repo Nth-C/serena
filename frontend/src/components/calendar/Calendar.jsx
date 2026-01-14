@@ -75,6 +75,37 @@ const Calendar = ({ date, events = [], toggleEventOpen, setCurrentEvent, isCalen
         };
     };
 
+    // Dans ton composant Calendar, avant le rendu de la semaine
+    const getEventsForDay = (currentDayDate, allEvents) => {
+        const dayStart = new Date(currentDayDate);
+        dayStart.setHours(0, 0, 0, 0);
+
+        const dayEnd = new Date(currentDayDate);
+        dayEnd.setHours(23, 59, 59, 999);
+
+        return allEvents.filter(ev => {
+            // Un événement appartient à ce jour s'il commence AVANT la fin du jour
+            // ET s'il finit APRÈS le début du jour
+            return ev.dateStart < dayEnd && ev.dateEnd > dayStart;
+        }).map(ev => {
+            // Copie de l'événement pour ne pas modifier l'original
+            let displayStart = new Date(ev.dateStart);
+            let displayEnd = new Date(ev.dateEnd);
+
+            // Si l'événement a commencé avant ce jour (ex: hier), on force le début à 00:00
+            if (displayStart < dayStart) displayStart = dayStart;
+
+            // Si l'événement finit après ce jour (ex: demain), on force la fin à 23:59
+            if (displayEnd > dayEnd) displayEnd = dayEnd;
+
+            return {
+                ...ev,
+                dateStart: displayStart,
+                dateEnd: displayEnd
+            };
+        });
+    };
+
     // liste des events affiché pour les jours actuel
     const visibleEvents = events.filter(event => {
         if (!isToday) return true;
@@ -121,7 +152,6 @@ const Calendar = ({ date, events = [], toggleEventOpen, setCurrentEvent, isCalen
                         let height = calcHeightEvent(event);
 
                         if (isToday) {
-
                             // si un event est finit on ne l'affiche pas
                             if (event.dateEnd < currentHourToDisplay) return null;
 
@@ -157,9 +187,73 @@ const Calendar = ({ date, events = [], toggleEventOpen, setCurrentEvent, isCalen
 
             </div>
         ): ( // semaine
-            <>
- 
-            </>
+            <div className={styles.calendar_week}>
+                {/* affichage heures */}
+                <div  className={styles.hours}>
+                {[...Array(24)].map((e, i) => {
+                    // on affiche toute les heure ici
+                    return <p key={i}>{i < 10 ? `0${i}` : i}:00</p>
+                })}
+                </div>
+
+                {/* affichage case */}
+                <div className={styles.week_grid}>
+                    {weekDays.map((dayName, dayIndex) => {
+                        const currentDayDate = new Date(date);
+                        
+                        // recupere la semaine du jour chercher
+                        const dayOffset = date.getDay() === 0 ? -6 : 1 - date.getDay();
+                        currentDayDate.setDate(date.getDate() + dayOffset + dayIndex);
+
+                        const dayEvents = getEventsForDay(currentDayDate, events);
+
+                        return (
+                            <div key={dayIndex} className={styles.day_column}>
+                                {/* header avec les jour */}
+                                <div className={styles.day_header}>
+                                    <p>{dayName}</p>
+                                    <span>{currentDayDate.getDate()}</span>
+                                </div>
+
+                                {/* affichage case */}
+                                <div className={styles.events_zone}>
+                                    {/* ajout des ligne */}
+                                    {[...Array(24)].map((e, i) => (
+                                        <div key={i}>
+                                            <span className={styles.grid_line}></span>
+                                        </div>
+                                    ))}
+
+                                    {/* affichage events */}
+                                    {dayEvents.map((event, i) => {
+                                        const horizontalStyle = calcPositionLeft(event, dayEvents);
+                                        
+                                        const eventStyle = {
+                                            left: horizontalStyle.left,
+                                            width: `calc(${horizontalStyle.width} - 2px)`,
+                                            height: `${calcHeightEvent(event)}px`,
+                                            top: `${(event.dateStart.getHours() * hourHeight) + (event.dateStart.getMinutes() * (hourHeight / 60)) + 8}px`
+                                        };
+
+                                        return (
+                                            <div 
+                                                key={i} 
+                                                className={styles.event} 
+                                                style={eventStyle}
+                                                onClick={() => {
+                                                    setCurrentEvent(event);
+                                                    toggleEventOpen();
+                                                }}
+                                            >
+                                            </div>
+                                        );
+                                    })} 
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
         )}
         </>
     );

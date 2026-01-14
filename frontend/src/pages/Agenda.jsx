@@ -238,51 +238,53 @@ function Agenda() {
     })
   };
 
-  // si la date change ou que la liste d'evenement change on recupere les evenement associer au jour
+
+  /* permet de faire passer les evenement sur plusieurs jours */
   useEffect(() => {
-    // on définit le début et la fin de la journée affichée (00:00:00 à 23:59:59)
-    const dayStart = new Date(date);
-    dayStart.setHours(0, 0, 0, 0);
-    
-    const dayEnd = new Date(date);
-    dayEnd.setHours(23, 59, 59, 999);
+    // Définition de la range (affichage des date)
+    const rangeStart = new Date(date);
+    const rangeEnd = new Date(date);
 
+    if (isCalendarWeek) {
+      const day = date.getDay();
+      const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+      rangeStart.setDate(diff);
+      rangeStart.setHours(0, 0, 0, 0);
+
+      rangeEnd.setDate(rangeStart.getDate() + 6);
+      rangeEnd.setHours(23, 59, 59, 999);
+    } else {
+      rangeStart.setHours(0, 0, 0, 0);
+      rangeEnd.setHours(23, 59, 59, 999);
+    }
+
+    // filtrage de events
     const filtered = listeEvenements
-        .filter(ev => {
-            const evStart = new Date(ev.date_deb.replace(" ", "T"));
-            const evEnd = new Date(ev.date_fin.replace(" ", "T"));
+      .map(ev => {
+        const realStart = new Date(ev.date_deb.replace(" ", "T"));
+        const realEnd = new Date(ev.date_fin.replace(" ", "T"));
+        
+        return { ...ev, realStart, realEnd };
+      })
+      .filter(({ realStart, realEnd }) => {
+        return realStart <= rangeEnd && realEnd >= rangeStart;
+      })
+      .map(({ realStart, realEnd, ...ev }) => {
+        const startDate = realStart < rangeStart ? new Date(rangeStart) : realStart;
+        const endDate = realEnd > rangeEnd ? new Date(rangeEnd) : realEnd;
 
-            // Un événement doit s'afficher si :
-            // son début est avant la fin de journée ET sa fin est après le début de journée
-            return evStart <= dayEnd && evEnd >= dayStart;
-        })
-        .map(ev => {
-            let startDate = new Date(ev.date_deb.replace(" ", "T"));
-            let endDate = new Date(ev.date_fin.replace(" ", "T"));
-
-            // si l'event a commencé hier on force l'affichage à partir de 00:00
-            if (startDate < dayStart) {
-                startDate = dayStart;
-            }
-
-            // si l'event finit demain on force l'affichage jusqu'à 23:59
-            if (endDate > dayEnd) {
-                endDate = dayEnd;
-            }
-
-            return {
-              id_event: ev.id_event,
-              lieu: ev.lieu,
-              titre: ev.nom,
-              dateStart: startDate,
-              dateEnd: endDate,
-              description: ev.description,
-              
-            }
-        })
+        return {
+          id_event: ev.id_event,
+          titre: ev.nom,
+          lieu: ev.lieu,
+          description: ev.description,
+          dateStart: startDate,
+          dateEnd: endDate,
+        };
+      });
 
     setEventsForCalendar(filtered);
-  }, [listeEvenements, date]);
+  }, [listeEvenements, date, isCalendarWeek]);
 
   return (
     <> 
