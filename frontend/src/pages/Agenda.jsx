@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Slide from '../components/slide/Slide';
 import { getFormatDate, getFormatTime } from '../utils/utils';
+import PopUpDelete from '../components/popup_delete/PopUpDelete'
 
 import Calendar from '../components/calendar/Calendar'
 import PopUpSelectDate from '../components/pop_up_select_date/PopUpSelectDate'
@@ -26,6 +27,13 @@ function Agenda() {
   // popup confirmation
   const [isShowConfirmation , setIsShowConfirmation] = useState(false)
   const [msgConfirmation , setMsgConfirmation] = useState('')
+
+  // popup delete
+  const [popUpDeleteOpen , setPopUpDeleteOpen] = useState(false)
+  const [eventToDelete , setEventToDelete] = useState({
+    id: null,
+    title: null,
+  })
   
   const apiUrl = import.meta.env.VITE_API_URL
 
@@ -158,17 +166,10 @@ function Agenda() {
             fetchEvents();
             setEventOpen(false);
         } else {
-            setStatus({ 
-                type: 'error', 
-                message: result.error || 'Erreur lors de la suppression de l\'événement' 
-            });
+          console.error('Erreur lors de la suppression de l\'événement', result.error)
         }
     } catch (error) {
         console.error("Erreur réseau Suppression:", error);
-        setStatus({ 
-            type: 'error', 
-            message: "Impossible de supprimer : le serveur est injoignable" 
-        });
     }
 };
 
@@ -270,7 +271,6 @@ function Agenda() {
             }
 
             return {
-              // on peut rajouter des infos utile a afficher ici
               id_event: ev.id_event,
               lieu: ev.lieu,
               titre: ev.nom,
@@ -539,7 +539,11 @@ function Agenda() {
                 )}
 
                 <div className='actions'>
-                    <button className="btn_red" onClick={() => handleRemoveEvent(currentEvent.id_event)} >Supprimer</button>
+                    <button className="btn_red" onClick={() => {
+                      setPopUpDeleteOpen(true)
+                      setEventToDelete({id: currentEvent.id_event, title: currentEvent.title})
+                      setEventOpen(false)
+                    }}>Supprimer</button>
                     <button className="btn_border" onClick={() => setEventOpen(false)}>Fermer</button>
                 </div>
             </div>
@@ -550,6 +554,13 @@ function Agenda() {
         sentence={msgConfirmation}
         show={isShowConfirmation}
         setShow={setIsShowConfirmation}
+    />
+
+    <PopUpDelete
+      toDelete={eventToDelete.title}
+      handleDelete={() => handleRemoveEvent(eventToDelete.id)}
+      isOpen={popUpDeleteOpen}
+      onClose={() => setPopUpDeleteOpen(false)}
     />
 
     </>
