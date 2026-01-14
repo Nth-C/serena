@@ -1,8 +1,42 @@
-const FormulaireAides = ({ isAssisAidant = true, isAssisProche = false }) => {
+const FormulaireAides = ({ isAssisAidant = true, isAssisProche = false, isDejaFait = false }) => {
 
     return (
         <>
-            {isAssisAidant ? ( // profil Aidant
+            {isDejaFait ? ( // si formulaire déja rempli
+                <>
+                    <div className="list">
+                        <div className="container_aide">
+                            <div>
+                                <h2>Nom de l'aide</h2>
+                            </div>
+                            <div>
+                                <p>Description lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                                <div>
+                                    <h3>Qui a Accés ?</h3>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p>
+                                </div>
+                                <div>
+                                    <h3>Comment l'obtenir ?</h3>
+                                    <ul>
+                                        <li>Lorem ipsum dolor</li>
+                                        <li>Lorem ipsum dolor</li>
+                                        <li>Lorem ipsum dolor</li>
+                                        <li>Lorem ipsum dolor</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h3>Document requis</h3>
+                                    <ul>
+                                        <li>Lorem ipsum dolor</li>
+                                        <li>Lorem ipsum dolor</li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </>
+            ) : isAssisAidant ? (  // profil Aidant
                 <>
                     <div>
                         <h2>Profil de l'Aidant (Vous)</h2>
@@ -139,7 +173,7 @@ const FormulaireAides = ({ isAssisAidant = true, isAssisProche = false }) => {
                                 <label htmlFor="aucune">Aucune</label>
                             </div>
                         </div>
-                        <button className="btn_blue"  onClick={() => {
+                        <button className="btn_blue" onClick={() => {
                             isAssisProche(false);
                             isAssisAidant(false);
                         }}>Continuer</button>
@@ -171,7 +205,7 @@ const FormulaireAides = ({ isAssisAidant = true, isAssisProche = false }) => {
                                 </option>
                             </select>
                         </div>
-                        <button type="submit" className="btn_blue">Finaliser</button>
+                        <button type="submit" className="btn_blue" onClick={() => isDejaFait(true)}>Finaliser</button>
                     </div>
 
                 </>
