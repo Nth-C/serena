@@ -20,6 +20,13 @@ import AuditLog from './pages/AuditLog';
 import AddMembre from './pages/AddMembre';
 import RoleMembre from './pages/RoleMembre';
 import ListeMembre from './pages/ListeMembre';
+import Compte from './pages/Compte';
+import Notification from './pages/Notification';
+import CGU from './pages/CGU';
+import Privacy from './pages/Privacy';
+import Accessibilite from './pages/Accessibilite';
+import Signalement from './pages/Signalement';
+
 
 
 const ProtectedRoute = ({ children, requireFamily = true }) => {
@@ -50,7 +57,7 @@ function App() {
           <Route index element={<Navigate to="login" replace />} />
         </Route>
 
-      {/* page menu */}
+      {/* pages menu */}
         <Route path="logs"
           element={<AuditLog />}>
         </Route>
@@ -63,7 +70,26 @@ function App() {
         <Route path="liste_membre" 
           element={<ListeMembre />}>
         </Route>
-        
+        <Route path="compte" 
+          element={<Compte />}>
+        </Route>
+        <Route path="notification" 
+          element={<Notification />}>
+        </Route>
+        <Route path="cgu" 
+          element={<CGU />}>
+        </Route>
+        <Route path="privacy" 
+          element={<Privacy />}>
+        </Route>
+        <Route path="accessibilite" 
+          element={<Accessibilite />}>
+        </Route>
+        <Route path="signalement" 
+          element={<Signalement />}>
+        </Route>
+
+
         
         {/* SE CONNECTER */}
         <Route path="login" element={
