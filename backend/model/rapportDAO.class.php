@@ -72,4 +72,17 @@ class RapportDAO {
         $stmt2 = $this->dal->prepare($query2);
         return $stmt2->execute(['id' => $id_rapport]);
     }
+
+    public function updateMedicStock($id_medicament, $quantiteConsommee) {
+        $query = 'UPDATE STOCK_MEDICS 
+                  SET quantite = quantite - :conso 
+                  WHERE id_medicament = :id 
+                  AND quantite >= :conso'; 
+        
+        $stmt = $this->dal->prepare($query);
+        return $stmt->execute([
+            'conso' => $quantiteConsommee,
+            'id'    => $id_medicament
+        ]);
+    }
 }
