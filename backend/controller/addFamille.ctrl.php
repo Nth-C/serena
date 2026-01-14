@@ -31,7 +31,7 @@ if($nom && $desc && $nom_aide){
     if ($id_famille) { 
         $id_personne = $app->personne->id;
         
-        if ($dao->AddPersFam($id_famille, $id_personne, 'createur')) {
+        if ($dao->AddPersFam($id_famille, $id_personne, 'Createur')) {
             echo json_encode(['success' => true]);
         } else {
             echo json_encode(['success' => false, 'error' => 'Liaison échouée.']);

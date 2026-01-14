@@ -3,14 +3,10 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import styles from './Menu.module.css';
 
 function Menu({isOpen , onHamburgerClick}) {
-    /*
-    const [addMembreOpen, setAddMembreOpen] = useState(false)
-    const [roleMembreOpen, setRoleMembreOpen] = useState(false)
-    const [logOpen, setLogOpen] = useState(false)
-    */
 
     const navigate = useNavigate();
     const apiUrl = import.meta.env.VITE_API_URL;
+    const isAdmin = (sessionStorage.getItem('role') === "Createur")
 
     const handleSwitchFamille = () => {
         sessionStorage.removeItem('id_famille');
@@ -55,6 +51,7 @@ function Menu({isOpen , onHamburgerClick}) {
                 </div>
 
                 {/* --- ADMINISTRATEUR --- */}
+                {isAdmin && 
                 <div className={styles.admin_container}>
                     <div>
                         <h3>Administrateur</h3>
@@ -71,40 +68,19 @@ function Menu({isOpen , onHamburgerClick}) {
                             <p>Gérer les roles</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
-
-                        {/* <button onClick={() => setLogOpen(true)}>
-                            <p>Logs</p>
-                            <img src="/icons/chevron_right.svg" alt=">" />
-                        </button>
-                        <button onClick={() => setAddMembreOpen(true)}>
-                            <p>Inviter des contact</p>
-                            <img src="/icons/chevron_right.svg" alt=">" />
-                        </button>
-                        <button onClick={() => setRoleMembreOpen(true)}>
-                            <p>Gérer les roles</p>
-                            <img src="/icons/chevron_right.svg" alt=">" />
-                        </button> */}
                     </div >
                     <span className={styles.border}></span>
-                </div>
+                </div>}
 
                 {/* --- UTILISATEUR --- */}
                 <div className={styles.user_container}>
                     <div>
                         <h3>Utilisateur</h3>
-                        <NavLink to={"/"} onClick={onHamburgerClick}>
-                            <p>Profile</p>
-                            <img src="/icons/chevron_right.svg" alt=">" />
-                        </NavLink>
-                        <NavLink to={"/"} onClick={onHamburgerClick}>
+                        <NavLink to={"/compte"} onClick={onHamburgerClick}>
                             <p>Compte</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
-                        <NavLink to={"/"} onClick={onHamburgerClick}>
-                            <p>Données personnelles</p>
-                            <img src="/icons/chevron_right.svg" alt=">" />
-                        </NavLink>
-                        <NavLink to={"/"} onClick={onHamburgerClick}>
+                        <NavLink to={"/notification"} onClick={onHamburgerClick}>
                             <p>Notifications</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
@@ -116,12 +92,16 @@ function Menu({isOpen , onHamburgerClick}) {
                 <div className={styles.other_container}>
                     <div>
                         <h3>Autre</h3>
-                        <NavLink to={"/"} onClick={onHamburgerClick}>
+                        <NavLink to={"/accessibilite"} onClick={onHamburgerClick}>
                             <p>Accessibilité</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
                         <NavLink to={"/liste_membre"} onClick={onHamburgerClick}>
                             <p>Liste membres</p>
+                            <img src="/icons/chevron_right.svg" alt=">" />
+                        </NavLink>
+                        <NavLink to={"/signalement"} onClick={onHamburgerClick}>
+                            <p>Signalement</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
                     </div>
@@ -132,11 +112,11 @@ function Menu({isOpen , onHamburgerClick}) {
                 <div className={styles.legal_container}>
                     <div>
                         <h3>Legal</h3>
-                        <NavLink to={"/"} onClick={onHamburgerClick}>
+                        <NavLink to={"/privacy"} onClick={onHamburgerClick}>
                             <p>Politique de confidentialité</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
-                        <NavLink to={"/"} onClick={onHamburgerClick}>
+                        <NavLink to={"/cgu"} onClick={onHamburgerClick}>
                             <p>Conditions d’utilisation</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
