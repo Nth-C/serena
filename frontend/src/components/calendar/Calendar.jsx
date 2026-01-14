@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import styles from './Calendar.module.css';
 
 const Calendar = ({ date, events = [], toggleEventOpen, setCurrentEvent, isCalendarWeek = false }) => {
@@ -74,6 +75,15 @@ const Calendar = ({ date, events = [], toggleEventOpen, setCurrentEvent, isCalen
         };
     };
 
+    // liste des events affiché pour les jours actuel
+    const visibleEvents = events.filter(event => {
+        if (!isToday) return true;
+
+        const limitDate = new Date(now);
+        limitDate.setHours(currentHourToDisplay, 0, 0, 0);
+        return event.dateEnd > limitDate;
+    });
+
     return (
         <>
         {!isCalendarWeek ? ( // jour
@@ -102,30 +112,46 @@ const Calendar = ({ date, events = [], toggleEventOpen, setCurrentEvent, isCalen
                         </div>
                     );
                 })}
-
                     {/* affichage events */}
-                    {events.map((event, i) => {
-                        // n'affiche pas les events terminé (les supprimer de la db ici peut etre)
-                        if (isToday && event.dateEnd < now) return null;
+                    {visibleEvents.map((event, i) => {
+                        const horizontalStyle = calcPositionLeft(event, visibleEvents);
 
-                        const horizontalStyle = calcPositionLeft(event, events)
-                        
+                        // recupere les positions
+                        let top = calcPositionTop(event);
+                        let height = calcHeightEvent(event);
+
+                        if (isToday) {
+
+                            // si un event est finit on ne l'affiche pas
+                            if (event.dateEnd < currentHourToDisplay) return null;
+
+                            // Si l'événement a commencé avant l'heure actuelle mais finit après
+                            if (top < currentHourToDisplay) {
+                                const difference = currentHourToDisplay - top;
+                                height = height - difference;
+                                top = 0;
+                            } else {
+                                top = top - currentHourToDisplay;
+                            }
+                        }
+
                         const eventStyle = {
                             left: `${horizontalStyle.left}`,
                             width: `calc(${horizontalStyle.width} - 2px)`,
-                            height: `${calcHeightEvent(event)}px`,
-                            top: `${calcPositionTop(event) + 8}px`
-                        }
+                            height: `${height}px`,
+                            top: `${top + 8}px`,
+                            // met un border top si l'event a deja commencé
+                            borderTop: top === 0 && isToday && event.dateStart < now ? '4px dashed var(--pink)' : 'none'
+                        };
 
                         return (
-                            <div key={i} className={styles.event} style={eventStyle} 
-                            onClick={() => {
+                            <div key={i} className={styles.event} style={eventStyle} onClick={() => {
                                 setCurrentEvent(event);
                                 toggleEventOpen();
                             }}>
                                 {event.titre}
                             </div>
-                        )
+                        );
                     })}
                 </div>
 
