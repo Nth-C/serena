@@ -93,69 +93,99 @@ function Agenda() {
     }))
   }
 
-  // --- Soumission du formulaire ---
-  const handleSubmit = async (e) => {
-    e.preventDefault() 
-    setStatus({ type: null, message: '' })
+  // --- Handler pour l'ÉVÉNEMENT ---
+  const handleAddEvent = async (e) => {
+      if (e) e.preventDefault(); // Empêche le rechargement si appelé via un bouton type submit
+      setStatus({ type: null, message: '' });
 
-    // 1. Préparation du payload
-    let payload = {};
+      // Préparation du payload spécifique à l'événement
+      const payload = {
+          titre: formData.titre,
+          lieu: formData.lieu,
+          accompagnants: formData.accompagnants,
+          debut: formData.debut,
+          fin: formData.fin,
+          recurrence: formData.recurrence,
+          description: formData.description
+      };
 
-    if (isTrajet) {
-        payload = {
-            date_deb: formData.debut,
-            date_fin: formData.debut,
-            lieu_dep: formData.lieuDepart,
-            lieu_arr: formData.lieuArrivee,
-            id_event: formData.id_event,
-            aidant_id: formData.effectue === 'aidant' ? formData.aidantAffecte : null,
-            societe: formData.effectue === 'externe' ? formData.societe : null
-        };
-    } else {
-        payload = { ...formData };
-    }
+      // Nettoyage des champs vides
+      Object.keys(payload).forEach(key => {
+          if (payload[key] === '') payload[key] = null;
+      });
 
-    // 2. Nettoyage des chaînes vides
-    Object.keys(payload).forEach(key => {
-        if (payload[key] === '') {
-            payload[key] = null;
-        }
-    });
+      try {
+          const response = await fetch(`${apiUrl}/?route=evenement/add`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: 'include',
+              body: JSON.stringify(payload)
+          });
 
-    // 3. Détermination de la route API
-    const routeAction = isTrajet ? 'trajet/add' : 'evenement/add';
+          const result = await response.json();
 
-    try {
-      const response = await fetch(`${apiUrl}/?route=${routeAction}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: 'include',
-        body: JSON.stringify(payload) 
-      })
+          if (result.success) {
+              handleSuccess('Événement ajouté avec succès !');
+          } else {
+              setStatus({ type: 'error', message: result.error || 'Erreur lors de l\'ajout de l\'événement' });
+          }
+      } catch (error) {
+          console.error("Erreur réseau Event:", error);
+          setStatus({ type: 'error', message: "Serveur injoignable" });
+      }
+  };
 
-      const result = await response.json()
+  // --- Handler pour le TRAJET ---
+  const handleAddTrajet = async (e) => {
+      if (e) e.preventDefault();
+      setStatus({ type: null, message: '' });
 
-      if (result.success) {
-        setStatus({ type: 'success', message: 'Enregistré avec succès !' })
-        
-        // Reset du formulaire
-        setFormData({
+      // Préparation du payload spécifique au trajet (mapping avec tes noms de colonnes SQL)
+      const payload = {
+          date_deb: formData.debut,
+          date_fin: formData.debut, 
+          lieu_dep: formData.lieuDepart,
+          lieu_arr: formData.lieuArrivee,
+          id_event: formData.id_event,
+          aidant_id: formData.effectue === 'aidant' ? formData.aidantAffecte : null,
+          societe: formData.effectue === 'externe' ? formData.societe : null
+      };
+
+      Object.keys(payload).forEach(key => {
+          if (payload[key] === '') payload[key] = null;
+      });
+
+      try {
+          const response = await fetch(`${apiUrl}/?route=trajet/add`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: 'include',
+              body: JSON.stringify(payload)
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+              handleSuccess('Trajet ajouté avec succès !');
+          } else {
+              setStatus({ type: 'error', message: result.error || 'Erreur lors de l\'ajout du trajet' });
+          }
+      } catch (error) {
+          console.error("Erreur réseau Trajet:", error);
+          setStatus({ type: 'error', message: "Serveur injoignable" });
+      }
+  };
+
+  // --- Fonction utilitaire pour éviter de répéter le reset ---
+  const handleSuccess = (msg) => {
+      setStatus({ type: 'success', message: msg });
+      setFormData({
           titre: '', lieu: '', accompagnants: '', debut: '', fin: '', recurrence: '', description: '',
           effectue: 'aidant', aidantAffecte: '', societe: '', lieuDepart: '', lieuArrivee: '', id_event: ''
-        })
-        setNewEventOpen(false); 
-
-        fetchEvents()
-
-      } else {
-        setStatus({ type: 'error', message: result.error || 'Une erreur est survenue' })
-      }
-
-    } catch (error) {
-      console.error("Erreur réseau:", error)
-      setStatus({ type: 'error', message: "Impossible de contacter le serveur" })
-    }
-  }
+      });
+      setNewEventOpen(false);
+      fetchEvents();
+  };
 
   // si la date change ou que la liste d'evenement change on recupere les evenement associer au jour
   useEffect(() => {
@@ -251,8 +281,7 @@ function Agenda() {
         title={isTrajet ? "Nouveau Trajet" : "Nouvel Événement"} 
         isOpen={newEventOpen} 
         toggleOpen={() => setNewEventOpen(false)}
-        validOnHeader={true}
-        handlerValid={handleSubmit}
+
       >
           {/* Switcher Event / Trajet */}
           <div className='switch_event'>
@@ -260,166 +289,173 @@ function Agenda() {
             <button type="button" className={isTrajet ? 'active' : ''} onClick={() => setIsTrajet(true)} >Trajet</button>
           </div>
 
-          <form className='add_event'>  
-          
           {!isTrajet ? (
             /* =========================================
                PARTIE ÉVÉNEMENT
                ========================================= */
-            <>
-            <div>
-              <label>Titre :</label>
-              <input 
-                type="text" name="titre" placeholder="Ex: Rendez-vous médical"
-                value={formData.titre} onChange={handleChange} required 
-              />
-            </div>
-
-            <div>
-              <label>Lieu :</label>
-              <input 
-                type="text" name="lieu" placeholder="Ex: 67 Rue du Skibidi"
-                value={formData.lieu} onChange={handleChange} required 
-              />
-            </div>
-
-            <div>
-              <label>Accompagnants :</label>
-              <select name="accompagnants" value={formData.accompagnants} onChange={handleChange} required>
-                <option value="">-- Choisir un accompagnant --</option>
-                {membresFamille.map((personne) => (
-                    <option key={personne.id} value={personne.id}>
-                        {personne.prenom} {personne.nom}
-                    </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="date-row">
+            <form className='add_event' onSubmit={handleAddEvent}>  
               <div>
-                <label>Début :</label>
-                <input type="datetime-local" name="debut" value={formData.debut} onChange={handleChange} required />
+                <label>Titre :</label>
+                <input 
+                  type="text" name="titre" placeholder="Ex: Rendez-vous médical"
+                  value={formData.titre} onChange={handleChange} required 
+                />
               </div>
+
               <div>
-                <label>Fin :</label>
-                <input type="datetime-local" name="fin" value={formData.fin} onChange={handleChange} required />
+                <label>Lieu :</label>
+                <input 
+                  type="text" name="lieu" placeholder="Ex: 67 Rue du Skibidi"
+                  value={formData.lieu} onChange={handleChange} required 
+                />
               </div>
-            </div>
 
-            <div>
-              <label>Récurrence :</label>
-              <select name="recurrence" value={formData.recurrence} onChange={handleChange} required>
-                <option value="">Choisir...</option>
-                <option value="aucun">Aucune</option>
-                <option value="hebdo">Hebdomadaire</option>
-                <option value="mensuel">Mensuel</option>
-              </select>
-            </div>
+              <div>
+                <label>Accompagnants :</label>
+                <select name="accompagnants" value={formData.accompagnants} onChange={handleChange} required>
+                  <option value="">-- Choisir un accompagnant --</option>
+                  {membresFamille.map((personne) => (
+                      <option key={personne.id} value={personne.id}>
+                          {personne.prenom} {personne.nom}
+                      </option>
+                  ))}
+                </select>
+              </div>
 
-            <div>
-              <label>Notes :</label>
-              <textarea name="description" value={formData.description} onChange={handleChange} required />
-            </div>
-            </>
+              <div className="date-row">
+                <div>
+                  <label>Début :</label>
+                  <input type="datetime-local" name="debut" value={formData.debut} onChange={handleChange} required />
+                </div>
+                <div>
+                  <label>Fin :</label>
+                  <input type="datetime-local" name="fin" value={formData.fin} onChange={handleChange} required />
+                </div>
+              </div>
+
+              <div>
+                <label>Récurrence :</label>
+                <select name="recurrence" value={formData.recurrence} onChange={handleChange} required>
+                  <option value="">Choisir...</option>
+                  <option value="aucun">Aucune</option>
+                  <option value="hebdo">Hebdomadaire</option>
+                  <option value="mensuel">Mensuel</option>
+                </select>
+              </div>
+
+              <div>
+                <label>Notes :</label>
+                <textarea name="description" value={formData.description} onChange={handleChange} required />
+              </div>
+
+              <div>
+                  <button type='button' className='btn_border'>Annuler</button>
+                  <button type='submit' className='btn_blue'>Valider</button>
+              </div>
+           </form>
           ) : (
             /* =========================================
                PARTIE TRAJET
                ========================================= */
-            <>
-            {/* CORRECTION ICI : Sélecteur adapté à ton JSON */}
-            <div>
-                <label>Lier à l'événement :</label>
-                <select 
-                    name="id_event" 
-                    value={formData.id_event} 
-                    onChange={handleChange} 
-                    required
-                >
-                    <option value="">-- Choisir un événement --</option>
-                    {listeEvenements.map((ev) => {
-                        // Traitement de la date
-                        const d = new Date(ev.date_deb);
-                        // On n'affiche que la date car le JSON ne contient pas l'heure
-                        const dateStr = !isNaN(d) ? d.toLocaleDateString('fr-FR') : ev.date_deb;
-                        
-                        return (
-                            <option key={ev.id_event} value={ev.id_event}>
-                                {ev.nom} ({dateStr})
-                            </option>
-                        )
-                    })}
-                </select>
-            </div>
-
-            <div className='effectue_trajet'>
+            <form className='add_event' onSubmit={handleAddTrajet}>  
               <div>
-                <input 
-                    type="radio" id="aidant" name="effectue" value="aidant" 
-                    checked={formData.effectue === 'aidant'} 
-                    onChange={handleChange}
-                />
-                <label htmlFor="aidant">Aidant</label>
+                  <label>Lier à l'événement :</label>
+                  <select 
+                      name="id_event" 
+                      value={formData.id_event} 
+                      onChange={handleChange} 
+                      required
+                  >
+                      <option value="">-- Choisir un événement --</option>
+                      {listeEvenements.map((ev) => {
+                          // Traitement de la date
+                          const d = new Date(ev.date_deb);
+                          // On n'affiche que la date car le JSON ne contient pas l'heure
+                          const dateStr = !isNaN(d) ? d.toLocaleDateString('fr-FR') : ev.date_deb;
+                          
+                          return (
+                              <option key={ev.id_event} value={ev.id_event}>
+                                  {ev.nom} ({dateStr})
+                              </option>
+                          )
+                      })}
+                  </select>
               </div>
+
+              <div className='effectue_trajet'>
+                <div>
+                  <input 
+                      type="radio" id="aidant" name="effectue" value="aidant" 
+                      checked={formData.effectue === 'aidant'} 
+                      onChange={handleChange}
+                  />
+                  <label htmlFor="aidant">Aidant</label>
+                </div>
+                <div>
+                  <input 
+                      type="radio" id="externe" name="effectue" value="externe" 
+                      checked={formData.effectue === 'externe'} 
+                      onChange={handleChange}
+                  />
+                  <label htmlFor="externe">Société Externe</label> 
+                </div> 
+              </div>
+
+              {formData.effectue === 'aidant' && (
+                  <div>
+                      <label>Quel aidant effectue le trajet ?</label>
+                      <select name="aidantAffecte" value={formData.aidantAffecte} onChange={handleChange} required>
+                          <option value="">-- Choisir un aidant --</option>
+                          {membresFamille.map((personne) => (
+                              <option key={personne.id} value={personne.id}>
+                                  {personne.prenom} {personne.nom}
+                              </option>
+                          ))}
+                      </select>
+                  </div>
+              )}
+
+              {formData.effectue === 'externe' && (
+                  <div>
+                      <label>Nom de la société :</label>
+                      <input 
+                          type="text" name="societe" placeholder="Ex: Taxi Ambulance"
+                          value={formData.societe} onChange={handleChange} required 
+                      />
+                  </div>
+              )}
+
               <div>
+                <label>Date et heure du trajet :</label>
                 <input 
-                    type="radio" id="externe" name="effectue" value="externe" 
-                    checked={formData.effectue === 'externe'} 
-                    onChange={handleChange}
+                  type="datetime-local" name="debut" 
+                  value={formData.debut} onChange={handleChange} required 
                 />
-                <label htmlFor="externe">Société Externe</label> 
-              </div> 
-            </div>
+              </div>
 
-            {formData.effectue === 'aidant' && (
+              <div>
+                <label>Lieu de départ :</label>
+                <input 
+                  type="text" name="lieuDepart" placeholder="Ex: Maison"
+                  value={formData.lieuDepart} onChange={handleChange} required 
+                />
+              </div>
+
+              <div>
+                <label>Lieu d'arrivée :</label>
+                <input 
+                  type="text" name="lieuArrivee" placeholder="Ex: Centre ville"
+                  value={formData.lieuArrivee} onChange={handleChange} required 
+                />
+              </div>
+
                 <div>
-                    <label>Quel aidant effectue le trajet ?</label>
-                    <select name="aidantAffecte" value={formData.aidantAffecte} onChange={handleChange} required>
-                        <option value="">-- Choisir un aidant --</option>
-                        {membresFamille.map((personne) => (
-                            <option key={personne.id} value={personne.id}>
-                                {personne.prenom} {personne.nom}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            )}
-
-            {formData.effectue === 'externe' && (
-                <div>
-                    <label>Nom de la société :</label>
-                    <input 
-                        type="text" name="societe" placeholder="Ex: Taxi Ambulance"
-                        value={formData.societe} onChange={handleChange} required 
-                    />
-                </div>
-            )}
-
-            <div>
-              <label>Date et heure du trajet :</label>
-              <input 
-                type="datetime-local" name="debut" 
-                value={formData.debut} onChange={handleChange} required 
-              />
-            </div>
-
-            <div>
-              <label>Lieu de départ :</label>
-              <input 
-                type="text" name="lieuDepart" placeholder="Ex: Maison"
-                value={formData.lieuDepart} onChange={handleChange} required 
-              />
-            </div>
-
-            <div>
-              <label>Lieu d'arrivée :</label>
-              <input 
-                type="text" name="lieuArrivee" placeholder="Ex: Centre ville"
-                value={formData.lieuArrivee} onChange={handleChange} required 
-              />
-            </div>
-            </>
+                  <button type='button' className='btn_border'>Annuler</button>
+                  <button type='submit' className='btn_blue'>Valider</button>
+              </div>
+           </form>
           )}
-          </form>
+          
       </Slide>
 
     </div>

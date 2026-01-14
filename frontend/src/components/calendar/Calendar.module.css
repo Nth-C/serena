@@ -29,8 +29,7 @@
 
 .calendar_day .event {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
     background: var(--blue);
+    border-radius: 8px;
+    cursor: pointer;
 }
