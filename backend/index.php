@@ -53,7 +53,7 @@ const _ROUTES = array(
   'forgot_password' => 'forgotPassword',
   'reset_password' => 'resetPassword',
   'liste_membre' => 'liste_membre',
-  'trajet/add' => 'addTrajet'
+  'trajet/add' => 'addTrajet',
   'dashboard/view' => 'viewDashboard'
 );
 
