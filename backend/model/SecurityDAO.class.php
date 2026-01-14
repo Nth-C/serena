@@ -10,7 +10,7 @@ class SecurityDAO {
 
     // Fonction interne pour hacher l'IP systématiquement
     private function hashIp(string $ip): string {
-        return hash('sha256', $ip);
+        return hash('sha512', $ip);
     }
 
     public function getNbAttempts(string $ip): int {
