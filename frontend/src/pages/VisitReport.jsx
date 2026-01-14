@@ -574,9 +574,9 @@ function LastVisitReport() {
         onClose={togglePopUpDelete}
       />
 
-      <PopUpConfirmation sentence={`Le rapport "${nameToDelete}" a bien été supprimé.`} show={isShowRemove} setShow={setIsShowRemove} />
-      <PopUpConfirmation sentence={`Le rapport "${nameToDelete}" a bien été ajouté.`} show={isShowAdd} setShow={setIsShowAdd} />
-      <PopUpConfirmation sentence={`Le rapport "${nameToDelete}" a bien été modifié.`} show={isShowModify} setShow={setIsShowModify} />
+      <PopUpConfirmation sentence={`Le rapport ${nameToDelete} a bien été supprimé.`} show={isShowRemove} setShow={setIsShowRemove} />
+      <PopUpConfirmation sentence={`Le rapport ${nameToDelete} a bien été ajouté.`} show={isShowAdd} setShow={setIsShowAdd} />
+      <PopUpConfirmation sentence={`Le rapport ${nameToDelete} a bien été modifié.`} show={isShowModify} setShow={setIsShowModify} />
     </div>
   )
 }
