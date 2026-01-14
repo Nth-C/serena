@@ -155,24 +155,37 @@ function LastVisitReport() {
     }
   };
 
-  const handleSearchMedecine = async (e) => {
-    const route = 'nommedicament/search';
+  const handleSearchMedecine = async (e) => { 
+    console.log(e);
 
+    // change le controleur appeler en fonction de (créer / modifier)
+    const route = 'nommedicament/search';
+    
     try {
       const response = await fetch(`${apiUrl}/?route=${route}`, {
         method: "POST",
         credentials: 'include',
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ texteNomMedicament: e })
+        body: JSON.stringify(
+          // change les donné envoyer (créer / modifier)
+          {  
+            texteNomMedicament: e
+          }
+        )
       });
 
       const result = await response.json();
+      console.log(result);
       setListNomMedecine(result.resultats)
       if (result.isUnique) {
-        setListTypeMedecine(result.resultats)
+        console.log(result.resultats)
+        setListTypeMedecine(result.types)
         setIsNameGood(true)
+        
+
       } else {
-        setIdCatalogueMedecine("")
+        setListTypeMedecine([])
+        setIdCatalogueMedecine("") 
         setIsNameGood(false);
       }
     } catch (error) {
@@ -401,11 +414,14 @@ function LastVisitReport() {
               list="medication-suggestions"
               value={nameMedecine}
               onChange={(e) => {
+                setCurrentStock("");
+                setInitialStock("");
+                setIdCatalogueMedecine("");
                 setNameMedecine(e.target.value);
-                if (e.target.value != "") {
+                if(e.target.value != ""){
                   handleSearchMedecine(e.target.value);
                 }
-
+               
               }}
               required
               disabled={isEditing}
@@ -438,10 +454,29 @@ function LastVisitReport() {
           </div>
 
 
-          <div><label>Stock initial : </label><input type="number" value={initialStock} onChange={(e) => setInitialStock(e.target.value)} required /></div>
-          <div><label>Stock actuel : </label><input type="number" value={currentStock} onChange={(e) => setCurrentStock(e.target.value)} required /></div>
+         <div>
+            <label>Stock initiale du médicament : </label>
+            <input
+              type="number"
+              value={initialStock}
+              onChange={(e) => setInitialStock(e.target.value)}
+              required
+              disabled={!isNameGood || isEditing} // on ne peut pas modifier l'input si on modifie un medicament
+            />
+          </div>
+          
           <div>
-            <button type="button" className="btn_border" onClick={handleResetMedecine}>Réinitialiser</button>
+            <label>Stock actuel du médicament :</label>
+            <input
+              type="number"
+              value={currentStock}
+              onChange={(e) => setCurrentStock(e.target.value)}
+              required
+              disabled={!isNameGood}
+            />
+          </div>
+          <div>
+            <button type="reset" className="btn_border" onClick={handleResetMedecine}>Réinitialiser</button>
             <button type="submit" className="btn_blue">Ajouter</button>
           </div>
         </form>

@@ -13,9 +13,8 @@ class PersonneDAO {
     $this->dal = $dal ?: DAL::get();
 }
 
-    public function getAllPersonneWithTexte($texte, $monId): array {
-    // On ajoute la condition "username != :me" pour s'exclure des résultats
-    $query = 'SELECT id_personne,nom,prenom,username,
+    public function getAllPersonneWithTexte($texte, $monId, $idFamille): array {
+    $query = 'SELECT id_personne, nom, prenom, username,
               (EXISTS (
                   SELECT 1 
                   FROM INVITATION
@@ -27,22 +26,22 @@ class PersonneDAO {
               OR nom ILIKE :search 
               OR prenom ILIKE :search)
               AND id_personne != :me
+              -- Filtre pour exclure ceux qui sont déjà dans la famille
+              AND id_personne NOT IN (
+                  SELECT id_personne 
+                  FROM APPARTIENT_A 
+                  WHERE id_famille = :idFamille
+              )
               LIMIT 16';
     
     $stmt = $this->dal->prepare($query);
     $stmt->execute([
         'search' => '%' . $texte . '%',
-        'me' => $monId
+        'me' => $monId,
+        'idFamille' => $idFamille
     ]);
     
-    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    $resultats = [];
-    foreach($data as $personne) {
-        $resultats[] = new Personne($personne);
-    }
-
-    return $data;
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
     public function findByUsername(string $username): ?Personne {

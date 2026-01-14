@@ -180,7 +180,6 @@ public function deleteInviterPersonneDansFamille($id_famille_invitee, $id_pers_i
     public function getInvitationDetails($id_personne): array {
     // Jointure triple pour avoir l'invitation, l'expéditeur et la famille
     $query = 'SELECT 
-                i.id_invitation,
                 i.id_famille_invitee,
                 f.nom AS nom_famille,
                 f.description AS desc_famille,
