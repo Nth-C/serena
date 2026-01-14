@@ -138,6 +138,41 @@ function Agenda() {
       }
   };
 
+  const handleRemoveEvent = async (e) => {
+    // Préparation du payload spécifique
+    const payload = {
+        id_evenement: e,
+    };
+
+    try {
+        const response = await fetch(`${apiUrl}/?route=evenement/delete`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: 'include',
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            handleSuccess('Événement supprimé avec succès !');
+            fetchEvents();
+            setEventOpen(false);
+        } else {
+            setStatus({ 
+                type: 'error', 
+                message: result.error || 'Erreur lors de la suppression de l\'événement' 
+            });
+        }
+    } catch (error) {
+        console.error("Erreur réseau Suppression:", error);
+        setStatus({ 
+            type: 'error', 
+            message: "Impossible de supprimer : le serveur est injoignable" 
+        });
+    }
+};
+
   // --- Handler pour le TRAJET ---
   const handleAddTrajet = async (e) => {
       if (e) e.preventDefault();
@@ -224,10 +259,13 @@ function Agenda() {
 
             return {
               // on peut rajouter des infos utile a afficher ici
+              id_event: ev.id_event,
               lieu: ev.lieu,
               titre: ev.nom,
               dateStart: startDate,
               dateEnd: endDate,
+              description: ev.description,
+              
             }
         })
 
@@ -502,7 +540,7 @@ function Agenda() {
                 )}
 
                 <div className='actions'>
-                    <button className="btn_red">Supprimer</button>
+                    <button className="btn_red" onClick={() => handleRemoveEvent(currentEvent.id_event)} >Supprimer</button>
                     <button className="btn_border" onClick={() => setEventOpen(false)}>Fermer</button>
                 </div>
             </div>
