@@ -224,7 +224,6 @@ function Agenda() {
           isCalendarWeek={isCalendarWeek}
           events={eventsForCalendar}
           toggleEventOpen={() => {
-            console.log()
             setEventOpen(!eventOpen)
           }}
           setCurrentEvent={setCurrentEvent}
@@ -343,8 +342,6 @@ function Agenda() {
                         // On n'affiche que la date car le JSON ne contient pas l'heure
                         const dateStr = !isNaN(d) ? d.toLocaleDateString('fr-FR') : ev.date_deb;
                         
-                        console.log(ev)
-
                         return (
                             <option key={ev.id_event} value={ev.id_event}>
                                 {ev.nom} ({dateStr})

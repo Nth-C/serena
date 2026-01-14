@@ -1,8 +1,17 @@
 import styles from './Calendar.module.css';
 
-const Calendar = ({ events = [], toggleEventOpen, setCurrentEvent, isCalendarWeek = false }) => {
+const Calendar = ({ date, events = [], toggleEventOpen, setCurrentEvent, isCalendarWeek = false }) => {
     const weekDays = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
     const hourHeight = 60; // 1 heure = 60px
+
+    const now = new Date();
+    // vérifie si la date affichée est aujourd'hui
+    const isToday = date.getDate() === now.getDate() &&
+                    date.getMonth() === now.getMonth() &&
+                    date.getFullYear() === now.getFullYear();
+    
+    // l'heure actuel - 2 pour avoir un meilleur apperçue sur le planning du jour 
+    const currentHourToDisplay = now.getHours() - 2;
 
     const calcHeightEvent = (event) => {
         // calcul de la durée en minutes
@@ -16,7 +25,13 @@ const Calendar = ({ events = [], toggleEventOpen, setCurrentEvent, isCalendarWee
         const startMinute = event.dateStart.getMinutes();
         
         // (Nombre d'heures * 60px) + (Nombre de minutes * 1px)
-        return (startHour * hourHeight) + (startMinute * (hourHeight / 60));
+        let top = (startHour * hourHeight) + (startMinute * (hourHeight / 60))
+
+        // repositionne si c'est le planning du jour
+        if(isToday) {
+            return top - (currentHourToDisplay * hourHeight);
+        }
+        return top;
     };
 
     // verifie si 2 event se chevauche
@@ -66,22 +81,33 @@ const Calendar = ({ events = [], toggleEventOpen, setCurrentEvent, isCalendarWee
 
                 {/* affichage heures */}
                 <div  className={styles.hours}>
-                {[...Array(24)].map((e, i) => (
-                    <p key={i}>{i < 10 ? `0${i}` : i}:00</p>
-                ))}
+                {[...Array(24)].map((e, i) => {
+                    // si c'est aujourd'hui on cache les heures < currentHourToDisplay
+                    if (isToday && i < currentHourToDisplay) return null;
+
+                    return <p key={i}>{i < 10 ? `0${i}` : i}:00</p>
+                })}
                 </div>
 
                 {/* affichage case */}
                 <div className={styles.case}>
                     {/* ajout des ligne */}
-                    {[...Array(24)].map((e, i) => (
-                    <div key={i}>
-                        <span className={styles.line}></span>
-                    </div>
-                    ))}
+                    {[...Array(24)].map((e, i) => {
+                    // si c'est aujourd'hui on cache les lignes < currentHourToDisplay
+                    if (isToday && i < currentHourToDisplay) return null;
+
+                    return (
+                        <div key={i}>
+                            <span className={styles.line}></span>
+                        </div>
+                    );
+                })}
 
                     {/* affichage events */}
                     {events.map((event, i) => {
+                        // n'affiche pas les events terminé (les supprimer de la db ici peut etre)
+                        if (isToday && event.dateEnd < now) return null;
+
                         const horizontalStyle = calcPositionLeft(event, events)
                         
                         const eventStyle = {
@@ -95,10 +121,8 @@ const Calendar = ({ events = [], toggleEventOpen, setCurrentEvent, isCalendarWee
                             <div key={i} className={styles.event} style={eventStyle} 
                             onClick={() => {
                                 setCurrentEvent(event);
-                                console.log(event)
                                 toggleEventOpen();
                             }}>
-
                                 {event.titre}
                             </div>
                         )
