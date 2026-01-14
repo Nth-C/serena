@@ -76,9 +76,14 @@ h2 {
   font-size: var(--font-md);
 }
 
+h3 {
+  font-size: var(--font-sm);
+}
+
 label,
 p,
-a {
+a,
+li {
   font-size: var(--font-sm);
 }
 
@@ -1108,7 +1113,7 @@ progress.blue_bar::-moz-progress-bar {
 }
 
 .assistance h1 {
-  padding: 0;
+  padding: 0 0 1rem 0;
 }
 
 .assistance h2 {
@@ -1231,6 +1236,38 @@ progress.blue_bar::-moz-progress-bar {
 
 .assistance > form > div > div:has(select:focus) label {
   color: var(--blue);
+}
+
+.assistance .container_aide {
+  border: 2px solid var(--blue);
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.assistance .container_aide li {
+  list-style: inside;
+}
+
+.assistance .container_aide > div:first-child {
+  background-color: var(--blue);
+  padding: 1.5rem;
+  border-radius: 10px;
+}
+
+.assistance .container_aide > div:last-child {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.assistance .container_aide h2 {
+  padding: 0;
+  color: var(--white);
+}
+
+.assistance .container_aide p {
+  text-align: justify;
 }
 
 
