@@ -169,9 +169,7 @@ function Medecine() {
   };
 
 
-  const handleSearchMedecine = async (e) => {
-    
-
+  const handleSearchMedecine = async (e) => { 
     console.log(e);
 
     // change le controleur appeler en fonction de (créer / modifier)
@@ -335,6 +333,7 @@ function Medecine() {
             ))}
             </datalist>
           </div>
+
           <div>
             <label>Type de médicament : </label>
             <select value={idCatalogueMedecine} onChange={(e) => {
@@ -351,6 +350,7 @@ function Medecine() {
               ))}
             </select>
           </div>
+          
           <div>
             <label>Stock initiale du médicament : </label>
             <input
