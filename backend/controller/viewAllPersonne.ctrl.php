@@ -12,7 +12,7 @@ $app = new App();
 
 
 //code vérification de role
-if (!$app->checkRole('createur')) {
+if (!$app->checkRole('Createur')) {
     header('HTTP/1.1 403 Forbidden');
     echo json_encode([
         'success' => false, 

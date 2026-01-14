@@ -88,8 +88,16 @@ public function logout() {
     
     // Si on demande 'admin', il faut être 'admin'
     // Si on demande 'membre', 'admin' a aussi le droit
-    if ($requiredRole === 'createur') {
-        return $currentRole === 'createur';
+    if ($requiredRole === 'Createur') {
+        return $currentRole === 'Createur';
+    }
+
+    if ($requiredRole === 'Aidant') {
+        return $currentRole === 'Aidant';
+    }
+
+    if ($requiredRole === 'Visiteur') {
+        return $currentRole === 'Visiteur';
     }
     
     return false;

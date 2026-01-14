@@ -108,7 +108,7 @@ class FamilleDAO {
     return $resultats;
     }
 
-    public function AddPersFam($id_famille, $id_personne, string $role = 'createur'): bool {
+    public function AddPersFam($id_famille, $id_personne, string $role = 'Createur'): bool {
         $query = 'INSERT INTO appartient_a (id_famille, id_personne, role) 
                 VALUES (:id_f, :id_p, :role)';
         $stmt = $this->dal->prepare($query);
