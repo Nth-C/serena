@@ -65,7 +65,6 @@ function LastVisitReport() {
   const [initialStock, setInitialStock] = useState("");
   const [currentStock, setCurrentStock] = useState("");
   const [openMedicId, setOpenMedicId] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -102,11 +101,7 @@ function LastVisitReport() {
         credentials: 'include'
       });
       const data = await response.json();
-
-      if (data.error) {
-        throw new Error(data.error);
-      }
-
+      if (data.error) throw new Error(data.error);
       setListMedecine(Array.isArray(data) ? data : []);
       setError(null);
     } catch (err) {
@@ -120,33 +115,21 @@ function LastVisitReport() {
 
   const handleMedecine = async (e) => {
     e.preventDefault()
-
     const nouveauMedoc = {
       name: nameMedecine,
       idCatalogueMedecine: idCatalogueMedecine,
       stock: currentStock,
       stockTotal: initialStock
     }
-
     const route = isEditing ? 'medicament/update' : 'medicament/add';
-
     try {
       const response = await fetch(`${apiUrl}/?route=${route}`, {
         method: "POST",
         credentials: 'include',
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(
-          !isEditing
-            ? nouveauMedoc
-            : {
-              id_medicament: activeInList,
-              nouveauStock: currentStock
-            }
-        )
+        body: JSON.stringify(nouveauMedoc)
       });
-
       const result = await response.json();
-
       if (result.success) {
         handleResetForm()
         getMedecine()
@@ -157,26 +140,19 @@ function LastVisitReport() {
         setMessage("Erreur: " + result.error);
       }
     } catch (error) {
-      setMessage("error");
       console.error(error);
     }
   };
 
   const handleSearchMedecine = async (e) => {
     const route = 'nommedicament/search';
-
     try {
       const response = await fetch(`${apiUrl}/?route=${route}`, {
         method: "POST",
         credentials: 'include',
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(
-          {
-            texteNomMedicament: e
-          }
-        )
+        body: JSON.stringify({ texteNomMedicament: e })
       });
-
       const result = await response.json();
       setListNomMedecine(result.resultats)
       if (result.isUnique) {
@@ -187,7 +163,6 @@ function LastVisitReport() {
         setIsNameGood(false);
       }
     } catch (error) {
-      setMessage("error");
       console.error(error);
     }
   };
@@ -195,7 +170,8 @@ function LastVisitReport() {
   const addMedicToSelection = (medicament) => {
     if (!selectedMedicsForReport.find(m => m.id_medicament === medicament.id_medicament)) {
       setSelectedMedicsForReport([...selectedMedicsForReport, { 
-        ...medicament, 
+        id_med: medicament.id_medicament, // On garde l'ID pour le PHP
+        nomMedicament: medicament.nomMedicament, 
         quantite: "" 
       }]);
     }
@@ -203,12 +179,12 @@ function LastVisitReport() {
   };
 
   const removeMedicFromSelection = (id) => {
-    setSelectedMedicsForReport(selectedMedicsForReport.filter(m => m.id_medicament !== id));
+    setSelectedMedicsForReport(selectedMedicsForReport.filter(m => (m.id_med || m.id_medicament) !== id));
   };
 
   const updateMedicQuantite = (id, value) => {
     setSelectedMedicsForReport(selectedMedicsForReport.map(m => 
-      m.id_medicament === id ? { ...m, quantite: value } : m
+      (m.id_med || m.id_medicament) === id ? { ...m, quantite: value } : m
     ));
   };
 
@@ -234,6 +210,15 @@ function LastVisitReport() {
   const handleEditClick = () => {
     setNomRapport(selectedRapport.nom);
     setDescRapport(selectedRapport.description);
+    
+    // On charge les médicaments existants dans le formulaire de modification
+    const medicsToEdit = selectedRapport.medics_details.map(m => ({
+      id_med: m.id_medicament,
+      nomMedicament: m.nom,
+      quantite: m.quantite
+    }));
+    
+    setSelectedMedicsForReport(medicsToEdit);
     setIsEditing(true);
     setIsDetailsReportpen(false);
     setIsNewRapportOpen(true);
@@ -241,13 +226,15 @@ function LastVisitReport() {
 
   const handleSubmitRapport = async (e) => {
     e.preventDefault();
+    const nomPourNotification = nomRapport; 
     const route = isEditing ? 'rapport/update' : 'rapport/add';
+    
     const bodyData = {
       nom: nomRapport,
       description: descRapport,
       id_rapport: isEditing ? selectedRapport.id_rapport : null,
       medicaments: selectedMedicsForReport.map(m => ({
-        id_med: m.id_medicament,
+        id_med: m.id_med || m.id_medicament,
         quantite: m.quantite
       }))
     };
@@ -262,6 +249,7 @@ function LastVisitReport() {
       const result = await response.json();
       if (result.success) {
         setIsNewRapportOpen(false);
+        setNameToDelete(nomPourNotification); 
         isEditing ? setIsShowModify(true) : setIsShowAdd(true);
         handleResetRapport();
         setSelectedMedicsForReport([]);
@@ -303,6 +291,7 @@ function LastVisitReport() {
   const toggleMedic = (id) => {
     setOpenMedicId(openMedicId === id ? null : id);
   };
+
   useEffect(() => {
     document.documentElement.classList.toggle('menu-active', isNewRapportOpen || isNewMedicineOpen || isDetailsReportOpen || isPopUpDeleteOpen);
   }, [isNewRapportOpen, isNewMedicineOpen, isDetailsReportOpen, isPopUpDeleteOpen]);
@@ -364,7 +353,6 @@ function LastVisitReport() {
             <button onClick={toggleNewMedicine} className="btn_blue">Ajouter un nouveau médicament</button>
           </div>
           <div className="list">
-
             {listMedecine.map((med) => (
               <MedicItem
                 key={med.id_medicament}
@@ -373,18 +361,15 @@ function LastVisitReport() {
                 onToggle={() => toggleMedic(med.id_medicament)}
                 onAdd={addMedicToSelection}
               />
-
             ))}
           </div>
         </div>,
         document.body
       )}
 
-      {/* Slide Ajout Médicament */}
+      {/* Slide Ajout Médicament Catalogue */}
       <Slide title={"Ajouter un médicament"} isOpen={isNewMedicineOpen} toggleOpen={toggleNewMedicine} zIndex={700}>
         <form className="new_medecine" onSubmit={handleMedecine}>
-
-
           <div>
             <label>Nom du médicament : </label>
             <input
@@ -393,10 +378,7 @@ function LastVisitReport() {
               value={nameMedecine}
               onChange={(e) => {
                 setNameMedecine(e.target.value);
-                if (e.target.value != "") {
-                  handleSearchMedecine(e.target.value);
-                }
-
+                if (e.target.value !== "") handleSearchMedecine(e.target.value);
               }}
               required
               disabled={isEditing}
@@ -407,18 +389,9 @@ function LastVisitReport() {
               ))}
             </datalist>
           </div>
-
-
-
-
           <div>
             <label>Type de médicament : </label>
-            <select value={idCatalogueMedecine} onChange={(e) => {
-              setIdCatalogueMedecine(e.target.value)
-
-            }}
-              required
-              disabled={!isNameGood}>
+            <select value={idCatalogueMedecine} onChange={(e) => setIdCatalogueMedecine(e.target.value)} required disabled={!isNameGood}>
               <option value=""></option>
               {listTypeMedecine.map((listeMedicament) => (
                 <option key={listeMedicament.id_medics} value={listeMedicament.id_medics}>
@@ -427,8 +400,6 @@ function LastVisitReport() {
               ))}
             </select>
           </div>
-
-
           <div><label>Stock initial : </label><input type="number" value={initialStock} onChange={(e) => setInitialStock(e.target.value)} required /></div>
           <div><label>Stock actuel : </label><input type="number" value={currentStock} onChange={(e) => setCurrentStock(e.target.value)} required /></div>
           <div>
@@ -445,32 +416,32 @@ function LastVisitReport() {
             <label>Nom du rapport : </label>
             <input type="text" value={nomRapport} onChange={(e) => setNomRapport(e.target.value)} required />
           </div>
-          {!isEditing && (
-            <div>
-              <label>Médicaments pris : </label>
-              <div className="selected_medics_container">
-                {selectedMedicsForReport.map((m) => (
-                  <div key={m.id_medicament} className="list_medicament_report">
+          <div>
+            <label>Médicaments pris : </label>
+            <div className="selected_medics_container">
+              {selectedMedicsForReport.map((m) => {
+                const id = m.id_med || m.id_medicament;
+                return (
+                  <div key={id} className="list_medicament_report">
                     <div>
                       <p>{m.nomMedicament}</p>
                       <input 
                         type="text" 
                         placeholder="" 
                         value={m.quantite}
-                        onChange={(e) => updateMedicQuantite(m.id_medicament, e.target.value)}
+                        onChange={(e) => updateMedicQuantite(id, e.target.value)}
                       />
-                      <button type="button" onClick={() => removeMedicFromSelection(m.id_medicament)}>✕</button>
+                      <button type="button" onClick={() => removeMedicFromSelection(id)}>✕</button>
                     </div>
                   </div>
-                ))}
-              </div>
-              <button type="button" className="btn_blue add_medi" onClick={() => {
-                togglePopup();
-                getMedecine()
-              }}
-              >Ajouter médicament</button>
+                );
+              })}
             </div>
-          )}
+            <button type="button" className="btn_blue add_medi" onClick={() => {
+              togglePopup();
+              getMedecine();
+            }}>Ajouter médicament</button>
+          </div>
           <div>
             <label>Information supplémentaire : </label>
             <textarea value={descRapport} onChange={(e) => setDescRapport(e.target.value)} required></textarea>
@@ -521,7 +492,6 @@ function LastVisitReport() {
         ) : null}
       </Slide>
 
-      {/* Popups de confirmation et suppression */}
       <PopUpDelete
         toDelete={nameToDelete}
         handleDelete={handleDeleteRapport}
@@ -530,8 +500,8 @@ function LastVisitReport() {
       />
 
       <PopUpConfirmation sentence={`Le rapport "${nameToDelete}" a bien été supprimé.`} show={isShowRemove} setShow={setIsShowRemove} />
-      <PopUpConfirmation sentence={`Le rapport "${nomRapport}" a bien été ajouté.`} show={isShowAdd} setShow={setIsShowAdd} />
-      <PopUpConfirmation sentence={`Le rapport a bien été modifié.`} show={isShowModify} setShow={setIsShowModify} />
+      <PopUpConfirmation sentence={`Le rapport "${nameToDelete}" a bien été ajouté.`} show={isShowAdd} setShow={setIsShowAdd} />
+      <PopUpConfirmation sentence={`Le rapport "${nameToDelete}" a bien été modifié.`} show={isShowModify} setShow={setIsShowModify} />
     </div>
   )
 }

@@ -13,6 +13,7 @@ class RapportDAO {
         $query = "SELECT r.*, p.prenom as auteur,
                   COALESCE(json_agg(
                       json_build_object(
+                          'id_medicament', s.id_medicament,
                           'nom', s.designation_med, 
                           'quantite', c.nombre_medic_conso
                       )
@@ -81,8 +82,37 @@ class RapportDAO {
         
         $stmt = $this->dal->prepare($query);
         return $stmt->execute([
-            'conso' => $quantiteConsommee,
+            'conso' => (int)$quantiteConsommee,
             'id'    => $id_medicament
+        ]);
+    }
+
+    public function getMedicsByRapport($id_rapport) {
+        $query = 'SELECT id_medicament, nombre_medic_conso FROM CONSO WHERE id_rapport = :id';
+        $stmt = $this->dal->prepare($query);
+        $stmt->execute(['id' => $id_rapport]);
+        return $stmt->fetchAll();
+    }
+
+    public function restockMedic($id_medicament, $quantite) {
+        $query = 'UPDATE STOCK_MEDICS SET quantite = quantite + :qte WHERE id_medicament = :id';
+        $stmt = $this->dal->prepare($query);
+        return $stmt->execute(['qte' => (int)$quantite, 'id' => $id_medicament]);
+    }
+
+    public function clearConso($id_rapport) {
+        $query = 'DELETE FROM CONSO WHERE id_rapport = :id';
+        $stmt = $this->dal->prepare($query);
+        return $stmt->execute(['id' => $id_rapport]);
+    }
+
+    public function updateRapportInfos($id_rapport, $nom, $description): bool {
+        $query = 'UPDATE RAPPORTS SET nom = :nom, description = :description WHERE id_rapport = :id';
+        $stmt = $this->dal->prepare($query);
+        return $stmt->execute([
+            'nom' => $nom,
+            'description' => $description,
+            'id' => $id_rapport
         ]);
     }
 }
