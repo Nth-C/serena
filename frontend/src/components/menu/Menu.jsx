@@ -3,14 +3,10 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import styles from './Menu.module.css';
 
 function Menu({isOpen , onHamburgerClick}) {
-    /*
-    const [addMembreOpen, setAddMembreOpen] = useState(false)
-    const [roleMembreOpen, setRoleMembreOpen] = useState(false)
-    const [logOpen, setLogOpen] = useState(false)
-    */
 
     const navigate = useNavigate();
     const apiUrl = import.meta.env.VITE_API_URL;
+    const isAdmin = (sessionStorage.getItem('role') === "Createur")
 
     const handleSwitchFamille = () => {
         sessionStorage.removeItem('id_famille');
@@ -55,6 +51,7 @@ function Menu({isOpen , onHamburgerClick}) {
                 </div>
 
                 {/* --- ADMINISTRATEUR --- */}
+                {isAdmin && 
                 <div className={styles.admin_container}>
                     <div>
                         <h3>Administrateur</h3>
@@ -73,7 +70,7 @@ function Menu({isOpen , onHamburgerClick}) {
                         </NavLink>
                     </div >
                     <span className={styles.border}></span>
-                </div>
+                </div>}
 
                 {/* --- UTILISATEUR --- */}
                 <div className={styles.user_container}>

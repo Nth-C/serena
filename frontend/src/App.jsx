@@ -57,16 +57,21 @@ function App() {
           <Route index element={<Navigate to="login" replace />} />
         </Route>
 
-      {/* pages menu */}
-        <Route path="logs"
-          element={<AuditLog />}>
-        </Route>
-        <Route path="add_contact" 
-          element={<AddMembre />}>
-        </Route>
-        <Route path="role_membre" 
-          element={<RoleMembre />}>
-        </Route>
+        {/* PAGES MENU */}
+        {/* uniquement accessible pour le createur de la famille */}
+        {sessionStorage.getItem('role') === "Createur" && (
+          <>
+          <Route path="logs"
+            element={<AuditLog />}>
+          </Route>
+          <Route path="add_contact" 
+            element={<AddMembre />}>
+          </Route>
+          <Route path="role_membre" 
+            element={<RoleMembre />}>
+          </Route>
+          </>
+        )}
         <Route path="liste_membre" 
           element={<ListeMembre />}>
         </Route>
@@ -88,7 +93,6 @@ function App() {
         <Route path="signalement" 
           element={<Signalement />}>
         </Route>
-
 
         
         {/* SE CONNECTER */}
