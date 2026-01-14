@@ -37,7 +37,7 @@ if ($id_famille_selectionne !== null && $id_famille_selectionne > 0) {
         // Force l'enregistrement de la session avant de répondre au JS
         session_write_close(); 
 
-        echo json_encode(['success' => true]);
+        echo json_encode(['success' => true , 'role' => $dao->getRoleInFamily($app->personne->id,$id_famille_selectionne)]);
     } else {
         echo json_encode(['success' => false, 'error' => 'Accès refusé à cette famille']);
     }
