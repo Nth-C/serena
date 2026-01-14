@@ -295,7 +295,7 @@ function Agenda() {
               </select>
             </div>
 
-            <div className="date-row">
+            
               <div>
                 <label>Début :</label>
                 <input type="datetime-local" name="debut" value={formData.debut} onChange={handleChange} required />
@@ -304,7 +304,7 @@ function Agenda() {
                 <label>Fin :</label>
                 <input type="datetime-local" name="fin" value={formData.fin} onChange={handleChange} required />
               </div>
-            </div>
+            
 
             <div>
               <label>Récurrence :</label>
