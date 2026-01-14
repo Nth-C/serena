@@ -22,7 +22,7 @@ try {
     $model = new PersonneDAO();
     
     // On n'exécute la recherche que si le texte n'est pas vide (optionnel mais conseillé)
-    $rapports = $model->getAllPersonneWithTexte($texteRecherche);
+    $rapports = $model->getAllPersonneWithTexte($texteRecherche,$app->personne->id,$app->id_famille);
 
     echo json_encode($rapports);
 

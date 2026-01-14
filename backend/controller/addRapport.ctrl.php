@@ -22,6 +22,8 @@ try {
     if (!empty($data['medicaments'])) {
         foreach ($data['medicaments'] as $med) {
             $model->addMedicToConso($med['id_med'], $id_rapport, $med['quantite']);
+        
+            $model->updateMedicStock($med['id_med'], (int)$med['quantite']);
         }
     }
 
