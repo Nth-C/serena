@@ -36,6 +36,24 @@ class MedicamentDAO {
         return $medicaments;
     }
 
+    public function getAllMedicamentsUrgent($id_famille): array {
+    $query = 'SELECT * FROM STOCK_MEDICS 
+              INNER JOIN CAT_MEDICS ON CAT_MEDICS.id_medics = STOCK_MEDICS.id_cat_medicament
+              WHERE id_famille = :id_famille 
+              AND quantite <= 3';
+              
+    $stmt = $this->dal->prepare($query);
+    $stmt->execute(['id_famille' => $id_famille]);
+    
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $medicaments = [];
+    foreach($data as $medicament){
+         $medicaments[] = new Medicament($medicament);
+    }
+
+    return $medicaments;
+}
+
     public function searchNomMedicament($texte): array {
     // On récupère uniquement les noms de médicaments sans doublons
     $query = 'SELECT DISTINCT denomination_substance 

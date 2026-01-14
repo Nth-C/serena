@@ -52,7 +52,8 @@ const _ROUTES = array(
   'getevents' => 'getevents',
   'forgot_password' => 'forgotPassword',
   'reset_password' => 'resetPassword',
-  'liste_membre' => 'liste_membre'
+  'liste_membre' => 'liste_membre',
+  'dashboard/view' => 'viewDashboard'
 );
 
 if (!array_key_exists($route, _ROUTES)) {
