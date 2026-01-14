@@ -200,7 +200,7 @@ public function deleteInviterPersonneDansFamille($id_famille_invitee, $id_pers_i
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-    public function AccepterInvitation($id_personne, $id_famille): bool {
+    public function AccepterInvitation($id_personne, $id_famille, $role = "Visiteur"): bool {
     try {
         // 1. On commence une transaction pour s'assurer que si une étape échoue, rien n'est modifié
         $this->dal->beginTransaction();
@@ -208,11 +208,12 @@ public function deleteInviterPersonneDansFamille($id_famille_invitee, $id_pers_i
         // 2. On ajoute la personne à la famille (Lien n-n)
         // Note : Vérifiez le nom de votre table de liaison (ici 'appartient_a')
         $queryInsert = 'INSERT INTO appartient_a (id_famille, id_personne,role) 
-                        VALUES (:id_f, :id_p,\'test\')';
+                        VALUES (:id_f, :id_p, :role)';
         $stmtInsert = $this->dal->prepare($queryInsert);
         $stmtInsert->execute([
             ':id_f' => $id_famille,
-            ':id_p' => $id_personne
+            ':id_p' => $id_personne,
+            ':role' => $role,
         ]);
 
         // 3. On supprime l'invitation maintenant qu'elle est acceptée

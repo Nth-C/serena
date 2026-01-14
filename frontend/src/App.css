@@ -1270,6 +1270,104 @@ progress.blue_bar::-moz-progress-bar {
   text-align: justify;
 }
 
+/* ----------------------------- */
+/* ------ TABLEAU DE BORD ------ */
+/* ----------------------------- */
+
+.accueil,
+.last_report {
+  padding: 3rem;
+}
+
+.accueil {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.accueil h1 {
+  padding: 0;
+}
+
+.accueil .list_alerte {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.accueil .alerte_dashbord {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--pink);
+  padding: 1rem;
+  border-radius: 10px;
+  min-height: 103px;
+  
+}
+
+.accueil .alerte_dashbord svg:first-child {
+  fill: var(--red);
+  background-color: var(--white);
+  padding: .5rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+}
+
+.accueil .alerte_dashbord svg:last-child {
+  fill: var(--white);
+  width: 50px;
+  height: 50px;
+}
+
+.accueil progress {
+  border: 1px solid var(--gray);
+  background-color: var(--white);
+  border-radius: 50rem;
+  height: .9rem;
+}
+
+
+
+.last_report > div {
+  border: 2px solid var(--blue);
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.last_report > div > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--blue);
+  border-radius: 10px;
+  padding: 1.5rem;
+  color: var(--white);
+}
+
+.last_report > div > div:first-child svg {
+  width: 50px;
+  height: 50px;
+  fill: var(--white);
+}
+
+.last_report .info_report {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.last_report .info_report li {
+  list-style: inside;
+  padding-left: 3%;
+}
+
+.last_report .info_report p {
+  text-align: justify;
+}
+
 
 /* ----------------------------- */
 /* ----------- FONTS ----------- */
