@@ -19,6 +19,7 @@ import ResetPassword from './pages/ResetPassword';
 import AuditLog from './pages/AuditLog';
 import AddMembre from './pages/AddMembre';
 import RoleMembre from './pages/RoleMembre';
+import ListeMembre from './pages/ListeMembre';
 
 
 const ProtectedRoute = ({ children, requireFamily = true }) => {
@@ -59,7 +60,9 @@ function App() {
         <Route path="role_membre" 
           element={<RoleMembre />}>
         </Route>
-
+        <Route path="liste_membre" 
+          element={<ListeMembre />}>
+        </Route>
         
         
         {/* SE CONNECTER */}
