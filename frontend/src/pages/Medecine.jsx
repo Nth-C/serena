@@ -98,7 +98,7 @@ function Medecine() {
     try {
       const response = await fetch(`${apiUrl}/?route=medicament/delete`, {
         method: "POST", // pour envoyer des données
-          credentials: 'include',
+        credentials: 'include',
         headers: { "Content-Type": "application/json" }, // type de donnée envoyer
         body: JSON.stringify({ id: id }) // message a transmettre
       });
@@ -350,7 +350,7 @@ function Medecine() {
               ))}
             </select>
           </div>
-          
+
           <div>
             <label>Stock initiale du médicament : </label>
             <input

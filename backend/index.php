@@ -43,6 +43,7 @@ const _ROUTES = array(
   'rapport/add' => 'addRapport',
   'rapport/delete' => 'deleteRapport',
   'rapport/update' => 'updateRapport',
+  'rapport/last' => 'viewLastReport',
   'document/list' => 'viewDocument',
   'document/add' => 'addDocument',
   'document/delete' => 'deleteDocument',
@@ -52,7 +53,9 @@ const _ROUTES = array(
   'getevents' => 'getevents',
   'forgot_password' => 'forgotPassword',
   'reset_password' => 'resetPassword',
-  'liste_membre' => 'liste_membre'
+  'liste_membre' => 'liste_membre',
+  'trajet/add' => 'addTrajet',
+  'dashboard/view' => 'viewDashboard'
 );
 
 if (!array_key_exists($route, _ROUTES)) {

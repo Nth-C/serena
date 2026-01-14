@@ -25,6 +25,9 @@ function Agenda() {
   
   const apiUrl = import.meta.env.VITE_API_URL
 
+  // Génère une chaîne comme "2026-01-14T12:30"
+  const now = new Date().toISOString().slice(0, 16);
+
   // --- Initialisation du State ---
   const [formData, setFormData] = useState({
     // Champs Événement
