@@ -65,6 +65,7 @@ function LastVisitReport() {
   const [initialStock, setInitialStock] = useState("");
   const [currentStock, setCurrentStock] = useState("");
   const [openMedicId, setOpenMedicId] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -101,7 +102,11 @@ function LastVisitReport() {
         credentials: 'include'
       });
       const data = await response.json();
-      if (data.error) throw new Error(data.error);
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
       setListMedecine(Array.isArray(data) ? data : []);
       setError(null);
     } catch (err) {
@@ -115,13 +120,16 @@ function LastVisitReport() {
 
   const handleMedecine = async (e) => {
     e.preventDefault()
+
     const nouveauMedoc = {
       name: nameMedecine,
       idCatalogueMedecine: idCatalogueMedecine,
       stock: currentStock,
       stockTotal: initialStock
     }
+
     const route = isEditing ? 'medicament/update' : 'medicament/add';
+
     try {
       const response = await fetch(`${apiUrl}/?route=${route}`, {
         method: "POST",
@@ -129,7 +137,9 @@ function LastVisitReport() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nouveauMedoc)
       });
+
       const result = await response.json();
+
       if (result.success) {
         handleResetForm()
         getMedecine()
@@ -140,12 +150,14 @@ function LastVisitReport() {
         setMessage("Erreur: " + result.error);
       }
     } catch (error) {
+      setMessage("error");
       console.error(error);
     }
   };
 
   const handleSearchMedecine = async (e) => {
     const route = 'nommedicament/search';
+
     try {
       const response = await fetch(`${apiUrl}/?route=${route}`, {
         method: "POST",
@@ -153,6 +165,7 @@ function LastVisitReport() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ texteNomMedicament: e })
       });
+
       const result = await response.json();
       setListNomMedecine(result.resultats)
       if (result.isUnique) {
@@ -163,14 +176,15 @@ function LastVisitReport() {
         setIsNameGood(false);
       }
     } catch (error) {
+      setMessage("error");
       console.error(error);
     }
   };
 
   const addMedicToSelection = (medicament) => {
-    if (!selectedMedicsForReport.find(m => m.id_medicament === medicament.id_medicament)) {
+    if (!selectedMedicsForReport.find(m => (m.id_med || m.id_medicament) === medicament.id_medicament)) {
       setSelectedMedicsForReport([...selectedMedicsForReport, { 
-        id_med: medicament.id_medicament, // On garde l'ID pour le PHP
+        id_med: medicament.id_medicament,
         nomMedicament: medicament.nomMedicament, 
         quantite: "" 
       }]);
@@ -211,14 +225,16 @@ function LastVisitReport() {
     setNomRapport(selectedRapport.nom);
     setDescRapport(selectedRapport.description);
     
-    // On charge les médicaments existants dans le formulaire de modification
-    const medicsToEdit = selectedRapport.medics_details.map(m => ({
-      id_med: m.id_medicament,
-      nomMedicament: m.nom,
-      quantite: m.quantite
-    }));
-    
-    setSelectedMedicsForReport(medicsToEdit);
+    // Ajout : Charger les médicaments existants pour la modification
+    if (selectedRapport.medics_details) {
+      const medicsToEdit = selectedRapport.medics_details.map(m => ({
+        id_med: m.id_medicament,
+        nomMedicament: m.nom,
+        quantite: m.quantite
+      }));
+      setSelectedMedicsForReport(medicsToEdit);
+    }
+
     setIsEditing(true);
     setIsDetailsReportpen(false);
     setIsNewRapportOpen(true);
@@ -226,9 +242,11 @@ function LastVisitReport() {
 
   const handleSubmitRapport = async (e) => {
     e.preventDefault();
-    const nomPourNotification = nomRapport; 
-    const route = isEditing ? 'rapport/update' : 'rapport/add';
     
+    // Ajout : Sauvegarder le nom avant le reset pour la popup
+    const nomPourNotification = nomRapport; 
+    
+    const route = isEditing ? 'rapport/update' : 'rapport/add';
     const bodyData = {
       nom: nomRapport,
       description: descRapport,
@@ -249,9 +267,12 @@ function LastVisitReport() {
       const result = await response.json();
       if (result.success) {
         setIsNewRapportOpen(false);
+        
+        // Ajout : Utiliser le nom sauvegardé
         setNameToDelete(nomPourNotification); 
+        
         isEditing ? setIsShowModify(true) : setIsShowAdd(true);
-        handleResetRapport();
+        handleResetRapport(); 
         setSelectedMedicsForReport([]);
         setIsEditing(false);
         fetchRapports();
@@ -291,7 +312,6 @@ function LastVisitReport() {
   const toggleMedic = (id) => {
     setOpenMedicId(openMedicId === id ? null : id);
   };
-
   useEffect(() => {
     document.documentElement.classList.toggle('menu-active', isNewRapportOpen || isNewMedicineOpen || isDetailsReportOpen || isPopUpDeleteOpen);
   }, [isNewRapportOpen, isNewMedicineOpen, isDetailsReportOpen, isPopUpDeleteOpen]);
@@ -353,6 +373,7 @@ function LastVisitReport() {
             <button onClick={toggleNewMedicine} className="btn_blue">Ajouter un nouveau médicament</button>
           </div>
           <div className="list">
+
             {listMedecine.map((med) => (
               <MedicItem
                 key={med.id_medicament}
@@ -361,15 +382,18 @@ function LastVisitReport() {
                 onToggle={() => toggleMedic(med.id_medicament)}
                 onAdd={addMedicToSelection}
               />
+
             ))}
           </div>
         </div>,
         document.body
       )}
 
-      {/* Slide Ajout Médicament Catalogue */}
+      {/* Slide Ajout Médicament */}
       <Slide title={"Ajouter un médicament"} isOpen={isNewMedicineOpen} toggleOpen={toggleNewMedicine} zIndex={700}>
         <form className="new_medecine" onSubmit={handleMedecine}>
+
+
           <div>
             <label>Nom du médicament : </label>
             <input
@@ -378,7 +402,10 @@ function LastVisitReport() {
               value={nameMedecine}
               onChange={(e) => {
                 setNameMedecine(e.target.value);
-                if (e.target.value !== "") handleSearchMedecine(e.target.value);
+                if (e.target.value != "") {
+                  handleSearchMedecine(e.target.value);
+                }
+
               }}
               required
               disabled={isEditing}
@@ -389,9 +416,18 @@ function LastVisitReport() {
               ))}
             </datalist>
           </div>
+
+
+
+
           <div>
             <label>Type de médicament : </label>
-            <select value={idCatalogueMedecine} onChange={(e) => setIdCatalogueMedecine(e.target.value)} required disabled={!isNameGood}>
+            <select value={idCatalogueMedecine} onChange={(e) => {
+              setIdCatalogueMedecine(e.target.value)
+
+            }}
+              required
+              disabled={!isNameGood}>
               <option value=""></option>
               {listTypeMedecine.map((listeMedicament) => (
                 <option key={listeMedicament.id_medics} value={listeMedicament.id_medics}>
@@ -400,6 +436,8 @@ function LastVisitReport() {
               ))}
             </select>
           </div>
+
+
           <div><label>Stock initial : </label><input type="number" value={initialStock} onChange={(e) => setInitialStock(e.target.value)} required /></div>
           <div><label>Stock actuel : </label><input type="number" value={currentStock} onChange={(e) => setCurrentStock(e.target.value)} required /></div>
           <div>
@@ -439,8 +477,9 @@ function LastVisitReport() {
             </div>
             <button type="button" className="btn_blue add_medi" onClick={() => {
               togglePopup();
-              getMedecine();
-            }}>Ajouter médicament</button>
+              getMedecine()
+            }}
+            >Ajouter médicament</button>
           </div>
           <div>
             <label>Information supplémentaire : </label>
@@ -492,6 +531,7 @@ function LastVisitReport() {
         ) : null}
       </Slide>
 
+      {/* Popups de confirmation et suppression */}
       <PopUpDelete
         toDelete={nameToDelete}
         handleDelete={handleDeleteRapport}
