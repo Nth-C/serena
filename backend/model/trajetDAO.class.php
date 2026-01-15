@@ -42,16 +42,7 @@ class TrajetDAO {
 
             // 2. Gestion des liaisons (Aidant OU Société)
 
-            if (!empty($aidant_id)) {
-                // Cas A : C'est un Aidant -> Table EFFECTUE
-                $qLink = "INSERT INTO EFFECTUE (id_trajet, id_personne) VALUES (:id_trajet, :id_personne)";
-                $stmtLink = $this->dal->prepare($qLink);
-                $stmtLink->execute([
-                    ':id_trajet' => $id_trajet,
-                    ':id_personne' => $aidant_id
-                ]);
-
-            } elseif (!empty($nom_societe)) {
+            if (!empty($nom_societe)) {
                 // Cas B : C'est une Société -> Tables SOCIETES et CHARGE
                 
                 // Vérifier si la société existe déjà
@@ -122,5 +113,42 @@ class TrajetDAO {
 
         return $trajets;
     }
+
+    public function AjouterPersonneAuTrajet(string $id_trajet,string $id_personne): bool
+    {
+        $this->dal->beginTransaction();
+        $qLink = "INSERT INTO EFFECTUE (id_trajet, id_personne) VALUES (:id_trajet, :id_personne)";
+                $stmtLink = $this->dal->prepare($qLink);
+                $stmtLink->execute([
+                    ':id_trajet' => $id_trajet,
+                    ':id_personne' => $id_personne,
+                ]);     
+        
+
+        return $this->dal->commit();;
+    }
+
+
+    public function getAllDemandeDeTrajet(string $id_famille): array
+{
+    // On cherche les trajets liés aux événements de la famille
+    // Mais on exclut ceux qui sont déjà présents dans la table EFFECTUE
+    $query = "SELECT t.* FROM TRAJET t
+              JOIN EVENEMENTS e ON t.id_event = e.id_event
+              WHERE e.id_famille = :id_famille
+              AND t.id_trajet NOT IN (SELECT id_trajet FROM EFFECTUE)";
+
+    try {
+        $stmt = $this->dal->prepare($query);
+        $stmt->execute([':id_famille' => $id_famille]);
+        
+        // On récupère toutes les lignes
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // En cas d'erreur, on retourne un tableau vide
+        return [];
+    }
+}
+    
 }
 ?>

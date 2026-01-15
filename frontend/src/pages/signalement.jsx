@@ -17,6 +17,11 @@ const Signalement = () => {
 
     const apiUrl = import.meta.env.VITE_API_URL;
 
+        // Charger les logs au montage du composant
+        useEffect(() => {
+            getSignalement();
+        }, []);
+
     // --- 1. CHARGEMENT DES DONNÉES ---
     const fetchSignalements = async () => {
         setLoading(true);
