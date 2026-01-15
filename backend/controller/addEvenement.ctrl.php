@@ -15,6 +15,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 $app = new App();
 
+if (!$app->checkRole('Proche')) {
+    header('HTTP/1.1 403 Forbidden');
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Erreur : Vous devez avoir au moins le role de Proche pour faire ça.'
+    ]);
+    exit; 
+}
+
 try {
     $json = file_get_contents('php://input'); // lit le body du fetch
     $data = json_decode($json, true); // transforme '$json' en tableau

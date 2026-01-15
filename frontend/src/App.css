@@ -76,14 +76,12 @@ h2 {
   font-size: var(--font-md);
 }
 
-h3 {
-  font-size: var(--font-sm);
-}
-
 label,
+h3,
 p,
 a,
-li {
+li,
+td {
   font-size: var(--font-sm);
 }
 
@@ -126,6 +124,11 @@ textarea {
 input,
 select {
   height: 3.5rem;
+}
+
+input,
+label {
+  cursor: pointer;
 }
 
 select option {
@@ -243,11 +246,8 @@ input::placeholder {
 .page_menu {
   position: relative;
   display: flex;
-  position: fixed;
-  top: 0;
-  left: 0;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   background: var(--white);
   flex-direction: column;
   gap: 2rem;
@@ -268,6 +268,7 @@ input::placeholder {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  white-space: nowrap;
 }
 
 .page_menu .params_header svg {
@@ -1409,6 +1410,84 @@ progress.blue_bar::-moz-progress-bar {
 .last_report .info_report p {
   text-align: justify;
 }
+
+/* ---------------------------- */
+/* ----------- LOGS ----------- */
+/* ---------------------------- */
+
+/* filtre */
+
+.audit_log .filter_bar {
+  margin: 1rem 3rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.audit_log svg {
+  width: 2.5rem;
+}
+
+.audit_log .filter_group {
+  position: relative;
+}
+
+.audit_log .filter_group > button {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.audit_log .filter_group > div:last-child {
+  display: none;
+  position: absolute;
+  background: var(--white);
+  border: 1px solid var(--gray);
+  padding: .5rem 1rem;
+  border-radius: 8px;
+}
+
+.audit_log .filter_group > div:last-child.active {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.audit_log .filter_group .checkbox {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.audit_log .filter_group:last-child {
+  display: flex;
+  gap: 2rem;
+}
+
+.audit_log svg.spinning {
+  transition: .2s var(--bezier);
+  transform: rotate(360deg);
+}
+
+/* liste */
+
+.audit_table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  table-layout: auto;
+}
+
+.audit_table th, 
+.audit_table td {
+  text-align: left;
+  padding: 1rem 3rem;
+  border-bottom: 1px solid var(--gray);
+}
+
+/* ----------------------------------- */
+/* ----------- SIGNALEMENT ----------- */
+/* ----------------------------------- */
+
 
 
 /* ----------------------------- */

@@ -579,7 +579,7 @@ function LastVisitReport() {
         toDelete={nameToDelete}
         handleDelete={handleDeleteRapport}
         isOpen={isPopUpDeleteOpen}
-        onClose={togglePopUpDelete}
+        onClose={() => togglePopUpDelete()}
       />
 
       <PopUpConfirmation sentence={`Le rapport ${nameToDelete} a bien été supprimé.`} show={isShowRemove} setShow={setIsShowRemove} />

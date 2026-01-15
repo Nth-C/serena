@@ -83,4 +83,13 @@ class RapportDAO {
         $stmt = $this->dal->prepare($query);
         return $stmt->execute(['nom'=>$nom, 'desc'=>$desc, 'id'=>$id]);
     }
+
+    public function deleteRapport($id_rapport, $id_famille) {
+        $query = 'DELETE FROM RAPPORTS WHERE id_rapport = :id AND id_famille = :id_f';
+        $stmt = $this->dal->prepare($query);
+        return $stmt->execute([
+            'id'   => $id_rapport,
+            'id_f' => $id_famille
+        ]);
+    }
 }

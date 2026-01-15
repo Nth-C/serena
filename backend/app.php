@@ -79,30 +79,34 @@ public function logout() {
     }
 
     public function checkRole(string $requiredRole): bool {
-    require_once(__DIR__ . '/model/familleDAO.class.php');
+    require_once(__DIR__ . '/model/FamilleDAO.class.php');
     if (!$this->personne || $this->id_famille == 0) return false;
 
     $dao = new FamilleDAO();
     $currentRole = $dao->getRoleInFamily($this->personne->id, $this->id_famille);
     
-    // Si on demande 'admin', il faut être 'admin'
-    // Si on demande 'membre', 'admin' a aussi le droit
-    if ($requiredRole === 'Createur') {
-        return $currentRole === 'Createur';
+    // Définition de la puissance des rôles (plus le chiffre est haut, plus on est puissant)
+    $levels = [
+        'Professionelle' => 1,
+        'Proche'         => 2,
+        'Famille'        => 3,
+        'Createur'       => 4
+    ];
+
+    // Si le rôle n'est pas reconnu dans notre liste, on refuse par défaut
+    if (!isset($levels[$currentRole]) || !isset($levels[$requiredRole])) {
+        return false;
     }
 
-    if ($requiredRole === 'Famille') {
-        return $currentRole === 'Createur'||'Famille';
-    }
+    // ON COMPARE : Est-ce que le niveau de l'utilisateur est >= au niveau requis ?
+    return $levels[$currentRole] >= $levels[$requiredRole];
+}
+    public function getRole(): string {
+    require_once(__DIR__ . '/model/familleDAO.class.php');
+    if (!$this->personne || $this->id_famille == 0) return false;
 
-    if ($requiredRole === 'Proche') {
-        return $currentRole === 'Createur'||'Famille'||'Proche';
-    }
-
-    if ($requiredRole === 'Professionelle') {
-        return $currentRole === 'Createur'||'Famille'||'Proche'||'Professionelle';
-    }
+    $dao = new FamilleDAO();
+    return $dao->getRoleInFamily($this->personne->id, $this->id_famille);
     
-    return false;
 }
 }

@@ -1,5 +1,5 @@
 import styles from './PopUpConfirmation.module.css';
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 
 function PopUpConfirmation({sentence, show, setShow}) {

@@ -8,6 +8,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 $app = new App();
 
+if (!$app->checkRole('Proche')) {
+    header('HTTP/1.1 403 Forbidden');
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Erreur : Vous devez avoir au moins le role de Proche pour faire ça.'
+    ]);
+    exit; 
+}
+
     // 1. Récupération du JSON
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
