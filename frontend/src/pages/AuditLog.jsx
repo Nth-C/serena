@@ -45,6 +45,11 @@ const AuditLog = ({ isOpen, onClose }) => {
         }
     };
 
+    // Charger les logs au montage du composant
+    useEffect(() => {
+        gethistorique();
+    }, []);
+
     useEffect(() => {
         if (isOpen) {
             gethistorique();
