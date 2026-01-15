@@ -1,148 +1,263 @@
-import React, { useState } from 'react';
-import Slide from '../components/slide/Slide';
-import { useLocation } from 'react-router-dom';
-import './signalement.css';
+import React, { useState, useEffect } from 'react';
+import './signalement.css'; // Assure-toi que le CSS est bien importé
+import Slide from '../components/slide/Slide'; // Ton composant Slide existant
 
-const Signalement = ({ isOpen = true, onClose = () => {} }) => {
-  const [subject, setSubject] = useState('');
-  const [messageBody, setMessageBody] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState({ type: '', msg: '' });
+const TrashIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>;
+const CheckCircleIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>;
+const XCircleIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>;
+const PlusIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>;
 
-  const location = useLocation();
-  const isPageRoute = location.pathname === '/signalement' || location.pathname === '/signalement/';
+const Signalement = () => {
+    const [signalements, setSignalements] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [isNewOpen, setIsNewOpen] = useState(false);
+    const [formData, setFormData] = useState({ sujet: '', message: '' });
+    const [statusMsg, setStatusMsg] = useState({ type: '', msg: '' });
 
-  const handleReset = () => {
-    setSubject('');
-    setMessageBody('');
-    setStatus({ type: '', msg: '' });
-  };
+    const apiUrl = import.meta.env.VITE_API_URL;
 
-  const handleSend = async (e) => {
-    e.preventDefault();
-    if (!subject.trim() || !messageBody.trim()) {
-      setStatus({ type: 'error', msg: 'Veuillez remplir tous les champs.' });
-      return;
-    }
-
-    setLoading(true);
-    setStatus({ type: '', msg: '' });
-
-    try {
-      const url = `${apiUrl}/?route=mail/send&subject=${encodeURIComponent(subject)}&message=${encodeURIComponent(messageBody)}`;
-
-      const response = await fetch(url, {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json'
+    // --- 1. CHARGEMENT DES DONNÉES ---
+    const fetchSignalements = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(`${apiUrl}/?route=signalement/list`, {
+                credentials: 'include'
+            });
+            const data = await response.json();
+            
+            if (Array.isArray(data)) {
+                setSignalements(data);
+            } else {
+                setSignalements([]); // Sécurité si retour vide ou erreur
+            }
+        } catch (error) {
+            console.error("Erreur chargement:", error);
+        } finally {
+            setLoading(false);
         }
-      });
+    };
 
-      const data = await response.json();
+    useEffect(() => {
+        fetchSignalements();
+    }, []);
 
-      if (data.success) {
-        setStatus({ type: 'success', msg: 'Message envoyé avec succès !' });
-        handleReset();
-        setTimeout(() => {
-          setStatus({ type: '', msg: '' });
-        }, 3000);
-      } else {
-        setStatus({ type: 'error', msg: data.error || 'Erreur lors de l\'envoi.' });
-      }
+    // --- 2. AJOUTER UN SIGNALEMENT (BDD + MAIL) ---
+    const handleAdd = async (e) => {
+        e.preventDefault();
+        setStatusMsg({ type: 'info', msg: 'Envoi en cours...' });
 
-    } catch (err) {
-      console.error("Erreur mail:", err);
-      setStatus({ type: 'error', msg: "Erreur technique serveur." });
-    } finally {
-      setLoading(false);
-    }
-  };
+        console.log("DEBUG: API URL =", apiUrl);
+        console.log("DEBUG: Form data =", formData);
 
-  const form = (
-    <div className="signalement-form-container">
-      <div className="signalement-header">
-        <h2>Nouveau message</h2>
-      </div>
+        try {
+            // Enregistrement BDD
+            const url = `${apiUrl}/?route=signalement/add`;
+            console.log("DEBUG: Sending to URL:", url);
+            console.log("DEBUG: Request body:", JSON.stringify(formData));
 
-      {status.msg && (
-        <div className={`signalement-status ${status.type}`}>
-          {status.msg}
-        </div>
-      )}
+            const resDb = await fetch(url, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
 
-      <form className="signalement-form" onSubmit={handleSend}>
-        <div className="form-group">
-          <label htmlFor="to">À :</label>
-          <input
-            type="text"
-            id="to"
-            value="Administration"
-            readOnly
-            className="form-input readonly"
-          />
-        </div>
+            console.log("DEBUG: Response status:", resDb.status);
+            console.log("DEBUG: Response OK:", resDb.ok);
 
-        <div className="form-group">
-          <label htmlFor="subject">Sujet :</label>
-          <input
-            type="text"
-            id="subject"
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-            required
-            placeholder="Objet de votre message..."
-            className="form-input"
-          />
-        </div>
+            const dataDb = await resDb.json();
+            console.log("DEBUG: Response data:", dataDb);
 
-        <div className="form-group">
-          <label htmlFor="message">Message :</label>
-          <textarea
-            id="message"
-            value={messageBody}
-            onChange={(e) => setMessageBody(e.target.value)}
-            required
-            rows={8}
-            placeholder="Écrivez votre message ici..."
-            className="form-textarea"
-          />
-        </div>
+            if (dataDb.error) throw new Error(dataDb.error);
+            if (!dataDb.success) throw new Error("L'ajout a échoué");
 
-        <div className="form-actions">
-          <button
-            type="button"
-            className="btn-secondary"
-            onClick={handleReset}
-            disabled={loading}
-          >
-            Effacer
-          </button>
-          <button
-            type="submit"
-            className="btn-primary"
-            disabled={loading}
-          >
-            {loading ? 'Envoi en cours...' : 'Envoyer'}
-          </button>
-        </div>
-      </form>
-    </div>
-  );
+            // B. Envoi du Mail (Optionnel)
+            try {
+                await fetch(`${apiUrl}/?route=mail/send`, { 
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        subject: `[SIGNALEMENT] ${formData.sujet}`,
+                        message: formData.message
+                    })
+                });
+            } catch (mailError) {
+                console.warn("Mail non envoyé, mais signalement créé:", mailError);
+            }
 
-  if (isPageRoute) {
+            setStatusMsg({ type: 'success', msg: 'Signalement envoyé avec succès !' });
+            setFormData({ sujet: '', message: '' });
+            setIsNewOpen(false);
+            fetchSignalements(); // Rafraîchir la liste
+
+        } catch (error) {
+            console.error("ERROR:", error);
+            setStatusMsg({ type: 'error', msg: "Erreur lors de l'envoi : " + error.message });
+        }
+    };
+
+    // --- 3. MODIFIER LE STATUT ---
+    const handleStatusChange = async (id, newStatus) => {
+        try {
+            const response = await fetch(`${apiUrl}/?route=signalement/update`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id_signalement: id,
+                    status: newStatus
+                })
+            });
+            const result = await response.json();
+            if (result.success) {
+                fetchSignalements(); // On recharge la liste pour voir le changement
+            }
+        } catch (error) {
+            console.error("Erreur update:", error);
+        }
+    };
+
+    // --- 4. SUPPRIMER ---
+    const handleDelete = async (id, idPers) => {
+        if (!window.confirm("Voulez-vous vraiment supprimer ce signalement ?")) return;
+
+        try {
+            const response = await fetch(`${apiUrl}/?route=signalement/delete`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id_signalement: id,
+                    id_pers_signal: idPers // Nécessaire pour ton DAO
+                })
+            });
+            const result = await response.json();
+            if (result.success) {
+                fetchSignalements();
+            } else {
+                alert("Erreur: " + result.error);
+            }
+        } catch (error) {
+            console.error("Erreur delete:", error);
+        }
+    };
+
+    // Rendu d'un badge de statut
+    const renderStatusBadge = (status) => {
+        const isClosed = status === 'cloture' || status === 'Clôturé';
+        return (
+            <span className={`status-badge ${isClosed ? 'closed' : 'open'}`}>
+                {isClosed ? 'Clôturé' : 'En cours'}
+            </span>
+        );
+    };
+
     return (
-      <div className="signalement-page">
-        {form}
-      </div>
-    );
-  }
+        <div className="signalement-page">
+            <div className="page-header">
+                <h1>Mes Signalements</h1>
+                <button className="btn-primary btn-add" onClick={() => setIsNewOpen(true)}>
+                    <PlusIcon /> Nouveau Signalement
+                </button>
+            </div>
 
-  return (
-    <Slide title={"Nouveau message"} isOpen={isOpen} toggleOpen={onClose}>
-      {form}
-    </Slide>
-  );
+            {/* LISTE DES SIGNALEMENTS */}
+            <div className="signalement-list">
+                {loading ? (
+                    <p>Chargement...</p>
+                ) : signalements.length === 0 ? (
+                    <div className="empty-state">
+                        <p>Aucun signalement pour le moment.</p>
+                    </div>
+                ) : (
+                    signalements.map((sig) => (
+                        <div key={sig.id_signalement} className="signalement-card">
+                            <div className="card-header">
+                                <div className="header-left">
+                                    <h3>{sig.sujet}</h3>
+                                    <span className="date">{new Date(sig.date_creation).toLocaleDateString()}</span>
+                                </div>
+                                <div className="header-right">
+                                    {renderStatusBadge(sig.status)}
+                                    <button 
+                                        className="btn-icon delete"
+                                        title="Supprimer"
+                                        onClick={() => handleDelete(sig.id_signalement, sig.id_pers_signal)}
+                                    >
+                                        <TrashIcon />
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div className="card-body">
+                                <p>{sig.message}</p>
+                            </div>
+
+                            <div className="card-footer">
+                                {/* Actions de changement de statut */}
+                                {sig.status !== 'cloture' && (
+                                    <button 
+                                        className="btn-text success" 
+                                        onClick={() => handleStatusChange(sig.id_signalement, 'cloture')}
+                                    >
+                                        <CheckCircleIcon /> Marquer comme résolu
+                                    </button>
+                                )}
+                                {sig.status === 'cloture' && (
+                                    <button 
+                                        className="btn-text warning" 
+                                        onClick={() => handleStatusChange(sig.id_signalement, 'ouvert')}
+                                    >
+                                        <XCircleIcon /> Rouvrir
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
+
+            {/* FORMULAIRE NOUVEAU (Slide) */}
+            <Slide title="Nouveau Signalement" isOpen={isNewOpen} toggleOpen={() => setIsNewOpen(false)}>
+                <form onSubmit={handleAdd} className="signalement-form">
+                    {statusMsg.msg && (
+                        <div className={`alert ${statusMsg.type}`}>
+                            {statusMsg.msg}
+                        </div>
+                    )}
+                    
+                    <div className="form-group">
+                        <label>Sujet</label>
+                        <input 
+                            type="text" 
+                            className="form-input"
+                            value={formData.sujet}
+                            onChange={(e) => setFormData({...formData, sujet: e.target.value})}
+                            required
+                            placeholder="Ex: Bug sur l'agenda..."
+                        />
+                    </div>
+                    
+                    <div className="form-group">
+                        <label>Message</label>
+                        <textarea 
+                            className="form-textarea"
+                            value={formData.message}
+                            onChange={(e) => setFormData({...formData, message: e.target.value})}
+                            required
+                            placeholder="Décrivez votre problème en détail..."
+                        />
+                    </div>
+
+                    <div className="form-actions">
+                        <button type="button" className="btn-secondary" onClick={() => setIsNewOpen(false)}>Annuler</button>
+                        <button type="submit" className="btn-primary">Envoyer</button>
+                    </div>
+                </form>
+            </Slide>
+        </div>
+    );
 };
 
 export default Signalement;
