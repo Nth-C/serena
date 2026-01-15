@@ -19,8 +19,8 @@
 :root {
   --black: #252525;
   --white: #FFFBF2;
-  --blue: #759BE1;
-  ;
+  --blue: #84AFFB;
+  /*--blue: #759BE1;*/
   --pink: #FFBABA;
   --red: #BF443D;
   --gray: #B1B1B1;
@@ -937,8 +937,6 @@ progress.blue_bar::-moz-progress-bar {
 /* calandar */
 
 /*  slide event */
-.add_event {}
-
 :is(.switch_event, .switch_calendar) {
   /*margin-bottom: 2rem;*/
   border-radius: 8px;
