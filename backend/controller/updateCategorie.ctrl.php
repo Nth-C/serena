@@ -15,7 +15,7 @@ try {
     }
 
     $model = new CategorieDAO();
-    $success = $model->updateCategorie($data['id_categorie'],$data['name']);
+    $success = $model->updateCategorie($data['id_categorie'],$data['name'],$data['role']);
     
     // renvoie a la vue des informations
     echo json_encode([

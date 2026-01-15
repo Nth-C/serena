@@ -15,7 +15,7 @@ try {
     }
 
     $model = new CategorieDAO();
-    $success = $model->addCategorie($app->id_famille,$data['name']);
+    $success = $model->addCategorie($app->id_famille,$data['name'],$data['role']);
 
     // renvoie a la vue des informations
     echo json_encode([

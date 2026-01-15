@@ -14,6 +14,7 @@ function FileExplorer() {
 
   const [isNewCategorieOpen, setIsNewCategorieOpen] = useState(false) // page
   const [nameCategorie, setNameCategorie] = useState("")
+  const [roleCategorie, setRoleCategorie] = useState("Professionelle")
 
   const [idCurrentCategorie , setIdCurrentCategorie] = useState(null)
 
@@ -58,19 +59,11 @@ function FileExplorer() {
   }
 
   const handleEditCategorie = (cat) => {
-    // On passe en mode édition
     setIsEditing(true);
-
-    // pré-remplit les inputs avec les données du médicament
     setNameCategorie(cat.nom);
-
-    // stocke l'id pour savoir lequel modifier plus tard
-
-    setIdCurrentCategorie(cat.id_cat)
-    
+    setRoleCategorie(cat.role || "Professionelle"); // Charge le rôle actuel
+    setIdCurrentCategorie(cat.id_cat);
     setIsNewCategorieOpen(true);
-    // ouvrir le slide
-    
 };
 
   const handleResetUploadFile = () => {
@@ -139,8 +132,8 @@ function FileExplorer() {
 
   const handleAddCategorie = async (e) => {
     e.preventDefault()
-    const nouvelleCategorie = { name: nameCategorie }
-    const updateCategorie = {id_categorie : idCurrentCategorie, name : nameCategorie}
+    const nouvelleCategorie = { name: nameCategorie, role: roleCategorie }
+    const updateCategorie = {id_categorie : idCurrentCategorie, name : nameCategorie, role: roleCategorie}
 
     const route = isEditing ? 'categorie/update' : 'categorie/add';
     try {
@@ -339,6 +332,18 @@ function FileExplorer() {
           <div>
             <label>Nom de la catégorie : </label>
             <input type="text" value={nameCategorie} onChange={(e) => setNameCategorie(e.target.value)} required />
+          </div>
+          <div>
+            <label>Role :</label>
+              <select
+                name="role"
+                value={roleCategorie}
+                onChange={(e) => setRoleCategorie(e.target.value)} // selectionne directement le bon role
+              >
+              <option value="Famille">Famille</option>
+              <option value="Proche">Proche</option>
+              <option value="Professionelle">Professionelle</option>
+              </select>
           </div>
           <div>
             <button type="button" className="btn_border" onClick={handleResetCategorie}>Réinitialiser</button>

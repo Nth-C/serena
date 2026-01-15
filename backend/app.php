@@ -105,4 +105,12 @@ public function logout() {
     
     return false;
 }
+    public function getRole(): string {
+    require_once(__DIR__ . '/model/familleDAO.class.php');
+    if (!$this->personne || $this->id_famille == 0) return false;
+
+    $dao = new FamilleDAO();
+    return $dao->getRoleInFamily($this->personne->id, $this->id_famille);
+    
+}
 }
