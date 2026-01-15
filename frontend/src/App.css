@@ -249,7 +249,6 @@ input::placeholder {
   width: 100vw;
   height: 100vh;
   background: var(--white);
-  z-index: 1000;
   flex-direction: column;
   gap: 2rem;
 }
@@ -1338,22 +1337,27 @@ progress.blue_bar::-moz-progress-bar {
   padding: 1rem;
   border-radius: 10px;
   min-height: 103px;
-  
+}
+
+.accueil .alerte_dashbord > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 .accueil .alerte_dashbord svg:first-child {
   fill: var(--red);
   background-color: var(--white);
   padding: .5rem;
-  width: 50px;
-  height: 50px;
+  width: 7rem;
+  height: 7rem;
   border-radius: 10px;
 }
 
 .accueil .alerte_dashbord svg:last-child {
   fill: var(--white);
-  width: 50px;
-  height: 50px;
+  width: 7rem;
+  height: 7rem;
 }
 
 .accueil progress {
