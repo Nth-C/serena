@@ -15,6 +15,8 @@ function FileExplorer() {
   const [isNewCategorieOpen, setIsNewCategorieOpen] = useState(false) // page
   const [nameCategorie, setNameCategorie] = useState("")
 
+  const [idCurrentCategorie , setIdCurrentCategorie] = useState(null)
+
   const [isUploaded, setIsUploaded] = useState(false);
 
   const [message, setMessage] = useState('');
@@ -28,17 +30,21 @@ function FileExplorer() {
   const [isShowAdd, setIsShowAdd] = useState(false);
 
   const [isFileError, setIsFileError] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
   // fonction pour ouvrir/fermer le newDocument
   const toggleNewDocument = () => {
-    handleResetForm();
+    handleResetUploadFile()
     setIsNewDocumentOpen(!isNewDocumentOpen)
   }
 
   const toggleNewCategorie = () => {
-    handleResetCategorie();
+    if(isEditing){
+      setIsEditing(false);
+      handleResetCategorie()
+    }
     setIsNewCategorieOpen(!isNewCategorieOpen)
   }
 
@@ -50,6 +56,22 @@ function FileExplorer() {
     setIsUploaded(false);
     setIsFileError(false);
   }
+
+  const handleEditCategorie = (cat) => {
+    // On passe en mode édition
+    setIsEditing(true);
+
+    // pré-remplit les inputs avec les données du médicament
+    setNameCategorie(cat.nom);
+
+    // stocke l'id pour savoir lequel modifier plus tard
+
+    setIdCurrentCategorie(cat.id_cat)
+    
+    setIsNewCategorieOpen(true);
+    // ouvrir le slide
+    
+};
 
   const handleResetUploadFile = () => {
     setNameDocument('');
@@ -118,12 +140,15 @@ function FileExplorer() {
   const handleAddCategorie = async (e) => {
     e.preventDefault()
     const nouvelleCategorie = { name: nameCategorie }
+    const updateCategorie = {id_categorie : idCurrentCategorie, name : nameCategorie}
+
+    const route = isEditing ? 'categorie/update' : 'categorie/add';
     try {
-      const response = await fetch(`${apiUrl}/?route=categorie/add`, {
+      const response = await fetch(`${apiUrl}/?route=${route}`, {
         method: "POST",
         credentials: 'include',
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(nouvelleCategorie)
+        body: JSON.stringify(!isEditing ? nouvelleCategorie : updateCategorie)
       });
       const result = await response.json();
       if (result.success) {
@@ -222,7 +247,9 @@ function FileExplorer() {
                   <p><strong>{cat.nom}</strong></p>
                 </div>
                 <div>
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z" /></svg>
+                  <button onClick={() => handleEditCategorie(cat)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z" /></svg>
+                  </button>
                 </div>
               </div>
 
@@ -307,7 +334,7 @@ function FileExplorer() {
         </form>
       </Slide>
 
-      <Slide title={"Créer une catégorie"} isOpen={isNewCategorieOpen} toggleOpen={toggleNewCategorie}>
+      <Slide title={isEditing ? "Modifier une catégorie" : "Créer une catégorie"} isOpen={isNewCategorieOpen} toggleOpen={toggleNewCategorie}>
         <form className="new_categorie" onSubmit={handleAddCategorie}>
           <div>
             <label>Nom de la catégorie : </label>

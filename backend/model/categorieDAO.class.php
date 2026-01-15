@@ -35,6 +35,22 @@ class CategorieDAO {
         return $stmt->execute(['nom' => $nom,'id_famille' => $id_famille]);
     }
 
+    public function updateCategorie($id_cat, $nouveauNom) {
+    // On met à jour le nom de la catégorie pour l'ID spécifique
+    $query = 'UPDATE CAT 
+              SET nom = :nom 
+              WHERE id_cat = :id_cat';
+    
+    $stmt = $this->dal->prepare($query);
+    
+    return $stmt->execute([
+        'nom'    => $nouveauNom,
+        'id_cat' => $id_cat
+    ]);
+}
+
+    
+
     public function deleteCategorie($id_famille,$id_categorie) : bool {
         $query = 'DELETE FROM CAT WHERE id_famille = :id_famille AND id_categorie = :id_categorie';
         $stmt = $this->dal->prepare($query);

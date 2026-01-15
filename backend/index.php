@@ -49,6 +49,7 @@ const _ROUTES = array(
   'document/add' => 'addDocument',
   'document/delete' => 'deleteDocument',
   'categorie/add' => 'addCategorie',
+  'categorie/update' => 'updateCategorie',
   'getfamillepersonne' => 'getfamillepersonne',
   'rolepersonne/update' => 'updateRolePersonne',
   'getevents' => 'getevents',
