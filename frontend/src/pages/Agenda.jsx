@@ -50,7 +50,6 @@ function Agenda() {
 
     // Champs Trajet
     effectue: 'aidant',  // Valeur par défaut
-    aidantAffecte: '',   // UUID
     societe: '',         // Texte
     lieuDepart: '',
     lieuArrivee: '',
@@ -443,19 +442,6 @@ function Agenda() {
                 </div> 
               </div>
 
-              {formData.effectue === 'aidant' && (
-                  <div>
-                      <label>Quel aidant effectue le trajet ?</label>
-                      <select name="aidantAffecte" value={formData.aidantAffecte} onChange={handleChange} required>
-                          <option value="">-- Choisir un aidant --</option>
-                          {membresFamille.map((personne) => (
-                              <option key={personne.id} value={personne.id}>
-                                  {personne.prenom} {personne.nom}
-                              </option>
-                          ))}
-                      </select>
-                  </div>
-              )}
 
               {formData.effectue === 'externe' && (
                   <div>
