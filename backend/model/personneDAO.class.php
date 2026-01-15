@@ -5,11 +5,7 @@ require_once(__DIR__ . '/dal.class.php');
 class PersonneDAO {
     private DAL $dal;
 
-    // Dans PersonneDAO.class.php
-
-    // Modifie le constructeur comme ceci :
     public function __construct(?DAL $dal = null) {
-    // Si $dal est fourni (test), on l'utilise. Sinon (prod), on prend le Singleton.
     $this->dal = $dal ?: DAL::get();
 }
 
@@ -26,7 +22,6 @@ class PersonneDAO {
               OR nom ILIKE :search 
               OR prenom ILIKE :search)
               AND id_personne != :me
-              -- Filtre pour exclure ceux qui sont déjà dans la famille
               AND id_personne NOT IN (
                   SELECT id_personne 
                   FROM APPARTIENT_A 
@@ -58,7 +53,6 @@ class PersonneDAO {
     }
 
 public function findByEmail($email) {
-    // CORRECTION ICI : on utilise "WHERE mail =" et non "WHERE email ="
     $sql = "SELECT * FROM PERSONNES WHERE mail = :email"; 
     $stmt = $this->dal->prepare($sql);
     $stmt->bindValue(':email', $email);
@@ -71,7 +65,6 @@ public function findByEmail($email) {
 }
 
 public function updatePasswordByEmail($email, $hashedPassword) {
-    // CORRECTION ICI : on utilise "mail" pour la clause WHERE
     $sql = "UPDATE PERSONNES SET mdp = :mdp WHERE mail = :email";
     $stmt = $this->dal->prepare($sql);
     $stmt->bindValue(':mdp', $hashedPassword);
@@ -107,5 +100,25 @@ public function updatePasswordByEmail($email, $hashedPassword) {
     
         return new Personne($result);
     }
+
+    public function updateUser($id_personne, $email, $nom, $prenom, $username, $date_naissance){
+        $query = 'UPDATE PERSONNES SET
+                nom = :nom,
+                prenom = :prenom,
+                email = :email,
+                username = :username,
+                date_naissance = :date_naissance
+                WHERE id_personne = :id_personne';
+        $stmt = $this->dal->prepare($query);
+        return $stmt->execute([
+                'nom' => $nom,
+                'prenom' => $prenom,
+                'email' => $email,
+                'id_personne' => $id_personne,
+                'username' => $username,
+                'date_naissance' => $date_naissance
+        ]);
+    }
+
 }
 ?>

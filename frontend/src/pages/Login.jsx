@@ -24,7 +24,7 @@ function Login() {
             const data = await response.json();
 
             if (data.success) {
-                localStorage.setItem('user', JSON.stringify(data.user));
+                sessionStorage.setItem('user', JSON.stringify(data.user));
                 sessionStorage.setItem('isConnected', 'true');
                 navigate('/acce_suivi');
             } else {
