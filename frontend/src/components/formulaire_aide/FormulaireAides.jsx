@@ -53,7 +53,7 @@ const FormulaireAides = ({ step, setStep, isDejaFait, setIsDejaFait }) => {
         <>
             {isDejaFait ? ( // si formulaire déja rempli
                 <>
-                <button onClick={recommancer}>Modifier le Formulaire</button>
+                <button className='btn_blue' onClick={recommancer}>Modifier le Formulaire</button>
                     <div className="list">
                         <div className="container_aide">
                             <div>

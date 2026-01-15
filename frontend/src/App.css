@@ -1157,7 +1157,7 @@ progress.blue_bar::-moz-progress-bar {
 .switch_assis_categorie button {
   width: 33%;
   padding: 0.5rem 3rem;
-  cursor: pointer;
+  cursor: default;
   background-color: var(--bg-black);
   color: var(--white);
 }
@@ -1259,7 +1259,12 @@ progress.blue_bar::-moz-progress-bar {
   color: var(--blue);
 }
 
+.assistance > form > div > div:last-child {
+  flex-direction: row;
+}
+
 .assistance .container_aide {
+  flex-direction: column !important;
   border: 2px solid var(--blue);
   border-radius: 10px;
   padding: 3px;
