@@ -26,6 +26,8 @@ const Signalement = () => {
             });
             const data = await response.json();
             
+            console.log("Raw data from API:", JSON.stringify(data, null, 2)); // DEBUG: voir structure exacte
+            
             if (Array.isArray(data)) {
                 setSignalements(data);
             } else {
@@ -47,7 +49,6 @@ const Signalement = () => {
         fetchSignalements();
     }, []);
 
-    // --- 2. AJOUTER UN SIGNALEMENT (BDD + MAIL) ---
     const handleAdd = async (e) => {
         e.preventDefault();
         setStatusMsg({ type: 'info', msg: 'Envoi en cours...' });
@@ -118,6 +119,8 @@ const Signalement = () => {
             const result = await response.json();
             if (result.success) {
                 fetchSignalements(); // On recharge la liste pour voir le changement
+            } else {
+                console.error("Erreur update:", result.error);
             }
         } catch (error) {
             console.error("Erreur update:", error);
@@ -125,7 +128,7 @@ const Signalement = () => {
     };
 
     // --- 4. SUPPRIMER ---
-    const handleDelete = async (id, idPers) => {
+    const handleDelete = async (id) => {
         if (!window.confirm("Voulez-vous vraiment supprimer ce signalement ?")) return;
 
         try {
@@ -134,8 +137,7 @@ const Signalement = () => {
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    id_signalement: id,
-                    id_pers_signal: idPers // Nécessaire pour ton DAO
+                    id_signalement: id
                 })
             });
             const result = await response.json();
@@ -181,8 +183,10 @@ const Signalement = () => {
                             <p>Aucun signalement pour le moment.</p>
                         </div>
                     ) : (
-                        signalements.map((sig) => (
-                            <div key={sig.id_signalement} className="signalement-card">
+                        signalements.map((sig, index) => {
+                            console.log("Signalement data:", sig); // DEBUG: voir les vraies clés
+                            return (
+                            <div key={index} className="signalement-card">
                                 <div className="card-header">
                                     <div className="header-left">
                                         <h3>{sig.sujet}</h3>
@@ -193,7 +197,7 @@ const Signalement = () => {
                                         <button 
                                             className="btn-icon delete"
                                             title="Supprimer"
-                                            onClick={() => handleDelete(sig.id_signalement, sig.id_pers_signal)}
+                                            onClick={() => handleDelete(sig.id_signal)}
                                         >
                                             <TrashIcon />
                                         </button>
@@ -209,7 +213,7 @@ const Signalement = () => {
                                     {sig.status !== 'cloture' && (
                                         <button 
                                             className="btn-text success" 
-                                            onClick={() => handleStatusChange(sig.id_signalement, 'cloture')}
+                                            onClick={() => handleStatusChange(sig.id_signal, 'cloture')}
                                         >
                                             <CheckCircleIcon /> Marquer comme résolu
                                         </button>
@@ -217,14 +221,15 @@ const Signalement = () => {
                                     {sig.status === 'cloture' && (
                                         <button 
                                             className="btn-text warning" 
-                                            onClick={() => handleStatusChange(sig.id_signalement, 'ouvert')}
+                                            onClick={() => handleStatusChange(sig.id_signal, 'ouvert')}
                                         >
                                             <XCircleIcon /> Rouvrir
                                         </button>
                                     )}
                                 </div>
                             </div>
-                        ))
+                            );
+                        })
                     )}
                 </div>
             </div>

@@ -18,7 +18,6 @@ require_once(__DIR__ . '/../app.php');
 try {
     $app = new App();
     $model = new signalementDAO();
-    $id_famille = $app->id_famille; 
     $json = file_get_contents('php://input'); // lit le body du fetch
     $data = json_decode($json, true); // transforme '$json' en tableau
 

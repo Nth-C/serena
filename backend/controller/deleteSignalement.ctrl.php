@@ -20,12 +20,14 @@ try {
     $json = file_get_contents('php://input'); // lit le body du fetch
     $data = json_decode($json, true); // transforme '$json' en tableau
 
-    if (empty($data['id_signalement']) || empty($data['id_pers_signal'])) {
-        throw new Exception("ID manquant pour la suppression.");
+    error_log("DELETE DATA: " . json_encode($data));
+
+    if (empty($data['id_signalement'])) {
+        throw new Exception("ID manquant pour la suppression. Données reçues: " . json_encode($data));
     }
 
     $model = new signalementDAO();
-    $success = $model->deleteSignalement($data['id_signalement'], $data['id_pers_signal']);
+    $success = $model->deleteSignalement($data['id_signalement'], $app->id_pers);
 
     // renvoie a la vue des informations
     echo json_encode([

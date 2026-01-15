@@ -39,6 +39,7 @@ try {
     }
 
     $signalements = $model->getAllSignalement($id_user);
+    error_log("SIGNALEMENTS DEBUG: " . json_encode($signalements));
     echo json_encode($signalements);
 
 } catch (Exception $e) {
