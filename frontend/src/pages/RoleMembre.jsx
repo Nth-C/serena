@@ -269,9 +269,9 @@ console.error("Erreur réseau:", error);
 
                     >
 
-                        <option value="Aidant">Aidant</option>
-
-                        <option value="Visiteur">Visiteur</option>
+                        <option value="Famille">Famille</option>
+                        <option value="Proche">Proche</option>
+                        <option value="Professionelle">Professionelle</option>
 
                     </select>
 
