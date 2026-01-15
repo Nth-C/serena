@@ -25,7 +25,11 @@ try {
         throw new Exception("Données manquantes (status ou id_signalement).");
     }
 
-    $success = $model->updateSignalement($data['id_signalement'], $app->id_pers, $data['status']);
+    if (!$app->personne) {
+        throw new Exception("Utilisateur non authentifié.");
+    }
+
+    $success = $model->updateSignalement($data['id_signalement'], $app->personne->id, $data['status']);
     // renvoie a la vue des informations
     echo json_encode([
         "success" => $success,
