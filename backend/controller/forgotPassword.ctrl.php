@@ -2,6 +2,7 @@
 // 1. Charger les dépendances
 require_once(__DIR__ . '/../model/personneDAO.class.php');
 require_once __DIR__ . '/../vendor/autoload.php'; // Charge PHPMailer
+$config = require __DIR__ . '/../config.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -28,15 +29,15 @@ if ($user) {
     try {
         // --- Configuration SMTP (via Docker env) ---
         $mail->isSMTP();
-        $mail->Host       = getenv('SMTP_HOST');
+        $mail->Host       = $config['SMTP_HOST'];
         $mail->SMTPAuth   = true;
-        $mail->Username   = getenv('SMTP_USER');
-        $mail->Password   = getenv('SMTP_PASS');
+        $mail->Username   = $config['SMTP_USER'];
+        $mail->Password   = $config['SMTP_PASS'];
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = getenv('SMTP_PORT');
+        $mail->Port       = $config['SMTP_PORT'];
 
         // --- Expéditeur et Destinataire ---
-        $mail->setFrom(getenv('SMTP_USER'), 'Support Sere-na');
+        $mail->setFrom($config['SMTP_USER'], 'Support Sere-na');
         $mail->addAddress($email);
 
         // --- Contenu du mail ---

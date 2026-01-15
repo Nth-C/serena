@@ -62,36 +62,78 @@ function App() {
         {sessionStorage.getItem('role') === "Createur" && (
           <>
           <Route path="logs"
-            element={<AuditLog />}>
+            element={
+            <ProtectedRoute>
+              <AuditLog />
+            </ProtectedRoute>
+            }>
           </Route>
+
           <Route path="add_contact" 
-            element={<AddMembre />}>
+            element={
+            <ProtectedRoute>
+              <AddMembre />
+            </ProtectedRoute>
+            }>
           </Route>
+
           <Route path="role_membre" 
-            element={<RoleMembre />}>
+            element={
+              <ProtectedRoute>
+                <RoleMembre />
+              </ProtectedRoute>
+            }>
           </Route>
           </>
         )}
         <Route path="liste_membre" 
-          element={<ListeMembre />}>
+          element={
+          <ProtectedRoute>
+            <ListeMembre />
+          </ProtectedRoute>}>
         </Route>
+
         <Route path="compte" 
-          element={<Compte />}>
+          element={
+          <ProtectedRoute>
+            <Compte />
+          </ProtectedRoute>}>
         </Route>
+
         <Route path="notification" 
-          element={<Notification />}>
+          element={
+          <ProtectedRoute>
+            <Notification />
+          </ProtectedRoute>}>
         </Route>
+
         <Route path="cgu" 
-          element={<CGU />}>
+          element={
+          <ProtectedRoute>
+            <CGU />
+          </ProtectedRoute>
+          }>
         </Route>
+
         <Route path="privacy" 
-          element={<Privacy />}>
+          element={
+          <ProtectedRoute>
+            <Privacy />
+          </ProtectedRoute>}>
         </Route>
+        
         <Route path="accessibilite" 
-          element={<Accessibilite />}>
+          element={
+          <ProtectedRoute>
+            <Accessibilite />
+          </ProtectedRoute>}>
         </Route>
+
         <Route path="signalement" 
-          element={<Signalement />}>
+          element={
+          <ProtectedRoute>
+            <Signalement />
+          </ProtectedRoute>}>
         </Route>
 
         

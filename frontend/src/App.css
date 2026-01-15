@@ -19,8 +19,8 @@
 :root {
   --black: #252525;
   --white: #FFFBF2;
-  --blue: #759BE1;
-  ;
+  --blue: #84AFFB;
+  /*--blue: #759BE1;*/
   --pink: #FFBABA;
   --red: #BF443D;
   --gray: #B1B1B1;
@@ -947,8 +947,6 @@ progress.blue_bar::-moz-progress-bar {
 /* calandar */
 
 /*  slide event */
-.add_event {}
-
 :is(.switch_event, .switch_calendar) {
   /*margin-bottom: 2rem;*/
   border-radius: 8px;
@@ -1167,7 +1165,7 @@ progress.blue_bar::-moz-progress-bar {
 .switch_assis_categorie button {
   width: 33%;
   padding: 0.5rem 3rem;
-  cursor: pointer;
+  cursor: default;
   background-color: var(--bg-black);
   color: var(--white);
 }
@@ -1269,7 +1267,12 @@ progress.blue_bar::-moz-progress-bar {
   color: var(--blue);
 }
 
+.assistance > form > div > div:last-child {
+  flex-direction: row;
+}
+
 .assistance .container_aide {
+  flex-direction: column !important;
   border: 2px solid var(--blue);
   border-radius: 10px;
   padding: 3px;
