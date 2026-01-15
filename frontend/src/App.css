@@ -545,6 +545,16 @@ button.creer_suivi {
   padding: 0 3rem;
 }
 
+.contener_report .container_top > div:first-child {
+  display: flex;
+  justify-content: space-between;
+}
+
+.contener_report .sort {
+  display: flex;
+  align-items: center;
+}
+
 .contener_report h1 {
   padding: 0;
 }

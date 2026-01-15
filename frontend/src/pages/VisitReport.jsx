@@ -332,11 +332,19 @@ function LastVisitReport() {
   return (
     <div className="last_visit_report">
       <div className="contener_report">
-        <h1>Rapport de visite</h1>
+        
+        <div className='container_top'>
+          <div>
+            <h1>Rapport de visite</h1>
+            <div className='sort'>
+              <img src="/icons/sort.svg" alt="" />
+              <p>Trier par</p>
+            </div>
+          </div>
 
-        <div className="search_report">
-          <input type="search" placeholder="Rechercher un rapport" />
-          <div><img src="/icons/sort.svg" alt="" /><p>Trier par</p></div>
+          <div className="search_report">
+            <input type="search" placeholder="Rechercher un rapport" />
+          </div>
         </div>
 
         <div className="liste_report">
