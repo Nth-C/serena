@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import styles from './Calendar.module.css';
+import { getFormatTime } from '../../utils/utils';
 
 const Calendar = ({ date, events = [], toggleEventOpen, setCurrentEvent, isCalendarWeek = false }) => {
     const weekDays = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
@@ -179,7 +180,9 @@ const Calendar = ({ date, events = [], toggleEventOpen, setCurrentEvent, isCalen
                                 setCurrentEvent(event);
                                 toggleEventOpen();
                             }}>
-                                {event.titre}
+                                <p>{event.titre}</p>
+                                <p>De {getFormatTime(event.dateStart)} a {getFormatTime(event.dateEnd)}</p>
+
                             </div>
                         );
                     })}

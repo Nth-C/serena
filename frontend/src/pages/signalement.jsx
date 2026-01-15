@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import './signalement.css'; // Assure-toi que le CSS est bien importé
-import Slide from '../components/slide/Slide'; // Ton composant Slide existant
+import './signalement.css';
+import Slide from '../components/slide/Slide';
+import LayoutMenu from '../LayoutMenu';
 
 const TrashIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>;
 const CheckCircleIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>;
@@ -154,71 +155,75 @@ const Signalement = () => {
     };
 
     return (
-        <div className="signalement-page">
-            <div className="page-header">
-                <h1>Mes Signalements</h1>
-                <button className="btn-primary btn-add" onClick={() => setIsNewOpen(true)}>
-                    <PlusIcon /> Nouveau Signalement
-                </button>
-            </div>
+        <LayoutMenu
+            title={"Signalement"}
+        >
+            <>
+            <div className='signalement'>
+                <div className="page-header">
+                    <h1>Mes Signalements</h1>
+                    <button className="btn-primary btn-add" onClick={() => setIsNewOpen(true)}>
+                        <PlusIcon /> Nouveau Signalement
+                    </button>
+                </div>
 
-            {/* LISTE DES SIGNALEMENTS */}
-            <div className="signalement-list">
-                {loading ? (
-                    <p>Chargement...</p>
-                ) : signalements.length === 0 ? (
-                    <div className="empty-state">
-                        <p>Aucun signalement pour le moment.</p>
-                    </div>
-                ) : (
-                    signalements.map((sig) => (
-                        <div key={sig.id_signalement} className="signalement-card">
-                            <div className="card-header">
-                                <div className="header-left">
-                                    <h3>{sig.sujet}</h3>
-                                    <span className="date">{new Date(sig.date_creation).toLocaleDateString()}</span>
-                                </div>
-                                <div className="header-right">
-                                    {renderStatusBadge(sig.status)}
-                                    <button 
-                                        className="btn-icon delete"
-                                        title="Supprimer"
-                                        onClick={() => handleDelete(sig.id_signalement, sig.id_pers_signal)}
-                                    >
-                                        <TrashIcon />
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <div className="card-body">
-                                <p>{sig.message}</p>
-                            </div>
-
-                            <div className="card-footer">
-                                {/* Actions de changement de statut */}
-                                {sig.status !== 'cloture' && (
-                                    <button 
-                                        className="btn-text success" 
-                                        onClick={() => handleStatusChange(sig.id_signalement, 'cloture')}
-                                    >
-                                        <CheckCircleIcon /> Marquer comme résolu
-                                    </button>
-                                )}
-                                {sig.status === 'cloture' && (
-                                    <button 
-                                        className="btn-text warning" 
-                                        onClick={() => handleStatusChange(sig.id_signalement, 'ouvert')}
-                                    >
-                                        <XCircleIcon /> Rouvrir
-                                    </button>
-                                )}
-                            </div>
+                {/* LISTE DES SIGNALEMENTS */}
+                <div className="signalement-list">
+                    {loading ? (
+                        <p>Chargement...</p>
+                    ) : signalements.length === 0 ? (
+                        <div className="empty-state">
+                            <p>Aucun signalement pour le moment.</p>
                         </div>
-                    ))
-                )}
-            </div>
+                    ) : (
+                        signalements.map((sig) => (
+                            <div key={sig.id_signalement} className="signalement-card">
+                                <div className="card-header">
+                                    <div className="header-left">
+                                        <h3>{sig.sujet}</h3>
+                                        <span className="date">{new Date(sig.date_creation).toLocaleDateString()}</span>
+                                    </div>
+                                    <div className="header-right">
+                                        {renderStatusBadge(sig.status)}
+                                        <button 
+                                            className="btn-icon delete"
+                                            title="Supprimer"
+                                            onClick={() => handleDelete(sig.id_signalement, sig.id_pers_signal)}
+                                        >
+                                            <TrashIcon />
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div className="card-body">
+                                    <p>{sig.message}</p>
+                                </div>
 
-            {/* FORMULAIRE NOUVEAU (Slide) */}
+                                <div className="card-footer">
+                                    {/* Actions de changement de statut */}
+                                    {sig.status !== 'cloture' && (
+                                        <button 
+                                            className="btn-text success" 
+                                            onClick={() => handleStatusChange(sig.id_signalement, 'cloture')}
+                                        >
+                                            <CheckCircleIcon /> Marquer comme résolu
+                                        </button>
+                                    )}
+                                    {sig.status === 'cloture' && (
+                                        <button 
+                                            className="btn-text warning" 
+                                            onClick={() => handleStatusChange(sig.id_signalement, 'ouvert')}
+                                        >
+                                            <XCircleIcon /> Rouvrir
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
+            </div>
+            {/* FORMULAIRE NOUVEAU */}
             <Slide title="Nouveau Signalement" isOpen={isNewOpen} toggleOpen={() => setIsNewOpen(false)}>
                 <form onSubmit={handleAdd} className="signalement-form">
                     {statusMsg.msg && (
@@ -256,7 +261,9 @@ const Signalement = () => {
                     </div>
                 </form>
             </Slide>
-        </div>
+            </>
+        </LayoutMenu>
+        
     );
 };
 
