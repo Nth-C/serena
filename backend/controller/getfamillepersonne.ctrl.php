@@ -1,7 +1,11 @@
 <?php
 // On inclut le DAO Famille car c'est lui qui gère les personnes de la famille
-require_once('model/FamilleDAO.class.php'); 
+require_once(__DIR__ . '/../model/famille.class.php'); 
+require_once(__DIR__ . '/../model/familleDAO.class.php');
+require_once(__DIR__ . '/../model/personne.class.php');
 require_once(__DIR__ . '/../app.php');
+
+header("Access-Control-Allow-Methods: GET, OPTIONS");
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;

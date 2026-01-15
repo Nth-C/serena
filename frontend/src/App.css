@@ -81,8 +81,7 @@ h3,
 p,
 a,
 li,
-td,
-tr {
+td {
   font-size: var(--font-sm);
 }
 
@@ -1485,34 +1484,11 @@ progress.blue_bar::-moz-progress-bar {
   border-bottom: 1px solid var(--gray);
 }
 
-.audit_table th {
-  font-weight: bold;
-  color: var(--dark-gray);
-}
+/* ----------------------------------- */
+/* ----------- SIGNALEMENT ----------- */
+/* ----------------------------------- */
 
-.audit_log .filter_bar {
-  margin: 1rem 1.5rem; /* Réduit un peu la marge sur petit écran */
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap; /* Permet aux filtres de passer à la ligne */
-  gap: 1rem; /* Ajoute un espace quand ils s'empilent */
-}
 
-.audit_table td {
-  text-align: left;
-  padding: 1rem 1.5rem; /* Un peu moins de padding sur les côtés pour gagner de la place */
-  border-bottom: 1px solid var(--gray);
-  
-  /* --- LE WRAP ICI --- */
-  white-space: normal;    /* Autorise le retour à la ligne */
-  word-break: break-word; /* Coupe les mots s'ils sont trop longs */
-  min-width: 120px;       /* Empêche les colonnes d'être trop fines */
-}
-
-/* On garde la date sur une seule ligne car c'est plus lisible */
-.audit_table td:first-child {
-  white-space: nowrap;
-}
 
 /* ----------------------------- */
 /* ----------- FONTS ----------- */
