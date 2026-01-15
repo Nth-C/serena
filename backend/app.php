@@ -78,8 +78,7 @@ public function logout() {
         $_SESSION['id_famille_active'] = $id_famille;
     }
 
-    public function checkRole(string $requiredRole): bool 
-{
+    public function checkRole(string $requiredRole): bool {
     require_once(__DIR__ . '/model/familleDAO.class.php');
     if (!$this->personne || $this->id_famille == 0) return false;
 
@@ -92,12 +91,16 @@ public function logout() {
         return $currentRole === 'Createur';
     }
 
-    if ($requiredRole === 'Aidant') {
-        return $currentRole === 'Aidant';
+    if ($requiredRole === 'Famille') {
+        return $currentRole === 'Createur'||'Famille';
     }
 
-    if ($requiredRole === 'Visiteur') {
-        return $currentRole === 'Visiteur';
+    if ($requiredRole === 'Proche') {
+        return $currentRole === 'Createur'||'Famille'||'Proche';
+    }
+
+    if ($requiredRole === 'Professionelle') {
+        return $currentRole === 'Createur'||'Famille'||'Proche'||'Professionelle';
     }
     
     return false;
