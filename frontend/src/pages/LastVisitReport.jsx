@@ -18,6 +18,7 @@ function LastVisitReport() {
 
   return (
     <div className="last_report">
+      <h2>Rapports</h2>
       {rapports.map((rapport) => (
         <div key={rapport.id_rapport}>
 
