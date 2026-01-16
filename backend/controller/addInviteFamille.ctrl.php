@@ -12,6 +12,15 @@ if (!$app->connected || !$app->personne) {
     exit;
 }
 
+if (!$app->checkRole('Famille')) {
+    header('HTTP/1.1 403 Forbidden');
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Erreur : Vous devez avoir au moins le role de famille pour faire ça.'
+    ]);
+    exit; 
+}
+
 $json = file_get_contents('php://input');
 $data = json_decode($json, true);
 

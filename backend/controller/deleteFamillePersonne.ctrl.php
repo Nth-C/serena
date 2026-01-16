@@ -14,6 +14,15 @@ try {
         throw new Exception("ID personne manquant pour la suppression.");
     }
 
+    if (!$app->checkRole('Createur')) {
+    header('HTTP/1.1 403 Forbidden');
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Erreur : Vous devez avoir au moins de chef famille pour faire ça.'
+    ]);
+    exit; 
+}
+
     $model = new FamilleDAO();
     $success = $model->deletePersonneDeFamille($app->id_famille,$data['id_personne']);
 

@@ -38,6 +38,15 @@ if (empty($app->id_famille)) {
     exit();
 }
 
+if (!$app->checkRole('Famille')) {
+    header('HTTP/1.1 403 Forbidden');
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Erreur : Vous devez être un proche de la famille pour faire ça.'
+    ]);
+    exit; 
+}
+
 try {
     $auditDAO = new auditDAO();
     
