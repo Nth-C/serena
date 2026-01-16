@@ -1,7 +1,7 @@
 export const ROLES = {
     CREATEUR: 'Createur',
     FAMILLE: 'Famille',
-    PROCHE: 'proche',
+    PROCHE: 'Proche',
     PROFESSIONNELLE: 'Professionelle'
 };
 
