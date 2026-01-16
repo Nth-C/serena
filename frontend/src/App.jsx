@@ -217,7 +217,7 @@ function App() {
             <Layout submenu={[
             { label: "Explorateur", path: "document/explorateur" },
             // On ajoute "Aides" seulement si l'utilisateur est Aidant
-            ...(hasPermission("Proche") 
+            ...(hasPermission("Famille") 
                 ? [{ label: "Aides", path: "document/aides" }] 
                 : [])
           ]}/>
