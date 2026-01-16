@@ -643,14 +643,23 @@ button.creer_suivi {
   color: var(--white);
   padding: 1rem;
   cursor: pointer;
-  height: 85 px;
   overflow: hidden;
 }
 
-.report_case p {
-  text-overflow: ellipsis;
-  height: 18px;
+.report_case > div:first-child {
+  /* Si tu es dans un parent Flex, ceci est crucial */
+    display: flex;
+    flex-direction: column;
+    min-width: 0; 
+    width: 100%; /* Prend toute la place dispo */
+}
+
+.report_case :is(p, h2) {
+  display: block; /* S'assure que l'élément se comporte comme un bloc */
+  width: 100%;   /* Force l'élément à prendre toute la largeur du parent */
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .liste_report {
@@ -660,7 +669,8 @@ button.creer_suivi {
 }
 
 .report_case img {
-  width: 40px;
+  width: 7rem;
+  height: 7rem;
 }
 
 .list_medicament_report {
@@ -1074,8 +1084,13 @@ progress.blue_bar::-moz-progress-bar {
   padding-right: 20px;
 }
 
+.file_explorer .case_categorie p {
+  color: var(--black);
+  
+}
+
 .file_explorer .case_categorie svg {
-  fill: var(--black);
+  fill: var(--gray);
   cursor: pointer;
   width: 30px;
   height: 30px;
