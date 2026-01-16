@@ -1,52 +1,62 @@
-import { useState } from 'react';
-import Slide from '../components/slide/Slide'; // Vérifie que le dossier Slide a une majuscule ou pas
+import React from 'react';
 
 function AssistanceDisponnible({ aides, resetForm }) {
-    const [isDetailsAssistanceOpen, setIsDetailsAssistanceOpen] = useState(false);
-    const [selectedAide, setSelectedAide] = useState(null);
-
-    const toggleDetailsAssistance = (aide) => {
-        setSelectedAide(aide);
-        setIsDetailsAssistanceOpen(!isDetailsAssistanceOpen);
-    };
-
     return (
-        <div className="assistance_dispo">
-            <div className="list">
+        <div className="assistance">
                 {aides && aides.length > 0 ? (
-                    aides.map((aide) => (
-                        <div key={aide.id_aide_fin} className="container_medecine">
-                            <div className="principal_infos">
-                                <p><strong>{aide.nom_aide}</strong></p>
-                            </div>
-                            <div className="drop">
-                                <p>{aide.gain_estime}</p>
-                                <button className="btn_blue" onClick={() => toggleDetailsAssistance(aide)}>Voir plus</button>
-                            </div>
-                        </div>
-                    ))
-                ) : (
-                    <p className="aucun">Aucune aide trouvée pour votre situation.</p>
-                )}
-                <p className='end_list'>Fin des résultats</p>
-            </div>
-            
-            <button className="btn_blue" onClick={resetForm}>Modifier ma situation</button>
+                    <div className="lien_aide"> 
+                        {aides.map((aide, index) => (
+                            <div key={index} className="container_aide">
+                                <div>
+                                    <h2>{aide.id_aide_fin}</h2>
+                                </div>
+                                <div>
+                                    <p>{aide.description}</p>
+                                    
+                                    {aide.montant && (
+                                        <p><strong>Gain estimé :</strong> {aide.montant}</p>
+                                    )}
 
-            {selectedAide && (
-                <Slide 
-                    title={selectedAide.nom_aide} 
-                    isOpen={isDetailsAssistanceOpen} 
-                    toggleOpen={() => setIsDetailsAssistanceOpen(false)}
-                >
-                    <div className="details_assistance">
-                        <h2>Description</h2>
-                        <p>{selectedAide.description || "Détails non renseignés."}</p>
-                        <h2>Comment l'obtenir</h2>
-                        <p>{selectedAide.comment_obtenir || "Contactez votre CAF ou MSA."}</p>
+                                    <div>
+                                        <h3>Qui a Accés ?</h3>
+                                        <p>{aide.acces}</p>
+                                    </div>
+
+                                    <div>
+                                        <h3>Comment l'obtenir ?</h3>
+                                        <ul>
+                                            {Array.isArray(aide.obtention) ? 
+                                                aide.obtention.map((item, i) => <li key={i}>{item}</li>) : 
+                                                <li>{aide.obtention}</li>
+                                            }
+                                        </ul>
+                                    </div>
+
+                                    <div>
+                                        <h3>Document requis</h3>
+                                        <ul>
+                                            {Array.isArray(aide.document_req) ? 
+                                                aide.document_req.map((item, i) => <li key={i}>{item}</li>) : 
+                                                <li>{aide.document_req}</li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                        <p className='end_list'>Aucun autre aides disponnible</p>
                     </div>
-                </Slide>
-            )}
+                ) : (
+                    <p className="aucun">Aucune aide disponnible</p>
+                )}
+            
+            <button 
+                className="btn_blue" 
+                onClick={resetForm} 
+                style={{ marginTop: '2rem', width: '100%' }}
+            >
+                Modifier situation
+            </button>
         </div>
     );
 }

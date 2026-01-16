@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import AssistanceDisponnible from '../../pages/AssistanceDisponnible';
 
-const FormulaireAides = ({ step, setStep, isDejaFait, setIsDejaFait }) => {
+const FormulaireAides = ({ step, setStep, isDejaFait, onFinaliser }) => {
 
     const [formData, setFormData] = useState({
         statut_pro: "",
@@ -17,11 +16,6 @@ const FormulaireAides = ({ step, setStep, isDejaFait, setIsDejaFait }) => {
         objectif: ""
     });
 
-    const apiUrl = import.meta.env.VITE_API_URL;
-
-
-    const [aidesResultats, setAidesResultats] = useState([]);
-
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setFormData({
@@ -30,34 +24,12 @@ const FormulaireAides = ({ step, setStep, isDejaFait, setIsDejaFait }) => {
         });
     };
 
-    // Envoi des données au contrôleur PHP pour calculer les 22 aides
-    const finaliser = async (e) => {
+    const finaliser = (e) => {
         e.preventDefault();
         const form = e.target.closest('form');
         if (form.reportValidity()) {
-            try {
-                // L'URL doit pointer vers ton fichier getAides.ctrl.php
-                const response = await fetch(`${apiUrl}/?route=aides/calculer`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
-                const data = await response.json();
-                setAidesResultats(data);
-                setIsDejaFait(true); 
-            } catch (error) {
-                console.error("Erreur de récupération :", error);
-                // On active quand même l'affichage pour ne pas bloquer l'utilisateur
-                setIsDejaFait(true);
-            }
+            onFinaliser(formData); // Envoie les données au parent Assistance.jsx
         }
-    };
-
-    const recommancer = (e) => {
-        e.preventDefault();
-        setIsDejaFait(false);
-        setAidesResultats([]);
-        setStep(1);
     };
 
     const handleNextStep = (e, nextStep) => {
@@ -67,17 +39,17 @@ const FormulaireAides = ({ step, setStep, isDejaFait, setIsDejaFait }) => {
         }
     };
 
+    if (isDejaFait) return null;
+
     return (
         <>
-            {isDejaFait ? (
-                <AssistanceDisponnible aides={aidesResultats} resetForm={recommancer} />
-            ) : step === 1 ? (  // profil Aidant
+            {step === 1 ? (  // ÉTAPE 1 : L'AIDANT
                 <>
                     <div>
                         <h2>Profil de l'Aidant (Vous)</h2>
                         <div>
-                            <label htmlFor="">Votre statut professionnel : </label>
-                            <select name="statut_pro" value={formData.statut_pro} onChange={handleChange} required>
+                            <label htmlFor="statut_pro">Votre statut professionnel : </label>
+                            <select name="statut_pro" id="statut_pro" value={formData.statut_pro} onChange={handleChange} required>
                                 <option value="">-- Choisir un statut --</option>
                                 <option value="Salarie">Salarié</option>
                                 <option value="Independant">Indépendant</option>
@@ -87,8 +59,8 @@ const FormulaireAides = ({ step, setStep, isDejaFait, setIsDejaFait }) => {
                             </select>
                         </div>
                         <div>
-                            <label htmlFor="">Vos dépenses : </label>
-                            <select name="depenses" value={formData.depenses} onChange={handleChange} required>
+                            <label htmlFor="depenses">Vos dépenses : </label>
+                            <select name="depenses" id="depenses" value={formData.depenses} onChange={handleChange} required>
                                 <option value="">-- Choisir une situation de dépenses --</option>
                                 <option value="DonneArgent">Je verse de l'argent à mon proche</option>
                                 <option value="PayeFacture">Je paye des factures pour lui</option>
@@ -96,7 +68,7 @@ const FormulaireAides = ({ step, setStep, isDejaFait, setIsDejaFait }) => {
                             </select>
                         </div>
                         <div>
-                            <label htmlFor="">Votre fiscalité : </label>
+                            <label>Votre fiscalité : </label>
                             <div className="selector_container">
                                 <input type="radio" name="fiscalite" value="imposable" id="imposable" checked={formData.fiscalite === "imposable"} onChange={handleChange} required/>
                                 <label htmlFor="imposable" className="card">
@@ -129,23 +101,22 @@ const FormulaireAides = ({ step, setStep, isDejaFait, setIsDejaFait }) => {
 
                         <button type="button" className="btn_blue" onClick={(e) => handleNextStep(e, 2)}>Continuer</button>
                     </div>
-
                 </>
-            ) : step === 2 ? (  // profil Aidé
+            ) : step === 2 ? (  // ÉTAPE 2 : L'AIDÉ
                 <>
                     <div>
                         <h2>Information sur l'aidé</h2>
                         <div>
-                            <label htmlFor="">Âge de l'aidé : </label>
-                            <select name="age_aide" value={formData.age_aide} onChange={handleChange} required>
-                                <option value="">-- Choisir une situation de santée --</option>
+                            <label htmlFor="age_aide">Âge de l'aidé : </label>
+                            <select name="age_aide" id="age_aide" value={formData.age_aide} onChange={handleChange} required>
+                                <option value="">-- Choisir une situation de santé --</option>
                                 <option value="moinsLimiteAge">Moins de 70 ans</option>
                                 <option value="plusLimiteAge">70 ans et plus</option>
                             </select>
                         </div>
                         <div>
-                            <label htmlFor="">Niveau de dépendance de l'aidé (GIR) : </label>
-                            <select name="gir" value={formData.gir} onChange={handleChange} required>
+                            <label htmlFor="gir">Niveau de dépendance de l'aidé (GIR) : </label>
+                            <select name="gir" id="gir" value={formData.gir} onChange={handleChange} required>
                                 <option value="">-- Choisir un niveau de dépendance --</option>
                                 <option value="GIR 1-2">GIR 1-2</option>
                                 <option value="GIR 3-4">GIR 3-4</option>
@@ -153,15 +124,15 @@ const FormulaireAides = ({ step, setStep, isDejaFait, setIsDejaFait }) => {
                             </select>
                         </div>
                         <div>
-                            <label htmlFor="">Situation médicale de l'aidé : </label>
-                            <select name="situation_medicale" value={formData.situation_medicale} onChange={handleChange} required>
-                                <option value="">-- Choisir une situation médical --</option>
+                            <label htmlFor="situation_medicale">Situation médicale de l'aidé : </label>
+                            <select name="situation_medicale" id="situation_medicale" value={formData.situation_medicale} onChange={handleChange} required>
+                                <option value="">-- Choisir une situation médicale --</option>
                                 <option value="Vieillesse">Maladie-Vieillesse</option>
                                 <option value="FinDeVie">Fin de vie (pronostic engagé)</option>
                             </select>
                         </div>
                         <div>
-                            <label htmlFor="">Aides déjà perçues par l'aidé : </label>
+                            <label>Aides déjà perçues par l'aidé : </label>
                             <div className="box_check">
                                 <input type="checkbox" name='aide_apa' id="APA" checked={formData.aide_apa} onChange={handleChange}/>
                                 <label htmlFor="APA">APA (Allocation Personnalisée d'Autonomie)</label>
@@ -180,15 +151,14 @@ const FormulaireAides = ({ step, setStep, isDejaFait, setIsDejaFait }) => {
                             <button type="button" className="btn_blue" onClick={(e) => handleNextStep(e, 3)}>Continuer</button>
                         </div>
                     </div>
-
                 </>
-            ) : step === 3 ? (  // Vos besoins
+            ) : step === 3 ? (  // ÉTAPE 3 : BESOINS
                 <>
                     <div>
                         <h2>Vos besoins</h2>
                         <div>
-                            <label htmlFor="">Quel est votre objectif prioritaire : </label>
-                            <select name="objectif" value={formData.objectif} onChange={handleChange} required>
+                            <label htmlFor="objectif">Quel est votre objectif prioritaire : </label>
+                            <select name="objectif" id="objectif" value={formData.objectif} onChange={handleChange} required>
                                 <option value="">-- Choisir un objectif --</option>
                                 <option value="compenser">Recevoir un revenu pour compenser un arrêt de travail</option>
                                 <option value="PCH">PCH (Prestation de Compensation du Handicap)</option>
@@ -202,7 +172,6 @@ const FormulaireAides = ({ step, setStep, isDejaFait, setIsDejaFait }) => {
                             <button type="submit" className="btn_blue" onClick={finaliser}>Finaliser</button>
                         </div>
                     </div>
-
                 </>
             ) : null}
         </>

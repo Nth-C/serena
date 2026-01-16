@@ -1,111 +1,135 @@
 <?php
-require_once(__DIR__ . '/../model/AidesDAO.class.php');
-require_once(__DIR__ . '/../app.php');
+// 1. Sécurité et Headers
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
 
 header("Content-Type: application/json");
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type");
 
-$data = json_decode(file_get_contents('php://input'), true);
+try {
+    // 2. Inclusions
+    require_once(__DIR__ . '/../model/aidesDAO.class.php');
 
-if (!$data) {
-    echo json_encode([]);
-    exit;
-}
+    // 3. Récupération des données React
+    $data = json_decode(file_get_contents('php://input'), true);
 
-// Fonction pour transformer les entrées React (bool ou string) en booléen PHP pur
-function toBool($val) {
-    return ($val === true || $val === 'true' || $val === 1 || $val === '1');
-}
-
-$dao = new AideDAO();
-$allAides = $dao->getAllAides();
-$aidesValides = [];
-
-// Extraction des données du formulaire 
-$statut   = $data['statut_pro'] ?? '';
-$gir      = $data['gir'] ?? '';
-$medical  = $data['situation_medicale'] ?? '';
-$objectif = $data['objectif'] ?? '';
-$fiscal   = $data['fiscalite'] ?? '';
-$depenses = $data['depenses'] ?? '';
-$role     = $data['role'] ?? '';
-$age      = $data['age_aide'] ?? '';
-$apa      = toBool($data['aide_apa'] ?? false);
-$pch      = toBool($data['aide_pch'] ?? false);
-$aucune   = toBool($data['aide_aucune'] ?? false);
-
-foreach ($allAides as $aide) {
-    $show = false;
-    $id = (int)$aide['id_aide_fin'];
-
-    switch ($id) {
-        case 1: // AJPA [cite: 1, 2]
-            if (in_array($statut, ['Salarie', 'Chomeur']) && in_array($gir, ['GIR 1-2', 'GIR 3-4'])) $show = true;
-            break;
-        case 2: // AJAP [cite: 1, 8]
-            if ($medical === 'FinDeVie') $show = true;
-            break;
-        case 3: // Salariat APA [cite: 1, 13]
-            if ($role !== 'conjoint' && $apa === true) $show = true;
-            break;
-        case 4: // MTP [cite: 1, 60]
-            if ($age === 'moinsLimiteAge' && $apa === false) $show = true;
-            break;
-        case 5: // PCRH [cite: 1, 101]
-            if ($statut === 'Salarie') $show = true;
-            break;
-        case 7: // Crédit Impôt [cite: 1, 40]
-            if ($fiscal === 'imposable' && $depenses === 'PayeFacture') $show = true;
-            break;
-        case 8: // Déduction Obligation Alimentaire [cite: 1, 45]
-            if ($fiscal === 'imposable' && $depenses === 'DonneArgent') $show = true;
-            break;
-        case 9: // Exonération Cotisations [cite: 1, 65]
-            if ($age === 'plusLimiteAge' || in_array($gir, ['GIR 1-2', 'GIR 3-4'])) $show = true;
-            break;
-        case 10: // TVA Réduite [cite: 1, 106]
-            if ($objectif === 'remunere') $show = true;
-            break;
-        case 11: // Abattement Taxe Foncière [cite: 1, 111]
-            if ($age === 'plusLimiteAge') $show = true;
-            break;
-        case 12: // MaPrimeAdapt' [cite: 1, 50]
-            if (in_array($gir, ['GIR 1-2', 'GIR 3-4']) || $age === 'plusLimiteAge') $show = true;
-            break;
-        case 13: // Aide Action Logement 
-            if ($statut === 'Salarie') $show = true;
-            break;
-        case 14: // Forfait Incontinence 
-            if ($medical === 'Vieillesse') $show = true;
-            break;
-        case 15: // Téléassistance [cite: 1, 86]
-            if ($age === 'plusLimiteAge' && $objectif === 'repos') $show = true;
-            break;
-        case 16: // AVA [cite: 1, 24]
-            if (in_array($gir, ['GIR 1-2', 'GIR 3-4']) && in_array($statut, ['Salarie', 'Chomeur', 'Independant'])) $show = true;
-            break;
-        case 17: // Trimestres Majorés [cite: 1, 71]
-            if ($role === 'famille' && $gir === 'GIR 1-2') $show = true;
-            break;
-        case 18: // Aide au Répit Agirc-Arrco [cite: 1, 76]
-            if ($statut === 'Retraite') $show = true;
-            break;
-        case 19: // Droit au Répit APA [cite: 1, 30]
-            if ($apa === true && $gir === 'GIR 1-2' && $objectif === 'repos') $show = true;
-            break;
-        case 20: // Relais Particulier Emploi 
-            if ($objectif === 'repos' && $role === 'proche') $show = true;
-            break;
-        case 21: // Vacances Répit [cite: 1, 91]
-            if ($medical === 'Vieillesse' && $objectif === 'repos') $show = true;
-            break;
-        case 22: // Aide Bien Vieillir [cite: 1, 55]
-            if ($gir === 'GIR 5-6' && $aucune === true) $show = true;
-            break;
+    if (!$data) {
+        echo json_encode([]);
+        exit;
     }
 
-    if ($show) {
-        $aidesValides[] = $aide;
-    }
-}
+    // 4. Extraction de TOUTES les variables du formulaire
+    $statut   = $data['statut_pro'] ?? '';
+    $depenses = $data['depenses'] ?? '';
+    $fiscal   = $data['fiscalite'] ?? '';
+    $role     = $data['role'] ?? '';
+    $age      = $data['age_aide'] ?? '';
+    $gir      = $data['gir'] ?? '';
+    $medical  = $data['situation_medicale'] ?? '';
+    $objectif = $data['objectif'] ?? '';
+    
+    // Checkboxes (booléens)
+    $apa    = filter_var($data['aide_apa'] ?? false, FILTER_VALIDATE_BOOLEAN);
+    $pch    = filter_var($data['aide_pch'] ?? false, FILTER_VALIDATE_BOOLEAN);
+    $aucune = filter_var($data['aide_aucune'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
-echo json_encode($aidesValides);
+    // 5. Récupération des aides en BDD
+    $dao = new AidesDAO();
+    $allAides = $dao->getAllAides();
+    $aidesValides = [];
+
+    // 6. Boucle de filtrage (Les 22 aides)
+    foreach ($allAides as $aide) {
+        $show = false;
+        
+        // On part du principe que id_aide_fin contient le NOM de l'aide ou son ID numérique
+        $id = $aide['id_aide_fin']; 
+
+        switch ($id) {
+            case "1": case "AJPA":
+                if (in_array($statut, ['Salarie', 'Chomeur']) && in_array($gir, ['GIR 1-2', 'GIR 3-4'])) $show = true;
+                break;
+
+            case "2": case "AJAP":
+                if ($medical === 'FinDeVie') $show = true;
+                break;
+
+            case "3": case "Salariat APA":
+                if ($role !== 'conjoint' && $apa === true && $objectif === 'remunere') $show = true;
+                break;
+
+            case "4": case "MTP":
+                if ($age === 'moinsLimiteAge' && $apa === false) $show = true;
+                break;
+
+            case "5": case "PCRH":
+                if ($statut === 'Salarie' && $medical === 'AccidentTravail') $show = true; // Exemple de condition
+                break;
+
+            case "7": case "Crédit d'Impôt Emploi Domicile":
+                if ($fiscal === 'imposable' && $depenses === 'PayeFacture') $show = true;
+                break;
+
+            case "8": case "Déduction Obligation Alimentaire":
+                if ($fiscal === 'imposable' && $depenses === 'DonneArgent') $show = true;
+                break;
+
+            case "9": case "Exonération Cotisations Patronales":
+                if ($age === 'plusLimiteAge' || in_array($gir, ['GIR 1-2', 'GIR 3-4'])) $show = true;
+                break;
+
+            case "12": case "MaPrimeAdapt'":
+                if (in_array($gir, ['GIR 1-2', 'GIR 3-4']) || $age === 'plusLimiteAge') $show = true;
+                break;
+
+            case "13": case "Aide Action Logement":
+                if ($statut === 'Salarie') $show = true;
+                break;
+
+            case "15": case "Téléassistance":
+                if ($age === 'plusLimiteAge' && $objectif === 'repos') $show = true;
+                break;
+
+            case "16": case "AVA":
+                if (in_array($gir, ['GIR 1-2', 'GIR 3-4']) && in_array($statut, ['Salarie', 'Chomeur', 'Independant'])) $show = true;
+                break;
+
+            case "17": case "Trimestres Majorés":
+                if ($role === 'famille' && in_array($gir, ['GIR 1-2'])) $show = true;
+                break;
+
+            case "18": case "Aide Agirc-Arrco":
+                if ($statut === 'Retraite') $show = true;
+                break;
+
+            case "19": case "Droit au répit":
+                if ($apa === true && $gir === 'GIR 1-2' && $objectif === 'repos') $show = true;
+                break;
+
+            case "20": case "PCH":
+                if ($pch === true || $objectif === 'PCH') $show = true;
+                break;
+
+            case "22": case "Aide Bien Vieillir":
+                if ($gir === 'GIR 5-6' && $aucune === true) $show = true;
+                break;
+
+            default:
+                // Pour les aides sans conditions spécifiques complexes, on peut décider de les afficher ou non
+                $show = false;
+                break;
+        }
+
+        if ($show) {
+            $aidesValides[] = $aide;
+        }
+    }
+
+    // 7. Réponse
+    echo json_encode($aidesValides);
+
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(["error" => "Erreur serveur"]);
+}

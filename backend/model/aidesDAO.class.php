@@ -1,7 +1,7 @@
 <?php
 require_once(__DIR__ . '/dal.class.php');
 
-class AideDAO {
+class AidesDAO {
     private DAL $dal;
 
     public function __construct() {
@@ -12,6 +12,7 @@ class AideDAO {
         $query = "SELECT * FROM aide_finance"; 
         $stmt = $this->dal->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll();
+        // Utilisation de FETCH_ASSOC pour une structure JSON propre
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
