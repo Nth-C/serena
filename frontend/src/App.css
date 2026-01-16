@@ -85,6 +85,11 @@ td {
   font-size: var(--font-sm);
 }
 
+textarea {
+  font-family: 'DM Sans', sans-serif;
+  min-height: 120px;
+}
+
 .end_list {
   font-size: var(--font-lg);
   font-weight: 700;
@@ -263,7 +268,7 @@ input::placeholder {
   border-bottom: 1px solid var(--gray);
 }
 
-.page_menu h2 {
+.page_menu .params_header h2 {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -281,7 +286,9 @@ input::placeholder {
 /* --------------------------------------------------- */
 
 .login,
-.create_account {
+.create_account,
+.forgot_password,
+.reset_password {
   overflow: hidden;
   position: relative;
   height: 100vh;
@@ -291,12 +298,15 @@ input::placeholder {
 }
 
 .login form,
-.create_account form {
+.create_account form,
+.forgot_password form,
+.reset_password form {
   width: 95%;
 }
 
 .login .border,
-.acce_suivi .border {
+.acce_suivi .border,
+.forgot_password .border {
   display: block;
   width: 70%;
   height: 1px;
@@ -307,8 +317,11 @@ input::placeholder {
 }
 
 .login h1,
-.create_account h1 {
+.create_account h1,
+.forgot_password h1,
+.reset_password h1 {
   color: var(--blue);
+  padding: 0;
 }
 
 .bienvenue {
@@ -318,26 +331,34 @@ input::placeholder {
 }
 
 .login label,
-.create_account label {
+.create_account label,
+.forgot_password label,
+.reset_password label {
   color: var(--blue);
 }
 
 .login input,
-.create_account input {
+.create_account input,
+.forgot_password input,
+.reset_password input {
   border-color: var(--blue);
 }
 
 /* img */
 .login img:first-child,
 .acce_suivi img:first-child,
-.create_account img:first-child {
+.create_account img:first-child,
+.forgot_password img:first-child,
+.reset_password img:first-child {
   max-width: 200px;
   padding: 5% 0 7.5rem 0;
 }
 
 .login img:last-child,
 .acce_suivi img:last-child,
-.create_account img:last-child {
+.create_account img:last-child,
+.forgot_password img:last-child,
+.reset_password img:last-child {
   max-width: 284px;
   max-height: 213px;
   position: absolute;
@@ -1505,11 +1526,128 @@ progress.blue_bar::-moz-progress-bar {
   border-bottom: 1px solid var(--gray);
 }
 
+/* ------------------------------ */
+/* ----------- COMPTE ----------- */
+/* ------------------------------ */
+
+.compte {
+  margin: 0 3rem;
+}
+
+.compte form > div:last-child {
+  flex-direction: row;
+}
+
+.compte h2 {
+  margin-bottom: 2rem;
+}
+
+.compte form > div:last-child button {
+  width: 50%;
+}
+
 /* ----------------------------------- */
 /* ----------- SIGNALEMENT ----------- */
 /* ----------------------------------- */
 
+.signalement {
+    margin: 0 3rem;
+}
 
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.signalement-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.signalement-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--gray);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.header-left h3 {
+    margin-bottom: .5rem;
+    color: var(--black);
+}
+
+.date {
+    color: var(--gray);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    background-color: var(--blue);
+    color: var(--white);
+}
+
+.card-body {
+    line-height: 1.6;
+    margin-bottom: 20px;
+    white-space: pre-line;
+}
+
+.card-footer {
+    display: flex;
+    gap: 15px;
+    border-top: 1px solid var(--gray);
+    padding-top: 15px;
+}
+
+.btn-text.success { color: var(--blue); }
+.btn-text.warning { color: var(--red); }
+.btn-text:hover { text-decoration: underline; }
+
+.btn-icon.delete {
+    color: var(--gray);
+    padding: 4px;
+    transition: 0.2s var(--bezier);
+}
+
+.btn-icon.delete:hover {
+    color: var(--red);
+}
+
+.alert {
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+.alert.success {color: var(--blue);}
+.alert.error { color: var(--red); }
+.alert.info { color: var(--pink); }
+
+.signalement-form > div:last-child {
+    flex-direction: row;
+}
+
+.signalement-form > div:last-child button {
+    width: 50%;
+}
 
 /* ----------------------------- */
 /* ----------- FONTS ----------- */
@@ -1596,6 +1734,32 @@ progress.blue_bar::-moz-progress-bar {
 
 .add_membre .container_btn_invite button {
   width: 80%;
+}
+
+
+/* Définition de l'animation */
+@keyframes rotate-loading {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* La classe spécifique pour ton SVG */
+.loading-icon {
+    width: 24px;   /* Ajuste la taille si besoin */
+    height: 24px;
+    animation: rotate-loading 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    color: blue;
+}
+
+/* Optionnel : on peut griser légèrement le bouton quand il charge */
+button:disabled .loading-icon {
+    opacity: 0.8;
 }
 
 /*-------------------------------------*/

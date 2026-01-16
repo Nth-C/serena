@@ -13,15 +13,39 @@ class SecurityDAO {
         return hash('sha512', $ip);
     }
 
-    public function getNbAttempts(string $ip): int {
-        $ip_hashed = $this->hashIp($ip);
-        // Nettoyage auto
-        $this->dal->prepare("DELETE FROM login_attempts WHERE attempt_time < NOW() - INTERVAL '24 hours'")->execute();
-        
-        $stmt = $this->dal->prepare("SELECT COUNT(*) FROM login_attempts WHERE ip_address = :ip AND attempt_time > NOW() - INTERVAL '15 minutes'");
-        $stmt->execute(['ip' => $ip_hashed]);
-        return (int) $stmt->fetchColumn();
+    public function getSecurityStatus(string $ip): array {
+    $ip_hashed = $this->hashIp($ip);
+    
+    // 1. Nettoyage (optionnel ici, peut être mis dans un cron)
+    $this->dal->prepare("DELETE FROM login_attempts WHERE attempt_time < NOW() - INTERVAL '24 hours'")->execute();
+    
+    // 2. On récupère le nombre et la date du dernier essai dans les 15 dernières minutes
+    $stmt = $this->dal->prepare("
+        SELECT 
+            COUNT(*) as nb, 
+            MAX(attempt_time) as last_attempt 
+        FROM login_attempts 
+        WHERE ip_address = :ip 
+        AND attempt_time > NOW() - INTERVAL '5 minutes'
+    ");
+    $stmt->execute(['ip' => $ip_hashed]);
+    $res = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $nbAttempts = (int)$res['nb'];
+    $waitTime = 0;
+
+    if ($nbAttempts >= 6) {
+        // Calcul du temps restant avant expiration du blocage (15 min après le dernier essai)
+        $lastAttemptTime = strtotime($res['last_attempt']);
+        $unlockTime = $lastAttemptTime + (5 * 60); // + 15 minutes
+        $waitTime = max(0, $unlockTime - time());
     }
+
+    return [
+        'nb' => $nbAttempts,
+        'wait_time' => $waitTime // Temps en secondes
+    ];
+}
 
     public function registerAttempt(string $ip): void {
         $ip_hashed = $this->hashIp($ip);

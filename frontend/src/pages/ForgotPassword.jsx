@@ -35,7 +35,9 @@ function ForgotPassword() {
     };
 
     return (
-        <div className="login">
+        <div className="forgot_password">
+            <img src="/img/logo-name.png" alt="" />
+
             <h1>Mot de passe oublié</h1>
             
             {/* Affichage des messages (succès ou erreur) */}
@@ -55,7 +57,12 @@ function ForgotPassword() {
                     <button type="submit" className="btn_blue">Envoyer le lien</button>
                 </div>
             </form>
+
+            <span className='border'></span>
+
             <NavLink to="/login">Retour connexion</NavLink>
+
+            <img src="/img/logo.svg" alt="" />
         </div>
     );
 }

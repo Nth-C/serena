@@ -5,6 +5,15 @@ require_once(__DIR__ . '/../app.php');
 header("Content-Type: application/json");
 $app = new App();
 
+if (!$app->checkRole('Famille')) {
+    header('HTTP/1.1 403 Forbidden');
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Erreur : Vous devez avoir au moins le role de famille pour faire ça.'
+    ]);
+    exit; 
+}
+
 if (!$app->connected || !$app->id_famille) {
     echo json_encode(["success" => false, "error" => "Session invalide ou famille non sélectionnée"]);
     exit;

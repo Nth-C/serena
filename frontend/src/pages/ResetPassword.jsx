@@ -38,9 +38,12 @@ function ResetPassword() {
     };
 
     return (
-        <div className="login">
+        <div className="reset_password">
+            <img src="/img/logo-name.png" alt="" />
+
             <h1>Réinitialisation</h1>
-            {message && <p style={{color:'red'}}>{message}</p>}
+
+            {message && <p>{message}</p>}
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Email du compte : </label>
@@ -62,6 +65,8 @@ function ResetPassword() {
                 </div>
                 <button type="submit" className="btn_blue">Changer le mot de passe</button>
             </form>
+
+            <img src="/img/logo.svg" alt="" />
         </div>
     );
 }

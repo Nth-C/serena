@@ -63,13 +63,12 @@ function Login() {
             </form>
 
             <span className='border'></span>
+            
             <div>
                 <NavLink className="btn_border" to={"/create_account"}>
                     Créer un compte
                 </NavLink>
             </div>
-
-
 
             <img src="/img/logo.svg" alt="" />
         </div>

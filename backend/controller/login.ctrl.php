@@ -9,8 +9,17 @@ $ip = $_SERVER['REMOTE_ADDR'];
 
 
 
-if ($securityDAO->getNbAttempts($ip) >= 5) {
-    echo json_encode(['success' => false, 'message' => 'Trop de tentatives. Réessayez dans 15 min.']);
+$security = $securityDAO->getSecurityStatus($ip);
+
+if ($security['nb'] >= 6) {
+    // Conversion des secondes en minutes pour l'affichage
+    $minutes = ceil($security['wait_time'] / 60);
+    
+    echo json_encode([
+        'success' => false, 
+        'message' => "Trop de tentatives. Réessayez dans $minutes min.",
+        'retry_after' => $security['wait_time'] // Pratique pour le front
+    ]);
     exit();
 }
 

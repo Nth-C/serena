@@ -14,7 +14,7 @@ try {
     $id_famille = $app->id_famille; 
 
     if (!$id_famille) {
-        echo json_encode(["medicaments" => []]);
+        echo json_encode(["medicaments" => [], "trajets" => []]);
         exit;
     }
     

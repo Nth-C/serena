@@ -10,6 +10,15 @@ if (!$app->connected || !$app->id_famille) {
     exit;
 }
 
+if (!$app->checkRole('Famille')) {
+    header('HTTP/1.1 403 Forbidden');
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Erreur : Vous devez avoir au moins le role de famille pour faire ça.'
+    ]);
+    exit; 
+}
+
 try {
     $id_doc = $_GET['id'] ?? $_POST['id'] ?? null;
 
