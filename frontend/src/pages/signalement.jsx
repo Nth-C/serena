@@ -1,19 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import './signalement.css';
+import { useState, useEffect } from 'react';
 import Slide from '../components/slide/Slide';
 import LayoutMenu from '../LayoutMenu';
-
-const TrashIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>;
-const CheckCircleIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>;
-const XCircleIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>;
-const PlusIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>;
+import PopUpDelete from '../components/popup_delete/PopUpDelete'
+import { getFormatDate, getFormatTime } from '../utils/utils';
 
 const Signalement = () => {
     const [signalements, setSignalements] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isNewOpen, setIsNewOpen] = useState(false);
-    const [formData, setFormData] = useState({ sujet: '', message: '' });
+    const [formData, setFormData] = useState({ sujet: '', message: ''});
     const [statusMsg, setStatusMsg] = useState({ type: '', msg: '' });
+
+    // popup delete
+    const [popUpDeleteOpen , setPopUpDeleteOpen] = useState(false)
+    const [signalementToDelete , setSignalementToDelete] = useState({
+        id: null,
+        title: null
+    })
 
     const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -129,8 +132,6 @@ const Signalement = () => {
 
     // --- 4. SUPPRIMER ---
     const handleDelete = async (id) => {
-        if (!window.confirm("Voulez-vous vraiment supprimer ce signalement ?")) return;
-
         try {
             const response = await fetch(`${apiUrl}/?route=signalement/delete`, {
                 method: 'POST',
@@ -162,15 +163,15 @@ const Signalement = () => {
     };
 
     return (
+        <>
         <LayoutMenu
             title={"Signalement"}
         >
-            <>
             <div className='signalement'>
                 <div className="page-header">
-                    <h1>Mes Signalements</h1>
-                    <button className="btn-primary btn-add" onClick={() => setIsNewOpen(true)}>
-                        <PlusIcon /> Nouveau Signalement
+                    <h2>Mes Signalements</h2>
+                    <button className="btn_blue" onClick={() => setIsNewOpen(true)}>
+                        Nouveau Signalement
                     </button>
                 </div>
 
@@ -184,22 +185,28 @@ const Signalement = () => {
                         </div>
                     ) : (
                         signalements.map((sig, index) => {
-                            console.log("Signalement data:", sig); // DEBUG: voir les vraies clés
                             return (
                             <div key={index} className="signalement-card">
                                 <div className="card-header">
                                     <div className="header-left">
                                         <h3>{sig.sujet}</h3>
-                                        <span className="date">{new Date(sig.date_creation).toLocaleDateString()}</span>
+                                        <p className="date">{getFormatDate(new Date(sig.date), true)}</p>
+                                        <p className="date">{getFormatTime(new Date(sig.date))}</p>
                                     </div>
                                     <div className="header-right">
                                         {renderStatusBadge(sig.status)}
                                         <button 
                                             className="btn-icon delete"
                                             title="Supprimer"
-                                            onClick={() => handleDelete(sig.id_signal)}
+                                            onClick={() => {
+                                                setPopUpDeleteOpen(true)
+                                                setSignalementToDelete({
+                                                    id: sig.id_signal,
+                                                    title: sig.sujet
+                                                })
+                                            }}
                                         >
-                                            <TrashIcon />
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>;
                                         </button>
                                     </div>
                                 </div>
@@ -215,7 +222,7 @@ const Signalement = () => {
                                             className="btn-text success" 
                                             onClick={() => handleStatusChange(sig.id_signal, 'cloture')}
                                         >
-                                            <CheckCircleIcon /> Marquer comme résolu
+                                            Marquer comme résolu
                                         </button>
                                     )}
                                     {sig.status === 'cloture' && (
@@ -223,7 +230,7 @@ const Signalement = () => {
                                             className="btn-text warning" 
                                             onClick={() => handleStatusChange(sig.id_signal, 'ouvert')}
                                         >
-                                            <XCircleIcon /> Rouvrir
+                                            Rouvrir
                                         </button>
                                     )}
                                 </div>
@@ -232,48 +239,54 @@ const Signalement = () => {
                         })
                     )}
                 </div>
-            </div>
-            {/* FORMULAIRE NOUVEAU */}
-            <Slide title="Nouveau Signalement" isOpen={isNewOpen} toggleOpen={() => setIsNewOpen(false)}>
-                <form onSubmit={handleAdd} className="signalement-form">
-                    {statusMsg.msg && (
-                        <div className={`alert ${statusMsg.type}`}>
-                            {statusMsg.msg}
-                        </div>
-                    )}
-                    
-                    <div className="form-group">
-                        <label>Sujet</label>
-                        <input 
-                            type="text" 
-                            className="form-input"
-                            value={formData.sujet}
-                            onChange={(e) => setFormData({...formData, sujet: e.target.value})}
-                            required
-                            placeholder="Ex: Bug sur l'agenda..."
-                        />
-                    </div>
-                    
-                    <div className="form-group">
-                        <label>Message</label>
-                        <textarea 
-                            className="form-textarea"
-                            value={formData.message}
-                            onChange={(e) => setFormData({...formData, message: e.target.value})}
-                            required
-                            placeholder="Décrivez votre problème en détail..."
-                        />
-                    </div>
-
-                    <div className="form-actions">
-                        <button type="button" className="btn-secondary" onClick={() => setIsNewOpen(false)}>Annuler</button>
-                        <button type="submit" className="btn-primary">Envoyer</button>
-                    </div>
-                </form>
-            </Slide>
-            </>
+            </div>  
         </LayoutMenu>
-        
+
+        {/* FORMULAIRE NOUVEAU */}
+        <Slide title="Nouveau Signalement" isOpen={isNewOpen} toggleOpen={() => setIsNewOpen(false)}>
+            <form onSubmit={handleAdd} className="signalement-form">
+                {statusMsg.msg && (
+                    <div className={`alert ${statusMsg.type}`}>
+                        {statusMsg.msg}
+                    </div>
+                )}
+                
+                <div className="form-group">
+                    <label>Sujet :</label>
+                    <input 
+                        type="text" 
+                        className="form-input"
+                        value={formData.sujet}
+                        onChange={(e) => setFormData({...formData, sujet: e.target.value})}
+                        required
+                        placeholder="Ex: Bug sur l'agenda..."
+                    />
+                </div>
+                
+                <div className="form-group">
+                    <label>Message :</label>
+                    <textarea 
+                        className="form-textarea"
+                        value={formData.message}
+                        onChange={(e) => setFormData({...formData, message: e.target.value})}
+                        required
+                        placeholder="Décrivez votre problème en détail..."
+                    />
+                </div>
+                <div className="form-actions">
+                    <button type="button" className="btn_border" onClick={() => setIsNewOpen(false)}>Annuler</button>
+                    <button type="submit" className="btn_blue">Envoyer</button>
+                </div>
+            </form>
+        </Slide>
+
+        <PopUpDelete
+            toDelete={signalementToDelete.title}
+            handleDelete={() => handleDelete(signalementToDelete.id)}
+            isOpen={popUpDeleteOpen}
+            onClose={() => setPopUpDeleteOpen(false)}
+        />
+        </>
     );
 };
 
