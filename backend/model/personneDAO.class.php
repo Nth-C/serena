@@ -93,21 +93,42 @@ public function updatePasswordByEmail($email, $hashedPassword) {
     return $stmt->execute();
 }
 
-    public function insert(Personne $personne): bool {
-        $query = 'INSERT INTO personnes (nom, prenom, mail, username, mdp, date_naissance) 
-                  VALUES (:nom, :prenom, :mail, :username, :mdp, :date_naissance)';
-        
-        $stmt = $this->dal->prepare($query);
+    // Dans model/PersonneDAO.class.php
 
-        return $stmt->execute([
-            ':nom'            => $personne->nom,
-            ':prenom'         => $personne->prenom,
-            ':mail'           => $personne->mail,
-            ':username'       => $personne->username,
-            ':mdp'            => $personne->mdp,
-            ':date_naissance' => $personne->date_naissance 
-        ]);
+// 1. Modifier INSERT pour inclure le token_activation
+public function insert(Personne $personne, $tokenActivation): bool {
+    // Note : On force 'est_actif' à FALSE par défaut dans la requête ou via la BDD
+    $query = 'INSERT INTO personnes (nom, prenom, mail, username, mdp, date_naissance, token_activation, est_actif) 
+              VALUES (:nom, :prenom, :mail, :username, :mdp, :date_naissance, :token, FALSE)';
+    
+    $stmt = $this->dal->prepare($query);
+
+    return $stmt->execute([
+        ':nom'            => $personne->nom,
+        ':prenom'         => $personne->prenom,
+        ':mail'           => $personne->mail,
+        ':username'       => $personne->username,
+        ':mdp'            => $personne->mdp,
+        ':date_naissance' => $personne->date_naissance,
+        ':token'          => $tokenActivation // On passe le token ici
+    ]);
+}
+
+// 2. Nouvelle méthode pour activer le compte
+public function activateAccount($token) {
+    // On cherche si ce token existe
+    $sql = "SELECT id_personne FROM PERSONNES WHERE token_activation = :token";
+    $stmt = $this->dal->prepare($sql);
+    $stmt->execute([':token' => $token]);
+    
+    if ($stmt->fetch()) {
+        // Si oui, on active le compte et on supprime le token
+        $update = "UPDATE PERSONNES SET est_actif = TRUE, token_activation = NULL WHERE token_activation = :token";
+        $stmtUp = $this->dal->prepare($update);
+        return $stmtUp->execute([':token' => $token]);
     }
+    return false;
+}
 
     public function findPersonneById(string $id_personne): ?Personne {
         $query = 'SELECT * FROM personnes WHERE id_personne = :id_personne';
