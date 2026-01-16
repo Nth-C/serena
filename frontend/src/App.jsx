@@ -71,6 +71,12 @@ function App() {
             </ProtectedRoute>
             }>
           </Route>
+          <Route path="notification" 
+          element={
+          <ProtectedRoute requireFamily={false}>
+            <Notification />
+          </ProtectedRoute>}>
+        </Route>
 
           <Route path="add_contact" 
             element={
