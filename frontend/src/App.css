@@ -1736,6 +1736,32 @@ progress.blue_bar::-moz-progress-bar {
   width: 80%;
 }
 
+
+/* Définition de l'animation */
+@keyframes rotate-loading {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* La classe spécifique pour ton SVG */
+.loading-icon {
+    width: 24px;   /* Ajuste la taille si besoin */
+    height: 24px;
+    animation: rotate-loading 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    color: blue;
+}
+
+/* Optionnel : on peut griser légèrement le bouton quand il charge */
+button:disabled .loading-icon {
+    opacity: 0.8;
+}
+
 /*-------------------------------------*/
 
 .role_membre .container_search {
