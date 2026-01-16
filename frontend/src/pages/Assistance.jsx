@@ -23,7 +23,7 @@ function Assistance() {
         </>
       ) : (
         <>
-        <h1>Liste des aides au quel vous avez le droit</h1>
+        <h1>Liste des aides auxquelles vous avez droit</h1>
         </>
       )}
       <form action="">

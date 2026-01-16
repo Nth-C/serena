@@ -1,64 +1,54 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react';
+import Slide from '../components/slide/Slide'; // Vérifie que le dossier Slide a une majuscule ou pas
 
-function AssistanceDisponnible() {
-    const [isDetailsAssistanceOpen, setIsDetailsAssistancepen] = useState(false);
+function AssistanceDisponnible({ aides, resetForm }) {
+    const [isDetailsAssistanceOpen, setIsDetailsAssistanceOpen] = useState(false);
+    const [selectedAide, setSelectedAide] = useState(null);
 
-    const toggleDetailsAssistance = () => setIsDetailsAssistancepen(!isDetailsAssistanceOpen);
+    const toggleDetailsAssistance = (aide) => {
+        setSelectedAide(aide);
+        setIsDetailsAssistanceOpen(!isDetailsAssistanceOpen);
+    };
+
     return (
         <div className="assistance_dispo">
             <div className="list">
-                <div className="container_medecine">
-                    <div className="principal_infos">
-                        <div>
-                            <p>Allocation personnalisée d'autonomie</p>
+                {aides && aides.length > 0 ? (
+                    aides.map((aide) => (
+                        <div key={aide.id_aide_fin} className="container_medecine">
+                            <div className="principal_infos">
+                                <p><strong>{aide.nom_aide}</strong></p>
+                            </div>
+                            <div className="drop">
+                                <p>{aide.gain_estime}</p>
+                                <button className="btn_blue" onClick={() => toggleDetailsAssistance(aide)}>Voir plus</button>
+                            </div>
                         </div>
-                    </div>
-
-                    <div className="drop">
-                        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Officia odit atque corrupti distinctio velit magnam nulla.</p>
-                        <div>
-                            <button className="btn_blue" onClick={toggleDetailsAssistance}>Voir plus</button>
-                        </div>
-                    </div>
-                </div>
-                <p className='end_list' >Aucun autre aides disponnible</p>
-                <p className="aucun">Aucune aide disponnible</p>
+                    ))
+                ) : (
+                    <p className="aucun">Aucune aide trouvée pour votre situation.</p>
+                )}
+                <p className='end_list'>Fin des résultats</p>
             </div>
-            <button className="btn_blue">Modifier situation</button>
+            
+            <button className="btn_blue" onClick={resetForm}>Modifier ma situation</button>
 
-
-
-
-            {/* Slide Détails des aides */}
-            <Slide title="Nom de l'aide" isOpen={isDetailsAssistanceOpen} toggleOpen={toggleDetailsAssistance}>
-                <div className="details_assistance">
-                    <div>
-                        <p>Description / ce que tu gagner / organisme</p>
-                    </div>
-                    <div >
-                        <h2>Qui a Accès ?</h2>
-                        <p>Lorem ipsum</p>
-                    </div>
-                    <div >
+            {selectedAide && (
+                <Slide 
+                    title={selectedAide.nom_aide} 
+                    isOpen={isDetailsAssistanceOpen} 
+                    toggleOpen={() => setIsDetailsAssistanceOpen(false)}
+                >
+                    <div className="details_assistance">
+                        <h2>Description</h2>
+                        <p>{selectedAide.description || "Détails non renseignés."}</p>
                         <h2>Comment l'obtenir</h2>
-                        <ul>
-                            <li>lorem ipsum dolor</li>
-                            <li>lorem ipsum dolor</li>
-                            <li>lorem ipsum dolor</li>
-                            <li>lorem ipsum dolor</li>
-                        </ul>
+                        <p>{selectedAide.comment_obtenir || "Contactez votre CAF ou MSA."}</p>
                     </div>
-                    <div>
-                        <h2>Document requis</h2>
-                        <ul>
-                            <li>lorem ipsum dolor</li>
-                            <li>lorem ipsum dolor</li>
-                        </ul>
-                    </div>
-                </div>
-            </Slide>
+                </Slide>
+            )}
         </div>
-    )
+    );
 }
 
-export default AssistanceDisponnible
+export default AssistanceDisponnible;
