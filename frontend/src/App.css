@@ -286,7 +286,9 @@ input::placeholder {
 /* --------------------------------------------------- */
 
 .login,
-.create_account {
+.create_account,
+.forgot_password,
+.reset_password {
   overflow: hidden;
   position: relative;
   height: 100vh;
@@ -296,12 +298,15 @@ input::placeholder {
 }
 
 .login form,
-.create_account form {
+.create_account form,
+.forgot_password form,
+.reset_password form {
   width: 95%;
 }
 
 .login .border,
-.acce_suivi .border {
+.acce_suivi .border,
+.forgot_password .border {
   display: block;
   width: 70%;
   height: 1px;
@@ -312,8 +317,11 @@ input::placeholder {
 }
 
 .login h1,
-.create_account h1 {
+.create_account h1,
+.forgot_password h1,
+.reset_password h1 {
   color: var(--blue);
+  padding: 0;
 }
 
 .bienvenue {
@@ -323,26 +331,34 @@ input::placeholder {
 }
 
 .login label,
-.create_account label {
+.create_account label,
+.forgot_password label,
+.reset_password label {
   color: var(--blue);
 }
 
 .login input,
-.create_account input {
+.create_account input,
+.forgot_password input,
+.reset_password input {
   border-color: var(--blue);
 }
 
 /* img */
 .login img:first-child,
 .acce_suivi img:first-child,
-.create_account img:first-child {
+.create_account img:first-child,
+.forgot_password img:first-child,
+.reset_password img:first-child {
   max-width: 200px;
   padding: 5% 0 7.5rem 0;
 }
 
 .login img:last-child,
 .acce_suivi img:last-child,
-.create_account img:last-child {
+.create_account img:last-child,
+.forgot_password img:last-child,
+.reset_password img:last-child {
   max-width: 284px;
   max-height: 213px;
   position: absolute;
