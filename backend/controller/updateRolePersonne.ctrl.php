@@ -12,11 +12,11 @@ if (!$app->connected || !$app->personne) {
     exit;
 }
 
-if (!$app->checkRole('Createur')) {
+if (!$app->checkRole('Famille')) {
     header('HTTP/1.1 403 Forbidden');
     echo json_encode([
         'success' => false, 
-        'message' => 'Erreur : Vous devez être chef de famille pour faire ça.'
+        'message' => 'Erreur : Vous devez être un proche de la famille pour faire ça.'
     ]);
     exit; 
 }
@@ -27,6 +27,16 @@ $data = json_decode($json, true);
 
 $id_personne_a_modifier = $data['idPersonne'] ?? null;
 $nouveau_role = $data['nouveauRole'] ?? null;
+
+if ($nouveau_role == Famille && !$app->checkRole('Createur')) {
+    header('HTTP/1.1 403 Forbidden');
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Erreur : Vous devez être chef de famille pour mettre un role proche de la famille'
+    ]);
+    exit; 
+}
+
 $id_famille_actuelle = $app->id_famille; // Récupéré depuis la session via App
 
 if($id_personne_a_modifier == $app->personne->id){

@@ -76,14 +76,12 @@ h2 {
   font-size: var(--font-md);
 }
 
-h3 {
-  font-size: var(--font-sm);
-}
-
 label,
+h3,
 p,
 a,
-li {
+li,
+td {
   font-size: var(--font-sm);
 }
 
@@ -126,6 +124,11 @@ textarea {
 input,
 select {
   height: 3.5rem;
+}
+
+input,
+label {
+  cursor: pointer;
 }
 
 select option {
@@ -243,13 +246,9 @@ input::placeholder {
 .page_menu {
   position: relative;
   display: flex;
-  position: fixed;
-  top: 0;
-  left: 0;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   background: var(--white);
-  z-index: 1000;
   flex-direction: column;
   gap: 2rem;
 }
@@ -269,6 +268,7 @@ input::placeholder {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  white-space: nowrap;
 }
 
 .page_menu .params_header svg {
@@ -944,11 +944,32 @@ progress.blue_bar::-moz-progress-bar {
   width: 1.5rem;
 }
 
-/* calandar */
-
 /*  slide event */
+
+:is(.add_event, .add_trajet) > div:last-child {
+  flex-direction: row;
+}
+
+:is(.add_event, .add_trajet) > div:last-child button{
+  width: 50%;
+}
+
+.add_event .date-row {
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.add_event .date-row > div {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  width: 45%;
+}
+
+/* switch calendar */
+
 :is(.switch_event, .switch_calendar) {
-  /*margin-bottom: 2rem;*/
+  margin-bottom: 2rem;
   border-radius: 8px;
   flex-grow: 1;
 }
@@ -1338,22 +1359,27 @@ progress.blue_bar::-moz-progress-bar {
   padding: 1rem;
   border-radius: 10px;
   min-height: 103px;
-  
+}
+
+.accueil .alerte_dashbord > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 .accueil .alerte_dashbord svg:first-child {
   fill: var(--red);
   background-color: var(--white);
   padding: .5rem;
-  width: 50px;
-  height: 50px;
+  width: 7rem;
+  height: 7rem;
   border-radius: 10px;
 }
 
 .accueil .alerte_dashbord svg:last-child {
   fill: var(--white);
-  width: 50px;
-  height: 50px;
+  width: 7rem;
+  height: 7rem;
 }
 
 .accueil progress {
@@ -1405,6 +1431,84 @@ progress.blue_bar::-moz-progress-bar {
 .last_report .info_report p {
   text-align: justify;
 }
+
+/* ---------------------------- */
+/* ----------- LOGS ----------- */
+/* ---------------------------- */
+
+/* filtre */
+
+.audit_log .filter_bar {
+  margin: 1rem 3rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.audit_log svg {
+  width: 2.5rem;
+}
+
+.audit_log .filter_group {
+  position: relative;
+}
+
+.audit_log .filter_group > button {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.audit_log .filter_group > div:last-child {
+  display: none;
+  position: absolute;
+  background: var(--white);
+  border: 1px solid var(--gray);
+  padding: .5rem 1rem;
+  border-radius: 8px;
+}
+
+.audit_log .filter_group > div:last-child.active {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.audit_log .filter_group .checkbox {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.audit_log .filter_group:last-child {
+  display: flex;
+  gap: 2rem;
+}
+
+.audit_log svg.spinning {
+  transition: .2s var(--bezier);
+  transform: rotate(360deg);
+}
+
+/* liste */
+
+.audit_table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  table-layout: auto;
+}
+
+.audit_table th, 
+.audit_table td {
+  text-align: left;
+  padding: 1rem 3rem;
+  border-bottom: 1px solid var(--gray);
+}
+
+/* ----------------------------------- */
+/* ----------- SIGNALEMENT ----------- */
+/* ----------------------------------- */
+
 
 
 /* ----------------------------- */

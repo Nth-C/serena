@@ -28,6 +28,9 @@ import Accessibilite from './pages/Accessibilite';
 import Signalement from './pages/Signalement';
 import VerifyAccount from './pages/VerifyAccount';
 
+import { ROLES, hasPermission } from './utils/roleManager';
+
+
 
 const ProtectedRoute = ({ children, requireFamily = true }) => {
   const isConnected = sessionStorage.getItem('isConnected') === 'true';
@@ -59,7 +62,7 @@ function App() {
 
         {/* PAGES MENU */}
         {/* uniquement accessible pour le createur de la famille */}
-        {sessionStorage.getItem('role') === "Createur" && (
+        {hasPermission("Createur") && (
           <>
           <Route path="logs"
             element={

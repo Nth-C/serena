@@ -6,6 +6,18 @@ require_once(__DIR__ . '/../app.php');
 
 
 $app = new App();
+
+
+if (!$app->checkRole('Famille')) {
+    header('HTTP/1.1 403 Forbidden');
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Erreur : Vous devez être un proche de la famille pour faire ça.'
+    ]);
+    exit; 
+}
+
+
 $model = new MedicamentDAO();
 
 try {

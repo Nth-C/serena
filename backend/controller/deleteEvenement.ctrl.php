@@ -5,6 +5,15 @@ require_once(__DIR__ . '/../app.php');
 header("Content-Type: application/json");
 $app = new App();
 
+if (!$app->checkRole('Proche')) {
+    header('HTTP/1.1 403 Forbidden');
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Erreur : Vous devez avoir au moins le role de Proche pour faire ça.'
+    ]);
+    exit; 
+}
+
 if (!$app->connected || !$app->id_famille) {
     echo json_encode(["success" => false, "error" => "Non autorisé"]);
     exit;

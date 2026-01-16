@@ -50,19 +50,22 @@ const _ROUTES = array(
   'document/add' => 'addDocument',
   'document/delete' => 'deleteDocument',
   'categorie/add' => 'addCategorie',
+  'categorie/update' => 'updateCategorie',
   'getfamillepersonne' => 'getfamillepersonne',
   'rolepersonne/update' => 'updateRolePersonne',
-  'getevents' => 'getevents',
+  'getevents' => 'getEvents',
   'forgot_password' => 'forgotPassword',
   'reset_password' => 'resetPassword',
   'liste_membre' => 'liste_membre',
   'trajet/add' => 'addTrajet',
-  'dashboard/view' => 'viewDashboard',
   'signalement/list' => 'getSignalement',
   'signalement/add' => 'addSignalement',
   'signalement/delete' => 'deleteSignalement',
   'signalement/update' => 'updateSignalement',
-
+  'dashboard/view' => 'viewDashboard',
+  'user/profile' => 'getUserInfo',
+  'user/update' => 'updateUser',
+  'user/delete' => 'deleteCompte'
 );
 
 if (!array_key_exists($route, _ROUTES)) {

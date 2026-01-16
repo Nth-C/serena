@@ -32,6 +32,13 @@
     background: var(--blue);
     border-radius: 8px;
     cursor: pointer;
+    padding: 2rem;
+    color: var(--white);
+}
+
+:is(.calendar_day, .calendar_week) .event p:first-child {
+    font-weight: 600;
+    font-size: var(--font-md);
 }
 
 /* week */
