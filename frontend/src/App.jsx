@@ -196,7 +196,7 @@ function App() {
           <ProtectedRoute>
             <Layout submenu={[
                 { label: "Rapport de visite", path: "suivi/visit_report" },
-                ...(hasPermission("Famille") 
+                ...(hasPermission("Proche") 
                 ? [{ label: "Médicament", path: "suivi/medicine" }] 
                 : [])
               ]}/>
@@ -217,7 +217,7 @@ function App() {
             <Layout submenu={[
             { label: "Explorateur", path: "document/explorateur" },
             // On ajoute "Aides" seulement si l'utilisateur est Aidant
-            ...(hasPermission("Famille") 
+            ...(hasPermission("Proche") 
                 ? [{ label: "Aides", path: "document/aides" }] 
                 : [])
           ]}/>

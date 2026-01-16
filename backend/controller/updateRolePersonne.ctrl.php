@@ -28,7 +28,7 @@ $data = json_decode($json, true);
 $id_personne_a_modifier = $data['idPersonne'] ?? null;
 $nouveau_role = $data['nouveauRole'] ?? null;
 
-if ($nouveau_role == Famille && !$app->checkRole('Createur')) {
+if ($nouveau_role == "Famille" && !$app->checkRole('Createur')) {
     header('HTTP/1.1 403 Forbidden');
     echo json_encode([
         'success' => false, 
