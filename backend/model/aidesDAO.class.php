@@ -12,7 +12,6 @@ class AidesDAO {
         $query = "SELECT * FROM aide_finance"; 
         $stmt = $this->dal->prepare($query);
         $stmt->execute();
-        // Utilisation de FETCH_ASSOC pour une structure JSON propre
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
