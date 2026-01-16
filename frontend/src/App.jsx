@@ -1,6 +1,5 @@
 import { Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
-import { useState } from 'react';
-import './App.css'
+import { useState, useEffect } from 'react';
 
 import Dashboard from './pages/Dashboard';
 import MyDay from './pages/MyDay'
@@ -30,6 +29,8 @@ import VerifyAccount from './pages/VerifyAccount';
 
 import { ROLES, hasPermission } from './utils/roleManager';
 
+import { applyAccessibilitySettings } from './utils/applySettings';
+
 
 
 const ProtectedRoute = ({ children, requireFamily = true }) => {
@@ -50,6 +51,11 @@ const ProtectedRoute = ({ children, requireFamily = true }) => {
 function App() {
   const location = useLocation();
   const [auth, setAuth] = useState(sessionStorage.getItem('isConnected') === 'true');
+
+  useEffect(() => {
+        // Applique les réglages sauvegardés dès le boot de l'app
+        applyAccessibilitySettings();
+    }, []);
 
   return (
     <>
