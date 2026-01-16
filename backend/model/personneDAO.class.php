@@ -52,18 +52,18 @@ class PersonneDAO {
         return new Personne($result);
     }
 
-public function findByEmail($email) {
-    $sql = "SELECT * FROM PERSONNES WHERE mail = :email"; 
-    $stmt = $this->dal->prepare($sql);
-    $stmt->bindValue(':email', $email);
-    $stmt->execute();
-    $data = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ($data) {
-        return (object) $data; 
+    public function findByEmail($email) {
+        $sql = "SELECT * FROM PERSONNES WHERE mail = :email"; 
+        $stmt = $this->dal->prepare($sql);
+        $stmt->bindValue(':email', $email);
+        $stmt->execute();
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($data) {
+            return (object) $data; 
+        }
+        return null;
     }
-    return null;
-}
-public function updateResetToken($email, $token, $expiration) {
+    public function updateResetToken($email, $token, $expiration) {
         $sql = "UPDATE PERSONNES 
                 SET reset_token = :token, 
                     reset_expires = :expires 

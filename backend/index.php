@@ -57,7 +57,6 @@ const _ROUTES = array(
   'reset_password' => 'resetPassword',
   'liste_membre' => 'liste_membre',
   'trajet/add' => 'addTrajet',
-  'dashboard/view' => 'viewDashboard',
   'signalement/list' => 'getSignalement',
   'signalement/add' => 'addSignalement',
   'signalement/delete' => 'deleteSignalement',
