@@ -56,7 +56,9 @@ CREATE TABLE AUDIT_LOGS (
         username VARCHAR(100) UNIQUE NOT NULL,
         mdp VARCHAR(255) NOT NULL,
         date_naissance DATE NOT NULL,
-        tps_mdp TIMESTAMPTZ NULL 
+        tps_mdp TIMESTAMPTZ NULL,
+        reset_token VARCHAR(255) NULL,
+        reset_expires TIMESTAMPTZ NULL
     );
 
     CREATE TABLE SOCIETES (

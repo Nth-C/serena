@@ -18,7 +18,6 @@ require_once(__DIR__ . '/../app.php');
 try {
     $app = new App();
     $model = new signalementDAO();
-    $id_famille = $app->id_famille; 
     $json = file_get_contents('php://input'); // lit le body du fetch
     $data = json_decode($json, true); // transforme '$json' en tableau
 
@@ -26,7 +25,11 @@ try {
         throw new Exception("Données manquantes (status ou id_signalement).");
     }
 
-    $success = $model->updateSignalement($data['id_signalement'], $app->id_pers, $data['status']);
+    if (!$app->personne) {
+        throw new Exception("Utilisateur non authentifié.");
+    }
+
+    $success = $model->updateSignalement($data['id_signalement'], $app->personne->id, $data['status']);
     // renvoie a la vue des informations
     echo json_encode([
         "success" => $success,

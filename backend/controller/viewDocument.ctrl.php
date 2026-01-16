@@ -16,8 +16,7 @@ try {
     $categorieDao = new CategorieDAO();
     $documentDao = new DocumentDAO();
 
-    $categories = $categorieDao->getAllCategories($app->id_famille);
-
+    $categories = $categorieDao->getAllCategories($app->id_famille,$app->getRole());
     foreach($categories as $categorie){
         $documents = $documentDao->getDocumentsDeIdCategorie($app->id_famille, $categorie->id_cat);
         

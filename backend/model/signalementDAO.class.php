@@ -15,7 +15,9 @@ class SignalementDAO {
         
         $stmt = $this->dal->prepare($query);
         $stmt->execute(['id_pers' => $id_pers]);
-        return $stmt->fetchAll();
+        $result = $stmt->fetchAll();
+        error_log("getAllSignalement result: " . json_encode($result));
+        return $result;
     }
 
     // Ajouter un signalement

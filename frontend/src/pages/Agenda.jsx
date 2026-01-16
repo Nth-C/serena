@@ -50,7 +50,6 @@ function Agenda() {
 
     // Champs Trajet
     effectue: 'aidant',  // Valeur par défaut
-    aidantAffecte: '',   // UUID
     societe: '',         // Texte
     lieuDepart: '',
     lieuArrivee: '',
@@ -212,30 +211,38 @@ function Agenda() {
       }
   };
 
+  const resetFormEvent = () => {
+    setFormData(prev => ({
+      ...prev,
+      titre: '',
+      lieu: '',
+      accompagnants: '',
+      debut: '',
+      fin: '',
+      recurrence: '',
+      description: ''
+    }));
+  };
+
+  const resetFormTrajet = () => {
+    setFormData(prev => ({
+      ...prev,
+      effectue: 'aidant',
+      societe: '',
+      lieuDepart: '',
+      lieuArrivee: '',
+      id_event: ''
+    }));
+  };
+
   // --- Fonction utilitaire pour éviter de répéter le reset ---
   const handleSuccess = (msg) => {
-      setMsgConfirmation(msg)
-      setIsShowConfirmation(true)
-      fetchEvents();
-      setNewEventOpen(false);
-      setFormData({
-        // Champs Événement
-        titre: '',
-        lieu: '',
-        accompagnants: '', 
-        debut: '',
-        fin: '',
-        recurrence: '',   
-        description: '',
-
-        // Champs Trajet
-        effectue: 'aidant',
-        aidantAffecte: '',
-        societe: '',
-        lieuDepart: '',
-        lieuArrivee: '',
-        id_event: ''
-    })
+    setMsgConfirmation(msg)
+    setIsShowConfirmation(true)
+    fetchEvents();
+    setNewEventOpen(false);
+    resetFormEvent()
+    resetFormTrajet()
   };
 
 
@@ -348,7 +355,7 @@ function Agenda() {
                 <label>Lieu :</label>
                 <input 
                   type="text" name="lieu" placeholder="Ex: 67 Rue du Skibidi"
-                  value={formData.lieu} onChange={handleChange} required 
+                  value={formData.lieu} onChange={handleChange} 
                 />
               </div>
 
@@ -377,8 +384,7 @@ function Agenda() {
 
               <div>
                 <label>Récurrence :</label>
-                <select name="recurrence" value={formData.recurrence} onChange={handleChange} required>
-                  <option value="">Choisir...</option>
+                <select name="recurrence" value={formData.recurrence} onChange={handleChange}>
                   <option value="aucun">Aucune</option>
                   <option value="hebdo">Hebdomadaire</option>
                   <option value="mensuel">Mensuel</option>
@@ -387,11 +393,14 @@ function Agenda() {
 
               <div>
                 <label>Notes :</label>
-                <textarea name="description" value={formData.description} onChange={handleChange} required />
+                <textarea name="description" value={formData.description} onChange={handleChange} />
               </div>
 
               <div>
-                  <button type='button' className='btn_border'>Annuler</button>
+                  <button type='button' className='btn_border' onClick={() => {
+                    resetFormEvent() 
+                    setNewEventOpen(false)
+                  }}>Annuler</button>
                   <button type='submit' className='btn_blue'>Valider</button>
               </div>
            </form>
@@ -399,7 +408,7 @@ function Agenda() {
             /* =========================================
                PARTIE TRAJET
                ========================================= */
-            <form className='add_event' onSubmit={handleAddTrajet}>  
+            <form className='add_trajet' onSubmit={handleAddTrajet}>  
               <div>
                   <label>Lier à l'événement :</label>
                   <select 
@@ -443,21 +452,8 @@ function Agenda() {
                 </div> 
               </div>
 
-              {formData.effectue === 'aidant' && (
-                  <div>
-                      <label>Quel aidant effectue le trajet ?</label>
-                      <select name="aidantAffecte" value={formData.aidantAffecte} onChange={handleChange} required>
-                          <option value="">-- Choisir un aidant --</option>
-                          {membresFamille.map((personne) => (
-                              <option key={personne.id} value={personne.id}>
-                                  {personne.prenom} {personne.nom}
-                              </option>
-                          ))}
-                      </select>
-                  </div>
-              )}
 
-              {formData.effectue === 'externe' && (
+              {formData.effectue === 'externe' ? (
                   <div>
                       <label>Nom de la société :</label>
                       <input 
@@ -465,6 +461,18 @@ function Agenda() {
                           value={formData.societe} onChange={handleChange} required 
                       />
                   </div>
+              ) : (
+                <div>
+                  <label>Aidant affecté :</label>
+                  <select name="accompagnants" value={formData.accompagnants} onChange={handleChange} required>
+                    <option value="demande">Envoyer une demande aux aidants</option>
+                    {membresFamille.map((personne) => (
+                        <option key={personne.id} value={personne.id}>
+                            {personne.prenom} {personne.nom}
+                        </option>
+                    ))}
+                  </select>
+                </div>
               )}
 
               <div>
@@ -492,12 +500,14 @@ function Agenda() {
               </div>
 
                 <div>
-                  <button type='button' className='btn_border'>Annuler</button>
+                  <button type='button' className='btn_border' onClick={() => {
+                    resetFormTrajet()
+                    setNewEventOpen(false)
+                  }}>Annuler</button>
                   <button type='submit' className='btn_blue'>Valider</button>
               </div>
            </form>
           )}
-          
       </Slide>
 
     </div>

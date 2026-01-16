@@ -1,6 +1,6 @@
 import styles from './PopUpDelete.module.css';
 
-function PopUpDelete({toDelete, handleDelete, isOpen, onClose, showConfirmation /*pas obligatoire*/}) {
+function PopUpDelete({toDelete, handleDelete, isOpen, onClose}) {
     return (
         <div className={[
             styles.container_pop_up_delete,
@@ -17,7 +17,6 @@ function PopUpDelete({toDelete, handleDelete, isOpen, onClose, showConfirmation 
                     <button className='btn_red' onClick={() => {
                         handleDelete()
                         onClose()
-                        showConfirmation()
                     }}>Supprimer</button>
                 </div>
             </div>

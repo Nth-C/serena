@@ -1,13 +1,15 @@
 <?php
-// 1. Charger les dépendances
+// forgotPassword.ctrl.php
+
+// 1. Dépendances et Config
 require_once(__DIR__ . '/../model/personneDAO.class.php');
-require_once __DIR__ . '/../vendor/autoload.php'; // Charge PHPMailer
+require_once __DIR__ . '/../vendor/autoload.php';
+$config = require __DIR__ . '/../config.php'; // Votre fichier config.php
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-use PHPMailer\PHPMailer\SMTP;
 
-// 2. Récupérer les données
+// 2. Récupération des données
 $json = file_get_contents('php://input');
 $data = json_decode($json, true);
 $email = $data['email'] ?? '';
@@ -17,54 +19,68 @@ if (empty($email)) {
     exit;
 }
 
-// 3. Vérifier si l'utilisateur existe en BDD
+// 3. Logique métier
 $dao = new PersonneDAO();
-$user = $dao->findByEmail($email);
+$user = $dao->findByEmail($email); // Assurez-vous que findByEmail existe dans votre DAO
 
 if ($user) {
-    // L'utilisateur existe, on prépare l'envoi du mail
-    $mail = new PHPMailer(true);
-
     try {
-        // --- Configuration SMTP (via Docker env) ---
-        $mail->isSMTP();
-        $mail->Host       = getenv('SMTP_HOST');
-        $mail->SMTPAuth   = true;
-        $mail->Username   = getenv('SMTP_USER');
-        $mail->Password   = getenv('SMTP_PASS');
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = getenv('SMTP_PORT');
+        // A. Génération du Token Sécurisé (32 bytes = 64 caractères hex)
+        $token = bin2hex(random_bytes(32));
+        
+        // B. Expiration : Maintenant + 1 heure
+        // PostgreSQL aime le format 'Y-m-d H:i:s'
+        $expiresAt = date('Y-m-d H:i:s', time() + 3600); 
 
-        // --- Expéditeur et Destinataire ---
-        $mail->setFrom(getenv('SMTP_USER'), 'Support Sere-na');
+        // C. Enregistrement en Base de Données
+        $dao->updateResetToken($email, $token, $expiresAt);
+
+        // D. Envoi du Mail
+        $mail = new PHPMailer(true);
+        $mail->isSMTP();
+        $mail->Host       = $config['SMTP_HOST'];
+        $mail->SMTPAuth   = true;
+        $mail->Username   = $config['SMTP_USER'];
+        $mail->Password   = $config['SMTP_PASS'];
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = $config['SMTP_PORT'];
+
+        $mail->setFrom($config['SMTP_USER'], 'Support Sere-na');
         $mail->addAddress($email);
 
-        // --- Contenu du mail ---
         $mail->isHTML(true);
         $mail->Subject = 'Reinitialisation de votre mot de passe';
         
-        // Lien vers le frontend (React)
-        // Attention : localhost:5173 c'est pour tes tests locaux. 
-        // En production, ce sera ton vrai domaine.
-        $link = "http://localhost:5173/reset-password?email=" . urlencode($email);
+        // LE LIEN SECURISE
+        // On envoie SEULEMENT le token. Pas l'email.
+        $link = "http://localhost:5173/reset-password?token=" . $token;
         
-        $mail->Body    = "Bonjour " . ",<br><br>Vous avez demandé à réinitialiser votre mot de passe.<br>Cliquez ici : <a href='$link'>Réinitialiser mon mot de passe</a>";
-        $mail->AltBody = "Copiez ce lien : $link";
+        $mail->Body    = "
+            <h3>Bonjour,</h3>
+            <p>Vous avez demandé à réinitialiser votre mot de passe.</p>
+            <p>Cliquez sur le lien ci-dessous (valide 1 heure) :</p>
+            <p><a href='$link'>$link</a></p>
+            <br>
+            <p>Si vous n'êtes pas à l'origine de cette demande, ignorez ce message.</p>
+        ";
+        
+        $mail->AltBody = "Lien de reset : $link";
 
         $mail->send();
         
-        // Succès
-        echo json_encode(['success' => true, 'message' => 'Un email de réinitialisation a été envoyé.']);
+        echo json_encode(['success' => true, 'message' => 'Email envoyé.']);
 
     } catch (Exception $e) {
-        // Erreur technique d'envoi de mail
-        echo json_encode(['success' => false, 'message' => "Erreur lors de l'envoi du mail : " . $mail->ErrorInfo]);
+        // Erreur PHPMailer
+        echo json_encode(['success' => false, 'message' => "Erreur Mail : " . $mail->ErrorInfo]);
+    } catch (PDOException $e) {
+        // Erreur SQL
+        die("ERREUR SQL : " . $e->getMessage());
+        echo json_encode(['success' => false, 'message' => "Erreur Base de données."]);
     }
 
 } else {
-    // Email inconnu en BDD
-    // Note sécurité : En prod, on affiche souvent "Si l'email existe, un lien a été envoyé" pour ne pas révéler qui est inscrit.
-    // Mais pour le dev, on reste explicite :
-    echo json_encode(['success' => false, 'message' => 'Aucun compte associé à cet email.']);
+    // Message générique pour ne pas fuiter les emails inscrits
+    echo json_encode(['success' => true, 'message' => 'Si cet email existe, un lien a été envoyé.']);
 }
 ?>

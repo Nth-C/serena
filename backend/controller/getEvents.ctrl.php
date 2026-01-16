@@ -2,15 +2,20 @@
 require_once('model/evenementDAO.class.php');
 require_once(__DIR__ . '/../app.php');
 
-/*
-header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Methods: GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
-*/
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') { exit; }
 
 $app = new App();
+
+if (!$app->checkRole('Proche')) {
+    header('HTTP/1.1 403 Forbidden');
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Erreur : Vous devez avoir au moins le role de Proche pour faire ça.'
+    ]);
+    exit; 
+}
 
 try {
     if (empty($app->id_famille)) {

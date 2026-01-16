@@ -9,6 +9,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 $app = new App();
+
+if (!$app->checkRole('Famille')) {
+    header('HTTP/1.1 403 Forbidden');
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Erreur : Vous devez être un proche de la famille pour faire ça.'
+    ]);
+    exit; 
+}
+
+
+
 $model = new MedicamentDAO();
 try {
     $id_famille = $app->id_famille;

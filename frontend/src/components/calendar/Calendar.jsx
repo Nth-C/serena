@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import styles from './Calendar.module.css';
+import { getFormatTime } from '../../utils/utils';
 
 const Calendar = ({ date, events = [], toggleEventOpen, setCurrentEvent, isCalendarWeek = false }) => {
     const weekDays = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
@@ -167,7 +168,8 @@ const Calendar = ({ date, events = [], toggleEventOpen, setCurrentEvent, isCalen
 
                         const eventStyle = {
                             left: `${horizontalStyle.left}`,
-                            width: `calc(${horizontalStyle.width} - 2px)`,
+                            // pour enlever le décalage si il y a 1 event
+                            width: horizontalStyle.width === "100%" ? "100%" : `calc(${horizontalStyle.width} - 2px)`,
                             height: `${height}px`,
                             top: `${top + 8}px`,
                             // met un border top si l'event a deja commencé
@@ -179,7 +181,9 @@ const Calendar = ({ date, events = [], toggleEventOpen, setCurrentEvent, isCalen
                                 setCurrentEvent(event);
                                 toggleEventOpen();
                             }}>
-                                {event.titre}
+                                <p>{event.titre}</p>
+                                <p>De {getFormatTime(event.dateStart)} a {getFormatTime(event.dateEnd)}</p>
+
                             </div>
                         );
                     })}
@@ -227,10 +231,10 @@ const Calendar = ({ date, events = [], toggleEventOpen, setCurrentEvent, isCalen
                                     {/* affichage events */}
                                     {dayEvents.map((event, i) => {
                                         const horizontalStyle = calcPositionLeft(event, dayEvents);
-                                        
                                         const eventStyle = {
                                             left: horizontalStyle.left,
-                                            width: `calc(${horizontalStyle.width} - 2px)`,
+                                            // pour enlever le décalage si il y a 1 event
+                                            width: horizontalStyle.width === "100%" ? "100%" : `calc(${horizontalStyle.width} - 2px)`,
                                             height: `${calcHeightEvent(event)}px`,
                                             top: `${(event.dateStart.getHours() * hourHeight) + (event.dateStart.getMinutes() * (hourHeight / 60)) + 8}px`
                                         };

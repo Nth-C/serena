@@ -143,8 +143,9 @@ console.error("Erreur réseau:", error);
                         value={infosMembre.role} 
                         onChange={(e) => setSettingsOf({ ...infosMembre, role: e.target.value })} // selectionne directement le bon role
                     >
-                        <option value="Aidant">Aidant</option>
-                        <option value="Visiteur">Visiteur</option>
+                        <option value="Famille">Famille</option>
+                        <option value="Proche">Proche</option>
+                        <option value="Professionelle">Professionelle</option>
                     </select>
                 </div>
                 <div>

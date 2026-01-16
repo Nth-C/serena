@@ -200,7 +200,7 @@ public function deleteInviterPersonneDansFamille($id_famille_invitee, $id_pers_i
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-    public function AccepterInvitation($id_personne, $id_famille, $role = "Visiteur"): bool {
+    public function AccepterInvitation($id_personne, $id_famille, $role = "Professionelle"): bool {
     try {
         // 1. On commence une transaction pour s'assurer que si une étape échoue, rien n'est modifié
         $this->dal->beginTransaction();

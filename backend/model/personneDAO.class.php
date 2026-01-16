@@ -63,6 +63,20 @@ public function findByEmail($email) {
     }
     return null;
 }
+public function updateResetToken($email, $token, $expiration) {
+        $sql = "UPDATE PERSONNES 
+                SET reset_token = :token, 
+                    reset_expires = :expires 
+                WHERE mail = :email";
+    
+        $stmt = $this->dal->prepare($sql);
+        
+        $stmt->bindValue(':token', $token);
+        $stmt->bindValue(':expires', $expiration);
+        $stmt->bindValue(':email', $email);
+        
+        $stmt->execute();
+    }
 
 public function updatePasswordByEmail($email, $hashedPassword) {
     $sql = "UPDATE PERSONNES SET mdp = :mdp WHERE mail = :email";
