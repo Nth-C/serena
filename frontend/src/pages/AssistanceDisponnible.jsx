@@ -1,44 +1,54 @@
-function AssistanceDisponnible({ aides, recommencer }) {
+import { useState } from 'react';
+import Slide from '../components/slide/Slide'; // Vérifie que le dossier Slide a une majuscule ou pas
+
+function AssistanceDisponnible({ aides, resetForm }) {
+    const [isDetailsAssistanceOpen, setIsDetailsAssistanceOpen] = useState(false);
     const [selectedAide, setSelectedAide] = useState(null);
-    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleDetailsAssistance = (aide) => {
+        setSelectedAide(aide);
+        setIsDetailsAssistanceOpen(!isDetailsAssistanceOpen);
+    };
 
     return (
         <div className="assistance_dispo">
             <div className="list">
-                {aides.map((aide) => (
-                    <div className="container_medecine" key={aide.id_aide_fin}>
-                        <div className="principal_infos">
-                            <p>{aide.nom}</p>
-                            <span>{aide.montant}</span>
+                {aides && aides.length > 0 ? (
+                    aides.map((aide) => (
+                        <div key={aide.id_aide_fin} className="container_medecine">
+                            <div className="principal_infos">
+                                <p><strong>{aide.nom_aide}</strong></p>
+                            </div>
+                            <div className="drop">
+                                <p>{aide.gain_estime}</p>
+                                <button className="btn_blue" onClick={() => toggleDetailsAssistance(aide)}>Voir plus</button>
+                            </div>
                         </div>
-                        <div className="drop">
-                            <p>{aide.description}</p>
-                            <button className="btn_blue" onClick={() => {
-                                setSelectedAide(aide);
-                                setIsOpen(true);
-                            }}>Voir plus</button>
-                        </div>
-                    </div>
-                ))}
-                {aides.length === 0 && <p>Aucune aide trouvée pour votre situation.</p>}
+                    ))
+                ) : (
+                    <p className="aucun">Aucune aide trouvée pour votre situation.</p>
+                )}
+                <p className='end_list'>Fin des résultats</p>
             </div>
             
-            <button className="btn_blue" onClick={recommencer}>Modifier situation</button>
+            <button className="btn_blue" onClick={resetForm}>Modifier ma situation</button>
 
-            {/* Slide de détails utilisant les colonnes de ta BDD */}
             {selectedAide && (
-                <Slide title={selectedAide.nom} isOpen={isOpen} toggleOpen={() => setIsOpen(false)}>
+                <Slide 
+                    title={selectedAide.nom_aide} 
+                    isOpen={isDetailsAssistanceOpen} 
+                    toggleOpen={() => setIsDetailsAssistanceOpen(false)}
+                >
                     <div className="details_assistance">
-                        <p><strong>Montant estimé :</strong> {selectedAide.montant}</p>
-                        <h3>Qui a accès ?</h3>
-                        <p>{selectedAide.acces}</p>
-                        <h3>Comment l'obtenir</h3>
-                        <p>{selectedAide.obtention}</p>
-                        <h3>Documents requis</h3>
-                        <p>{selectedAide.documents_req}</p>
+                        <h2>Description</h2>
+                        <p>{selectedAide.description || "Détails non renseignés."}</p>
+                        <h2>Comment l'obtenir</h2>
+                        <p>{selectedAide.comment_obtenir || "Contactez votre CAF ou MSA."}</p>
                     </div>
                 </Slide>
             )}
         </div>
     );
 }
+
+export default AssistanceDisponnible;

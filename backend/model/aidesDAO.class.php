@@ -9,7 +9,7 @@ class AideDAO {
     }
 
     public function getAllAides(): array {
-        $query = "SELECT * FROM aides_fin"; 
+        $query = "SELECT * FROM aide_finance"; 
         $stmt = $this->dal->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll();
