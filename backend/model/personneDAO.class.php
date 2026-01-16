@@ -101,11 +101,11 @@ public function updatePasswordByEmail($email, $hashedPassword) {
         return new Personne($result);
     }
 
-    public function updateUser($id_personne, $email, $nom, $prenom, $username, $date_naissance){
+    public function updateUser($id_personne, $mail, $nom, $prenom, $username, $date_naissance){
         $query = 'UPDATE PERSONNES SET
                 nom = :nom,
                 prenom = :prenom,
-                email = :email,
+                mail = :mail,
                 username = :username,
                 date_naissance = :date_naissance
                 WHERE id_personne = :id_personne';
@@ -113,12 +113,17 @@ public function updatePasswordByEmail($email, $hashedPassword) {
         return $stmt->execute([
                 'nom' => $nom,
                 'prenom' => $prenom,
-                'email' => $email,
+                'mail' => $mail,
                 'id_personne' => $id_personne,
                 'username' => $username,
                 'date_naissance' => $date_naissance
         ]);
     }
 
+    public function deleteUser($id_personne) {
+        $query = "DELETE FROM PERSONNES WHERE id_personne = :id";
+        $stmt = $this->dal->prepare($query);
+        return $stmt->execute(['id' => $id_personne]);
+    }
 }
 ?>

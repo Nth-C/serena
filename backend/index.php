@@ -58,7 +58,8 @@ const _ROUTES = array(
   'trajet/add' => 'addTrajet',
   'dashboard/view' => 'viewDashboard',
   'user/profile' => 'getUserInfo',
-  'user/update' => 'updateUser'
+  'user/update' => 'updateUser',
+  'user/delete' => 'deleteCompte'
 );
 
 if (!array_key_exists($route, _ROUTES)) {

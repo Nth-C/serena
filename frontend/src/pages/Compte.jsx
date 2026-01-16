@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import LayoutMenu from '../LayoutMenu';
+import PopUpDelete from '../components/popup_delete/PopUpDelete'
+import PopUpConfirmation from '../components/popup_confirmation/PopUpConfirmation'
 
 const Compte = () => {
     const [formData, setFormData] = useState({
@@ -9,7 +11,11 @@ const Compte = () => {
         username: '',
         date_naissance: ''
     });
-    const [message, setMessage] = useState('');
+
+    const [isPopUpDeleteOpen, setIsPopUpDeleteOpen] = useState(false);
+    const [isShowRemove, setIsShowRemove] = useState(false);
+    const [isShowModify, setIsShowModify] = useState(false);
+
     const apiUrl = import.meta.env.VITE_API_URL;
 
     useEffect(() => {
@@ -34,7 +40,7 @@ const Compte = () => {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        if (e) e.preventDefault();
         try {
             const response = await fetch(`${apiUrl}/?route=user/update`, {
                 method: 'POST',
@@ -43,9 +49,33 @@ const Compte = () => {
                 body: JSON.stringify(formData)
             });
             const result = await response.json();
-            if (result.success) setMessage('Modifications enregistrées !');
+            if (result.success) {
+                setIsShowModify(true); // Déclenche la popup de confirmation
+            }
         } catch (error) {
-            setMessage('Erreur lors de la mise à jour');
+            console.error('Erreur lors de la mise à jour', error);
+        }
+    };
+
+    const togglePopUpDelete = () => setIsPopUpDeleteOpen(!isPopUpDeleteOpen);
+
+    const handleDeleteAccount = async () => {
+        try {
+            const response = await fetch(`${apiUrl}/?route=user/delete`, {
+                method: 'POST',
+                credentials: 'include'
+            });
+            const result = await response.json();
+            if (result.success) {
+                setIsPopUpDeleteOpen(false);
+                setIsShowRemove(true);
+                // On attend que l'utilisateur voit le message avant de rediriger
+                setTimeout(() => {
+                    window.location.href = "/login";
+                }, 2000);
+            }
+        } catch (err) {
+            console.error("Erreur suppression", err);
         }
     };
 
@@ -54,8 +84,6 @@ const Compte = () => {
             <>
                 <div>
                     <h1>Mes informations</h1>
-
-                    {message && <p>{message}</p>}
 
                     <form onSubmit={handleSubmit}>
                         <div>
@@ -84,10 +112,31 @@ const Compte = () => {
                         </div>
 
                         <div>
-                            <button type="submit">Enregistrer les modifications</button>
+                            <button type="button" className="btn_red" onClick={togglePopUpDelete}>Supprimer</button>                       
+                            <button type="submit" className="btn_blue">Enregistrer</button>
                         </div>
                     </form>
                 </div>
+
+                {/* Popups */}
+                <PopUpDelete
+                    toDelete={formData.username}
+                    handleDelete={handleDeleteAccount}
+                    isOpen={isPopUpDeleteOpen}
+                    onClose={togglePopUpDelete}
+                />
+
+                <PopUpConfirmation 
+                    sentence={`Vos informations ont bien été modifiées.`} 
+                    show={isShowModify} 
+                    setShow={setIsShowModify} 
+                />
+
+                <PopUpConfirmation 
+                    sentence={`Votre compte a été supprimé.`} 
+                    show={isShowRemove} 
+                    setShow={setIsShowRemove} 
+                />
             </>
         </LayoutMenu>
     );
