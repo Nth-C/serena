@@ -11,7 +11,7 @@ function Menu({isOpen , onHamburgerClick}) {
     const [username, setUsername] = useState(null);
 
     useEffect(() => {
-        const userData = localStorage.getItem('user');
+        const userData = sessionStorage.getItem('user');
         if (userData) {
             let name = `${JSON.parse(userData).nom} ${JSON.parse(userData).prenom}`
             setUsername(name);
