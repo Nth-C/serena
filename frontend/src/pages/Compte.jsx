@@ -80,65 +80,60 @@ const Compte = () => {
     };
 
     return (
+        <>
         <LayoutMenu title={"Compte"}>
-            <>
-                <div>
-                    <h1>Mes informations</h1>
-
-                    <form onSubmit={handleSubmit}>
-                        <div>
-                            <label>E-mail : </label>
-                            <input type="email" name="mail" value={formData.mail} onChange={handleChange} required />
-                        </div>
-
-                        <div>
-                            <label>Nom : </label>
-                            <input type="text" name="nom" value={formData.nom} onChange={handleChange} required />
-                        </div>
-
-                        <div>
-                            <label>Prénom : </label>
-                            <input type="text" name="prenom" value={formData.prenom} onChange={handleChange} required />
-                        </div>
-
-                        <div>
-                            <label>Date de naissance : </label>
-                            <input type="date" name="date_naissance" value={formData.date_naissance} onChange={handleChange} required />
-                        </div>
-
-                        <div>
-                            <label>Nom d'utilisateur : </label>
-                            <input type="text" name="username" value={formData.username} onChange={handleChange} required />
-                        </div>
-
-                        <div>
-                            <button type="button" className="btn_red" onClick={togglePopUpDelete}>Supprimer</button>                       
-                            <button type="submit" className="btn_blue">Enregistrer</button>
-                        </div>
-                    </form>
-                </div>
-
-                {/* Popups */}
-                <PopUpDelete
-                    toDelete={formData.username}
-                    handleDelete={handleDeleteAccount}
-                    isOpen={isPopUpDeleteOpen}
-                    onClose={togglePopUpDelete}
-                />
-
-                <PopUpConfirmation 
-                    sentence={`Vos informations ont bien été modifiées.`} 
-                    show={isShowModify} 
-                    setShow={setIsShowModify} 
-                />
-
-                <PopUpConfirmation 
-                    sentence={`Votre compte a été supprimé.`} 
-                    show={isShowRemove} 
-                    setShow={setIsShowRemove} 
-                />
-            </>
+            <div className="compte">
+                <h2>Mes informations</h2>
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <label>E-mail : </label>
+                        <input type="email" name="mail" value={formData.mail} onChange={handleChange} required />
+                    </div>
+                    <div>
+                        <label>Nom : </label>
+                        <input type="text" name="nom" value={formData.nom} onChange={handleChange} required />
+                    </div>
+                    <div>
+                        <label>Prénom : </label>
+                        <input type="text" name="prenom" value={formData.prenom} onChange={handleChange} required />
+                    </div>
+                    <div>
+                        <label>Date de naissance : </label>
+                        <input type="date" name="date_naissance" value={formData.date_naissance} onChange={handleChange} required />
+                    </div>
+                    <div>
+                        <label>Nom d'utilisateur : </label>
+                        <input type="text" name="username" value={formData.username} onChange={handleChange} required />
+                    </div>
+                    <div>
+                        <button type="button" className="btn_red" onClick={togglePopUpDelete}>Supprimer</button>                       
+                        <button type="submit" className="btn_blue">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
         </LayoutMenu>
+
+        {/* Popups */}
+        <PopUpDelete
+            toDelete={formData.username}
+            handleDelete={handleDeleteAccount}
+            isOpen={isPopUpDeleteOpen}
+            onClose={togglePopUpDelete}
+        />
+
+        <PopUpConfirmation 
+            sentence={`Vos informations ont bien été modifiées.`} 
+            show={isShowModify} 
+            setShow={setIsShowModify} 
+        />
+
+        <PopUpConfirmation 
+            sentence={`Votre compte a été supprimé.`} 
+            show={isShowRemove} 
+            setShow={setIsShowRemove} 
+        />
+        </>
+
     );
 }
 

@@ -22,19 +22,18 @@ class SignalementDAO {
 
     // Ajouter un signalement
     public function addSignalement($sujet, $message, $mail, $id_pers): bool {
+    $query = 'INSERT INTO signalements (sujet, message, mail_signal, id_pers_signal, status, date)
+              VALUES (:sujet, :message, :mail, :id_pers, :status, NOW())';
 
-        $query = 'INSERT INTO signalements (sujet, message, mail_signal, id_pers_signal, status)
-                  VALUES (:sujet, :message, :mail, :id_pers, :status)';
+    $stmt = $this->dal->prepare($query);
 
-        $stmt = $this->dal->prepare($query);
-
-        return $stmt->execute([
-            'sujet'   => $sujet,
-            'message' => $message,
-            'mail'    => $mail,
-            'id_pers' => $id_pers,
-            'status'  => 'En cours' // Valeur par défaut
-        ]);
+    return $stmt->execute([
+        'sujet'   => $sujet,
+        'message' => $message,
+        'mail'    => $mail,
+        'id_pers' => $id_pers,
+        'status'  => 'En cours'
+    ]);
     }
 
     // Supprimer
