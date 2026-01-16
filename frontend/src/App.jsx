@@ -62,7 +62,7 @@ function App() {
 
         {/* PAGES MENU */}
         {/* uniquement accessible pour le createur de la famille */}
-        {hasPermission("Createur") && (
+        {hasPermission("Famille") && (
           <>
           <Route path="logs"
             element={

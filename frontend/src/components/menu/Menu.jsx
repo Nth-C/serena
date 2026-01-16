@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom';
 import styles from './Menu.module.css';
 
+import { ROLES, hasPermission } from './../../utils/roleManager';
+
 function Menu({isOpen , onHamburgerClick}) {
 
     const navigate = useNavigate();
     const apiUrl = import.meta.env.VITE_API_URL;
-    const isAdmin = (sessionStorage.getItem('role') === "Createur")
+    
 
     const [username, setUsername] = useState(null);
 
@@ -20,6 +22,7 @@ function Menu({isOpen , onHamburgerClick}) {
     
     const handleSwitchFamille = () => {
         sessionStorage.removeItem('id_famille');
+        sessionStorage.removeItem('role');
         navigate('/acce_suivi');
     }
 
@@ -34,6 +37,7 @@ function Menu({isOpen , onHamburgerClick}) {
             console.error('Erreur lors de la déconnexion serveur', error);
         } finally {
             localStorage.removeItem('user');
+            sessionStorage.removeItem('role');
             sessionStorage.removeItem('isConnected');
             sessionStorage.removeItem('id_famille');
             onHamburgerClick(); 
@@ -61,7 +65,7 @@ function Menu({isOpen , onHamburgerClick}) {
                 </div>
 
                 {/* --- ADMINISTRATEUR --- */}
-                {isAdmin && 
+                {hasPermission("Famille") && 
                 <div className={styles.admin_container}>
                     <div>
                         <h3>Administrateur</h3>
