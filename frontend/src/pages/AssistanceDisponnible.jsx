@@ -1,64 +1,44 @@
-import { useEffect, useState } from 'react'
+function AssistanceDisponnible({ aides, recommencer }) {
+    const [selectedAide, setSelectedAide] = useState(null);
+    const [isOpen, setIsOpen] = useState(false);
 
-function AssistanceDisponnible() {
-    const [isDetailsAssistanceOpen, setIsDetailsAssistancepen] = useState(false);
-
-    const toggleDetailsAssistance = () => setIsDetailsAssistancepen(!isDetailsAssistanceOpen);
     return (
         <div className="assistance_dispo">
             <div className="list">
-                <div className="container_medecine">
-                    <div className="principal_infos">
-                        <div>
-                            <p>Allocation personnalisée d'autonomie</p>
+                {aides.map((aide) => (
+                    <div className="container_medecine" key={aide.id_aide_fin}>
+                        <div className="principal_infos">
+                            <p>{aide.nom}</p>
+                            <span>{aide.montant}</span>
+                        </div>
+                        <div className="drop">
+                            <p>{aide.description}</p>
+                            <button className="btn_blue" onClick={() => {
+                                setSelectedAide(aide);
+                                setIsOpen(true);
+                            }}>Voir plus</button>
                         </div>
                     </div>
-
-                    <div className="drop">
-                        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Officia odit atque corrupti distinctio velit magnam nulla.</p>
-                        <div>
-                            <button className="btn_blue" onClick={toggleDetailsAssistance}>Voir plus</button>
-                        </div>
-                    </div>
-                </div>
-                <p className='end_list' >Aucun autre aides disponnible</p>
-                <p className="aucun">Aucune aide disponnible</p>
+                ))}
+                {aides.length === 0 && <p>Aucune aide trouvée pour votre situation.</p>}
             </div>
-            <button className="btn_blue">Modifier situation</button>
+            
+            <button className="btn_blue" onClick={recommencer}>Modifier situation</button>
 
-
-
-
-            {/* Slide Détails des aides */}
-            <Slide title="Nom de l'aide" isOpen={isDetailsAssistanceOpen} toggleOpen={toggleDetailsAssistance}>
-                <div className="details_assistance">
-                    <div>
-                        <p>Description / ce que tu gagner / organisme</p>
+            {/* Slide de détails utilisant les colonnes de ta BDD */}
+            {selectedAide && (
+                <Slide title={selectedAide.nom} isOpen={isOpen} toggleOpen={() => setIsOpen(false)}>
+                    <div className="details_assistance">
+                        <p><strong>Montant estimé :</strong> {selectedAide.montant}</p>
+                        <h3>Qui a accès ?</h3>
+                        <p>{selectedAide.acces}</p>
+                        <h3>Comment l'obtenir</h3>
+                        <p>{selectedAide.obtention}</p>
+                        <h3>Documents requis</h3>
+                        <p>{selectedAide.documents_req}</p>
                     </div>
-                    <div >
-                        <h2>Qui a Accès ?</h2>
-                        <p>Lorem ipsum</p>
-                    </div>
-                    <div >
-                        <h2>Comment l'obtenir</h2>
-                        <ul>
-                            <li>lorem ipsum dolor</li>
-                            <li>lorem ipsum dolor</li>
-                            <li>lorem ipsum dolor</li>
-                            <li>lorem ipsum dolor</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h2>Document requis</h2>
-                        <ul>
-                            <li>lorem ipsum dolor</li>
-                            <li>lorem ipsum dolor</li>
-                        </ul>
-                    </div>
-                </div>
-            </Slide>
+                </Slide>
+            )}
         </div>
-    )
+    );
 }
-
-export default AssistanceDisponnible

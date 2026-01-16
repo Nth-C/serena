@@ -65,7 +65,8 @@ const _ROUTES = array(
   'dashboard/view' => 'viewDashboard',
   'user/profile' => 'getUserInfo',
   'user/update' => 'updateUser',
-  'user/delete' => 'deleteCompte'
+  'user/delete' => 'deleteCompte',
+  'aides/calculer' => 'getAides'
 );
 
 if (!array_key_exists($route, _ROUTES)) {
