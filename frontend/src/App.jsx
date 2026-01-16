@@ -26,6 +26,7 @@ import CGU from './pages/CGU';
 import Privacy from './pages/Privacy';
 import Accessibilite from './pages/Accessibilite';
 import Signalement from './pages/Signalement';
+import VerifyAccount from './pages/VerifyAccount';
 
 import { ROLES, hasPermission } from './utils/roleManager';
 
@@ -151,7 +152,8 @@ function App() {
         <Route path="reset-password" element={<ResetPassword />} > </Route>
         {/* CREER UN COMPTE */}
         <Route path="create_account" element={<CreateAccount />} > </Route>
-
+        
+        <Route path="verify-account" element={<VerifyAccount />} > </Route>
         {/* ACCE AU SUIVI DES GROUPES */}
         <Route path="acce_suivi" element={
           <ProtectedRoute requireFamily={false}>

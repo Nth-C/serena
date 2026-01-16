@@ -32,4 +32,27 @@ class SecurityDAO {
         $ip_hashed = $this->hashIp($ip);
         $this->dal->prepare("DELETE FROM login_attempts WHERE ip_address = :ip")->execute(['ip' => $ip_hashed]);
     }
+    /**
+     * Vérifie si le compte de l'utilisateur est activé (est_actif = true)
+     * @param string $username Le nom d'utilisateur
+     * @return bool True si actif, False si inactif ou utilisateur inexistant
+     */
+    public function verifierActif(string $username): bool {
+        $sql = "SELECT est_actif FROM PERSONNES WHERE username = :username";
+        
+        $stmt = $this->dal->prepare($sql);
+        $stmt->execute([':username' => $username]);
+        
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$result) {
+            return false;
+        }
+
+        if ($result['est_actif'] === true || $result['est_actif'] === 't' || $result['est_actif'] == 1) {
+            return true;
+        }
+
+        return false;
+    }
 }

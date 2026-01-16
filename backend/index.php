@@ -25,6 +25,7 @@ const _ROUTES = array(
   'nommedicament/search' => 'searchNomMedicament',
   'login' => 'login',
   'register' => 'register',
+  'verify_account' => 'verifyAccount',
   'logout' => 'logout',
   'audit/list' => 'viewAudit',
   'famille/add' => 'addFamille',

@@ -58,7 +58,8 @@ CREATE TABLE AUDIT_LOGS (
         date_naissance DATE NOT NULL,
         tps_mdp TIMESTAMPTZ NULL,
         reset_token VARCHAR(255) NULL,
-        reset_expires TIMESTAMPTZ NULL
+        reset_expires TIMESTAMPTZ NULL,
+        est_actif BOOLEAN DEFAULT FALSE
     );
 
     CREATE TABLE SOCIETES (

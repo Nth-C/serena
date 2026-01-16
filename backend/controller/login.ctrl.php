@@ -26,6 +26,10 @@ $data = json_decode($json, true);
 $pepper = $_ENV['APP_PEPPER'];
 
 $username = $data['username'] ?? '';
+if (!$securityDAO->verifierActif($username)) {
+    echo json_encode(['success' => false, 'message' => 'ton compte n est pas activé.']);
+    exit();
+}
 $mdp = $data['mdp'] ?? '';
 
 $dao = new PersonneDAO();
