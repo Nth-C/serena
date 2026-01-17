@@ -26,25 +26,27 @@ class EvenementDAO{
     }
     // model/evenementDAO.class.php
 
-public function getFutureEvenements($id_famille): array {
-    // On récupère les événements d'aujourd'hui et du futur
-    $query = 'SELECT * FROM EVENEMENTS 
-              WHERE id_famille = :id_famille 
-              AND date_deb >= CURRENT_DATE
-              ORDER BY date_deb ASC';
-    
-    $stmt = $this->dal->prepare($query);
-    $stmt->execute(['id_famille' => $id_famille]);
+    public function getFutureEvenements($id_famille): array {
+        // On récupère les événements d'aujourd'hui et du futur
+        $query = 'SELECT * FROM EVENEMENTS 
+                WHERE id_famille = :id_famille 
+                AND date_deb >= CURRENT_DATE
+                ORDER BY date_deb ASC';
+        
+        $stmt = $this->dal->prepare($query);
+        $stmt->execute(['id_famille' => $id_famille]);
 
-    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $evenements = [];
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $evenements = [];
 
-    foreach($data as $row) {
-        $evenements[] = new Evenement($row); 
+        foreach($data as $row) {
+            $evenements[] = new Evenement($row); 
+        }
+
+        return $evenements;
     }
 
-    return $evenements;
-}
+    
     public function addEvenement($id_famille,$nom, $debut, $fin, $lieu, $description): bool {
         $query = 'INSERT INTO EVENEMENTS (nom,date_deb, date_fin, lieu ,note ,id_famille) VALUES (:nom, :date_deb, :date_fin, :lieu, :note, :id_famille)';
         $stmt = $this->dal->prepare($query);
@@ -85,29 +87,31 @@ public function getFutureEvenements($id_famille): array {
 
 
     public function getAllEvenementsSemaine($id_famille, $date_debut, $date_fin): array {
-    $query = 'SELECT * FROM EVENEMENTS 
-              WHERE id_famille = :id_famille 
-              AND date_deb BETWEEN :date_debut AND :date_fin
-              ORDER BY date_deb ASC';
-    
-    $stmt = $this->dal->prepare($query);
+        $query = 'SELECT * FROM EVENEMENTS 
+                WHERE id_famille = :id_famille 
+                AND date_deb BETWEEN :date_debut AND :date_fin
+                ORDER BY date_deb ASC';
+        
+        $stmt = $this->dal->prepare($query);
 
-    $stmt->execute([
-        'id_famille' => $id_famille,
-        'date_debut' => $date_debut,
-        'date_fin'   => $date_fin
-    ]);
+        $stmt->execute([
+            'id_famille' => $id_famille,
+            'date_debut' => $date_debut,
+            'date_fin'   => $date_fin
+        ]);
 
-    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $evenements = [];
+        $evenements = [];
 
-    foreach($data as $evenement) {
-        $evenements[] = new Evenement($evenement); 
+        foreach($data as $evenement) {
+            $evenements[] = new Evenement($evenement); 
+        }
+
+        return $evenements;
     }
 
-    return $evenements;
-}
+    
 
 }
 
