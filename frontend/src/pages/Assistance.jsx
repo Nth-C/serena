@@ -14,6 +14,7 @@ function Assistance() {
     try {
       const response = await fetch(`${apiUrl}/?route=aides/calculer`, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
