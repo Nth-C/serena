@@ -35,7 +35,7 @@ function AssistanceDisponnible({ aides, resetForm }) {
                                     <div>
                                         <h3>Document requis</h3>
                                         <ul>
-                                            {Array.isArray(aide.document_req) ? 
+                                            {Array.isArray(aide.documents_req) ? 
                                                 aide.document_req.map((item, i) => <li key={i}>{item}</li>) : 
                                                 <li>{aide.documents_req}</li>
                                             }
