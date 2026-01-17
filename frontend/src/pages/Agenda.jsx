@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import Slide from '../components/slide/Slide';
-import { getFormatDate, getFormatTime } from '../utils/utils';
+import { getFormatDate, getFormatTime } from '../utils/timeFormat';
 import PopUpDelete from '../components/popup_delete/PopUpDelete'
 
 import Calendar from '../components/calendar/Calendar'

@@ -1,5 +1,5 @@
 import styles from './PopUpSelectDate.module.css';
-import { getFormatDate } from '../../utils/utils.js';
+import { getFormatDate } from '../../utils/timeFormat';
 import { useState } from 'react'
 
 import DatePicker, { registerLocale } from "react-datepicker";

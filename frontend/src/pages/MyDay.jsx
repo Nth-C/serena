@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getFormatDate, getFormatTime } from '../utils/utils';
+import { getFormatDate, getFormatTime } from '../utils/timeFormat';
 import Calendar from '../components/calendar/Calendar'
 import PopUpConfirmation from '../components/popup_confirmation/PopUpConfirmation'
 import PopUpDelete from '../components/popup_delete/PopUpDelete'

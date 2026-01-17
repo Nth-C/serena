@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import LayoutMenu from '../LayoutMenu';
+import { getFormatDate, getFormatTime } from '../utils/timeFormat';
 
 const AuditLog = () => {
     const [listhistorique, setListhistorique] = useState([]);
@@ -237,7 +238,7 @@ const AuditLog = () => {
                             <tbody>
                                 {filteredAndSortedhistorique.map((log) => (
                                     <tr key={log.id_audit || Math.random()}>
-                                        <td style={{whiteSpace: 'nowrap'}}>{formatDate(log.action_tstamp)}</td>
+                                        <td style={{whiteSpace: 'nowrap'}}>{`${getFormatDate(new Date(log.action_tstamp), true)} ${getFormatTime(new Date(log.action_tstamp))}`}</td>
                                         <td>{log.user_name}</td>
                                         <td>{formatOperation(log.operation)}</td>
                                         <td>{formatTableName(log.table_name)}</td>

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Slide from '../components/slide/Slide';
 import LayoutMenu from '../LayoutMenu';
 import PopUpDelete from '../components/popup_delete/PopUpDelete'
-import { getFormatDate, getFormatTime } from '../utils/utils';
+import { getFormatDate, getFormatTime } from '../utils/timeFormat';
 
 const Signalement = () => {
     const [signalements, setSignalements] = useState([]);

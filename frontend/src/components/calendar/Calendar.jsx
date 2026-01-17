@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import styles from './Calendar.module.css';
-import { getFormatTime } from '../../utils/utils';
+import { getFormatTime } from '../../utils/timeFormat';
 
 const Calendar = ({ date, events = [], toggleEventOpen, setCurrentEvent, isCalendarWeek = false }) => {
     const weekDays = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
