@@ -1713,6 +1713,61 @@ progress.blue_bar::-moz-progress-bar {
   margin: 0 3rem;
 }
 
+/* ------------------------------ */
+/* ------------ CGU ------------- */
+/* ------------------------------ */
+
+.cgu, 
+.privacy,
+.legal_mention {
+  display: flex;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.cgu > div, 
+.privacy > div,
+.legal_mention > div {
+  padding: 3rem;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+  background-color: var(--white);
+  border-radius: 20px;
+  border: .2px solid var(--gray);
+}
+
+.cgu h2,
+.privacy h2, 
+.legal_mention h2 {
+  padding-bottom: .5rem;
+}
+
+.cgu li,
+.privacy li,
+.legal_mention li {
+  list-style: inside;
+  text-align: justify;
+}
+
+.cgu > div > div,
+.cgu ul,
+.privacy ul,
+.privacy > div > div,
+.legal_mention ul,
+.legal_mention > div > div {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.cgu p, 
+.privacy p, 
+.legal_mention p {
+  text-align: justify;
+}
+
 /* ----------------------------- */
 /* ----------- FONTS ----------- */
 /* ----------------------------- */
