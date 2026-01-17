@@ -12,7 +12,7 @@ class Aides{
         $this->description = $data['description'] ?? '';
         $this->acces = $data['acces'] ?? '';
         $this->obtention = $data['obtention'] ?? '';
-        $this->documents_req = $data['documents_req'] ?? $data['document_req'] ?? '';
+        $this->documents_req = $data['documents_req'] ?? $data['documents_req'] ?? '';
         $this->montant = $data['montant'] ?? '';
     }
 }
