@@ -15,7 +15,6 @@ export const getFormatTime = (date) => {
         return "Heure invalide";
     }
 
-    // Récupère les heures et minutes
     const hours = date.getHours();
     const minutes = date.getMinutes();
 

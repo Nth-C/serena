@@ -81,7 +81,8 @@ h3,
 p,
 a,
 li,
-td {
+td,
+strong {
   font-size: var(--font-sm);
 }
 
@@ -101,12 +102,6 @@ textarea {
 button {
   cursor: pointer;
   font-size: var(--font-sm);
-}
-
-p, h1, h2, h3 {
-  white-space: normal; 
-  overflow-wrap: break-word; 
-  word-break: break-word;
 }
 
 /* style form */
@@ -653,10 +648,10 @@ button.creer_suivi {
 }
 
 .report_case > div:first-child {
-    display: flex;
-    flex-direction: column;
-    min-width: 0; 
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; 
+  width: 100%;
 }
 
 .report_case :is(p, h2) {
@@ -939,10 +934,6 @@ progress.blue_bar::-moz-progress-bar {
   font-weight: 600;
 }
 
-.medecine .principal_infos p {
-  word-break: normal;
-}
-
 /* add medicament */
 
 .new_medecine>div:last-child {
@@ -1004,6 +995,28 @@ progress.blue_bar::-moz-progress-bar {
   flex-direction: column;
   gap: .5rem;
   width: 45%;
+}
+
+/* slide viewer */
+
+.event_details {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.event_details > div {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.event_details > div:last-child {
+  flex-direction: row;
+}
+
+.event_details > div:last-child button {
+  width: 50%;
 }
 
 /* switch calendar */
@@ -1389,7 +1402,7 @@ progress.blue_bar::-moz-progress-bar {
   padding: 0;
 }
 
-.accueil .list_alerte {
+.accueil :is(.list_alerte, .list_task) {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -1400,31 +1413,57 @@ progress.blue_bar::-moz-progress-bar {
   justify-content: space-between;
   align-items: center;
   gap: 10px;
-  background-color: var(--pink);
   padding: 1rem;
   border-radius: 10px;
-  min-height: 103px;
 }
 
-.accueil .alerte_dashbord > div:first-child {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
+.accueil :is(.list_alerte, .list_task) .alerte_dashbord svg:last-child {
+  width: 7rem;
+  height: 7rem;
 }
 
-.accueil .alerte_dashbord svg:first-child {
-  fill: var(--red);
-  background-color: var(--white);
+.accueil :is(.list_alerte, .list_task) .alerte_dashbord svg:first-child {
   padding: .5rem;
   width: 7rem;
   height: 7rem;
   border-radius: 10px;
 }
 
-.accueil .alerte_dashbord svg:last-child {
+.accueil :is(.list_alerte, .list_task) .alerte_dashbord > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.accueil :is(.list_alerte, .list_task) .alerte_dashbord > div:first-child > div {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.accueil :is(.list_alerte, .list_task) .alerte_dashbord :is(p, h3) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+/* alerte medic */
+
+.accueil .list_alerte .alerte_dashbord {
+  background-color: var(--pink);
+}
+
+.accueil .list_alerte .alerte_dashbord svg:first-child {
+  fill: var(--red);
+  background-color: var(--white);
+}
+
+.accueil .list_alerte .alerte_dashbord > svg:last-child {
   fill: var(--white);
-  width: 7rem;
-  height: 7rem;
 }
 
 .accueil progress {
@@ -1434,34 +1473,23 @@ progress.blue_bar::-moz-progress-bar {
   height: .9rem;
 }
 
-.alerte_dashbord.agenda_card {
-    background-color: var(--white);  
-    border: 2px solid var(--blue);  
-    color: var(--black);
+/*taches */
+
+.accueil .list_task .alerte_dashbord {
+  background-color: var(--white);
+  border: 1px solid var(--blue);
 }
 
-.icon_container_agenda {
-    background-color: #9CB9F2; 
-    border-radius: 12px;
-    width: 65px;
-    height: 65px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+.accueil .list_task .alerte_dashbord svg:first-child {
+  fill: var(--white);
+  background-color: var(--blue);
 }
 
-.icon_container_agenda svg {
-    fill: white !important; 
-    background: none !important;
-    padding: 0 !important;
+.accueil .list_task .alerte_dashbord > svg:last-child {
+  fill: var(--blue);
 }
 
-.arrow_forward {
-    fill: #9CB9F2 !important;
-    width: 45px;
-    height: 45px;
-}
+/* visite */
 
 .last_report {
   display: flex;
@@ -1503,6 +1531,7 @@ progress.blue_bar::-moz-progress-bar {
 }
 
 .last_report .info_report p {
+  overflow-wrap: anywhere;
   text-align: justify;
 }
 
@@ -1664,6 +1693,9 @@ progress.blue_bar::-moz-progress-bar {
     line-height: 1.6;
     margin-bottom: 20px;
     white-space: pre-line;
+}
+.card-body p {
+  overflow-wrap: anywhere;
 }
 
 .card-footer {

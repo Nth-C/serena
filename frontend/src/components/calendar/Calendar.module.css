@@ -34,15 +34,23 @@
     cursor: pointer;
     padding: 2rem;
     color: var(--white);
+    display: flex;
+    flex-direction: column;
+    min-width: 0; 
+    width: 100%;
+}
+
+
+:is(.calendar_day, .calendar_week) .event p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
 }
 
 :is(.calendar_day, .calendar_week) .event p:first-child {
     font-weight: 600;
     font-size: var(--font-md);
-}
-
-:is(.calendar_day, .calendar_week) .hours p {
-    word-break: normal;
 }
 
 /* week */

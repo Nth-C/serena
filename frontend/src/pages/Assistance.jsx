@@ -9,11 +9,32 @@ function Assistance() {
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
+  useEffect(() => {
+    getFormulaire()
+  }, []);
+
+
+  const getFormulaire = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/?route=aides/get`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const data = await response.json();
+      setAidesTrouvees(data.aides);
+      setIsDejaFait(data.isFilled);
+    } catch (err) {
+      console.error("Erreur de connexion au serveur", err);
+    }
+  };
+
   // Fonction pour envoyer les données au PHP
   const handleFinaliser = async (formData) => {
     try {
       const response = await fetch(`${apiUrl}/?route=aides/calculer`, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });

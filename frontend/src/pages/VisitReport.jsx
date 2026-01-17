@@ -68,8 +68,17 @@ function LastVisitReport() {
   const [isOpen, setIsOpen] = useState(false);
 
   const [sortOpen, setSortOpen] = useState(false);
+  const [sortOrder, setSortOrder] = useState('desc');
+
 
   const apiUrl = import.meta.env.VITE_API_URL;
+
+  const sortedRapports = [...rapports].sort((a, b) => {
+    const dateA = new Date(`${a.date}T${a.heure || '00:00:00'}`);
+    const dateB = new Date(`${b.date}T${b.heure || '00:00:00'}`);
+    
+    return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
+  });
 
   useEffect(() => {
     setMounted(true);
@@ -344,8 +353,18 @@ function LastVisitReport() {
                 <p>Trier par</p>
               </button>
               <div className={sortOpen ? 'active' : ''}>
-                <button>Plus récent</button>
-                <button>Plus ancien</button>
+                <button 
+                  className={sortOrder === 'desc' ? 'selected' : ''} 
+                  onClick={() => { setSortOrder('desc'); setSortOpen(false); }}
+                >
+                  Plus récent
+                </button>
+                <button 
+                  className={sortOrder === 'asc' ? 'selected' : ''} 
+                  onClick={() => { setSortOrder('asc'); setSortOpen(false); }}
+                >
+                  Plus ancien
+                </button>
               </div>
             </div>
           </div>
@@ -358,8 +377,8 @@ function LastVisitReport() {
         <div className="liste_report">
           {loading ? (
             <p>Chargement des rapports...</p>
-          ) : rapports.length > 0 ? (
-            rapports.map((rapport) => (
+          ) : sortedRapports.length > 0 ? (
+            sortedRapports.map((rapport) => (
               <div className="report_case" key={rapport.id_rapport} onClick={() => handleOpenDetails(rapport)}>
                 <div>
                   <h2>{rapport.nom || "Nom rapport"}</h2>
