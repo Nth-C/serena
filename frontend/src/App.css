@@ -997,6 +997,28 @@ progress.blue_bar::-moz-progress-bar {
   width: 45%;
 }
 
+/* slide viewer */
+
+.event_details {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.event_details > div {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.event_details > div:last-child {
+  flex-direction: row;
+}
+
+.event_details > div:last-child button {
+  width: 50%;
+}
+
 /* switch calendar */
 
 :is(.switch_event, .switch_calendar) {
@@ -1671,6 +1693,9 @@ progress.blue_bar::-moz-progress-bar {
     line-height: 1.6;
     margin-bottom: 20px;
     white-space: pre-line;
+}
+.card-body p {
+  overflow-wrap: anywhere;
 }
 
 .card-footer {

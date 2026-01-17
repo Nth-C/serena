@@ -550,7 +550,7 @@ function Agenda() {
                     </div>
                 )}
 
-                <div className='actions'>
+                <div>
                     <button className="btn_red" onClick={() => {
                       setPopUpDeleteOpen(true)
                       setEventToDelete({id: currentEvent.id_event, title: currentEvent.title})
