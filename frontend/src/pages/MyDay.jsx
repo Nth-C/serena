@@ -120,6 +120,7 @@ function MyDay() {
   return (
     <>
     <div className="my_day">
+      <h2>Ma journée</h2>
       <Calendar 
           date={date}
           isCalendarWeek={false}
@@ -131,11 +132,11 @@ function MyDay() {
       />
     </div>
 
-        <Slide
+      <Slide
         title={currentEvent ? currentEvent.titre : "Détails"}
         isOpen={eventOpen}
         toggleOpen={() => setEventOpen(false)}
-    >
+      >
         {currentEvent && (
             <div className='event_details'>
                 <div className='detail_item'>

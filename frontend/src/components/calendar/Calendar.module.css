@@ -41,6 +41,10 @@
     font-size: var(--font-md);
 }
 
+:is(.calendar_day, .calendar_week) .hours p {
+    word-break: normal;
+}
+
 /* week */
 
 .calendar_week {

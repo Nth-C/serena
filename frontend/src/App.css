@@ -103,6 +103,12 @@ button {
   font-size: var(--font-sm);
 }
 
+p, h1, h2, h3 {
+  white-space: normal; 
+  overflow-wrap: break-word; 
+  word-break: break-word;
+}
+
 /* style form */
 
 form {
@@ -647,16 +653,15 @@ button.creer_suivi {
 }
 
 .report_case > div:first-child {
-  /* Si tu es dans un parent Flex, ceci est crucial */
     display: flex;
     flex-direction: column;
     min-width: 0; 
-    width: 100%; /* Prend toute la place dispo */
+    width: 100%;
 }
 
 .report_case :is(p, h2) {
-  display: block; /* S'assure que l'élément se comporte comme un bloc */
-  width: 100%;   /* Force l'élément à prendre toute la largeur du parent */
+  display: block;
+  width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -932,6 +937,10 @@ progress.blue_bar::-moz-progress-bar {
 
 .medecine .principal_infos>div:first-child>p:first-child {
   font-weight: 600;
+}
+
+.medecine .principal_infos p {
+  word-break: normal;
 }
 
 /* add medicament */
@@ -1367,7 +1376,7 @@ progress.blue_bar::-moz-progress-bar {
 
 .accueil,
 .last_report {
-  padding: 3rem;
+  margin: 0 3rem;
 }
 
 .accueil {
@@ -1483,18 +1492,19 @@ progress.blue_bar::-moz-progress-bar {
 .audit_log svg {
   width: 2.5rem;
 }
+/**/
 
-.audit_log .filter_group {
+.filter_group {
   position: relative;
 }
 
-.audit_log .filter_group > button {
+.filter_group > button {
   display: flex;
   align-items: center;
   gap: .5rem;
 }
 
-.audit_log .filter_group > div:last-child {
+.filter_group > div:last-child {
   display: none;
   position: absolute;
   background: var(--white);
@@ -1503,22 +1513,24 @@ progress.blue_bar::-moz-progress-bar {
   border-radius: 8px;
 }
 
-.audit_log .filter_group > div:last-child.active {
+.filter_group > div:last-child.active {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.audit_log .filter_group .checkbox {
+.filter_group .checkbox {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-.audit_log .filter_group:last-child {
+.filter_bar > div:last-child {
   display: flex;
   gap: 2rem;
 }
+
+/**/
 
 .audit_log svg.spinning {
   transition: .2s var(--bezier);
@@ -1662,6 +1674,14 @@ progress.blue_bar::-moz-progress-bar {
 
 .signalement-form > div:last-child button {
     width: 50%;
+}
+
+/* ------------------------------ */
+/* ----------- My DAY ----------- */
+/* ------------------------------ */
+
+.my_day {
+  margin: 0 3rem;
 }
 
 /* ----------------------------- */

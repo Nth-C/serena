@@ -67,6 +67,8 @@ function LastVisitReport() {
   const [openMedicId, setOpenMedicId] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
+  const [sortOpen, setSortOpen] = useState(false);
+
   const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
@@ -336,9 +338,15 @@ function LastVisitReport() {
         <div className='container_top'>
           <div>
             <h1>Rapport de visite</h1>
-            <div className='sort'>
-              <img src="/icons/sort.svg" alt="" />
-              <p>Trier par</p>
+            <div className='filter_group'>
+              <button className='sort' onClick={() => setSortOpen(!sortOpen)}>
+                <img src="/icons/sort.svg" alt="" />
+                <p>Trier par</p>
+              </button>
+              <div className={sortOpen ? 'active' : ''}>
+                <button>Plus récent</button>
+                <button>Plus ancien</button>
+              </div>
             </div>
           </div>
 
@@ -414,7 +422,6 @@ function LastVisitReport() {
       <Slide title={"Ajouter un médicament"} isOpen={isNewMedicineOpen} toggleOpen={toggleNewMedicine} zIndex={700}>
         <form className="new_medecine" onSubmit={handleMedecine}>
 
-
           <div>
             <label>Nom du médicament : </label>
             <input
@@ -429,7 +436,6 @@ function LastVisitReport() {
                 if(e.target.value != ""){
                   handleSearchMedecine(e.target.value);
                 }
-               
               }}
               required
               disabled={isEditing}
@@ -441,14 +447,10 @@ function LastVisitReport() {
             </datalist>
           </div>
 
-
-
-
           <div>
             <label>Type de médicament : </label>
             <select value={idCatalogueMedecine} onChange={(e) => {
               setIdCatalogueMedecine(e.target.value)
-
             }}
               required
               disabled={!isNameGood}>
@@ -460,7 +462,6 @@ function LastVisitReport() {
               ))}
             </select>
           </div>
-
 
          <div>
             <label>Stock initiale du médicament : </label>
