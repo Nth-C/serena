@@ -1434,6 +1434,35 @@ progress.blue_bar::-moz-progress-bar {
   height: .9rem;
 }
 
+.alerte_dashbord.agenda_card {
+    background-color: var(--white);  
+    border: 2px solid var(--blue);  
+    color: var(--black);
+}
+
+.icon_container_agenda {
+    background-color: #9CB9F2; 
+    border-radius: 12px;
+    width: 65px;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.icon_container_agenda svg {
+    fill: white !important; 
+    background: none !important;
+    padding: 0 !important;
+}
+
+.arrow_forward {
+    fill: #9CB9F2 !important;
+    width: 45px;
+    height: 45px;
+}
+
 .last_report {
   display: flex;
   flex-direction: column;

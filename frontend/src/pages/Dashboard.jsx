@@ -4,7 +4,6 @@ function Dashboard() {
   const [medicaments, setMedicaments] = useState([])
   const [trajets, setTrajets] = useState([])
   const [taches, setTaches] = useState([])
-
   const [error, setError] = useState(null)
 
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -21,23 +20,21 @@ function Dashboard() {
         throw new Error(data.error);
       }
 
-      if (data.medicaments && Array.isArray(data.medicaments)) {
-        setMedicaments(data.medicaments);
-        setTrajets(data.trajets);
-        console.log("Médicaments chargés :", data.medicaments);
-      } else {
-        setMedicaments([]);
-      }
+      // On met à jour les différents états avec les données du PHP
+      setMedicaments(data.medicaments || []);
+      setTrajets(data.trajets || []);
+      setTaches(data.taches || []);
 
       setError(null);
     } catch (err) {
       console.error("Erreur de récupération dashboard:", err.message);
       setError(err.message || "Impossible de contacter le serveur");
-      setMedicaments([]);
-    } finally {
-      if (typeof setLoading === "function") setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchDashboard();
+  }, []);
 
   const calcProgressBar = (totalStock, currentStock) => {
     if (totalStock > 0) {
@@ -46,14 +43,10 @@ function Dashboard() {
     return 0
   }
 
-
-  // quand la page se lance on affiche les medicaments
-  useEffect(() => {
-    fetchDashboard()
-  }, []);
-
   return (
     <div className="accueil">
+      
+      {/* 1. SECTION DEMANDE (Trajets) */}
       <div>
         <h1>Demande</h1>
         {trajets?.length === 0 ? (
@@ -83,11 +76,13 @@ function Dashboard() {
             </>
           )}
       </div>
+
+      {/* 2. SECTION ALERTES (Médicaments) */}
       <div>
         <h1>Alertes</h1>
         <div className='list_alerte'>
-          {medicaments?.length === 0 ? (
-            <p className="aucun">Aucune alerte</p>
+          {medicaments.length === 0 ? (
+            <p className="aucun">Aucune alerte de stock</p>
           ) : (
             <>
                 {medicaments?.map((m, i) => (
@@ -116,16 +111,50 @@ function Dashboard() {
 
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" /></svg>
                   </div>
-                ))}
-              
-
-            </>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" /></svg>
+              </div>
+            ))
           )}
         </div>
       </div>
+
+      {/* 3. SECTION PROCHAINES TÂCHES (Le style de ton image) */}
       <div>
-        <h1>Prochaine tâches</h1>
+        <h1>Prochaines tâches</h1>
+        <div className="list_alerte">
+          {taches && taches.length > 0 ? (
+            taches.map((tache, index) => (
+              <div key={index} className="alerte_dashbord agenda_card">
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  
+                  {/* Carré bleu avec l'icône check blanche */}
+                  <div className="icon_container_agenda">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="35px" fill="white">
+                      {/* C'est ce "path" qui dessine la coche de validation (Check) */}
+                      <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
+                    </svg>
+                  </div>
+
+                  {/* Textes (Nom et Note) */}
+                  <div className="tache_info">
+                    <h3>{tache.nom}</h3>
+                    <p>{tache.note || "Aucune description"}</p>
+                  </div>
+                </div>
+
+                {/* Flèche bleue à droite */}
+                <svg className="arrow_forward" xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px">
+                  <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
+                </svg>
+              </div>
+            ))
+          ) : (
+            <p className="aucun">Aucune tâche prévue prochainement</p>
+          )}
+        </div>
       </div>
+
     </div>
   )
 }
