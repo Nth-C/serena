@@ -11,7 +11,7 @@ class TrajetDAO {
         $this->dal = DAL::get();
     }
 
-    public function addTrajet($date_deb, $date_fin, $lieu_dep, $lieu_arr, $id_event, $aidant_id, $nom_societe)
+    public function addTrajet($date_deb, $date_fin, $lieu_dep, $lieu_arr, $id_event, $aidant_id, $nom_societe, $id_famille)
     {
         try {
             // Démarrage de la transaction (sécurité)
@@ -70,6 +70,28 @@ class TrajetDAO {
                     ':id_societe' => $id_societe
                 ]);
             }
+            elseif (!empty($aidant_id)) {
+            // CAS B : Aidant Interne (Ajout de la logique manquante)
+            // On suppose ici une table de liaison nommée 'EFFECTUE' ou 'ACCOMPAGNE' 
+            // Ajustez le nom de la table selon votre schéma (ex: EFFECTUE)
+
+            if($aidant_id != "demande"){
+            $qAidant = "INSERT INTO EFFECTUE (id_trajet, id_personne) VALUES (:id_trajet, :id_personne)";
+            $stmtAidant = $this->dal->prepare($qAidant);
+            $stmtAidant->execute([
+                ':id_trajet'   => $id_trajet,
+                ':id_personne' => $aidant_id
+            ]);
+            }else{
+                $qFamille = "INSERT INTO FAMILLE_TRAJET (id_famille, id_trajet) 
+                     VALUES (:id_famille, :id_trajet)";
+                $stmtFam = $this->dal->prepare($qFamille);
+                $stmtFam->execute([
+                    ':id_famille' => $id_famille, // Variable récupérée via la session ou paramètre
+                    ':id_trajet'  => $id_trajet
+                ]);
+            }
+        }
 
             // Validation finale
             $this->dal->commit();
@@ -131,21 +153,22 @@ class TrajetDAO {
 
     public function getAllDemandeDeTrajet(string $id_famille): array
 {
-    // On cherche les trajets liés aux événements de la famille
-    // Mais on exclut ceux qui sont déjà présents dans la table EFFECTUE
+    // On sélectionne les trajets liés directement à l'ID famille via la table FAMILLE_TRAJET
+    // Et on exclut ceux qui ont déjà un aidant affecté dans la table EFFECTUE
     $query = "SELECT t.* FROM TRAJET t
-              JOIN EVENEMENTS e ON t.id_event = e.id_event
-              WHERE e.id_famille = :id_famille
+              JOIN FAMILLE_TRAJET ft ON t.id_trajet = ft.id_trajet
+              WHERE ft.id_famille = :id_famille
               AND t.id_trajet NOT IN (SELECT id_trajet FROM EFFECTUE)";
 
     try {
         $stmt = $this->dal->prepare($query);
         $stmt->execute([':id_famille' => $id_famille]);
         
-        // On récupère toutes les lignes
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Retourne la liste des trajets "orphelins" d'aidant pour cette famille
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     } catch (PDOException $e) {
-        // En cas d'erreur, on retourne un tableau vide
+        // Log de l'erreur si nécessaire
+        error_log("Erreur getAllDemandeDeTrajet: " . $e->getMessage());
         return [];
     }
 }

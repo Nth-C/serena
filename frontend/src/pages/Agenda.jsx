@@ -51,6 +51,7 @@ function Agenda() {
     // Champs Trajet
     effectue: 'aidant',  // Valeur par défaut
     societe: '',         // Texte
+    aidantAffecte: '',
     lieuDepart: '',
     lieuArrivee: '',
     id_event: ''         // ID de l'événement lié
@@ -464,7 +465,7 @@ function Agenda() {
               ) : (
                 <div>
                   <label>Aidant affecté :</label>
-                  <select name="accompagnants" value={formData.accompagnants} onChange={handleChange} required>
+                  <select name="aidantAffecte" value={formData.aidantAffecte} onChange={handleChange} required>
                     <option value="demande">Envoyer une demande aux aidants</option>
                     {membresFamille.map((personne) => (
                         <option key={personne.id} value={personne.id}>
