@@ -76,6 +76,10 @@ h2 {
   font-size: var(--font-md);
 }
 
+h1, h2, h3 {
+  color: var(--black);
+}
+
 label,
 h3,
 p,
@@ -499,7 +503,7 @@ button.creer_suivi {
   gap: 1rem;
 }
 
-.acce_suivi .principal_infos {
+:is(.acce_suivi, .notification) .principal_infos {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -508,17 +512,17 @@ button.creer_suivi {
 
 }
 
-.acce_suivi .container_suivi_groupe {
+:is(.acce_suivi, .notification) .container_suivi_groupe {
   border-width: 1px 0 0 0;
   border-color: var(--gray);
   border-style: solid;
 }
 
-.acce_suivi .container_suivi_groupe:last-child {
+:is(.acce_suivi, .notification) .container_suivi_groupe:last-child {
   border-width: 1px 0 1px 0;
 }
 
-.acce_suivi .drop {
+:is(.acce_suivi, .notification) .drop {
   position: relative;
   display: none;
   flex-direction: column;
@@ -527,11 +531,11 @@ button.creer_suivi {
   border-top: 1px solid var(--gray);
 }
 
-.acce_suivi .container_suivi_groupe.open .drop {
+:is(.acce_suivi, .notification) .container_suivi_groupe.open .drop {
   display: flex;
 }
 
-.acce_suivi .drop::before {
+:is(.acce_suivi, .notification) .drop::before {
   background: var(--pink);
   content: '';
   display: block;
@@ -542,16 +546,16 @@ button.creer_suivi {
   left: 0;
 }
 
-.acce_suivi .drop>div {
+:is(.acce_suivi, .notification) .drop > div {
   display: flex;
   gap: 1rem;
 }
 
-.acce_suivi .drop>div button {
+:is(.acce_suivi, .notification) .drop > div button {
   flex-basis: 50%;
 }
 
-.acce_suivi .principal_infos div {
+:is(.acce_suivi, .notification) .principal_infos div {
   display: flex;
 }
 
@@ -642,7 +646,6 @@ button.creer_suivi {
   border: 1px solid var(--blue);
   border-radius: 10px;
   background-color: var(--blue);
-  color: var(--white);
   padding: 1rem;
   cursor: pointer;
   overflow: hidden;
@@ -661,6 +664,7 @@ button.creer_suivi {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: var(--white);
 }
 
 .liste_report {
@@ -1510,6 +1514,9 @@ progress.blue_bar::-moz-progress-bar {
   background-color: var(--blue);
   border-radius: 10px;
   padding: 1.5rem;
+}
+
+.last_report > div > div:first-child :is(p, h2) {
   color: var(--white);
 }
 
@@ -1810,6 +1817,81 @@ progress.blue_bar::-moz-progress-bar {
   text-align: justify;
 }
 
+/* ---------------------------------------- */
+/* ------------ ACCESSIBILITÉ ------------- */
+/* ---------------------------------------- */
+
+.accessibilite {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 20px;
+}
+
+.accessibilite section:nth-child(1) {
+  padding: 15px;
+  border: 2px solid var(--gray);
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--black);
+}
+
+.accessibilite section:nth-child(1) > div {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.accessibilite .viewer_color {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+}
+
+.accessibilite .viewer_color:nth-child(1) {
+  background: var(--blue);
+}
+
+.accessibilite .viewer_color:nth-child(2) {
+  background: var(--pink);
+}
+
+.accessibilite .viewer_color:nth-child(3) {
+  background: var(--red);
+}
+
+.accessibilite section:nth-child(2) > button {
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 8px;
+  border: none;
+  background: var(--blue);
+  color: var(--white);
+  width: 100%;
+}
+
+.accessibilite section:nth-child(3) > div {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.accessibilite section:nth-child(4) select {
+  padding: 10px;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--gray);
+}
+
+
+.notification h2 {
+  margin-bottom: 1.5rem;
+}
+
+.notification .notif_trajet {
+  margin-bottom: 2rem;
+}
+
 /* ----------------------------- */
 /* ----------- FONTS ----------- */
 /* ----------------------------- */
@@ -1929,7 +2011,7 @@ button:disabled .loading-icon {
   padding: 0 3rem 2rem 3rem;
 }
 
-.role_membre .membre_list>div {
+.role_membre .membre_list > div {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1937,7 +2019,7 @@ button:disabled .loading-icon {
   padding: .5rem 3rem;
 }
 
-.role_membre .membre_list>div:last-child {
+.role_membre .membre_list > div:last-child {
   border-width: 1px 0 1px 0;
   border-color: var(--gray);
   border-style: solid;
@@ -1957,12 +2039,12 @@ button:disabled .loading-icon {
   fill: var(--black);
 }
 
-.form_role_membre>div:last-child {
+.form_role_membre > div:last-child {
   flex-direction: row;
   justify-content: space-between;
 }
 
-.form_role_membre>div:last-child>div:last-child {
+.form_role_membre > div:last-child > div:last-child {
   display: flex;
   gap: 2rem;
 }

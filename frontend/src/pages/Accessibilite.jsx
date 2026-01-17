@@ -46,32 +46,23 @@ const Accessibilite = () => {
 
     return (
         <LayoutMenu title={"Accessibilité"}>
-            <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            <div className='accessibilite' style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                 
                 {/* ZONE D'APERÇU - Pour voir les changements en direct */}
-                <section style={{ 
-                    padding: '15px', 
-                    border: '2px solid var(--gray)', 
-                    borderRadius: '12px',
-                    background: 'var(--white)',
-                    color: 'var(--black)'
-                }}>
+                <section>
                     <h4 style={{ marginTop: 0 }}>Aperçu en direct</h4>
                     <p style={{ fontSize: 'var(--font-sm)' }}>Ceci est un exemple de texte (Taille SM)</p>
-                    <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                        <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: 'var(--blue)' }}></div>
-                        <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: 'var(--red)' }}></div>
-                        <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: 'var(--pink)' }}></div>
+                    <div>
+                        <div className='viewer_color'></div>
+                        <div className='viewer_color'></div>
+                        <div className='viewer_color'></div>
                     </div>
                 </section>
 
                 {/* APPARENCE */}
                 <section>
                     <h3>Apparence</h3>
-                    <button 
-                        style={{ padding: '10px 20px', cursor: 'pointer', borderRadius: '8px', border: 'none', background: 'var(--blue)', color: 'white' }}
-                        onClick={() => setDarkMode(!darkMode)}
-                    >
+                    <button onClick={() => setDarkMode(!darkMode)}>
                         Passer au mode {darkMode ? 'Clair' : 'Sombre'}
                     </button>
                 </section>
@@ -79,9 +70,9 @@ const Accessibilite = () => {
                 {/* TEXTE */}
                 <section>
                     <h3>Taille du texte</h3>
-                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <div>
                         <button onClick={() => setFontSizeBase(prev => Math.max(0.7, prev - 0.1))}>A-</button>
-                        <span style={{ fontWeight: 'bold' }}>{Math.round(fontSizeBase * 100)}%</span>
+                        <p>{Math.round(fontSizeBase * 100)}%</p>
                         <button onClick={() => setFontSizeBase(prev => Math.min(1.6, prev + 0.1))}>A+</button>
                     </div>
                 </section>
@@ -92,7 +83,6 @@ const Accessibilite = () => {
                     <select 
                         value={colorBlindMode} 
                         onChange={(e) => setColorBlindMode(e.target.value)}
-                        style={{ padding: '10px', width: '100%', maxWidth: '300px', borderRadius: '8px', border: '1px solid var(--gray)' }}
                     >
                         <option value="normal">Vision normale</option>
                         <option value="protanopia">Protanopie (Déficience Rouge)</option>
