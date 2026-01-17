@@ -575,6 +575,7 @@ button.creer_suivi {
 .contener_report .sort {
   display: flex;
   align-items: center;
+  white-space: nowrap;
 }
 
 .contener_report h1 {
@@ -1577,15 +1578,24 @@ progress.blue_bar::-moz-progress-bar {
   justify-content: center;
 }
 
+/* si checkbox */
 .filter_group .checkbox {
   display: flex;
   align-items: center;
   gap: 1rem;
+  white-space: nowrap;
 }
 
-.filter_bar > div:last-child {
-  display: flex;
-  gap: 2rem;
+/* si bouton */
+.filter_group > div:last-child button {
+  white-space: nowrap;
+  border-radius: 8px;
+  padding: .5rem;
+}
+
+.filter_group > div:last-child button.active {
+  background: var(--blue);
+  color: var(--white);
 }
 
 /**/

@@ -18,7 +18,9 @@ try {
         $row['medics_details'] = $model->getMedicsByRapport($row['id_rapport']);
     }
 
-    echo json_encode($rapports);
+    echo json_encode(["success" => true, "data" => $rapports]);
+
+    //echo json_encode($rapports);
 } catch (Exception $e) {
     echo json_encode(["error" => $e->getMessage()]);
 }
