@@ -134,6 +134,10 @@ function Menu({isOpen , onHamburgerClick}) {
                             <p>Conditions d’utilisation</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
+                        <NavLink to={"/legals_mentions"} onClick={onHamburgerClick}>
+                            <p>Mentions légales</p>
+                            <img src="/icons/chevron_right.svg" alt=">" />
+                        </NavLink>
                     </div>
                 </div>
 

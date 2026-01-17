@@ -26,6 +26,7 @@ import Privacy from './pages/Privacy';
 import Accessibilite from './pages/Accessibilite';
 import Signalement from './pages/Signalement';
 import VerifyAccount from './pages/VerifyAccount';
+import LegalMention from './pages/legalMention';
 
 import { ROLES, hasPermission } from './utils/roleManager';
 
@@ -129,6 +130,16 @@ function App() {
           </ProtectedRoute>
           }>
         </Route>
+
+        <Route path="legals_mentions" 
+          element={
+          <ProtectedRoute>
+            <LegalMention />
+          </ProtectedRoute>
+          }>
+        </Route>
+
+        
 
         <Route path="privacy" 
           element={
