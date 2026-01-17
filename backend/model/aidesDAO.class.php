@@ -59,4 +59,13 @@ public function setAide($id_famille, $nom, $description, $statuspro, $depense, $
     ]);
 }
 
+
+public function getAideByFamille($id_famille)
+{
+    $query = "SELECT * FROM aide WHERE id_famille = :id_famille";
+    $stmt = $this->dal->prepare($query);
+    $stmt->execute([':id_famille' => $id_famille]);
+    return $stmt->fetch(PDO::FETCH_ASSOC); // Retourne les données ou false si rien n'est trouvé
+}
+
 }
