@@ -47,7 +47,7 @@ function Dashboard() {
   return (
     <div className="accueil">
       
-      {/* 1. SECTION DEMANDE (Trajets) */}
+      {/*SECTION DEMANDE (Trajets) */}
       <div>
         <h1>Demande</h1>
         {trajets?.length === 0 ? (
@@ -68,7 +68,7 @@ function Dashboard() {
         )}
       </div>
 
-      {/* 2. SECTION ALERTES (Médicaments) */}
+      {/*SECTION ALERTES (Médicaments) */}
       <div>
         <h1>Alertes</h1>
         <div className='list_alerte'>
@@ -101,7 +101,7 @@ function Dashboard() {
         </div>
       </div>
 
-      {/* 3. SECTION PROCHAINES TÂCHES */}
+      {/*SECTION PROCHAINES TÂCHES */}
       <div>
         <h1>Prochaines tâches</h1>
         <div className="list_task">
