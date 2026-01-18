@@ -1766,17 +1766,26 @@ progress.blue_bar::-moz-progress-bar {
   margin: 0 3rem;
 }
 
-.compte form > div:last-child {
-  flex-direction: row;
-}
-
 .compte h2 {
   margin-bottom: 2rem;
 }
 
-.compte form > div:last-child button {
+.compte form > div:nth-child(6) {
+  flex-direction: row;
+}
+
+.compte form > div:nth-child(6) button {
   width: 50%;
 }
+
+.compte form > div:last-child {
+  display: none;
+}
+
+.compte form > div:last-child.active {
+  display: flex;
+}
+
 
 /* ----------------------------------- */
 /* ----------- SIGNALEMENT ----------- */
