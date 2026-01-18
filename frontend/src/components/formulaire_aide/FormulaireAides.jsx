@@ -32,8 +32,18 @@ const FormulaireAides = ({ step, setStep, isDejaFait, onFinaliser }) => {
         }
     };
 
+    const isAideValide = () => {
+        return formData.aide_apa || formData.aide_pch || formData.aide_aucune;
+    };
+
     const handleNextStep = (e, nextStep) => {
         const form = e.target.closest('form');
+
+        if (step === 2 && !isAideValide()) {
+            alert("Veuillez sélectionner au moins une option pour les aides déjà perçues par l'aidé.");
+            return;
+        }
+
         if (form.reportValidity()) {
             setStep(nextStep);
         }
@@ -70,7 +80,7 @@ const FormulaireAides = ({ step, setStep, isDejaFait, onFinaliser }) => {
                         <div>
                             <label>Votre fiscalité : </label>
                             <div className="selector_container">
-                                <input type="radio" name="fiscalite" value="imposable" id="imposable" checked={formData.fiscalite === "imposable"} onChange={handleChange} required/>
+                                <input type="radio" name="fiscalite" value="imposable" id="imposable" checked={formData.fiscalite === "imposable"} onChange={handleChange} required />
                                 <label htmlFor="imposable" className="card">
                                     <p>Je suis imposable</p>
                                 </label>
@@ -83,23 +93,23 @@ const FormulaireAides = ({ step, setStep, isDejaFait, onFinaliser }) => {
 
                         <div className="lien_aide">
                             <h2>Lien avec l'aidé</h2>
-                            <div className="selector_container">
+                            <div className="selector_container_relation">
                                 <div>
-                                    <input type="radio" name="role" value='conjoint' id='conjoint' checked={formData.role === "conjoint"} onChange={handleChange} required/>
+                                    <input type="radio" name="role" value='conjoint' id='conjoint' checked={formData.role === "conjoint"} onChange={handleChange}/>
                                     <label htmlFor="conjoint" className='choice'>Conjoint</label>
                                 </div>
                                 <div>
-                                    <input type="radio" name="role" value='famille' id='famille' checked={formData.role === "famille"} onChange={handleChange} required/>
+                                    <input type="radio" name="role" value='famille' id='famille' checked={formData.role === "famille"} onChange={handleChange}/>
                                     <label htmlFor="famille" className='choice'>Enfant-Famille</label>
                                 </div>
                                 <div>
-                                    <input type="radio" name="role" value='proche' id='proche' checked={formData.role === "proche"} onChange={handleChange} required/>
+                                    <input type="radio" name="role" value='proche' id='proche' checked={formData.role === "proche"} onChange={handleChange}/>
                                     <label htmlFor="proche" className='choice'>Ami-Voisin</label>
                                 </div>
                             </div>
                         </div>
 
-                        <button type="button" className="btn_blue" onClick={(e) => handleNextStep(e, 2)}>Continuer</button>
+                        <button type="button" className="btn_blue" onClick={(e) => handleNextStep(e, 2)} disabled={step === 2 && !isAideValide()}>Continuer</button>
                     </div>
                 </>
             ) : step === 2 ? (  // ÉTAPE 2 : L'AIDÉ
@@ -134,15 +144,15 @@ const FormulaireAides = ({ step, setStep, isDejaFait, onFinaliser }) => {
                         <div>
                             <label>Aides déjà perçues par l'aidé : </label>
                             <div className="box_check">
-                                <input type="checkbox" name='aide_apa' id="APA" checked={formData.aide_apa} onChange={handleChange}/>
+                                <input type="checkbox" name='aide_apa' id="APA" checked={formData.aide_apa} onChange={handleChange} />
                                 <label htmlFor="APA">APA (Allocation Personnalisée d'Autonomie)</label>
                             </div>
                             <div className="box_check">
-                                <input type="checkbox" name='aide_pch' id="PCH" checked={formData.aide_pch} onChange={handleChange}/>
+                                <input type="checkbox" name='aide_pch' id="PCH" checked={formData.aide_pch} onChange={handleChange} />
                                 <label htmlFor="PCH">PCH (Prestation de Compensation du Handicap)</label>
                             </div>
                             <div className="box_check">
-                                <input type="checkbox" name='aide_aucune' id="aucune" checked={formData.aide_aucune} onChange={handleChange}/>
+                                <input type="checkbox" name='aide_aucune' id="aucune" checked={formData.aide_aucune} onChange={handleChange} />
                                 <label htmlFor="aucune">Aucune</label>
                             </div>
                         </div>

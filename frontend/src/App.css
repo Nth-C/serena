@@ -137,6 +137,10 @@ select {
   height: 3.5rem;
 }
 
+select {
+  cursor: pointer;
+}
+
 input,
 label {
   cursor: pointer;
@@ -1399,13 +1403,37 @@ progress.blue_bar::-moz-progress-bar {
   width: 100%;
 }
 
-.assistance input[type="radio"] {
+.assistance .selector_container_relation {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 20%;
+}
+
+.assistance .selector_container_relation > div {
+  display: flex;
+  align-items: center;
+}
+
+.assistance .selector_container > div {
+  display: flex;
+}
+
+.assistance .selector_container input[type="radio"] {
   display: none;
+}
+
+.assistance .selector_container label:hover {
+  border: 1px solid var(--blue);
+}
+
+.assistance .selector_container_relation label:hover {
+  color: var(--blue);
 }
 
 .assistance .selector_container .card {
   width: 150px;
-  height: 150px;
+  height: 50px;
   border: 1px solid var(--black);
   border-radius: 10px;
   display: flex;
@@ -1419,19 +1447,20 @@ progress.blue_bar::-moz-progress-bar {
   color: var(--black);
 }
 
-.assistance .selector_container input[type="radio"]:checked+.card,
-.assistance .selector_container input[type="radio"]:checked+.choice {
+.assistance .selector_container input[type="radio"]:checked+.card {
   background-color: var(--blue);
   border: 1px solid var(--blue);
   color: var(--white);
 }
 
-.assistance .selector_container .choice {
+.assistance .selector_container_relation input[type="radio"]:checked+.choice {
+  color: var(--blue);
+}
+
+.assistance .selector_container_relation .choice {
   padding: 1rem;
   font-size: var(--font-sm);
-  border-radius: 4px;
   color: var(--black);
-  border: 1px solid var(--black);
   text-wrap: nowrap;
   cursor: pointer;
 }
@@ -2020,6 +2049,38 @@ progress.blue_bar::-moz-progress-bar {
   width: 100%;
   border-radius: 8px;
   border: 1px solid var(--gray);
+}
+
+.accessibilite .text_size button {
+  border: 1px solid var(--black);
+  border-radius: 50px;
+  padding: 1rem;
+}
+
+.accessibilite .text_size button:hover {
+  border: 1px solid var(--blue);
+  background-color: var(--blue);
+  color: var(--white);
+}
+
+.accessibilite .text_size {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.accessibilite .text_size h3 {
+  width: 100%;
+  text-align: start;
+}
+
+.accessibilite .text_size button:last-child {
+  font-size: 2.3rem;
+}
+
+.accessibilite .text_size button:first-child {
+  font-size: var(--font-sm);
 }
 
 
