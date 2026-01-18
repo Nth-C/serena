@@ -9,6 +9,7 @@ frontend/.local
 frontend/package-lock.json
 .env.development
 .env.production
+frontend/test-results
 
 # --- BACKEND ---
 .env
@@ -21,3 +22,11 @@ Thumbs.db
 .vscode/
 .idea/
 backend/vendor/
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

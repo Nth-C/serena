@@ -356,7 +356,7 @@ function Medecine() {
             value={currentStock}
             onChange={(e) => setCurrentStock(e.target.value)}
             required
-            disabled={!isNameGood}
+            disabled={!isNameGood && !isEditing}
           />
         </div>
 
