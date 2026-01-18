@@ -54,7 +54,7 @@ function Agenda() {
     // Champs Trajet
     effectue: 'aidant',  // Valeur par défaut
     societe: '',         // Texte
-    aidantAffecte: '',
+    aidantAffecte: 'demande',
     lieuDepart: '',
     lieuArrivee: '',
     id_event: ''         // ID de l'événement lié
