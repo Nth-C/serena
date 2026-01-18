@@ -434,10 +434,10 @@ function LastVisitReport() {
                 <img src="/icons/arrow_back.svg" alt="" onClick={() => setIsPopupOpen(false)} />
                 <input type="search" placeholder="Rechercher un médicament" />
               </div>
-              <div>
+          {/* <div>
                 <img src="/icons/sort.svg" alt="" />
                 <p>Trier par</p>
-              </div>
+              </div>*/}
             </div>
             <div className="add_medi">
               <button onClick={toggleNewMedicine} className="btn_blue">Ajouter un nouveau médicament</button>

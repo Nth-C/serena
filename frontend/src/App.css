@@ -178,6 +178,7 @@ input[type=search] {
   padding-left: 2.5rem;
   background-image: url('/icons/search.svg');
   width: 100%;
+  cursor: text;
 }
 
 textarea {
@@ -1163,7 +1164,7 @@ progress.blue_bar::-moz-progress-bar {
 }
 
 .file_explorer .case_categorie svg {
-  fill: var(--gray);
+  fill: var(--black);
   cursor: pointer;
   width: 30px;
   height: 30px;
