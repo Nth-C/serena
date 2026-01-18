@@ -54,6 +54,7 @@ class App
 
     public function login(Personne $personne)
     {
+        session_regenerate_id(true);
         $this->connected = true;
         $this->personne = $personne;
         $this->id_personne = $personne->id; // Mise à jour de l'ID dans l'objet

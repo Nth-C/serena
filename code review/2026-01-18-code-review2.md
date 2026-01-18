@@ -2,7 +2,9 @@
 
 ## Problèmes Critiques de Sécurité (Backend)
 
-*   **Vulnérabilité de Fixation de Session :**
+
+*   **Vulnérabilité de Fixation de Session : - FAIT**
+
     *   **Description :** Le fichier `serena/backend/app.php` ne régénère pas l'ID de session après une connexion réussie. Un attaquant pourrait potentiellement détourner la session d'un utilisateur.
     *   **Recommandation :** Ajouter `session_regenerate_id(true);` au début de la méthode `login()` dans `serena/backend/app.php` pour créer une nouvelle session pour chaque connexion.
 

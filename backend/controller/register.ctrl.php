@@ -20,18 +20,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 $app = new App();
 $pepper = $config['APP_PEPPER']; // On prend le pepper du fichier config
 
-$nom = $_POST['nom'] ?? '';
-$prenom = $_POST['prenom'] ?? '';
-$mail = $_POST['mail'] ?? '';
-$username = $_POST['username'] ?? '';
-$mdp = $_POST['mdp'] ?? '';
-$date_naissance = $_POST['date_naissance'] ?? '';
+$nom = filter_input(INPUT_POST, 'nom', FILTER_SANITIZE_SPECIAL_CHARS);
+$prenom = filter_input(INPUT_POST, 'prenom', FILTER_SANITIZE_SPECIAL_CHARS);
+$mail = filter_input(INPUT_POST, 'mail', FILTER_VALIDATE_EMAIL);
+$username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_SPECIAL_CHARS);
+$mdp = $_POST['mdp'] ?? null;
+$date_naissance = $_POST['date_naissance'] ?? null;
 
 if ($nom && $prenom && $mail && $username && $mdp && $date_naissance) {
+
+    // Validate date format
+    $d = DateTime::createFromFormat('Y-m-d', $date_naissance);
+    if (!$d || $d->format('Y-m-d') !== $date_naissance) {
+        echo json_encode(['success' => false, 'error' => 'Format de date de naissance invalide. Utilisez YYYY-MM-DD.']);
+        exit();
+    }
+    
     $dao = new PersonneDAO();
     
     if ($dao->findByUsername($username)) {
         echo json_encode(['success' => false, 'error' => 'Ce nom d\'utilisateur est déjà pris.']);
+        exit();
+    }
+
+    if ($dao->findByEmail($mail)) {
+        echo json_encode(['success' => false, 'error' => 'Cette adresse email est déjà utilisée.']);
         exit();
     }
     
@@ -88,7 +101,12 @@ if ($nom && $prenom && $mail && $username && $mdp && $date_naissance) {
         echo json_encode(['success' => false, 'error' => 'Erreur lors de l\'enregistrement en base de données.']);
     }
 } else {
-    echo json_encode(['success' => false, 'error' => 'Veuillez remplir tous les champs.']);
+    $error = 'Veuillez remplir tous les champs.';
+    // filter_input returns false for a value that fails validation.
+    if ($mail === false) {
+        $error = 'Adresse email invalide.';
+    }
+    echo json_encode(['success' => false, 'error' => $error]);
 }
 exit();
 ?>
