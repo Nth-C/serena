@@ -45,3 +45,21 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+
+  playwright:
+    image: mcr.microsoft.com/playwright:v1.57.0-jammy
+    volumes:
+      - .:/work
+    working_dir: /work
+    environment:
+      - NODE_ENV=test
+      # On définit l'URL du site pour Playwright
+      - BASE_URL=http://frontend:5173
+      # On force l'URL de l'API pour que le JS du navigateur sache où est le backend
+      - VITE_API_URL=http://backend:80
+    # On force Playwright à utiliser ces variables
+    command: npx playwright test
+    depends_on:
+      - frontend
+      - backend
+      - db
