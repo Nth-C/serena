@@ -107,20 +107,22 @@ function Dashboard() {
         <div className="list_task">
           {taches && taches.length > 0 ? (
             taches.map((tache, index) => (
-              <div key={index} className="alerte_dashbord">
-                <div>
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="35px" fill="white">
-                    <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
-                  </svg>
-                  <div className="tache_info">
-                    <h3>{tache.nom}</h3>
-                    <p>{tache.note || "Aucune description"}</p>
+              <NavLink key={index} to={`/agenda`}>
+                <div className="alerte_dashbord">
+                  <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="35px" fill="white">
+                      <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
+                    </svg>
+                    <div className="tache_info">
+                      <h3>{tache.nom}</h3>
+                      <p>{tache.note || "Aucune description"}</p>
+                    </div>
                   </div>
+                  <svg className="arrow_forward" xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px">
+                    <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
+                  </svg>
                 </div>
-                <svg className="arrow_forward" xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px">
-                  <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
-                </svg>
-              </div>
+              </NavLink>
             ))
           ) : (
             <p className="aucun">Aucune tâche prévue prochainement</p>
