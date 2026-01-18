@@ -12,56 +12,56 @@ const AddMembre = ({ isOpen, onClose }) => {
     const apiUrl = import.meta.env.VITE_API_URL;
 
     // Fonction pour activer/désactiver le chargement sur un ID
-    const toggleLoading = (id, isLoading) => {
+    const toggleLoading = (id_personne, isLoading) => {
         setLoadingIds(prev => {
             const newSet = new Set(prev);
-            if (isLoading) newSet.add(id);
-            else newSet.delete(id);
+            if (isLoading) newSet.add(id_personne);
+            else newSet.delete(id_personne);
             return newSet;
         });
     };
 
-    const handleAddInvitePersonne = async (id) => {
-        toggleLoading(id, true);
+    const handleAddInvitePersonne = async (membre) => {
+        toggleLoading(membre.id_personne, true);
         try {
             const response = await fetch(`${apiUrl}/?route=invitepersonnefamille/add`, {
                 method: "POST",
                 credentials: 'include',
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username: id })
+                body: JSON.stringify({ id_personne: membre.id_personne })
             });
             const data = await response.json();
             if (data.success) {
-                fetchMembres();
+                membre.invite = true;
             } else {
                 console.error("Erreur : " + data.error);
             }
         } catch (error) {
             console.error("Erreur lors de la demande invité :", error);
         } finally {
-            toggleLoading(id, false);
+            toggleLoading(membre.id_personne, false);
         }
     };
 
-    const handleRemoveInvitePersonne = async (id) => {
-        toggleLoading(id, true);
+    const handleRemoveInvitePersonne = async (membre) => {
+        toggleLoading(membre.id_personne, true);
         try {
             const response = await fetch(`${apiUrl}/?route=invitepersonnefamille/delete`, {
                 method: "POST",
                 credentials: 'include',
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username: id })
+                body: JSON.stringify({ id_personne: membre.id_personne })
             });
             const data = await response.json();
             if (data.success) {
-                fetchMembres();
+                membre.invite = false;
             } else {
                 console.error("Erreur : " + data.error);
             }
         } catch (error) {
             console.error("Erreur lors de la demande invité :", error);
         } finally {
-            toggleLoading(id, false);
+            toggleLoading(membre.id_personne, false);
         }
     };
 
@@ -103,7 +103,7 @@ const AddMembre = ({ isOpen, onClose }) => {
                 <div className='membre_list'>
                     {membresFamille.map((membre) => {
                         // On vérifie si CET ID est en train de charger
-                        const isThisLoading = loadingIds.has(membre.username);
+                        const isThisLoading = loadingIds.has(membre.id_personne);
 
                         return (
                             <div key={membre.id_personne}>
@@ -116,9 +116,9 @@ const AddMembre = ({ isOpen, onClose }) => {
                                     onClick={() => {
                                         if (isThisLoading) return; // Empêche de recliquer si ça charge
                                         if (membre.invite) {
-                                            handleRemoveInvitePersonne(membre.username);
+                                            handleRemoveInvitePersonne(membre);
                                         } else {
-                                            handleAddInvitePersonne(membre.username);
+                                            handleAddInvitePersonne(membre);
                                         }
                                     }}
                                     className={membre.invite ? 'btn-invited' : 'btn-add'}

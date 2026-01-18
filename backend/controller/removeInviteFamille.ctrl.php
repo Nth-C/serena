@@ -1,7 +1,6 @@
 <?php
 require_once(__DIR__ . '/../model/famille.class.php'); 
 require_once(__DIR__ . '/../model/familleDAO.class.php');
-require_once(__DIR__ . '/../model/personneDAO.class.php');
 require_once(__DIR__ . '/../app.php');
 
 $app = new App();
@@ -24,15 +23,11 @@ if (!$app->checkRole('Famille')) {
 $json = file_get_contents('php://input');
 $data = json_decode($json, true);
 
-$username = $data['username'] ?? '';
+$id_personne = $data['id_personne'] ?? '';
 
 
-if($username){
-    $daoFamille = new FamilleDAO();
-    $daoPersonne = new PersonneDAO();
-
-    $id_personne = $daoPersonne->findByUsername($username)->id;
-    
+if($id_personne){
+    $daoFamille = new FamilleDAO();  
     
     // MODIFICATION ICI : On récupère l'ID directement
     $reussi = $daoFamille->deleteInviterPersonneDansFamille($app->id_famille,$id_personne,$app->personne->id);
