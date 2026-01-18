@@ -567,6 +567,7 @@ button.creer_suivi {
 /* -------- RAPPORT VISITE -------- */
 /* -------------------------------- */
 
+/* header des rapports */
 .contener_report {
   padding: 0 3rem;
 }
@@ -586,6 +587,7 @@ button.creer_suivi {
   padding: 0;
 }
 
+/* bar de recherche rapport + popup médicament */
 .search_report,
 .report_case,
 .search_document {
@@ -593,32 +595,10 @@ button.creer_suivi {
   justify-content: space-between;
 }
 
-.new_categories {
-  padding-right: 3rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.new_categories div {
-  display: flex;
-  color: var(--blue);
-  gap: 5px;
-  cursor: pointer;
-}
-
-.new_categories div svg {
-  fill: var(--blue);
-}
-
 .search_report,
 .search_document {
   gap: 20px;
   padding: 1rem 0 3rem 0;
-}
-
-.popup_report_add_medicament .search_report {
-  padding: 1rem 3rem 3rem 3rem;
 }
 
 .search_report div,
@@ -633,6 +613,16 @@ button.creer_suivi {
   text-wrap: nowrap;
 }
 
+.popup_report_add_medicament .search_report {
+  padding: 1rem 3rem 3rem 3rem;
+}
+
+.search_report img {
+  cursor: pointer;
+}
+
+
+/* ajout d'un rapport */
 .add_report div:last-child {
   display: flex;
   flex-direction: row;
@@ -640,6 +630,14 @@ button.creer_suivi {
 
 .add_report div:last-child button {
   flex-basis: 50%;
+}
+
+/* liste des rapports */
+
+.liste_report {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .report_case {
@@ -667,59 +665,12 @@ button.creer_suivi {
   color: var(--white);
 }
 
-.liste_report {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
 .report_case img {
   width: 7rem;
   height: 7rem;
 }
 
-.list_medicament_report {
-  display: flex;
-  gap: 10px;
-  border-top: 1px solid var(--gray);
-  border-bottom: 1px solid var(--gray);
-  padding: .5rem;
-}
-
-.list_medicament_report div {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.list_medicament_report input {
-  max-width: 145px;
-  border-color: var(--gray);
-  height: 25px;
-  border-radius: 4px;
-}
-
-@media (max-width: 768px) {
-  .list_medicament_report input {
-    max-width: 80px;
-  }
-}
-
-button.add_medi {
-  width: 100%;
-  margin: 1rem 0 0 auto;
-}
-
-.last_visit_report form>div:last-child {
-  display: flex;
-  flex-direction: row;
-  justify-content: end;
-}
-
-.last_visit_report form>div:last-child button {
-  min-width: 120px;
-}
+/* popup liste et ajout des médicament */
 
 .popup_report_add_medicament {
   display: none;
@@ -728,7 +679,7 @@ button.add_medi {
   background: var(--white);
   position: fixed;
   z-index: 600;
-  top: 0;
+  top: 85px;
 }
 
 .popup_report_add_medicament .search_report div:first-child {
@@ -737,40 +688,6 @@ button.add_medi {
 
 .popu-medi-active {
   display: block;
-}
-
-.search_report img {
-  cursor: pointer;
-}
-
-.details_report {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.details_report .list-medic li {
-  list-style: inside;
-}
-
-.details_report h2 {
-  padding-bottom: 2%;
-}
-
-.details_report div:last-child {
-  display: flex;
-  flex-direction: row;
-  gap: 15px;
-}
-
-.details_report div:last-child button {
-  flex-basis: 50%;
-}
-
-.details_report div:nth-child(3) p,
-.details_report li {
-  padding-left: 2%;
-  text-align: justify;
 }
 
 .popup_report_add_medicament .principal_infos {
@@ -840,6 +757,97 @@ button.add_medi {
 .popup_report_add_medicament .add_medi button {
   width: 100%;
 }
+
+.report_close_popup {
+  position: absolute;
+  z-index: 509;
+  top: 0;
+  left: 0;
+  background: var(--bg-black);
+  width: 100%;
+  height: 100%;
+}
+
+/* liste médicament dans popup */
+
+.list_medicament_report {
+  display: flex;
+  gap: 10px;
+  border-top: 1px solid var(--gray);
+  border-bottom: 1px solid var(--gray);
+  padding: .5rem;
+}
+
+.list_medicament_report div {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list_medicament_report input {
+  max-width: 145px;
+  border-color: var(--gray);
+  height: 25px;
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .list_medicament_report input {
+    max-width: 80px;
+  }
+}
+
+/* ajout médicament*/
+
+button.add_medi {
+  width: 100%;
+  margin: 1rem 0 0 auto;
+}
+
+.last_visit_report form>div:last-child {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+}
+
+.last_visit_report form>div:last-child button {
+  min-width: 120px;
+}
+
+/* détails des information dans les rapports */
+
+.details_report {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.details_report .list-medic li {
+  list-style: inside;
+}
+
+.details_report h2 {
+  padding-bottom: 2%;
+}
+
+.details_report div:last-child {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+}
+
+.details_report div:last-child button {
+  flex-basis: 50%;
+}
+
+.details_report div:nth-child(3) p,
+.details_report li {
+  padding-left: 2%;
+  text-align: justify;
+}
+
+
 
 /* -------------------------------- */
 /* ----------- Medecine ----------- */
@@ -1062,6 +1070,7 @@ progress.blue_bar::-moz-progress-bar {
 /* ------- FILE EXPLORER ------- */
 /* ----------------------------- */
 
+/* menue de recherche */
 .search_container {
   padding: 0.5rem 3rem;
 }
@@ -1084,11 +1093,42 @@ progress.blue_bar::-moz-progress-bar {
   width: 20px;
 }
 
+/* liste des document et catégorie */
+
 .file_explorer .list {
   display: flex;
   flex-direction: column;
   gap: 28px;
 }
+
+/* créer une nouvelle catégories */
+.new_categories {
+  padding-right: 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.new_categories div {
+  display: flex;
+  color: var(--blue);
+  gap: 5px;
+  cursor: pointer;
+}
+
+.new_categories div svg {
+  fill: var(--blue);
+}
+
+.new_categorie div:last-child {
+  flex-direction: row;
+}
+
+.new_categorie div:last-child button {
+  flex-basis: 50%;
+}
+
+/* liste des catégorie */
 
 .file_explorer .case_categorie {
   display: flex;
@@ -1150,6 +1190,8 @@ progress.blue_bar::-moz-progress-bar {
   cursor: pointer;
 }
 
+/* nouveau document */
+
 .new_document>div:last-child {
   display: flex;
   flex-direction: row;
@@ -1158,6 +1200,8 @@ progress.blue_bar::-moz-progress-bar {
 .new_document>div:last-child button {
   flex-basis: 50%;
 }
+
+/* ajout d'un document zone grlissé déposé */
 
 .drop_zone {
   display: flex;
@@ -1193,6 +1237,8 @@ progress.blue_bar::-moz-progress-bar {
   border: none;
 }
 
+/* si upload du document réussi */
+
 .upload_success {
   display: flex;
   flex-direction: column;
@@ -1211,16 +1257,10 @@ progress.blue_bar::-moz-progress-bar {
   fill: var(--red);
 }
 
+/* si erreur de l'upload, type pas accépté */
+
 .doc_type_erreur {
   text-align: center;
-}
-
-.new_categorie div:last-child {
-  flex-direction: row;
-}
-
-.new_categorie div:last-child button {
-  flex-basis: 50%;
 }
 
 /* ----------------------------- */
