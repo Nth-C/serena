@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 
 
 function Slide({children, title, isOpen, toggleOpen, zIndex = 500}) {
-    //supprimer le scroll de la page
+  // supprimer le scroll de la page
   useEffect(() => {  
     if (isOpen) {
         document.documentElement.classList.add('menu-active');

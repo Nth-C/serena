@@ -6,7 +6,7 @@ const InvitationCard = ({ invitation, onAccepter, onRefuse }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className={`container_suivi_groupe ${isOpen ? 'open' : ''}`} style={{ marginBottom: '15px' }}>
+        <div className={`container_suivi_groupe ${isOpen ? 'open' : ''}`}>
             <div className="principal_infos" onClick={() => setIsOpen(!isOpen)}>
                 <p>Invitation : {invitation.nom_famille}</p>
                 {/* Petite flèche ou indicateur visuel optionnel */}
@@ -15,7 +15,7 @@ const InvitationCard = ({ invitation, onAccepter, onRefuse }) => {
             {isOpen && (
                 <div className="drop">
                     <p><strong>Message :</strong> {invitation.desc || "Aucune description"}</p>
-                    <p style={{ fontSize: '0.9em', color: '#666' }}>Invité par ID: {invitation.id_invitation}</p>
+                    <p>Invité par: {invitation.id_invitation}</p>
                     
                     <div className="actions_buttons">
                         <button
@@ -166,11 +166,11 @@ const Notification = () => {
             <div className='notification'>
                 
                 {/* Feedback message */}
-                {message && <div className="success-msg" style={{marginBottom: '20px'}}>{message}</div>}
+                {message && <div className="success-msg">{message}</div>}
 
                 {/* --- Section Invitations --- */}
-                <div className="section-notification">
-                    <h2 style={{ marginBottom: '15px' }}>Invitations aux suivis</h2>
+                <div className="notif_trajet">
+                    <h2>Invitations aux suivis</h2>
                     
                     {invitations.length === 0 ? (
                         <p className="aucun">Aucune invitation en attente</p>
@@ -188,11 +188,9 @@ const Notification = () => {
                     )}
                 </div>
 
-                <div className="spacer" style={{ height: '30px' }}></div>
-
                 {/* --- Section Trajets --- */}
-                <div className="section-notification">
-                    <h2 style={{ marginBottom: '15px' }}>Demandes de trajet</h2>
+                <div className="notif_trajet">
+                    <h2>Demandes de trajet</h2>
                     
                     {trajets.length === 0 ? (
                         <p className="aucun">Aucune demande de trajet</p>

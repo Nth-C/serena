@@ -1,15 +1,18 @@
 <?php
+
 // 1. Sécurité et Headers
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
 
 header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Content-Type");
+
 
 try {
     // 2. Inclusions
     require_once(__DIR__ . '/../model/aidesDAO.class.php');
+    require_once(__DIR__ . '/../app.php');
+
 
     // 3. Récupération des données React
     $data = json_decode(file_get_contents('php://input'), true);
@@ -35,7 +38,27 @@ try {
     $aucune = filter_var($data['aide_aucune'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
     // 5. Récupération des aides en BDD
+    $app = new App();
     $dao = new AidesDAO();
+    $dao->setAide(
+        $app->id_famille,
+        $data['nom'] ?? 'Sans nom', 
+        $data['description'] ?? '',
+        $statut, 
+        $depenses, 
+        $fiscal, 
+        $role, 
+        $age, 
+        $gir, 
+        $medical, 
+        $apa, 
+        $pch, 
+        $aucune, 
+        $objectif
+    );
+
+
+
     $allAides = $dao->getAllAides();
     $aidesValides = [];
 
@@ -131,5 +154,8 @@ try {
 
 } catch (Exception $e) {
     http_response_code(500);
-    echo json_encode(["error" => "Erreur serveur"]);
+    echo json_encode([
+        "success" => false,
+        "error" => "Erreur : " . $e->getMessage() // Affiche le message d'erreur SQL précis
+    ]);
 }

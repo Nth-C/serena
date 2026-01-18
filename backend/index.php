@@ -42,7 +42,7 @@ const _ROUTES = array(
   'invitation/accepter' => 'accepterInvitation',
   'invitation/refuser' => 'refuserInvitation',
   'allpersonne/view' => 'viewAllPersonne',
-  'rapport/list' => 'getRapport',
+  'rapport/list' => 'viewRapport',
   'rapport/add' => 'addRapport',
   'rapport/delete' => 'deleteRapport',
   'rapport/update' => 'updateRapport',
@@ -67,7 +67,8 @@ const _ROUTES = array(
   'user/profile' => 'getUserInfo',
   'user/update' => 'updateUser',
   'user/delete' => 'deleteCompte',
-  'aides/calculer' => 'getAides'
+  'aides/calculer' => 'getAides',
+  'aides/get' => 'viewAides',
 );
 
 if (!array_key_exists($route, _ROUTES)) {

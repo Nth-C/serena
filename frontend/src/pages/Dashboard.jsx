@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { NavLink } from 'react-router-dom';
 
 function Dashboard() {
   const [medicaments, setMedicaments] = useState([])
@@ -49,19 +50,21 @@ function Dashboard() {
       {/* 1. SECTION DEMANDE (Trajets) */}
       <div>
         <h1>Demande</h1>
-        {trajets.length === 0 ? (
+        {trajets?.length === 0 ? (
           <p className="aucun">Aucune demande de trajet</p>
         ) : (
-          trajets.map((t, i) => (
-            <div key={i} className='alerte_dashbord'>
-              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z" /></svg>
-              <div>
-                <h3>Demande de Trajet</h3>
-                <p>{t.description || "Description du trajet"}</p>
+          <div className='list_alerte'>
+            {trajets.map((m, i) => (
+              <div key={i} className='alerte_dashbord'>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z" /></svg>
+                <div>
+                  <h3>Demande de Trajet</h3>
+                  <p>{m.description || "Besoin d'un accompagnateur"}</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" /></svg>
               </div>
-              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" /></svg>
-            </div>
-          ))
+            ))}
+          </div>
         )}
       </div>
 
@@ -74,9 +77,9 @@ function Dashboard() {
           ) : (
             medicaments.map((m, i) => (
               <div key={i} className='alerte_dashbord'>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z" /></svg>
-                  <div style={{ flex: 1 }}>
+                <div>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z" /></svg>
+                  <div>
                     <h3>Médicaments</h3>
                     <p>Stock de {m.nomMedicament} faible</p>
                     <progress
@@ -89,38 +92,31 @@ function Dashboard() {
                     ></progress>
                   </div>
                 </div>
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" /></svg>
+                <svg className="arrow_forward" xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px">
+                  <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
+                </svg>              
               </div>
             ))
           )}
         </div>
       </div>
 
-      {/* 3. SECTION PROCHAINES TÂCHES (Le style de ton image) */}
+      {/* 3. SECTION PROCHAINES TÂCHES */}
       <div>
         <h1>Prochaines tâches</h1>
-        <div className="list_alerte">
+        <div className="list_task">
           {taches && taches.length > 0 ? (
             taches.map((tache, index) => (
-              <div key={index} className="alerte_dashbord agenda_card">
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  
-                  {/* Carré bleu avec l'icône check blanche */}
-                  <div className="icon_container_agenda">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="35px" fill="white">
-                      {/* C'est ce "path" qui dessine la coche de validation (Check) */}
-                      <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
-                    </svg>
-                  </div>
-
-                  {/* Textes (Nom et Note) */}
+              <div key={index} className="alerte_dashbord">
+                <div>
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="35px" fill="white">
+                    <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
+                  </svg>
                   <div className="tache_info">
                     <h3>{tache.nom}</h3>
                     <p>{tache.note || "Aucune description"}</p>
                   </div>
                 </div>
-
-                {/* Flèche bleue à droite */}
                 <svg className="arrow_forward" xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px">
                   <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
                 </svg>
@@ -131,9 +127,8 @@ function Dashboard() {
           )}
         </div>
       </div>
-
     </div>
-  )
+  );
 }
 
 export default Dashboard

@@ -38,7 +38,8 @@ if (!$app->checkRole('Proche')) {
         $data['lieu_arr'],
         $data['id_event'],
         $data['aidant_id'] ?? null, // Peut être null
-        $data['societe'] ?? null    // Peut être null
+        $data['societe'] ?? null,    // Peut être null
+        $app->id_famille
     );
 
     echo json_encode([

@@ -21,6 +21,17 @@ class RapportDAO {
         return $stmt->fetchAll();
     }
 
+    public function getAllRapports($id_famille) {
+        $query = "SELECT r.*, p.prenom as auteur 
+                  FROM RAPPORTS r 
+                  JOIN PERSONNES p ON r.id_personne = p.id_personne
+                  WHERE r.id_famille = :id_famille
+                  ORDER BY r.heure DESC";
+        $stmt = $this->dal->prepare($query);
+        $stmt->execute(['id_famille' => $id_famille]);
+        return $stmt->fetchAll();
+    }
+
     public function getDernierRapport($id_famille) {
         $query = "SELECT r.*, p.prenom as auteur 
                   FROM RAPPORTS r 

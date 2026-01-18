@@ -76,12 +76,17 @@ h2 {
   font-size: var(--font-md);
 }
 
+h1, h2, h3 {
+  color: var(--black);
+}
+
 label,
 h3,
 p,
 a,
 li,
-td {
+td,
+strong {
   font-size: var(--font-sm);
 }
 
@@ -498,7 +503,7 @@ button.creer_suivi {
   gap: 1rem;
 }
 
-.acce_suivi .principal_infos {
+:is(.acce_suivi, .notification) .principal_infos {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -507,17 +512,17 @@ button.creer_suivi {
 
 }
 
-.acce_suivi .container_suivi_groupe {
+:is(.acce_suivi, .notification) .container_suivi_groupe {
   border-width: 1px 0 0 0;
   border-color: var(--gray);
   border-style: solid;
 }
 
-.acce_suivi .container_suivi_groupe:last-child {
+:is(.acce_suivi, .notification) .container_suivi_groupe:last-child {
   border-width: 1px 0 1px 0;
 }
 
-.acce_suivi .drop {
+:is(.acce_suivi, .notification) .drop {
   position: relative;
   display: none;
   flex-direction: column;
@@ -526,11 +531,11 @@ button.creer_suivi {
   border-top: 1px solid var(--gray);
 }
 
-.acce_suivi .container_suivi_groupe.open .drop {
+:is(.acce_suivi, .notification) .container_suivi_groupe.open .drop {
   display: flex;
 }
 
-.acce_suivi .drop::before {
+:is(.acce_suivi, .notification) .drop::before {
   background: var(--pink);
   content: '';
   display: block;
@@ -541,16 +546,16 @@ button.creer_suivi {
   left: 0;
 }
 
-.acce_suivi .drop>div {
+:is(.acce_suivi, .notification) .drop > div {
   display: flex;
   gap: 1rem;
 }
 
-.acce_suivi .drop>div button {
+:is(.acce_suivi, .notification) .drop > div button {
   flex-basis: 50%;
 }
 
-.acce_suivi .principal_infos div {
+:is(.acce_suivi, .notification) .principal_infos div {
   display: flex;
 }
 
@@ -574,6 +579,7 @@ button.creer_suivi {
 .contener_report .sort {
   display: flex;
   align-items: center;
+  white-space: nowrap;
 }
 
 .contener_report h1 {
@@ -640,26 +646,25 @@ button.creer_suivi {
   border: 1px solid var(--blue);
   border-radius: 10px;
   background-color: var(--blue);
-  color: var(--white);
   padding: 1rem;
   cursor: pointer;
   overflow: hidden;
 }
 
 .report_case > div:first-child {
-  /* Si tu es dans un parent Flex, ceci est crucial */
-    display: flex;
-    flex-direction: column;
-    min-width: 0; 
-    width: 100%; /* Prend toute la place dispo */
+  display: flex;
+  flex-direction: column;
+  min-width: 0; 
+  width: 100%;
 }
 
 .report_case :is(p, h2) {
-  display: block; /* S'assure que l'élément se comporte comme un bloc */
-  width: 100%;   /* Force l'élément à prendre toute la largeur du parent */
+  display: block;
+  width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: var(--white);
 }
 
 .liste_report {
@@ -995,6 +1000,28 @@ progress.blue_bar::-moz-progress-bar {
   flex-direction: column;
   gap: .5rem;
   width: 45%;
+}
+
+/* slide viewer */
+
+.event_details {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.event_details > div {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.event_details > div:last-child {
+  flex-direction: row;
+}
+
+.event_details > div:last-child button {
+  width: 50%;
 }
 
 /* switch calendar */
@@ -1367,7 +1394,7 @@ progress.blue_bar::-moz-progress-bar {
 
 .accueil,
 .last_report {
-  padding: 3rem;
+  margin: 0 3rem;
 }
 
 .accueil {
@@ -1380,7 +1407,7 @@ progress.blue_bar::-moz-progress-bar {
   padding: 0;
 }
 
-.accueil .list_alerte {
+.accueil :is(.list_alerte, .list_task) {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -1391,31 +1418,57 @@ progress.blue_bar::-moz-progress-bar {
   justify-content: space-between;
   align-items: center;
   gap: 10px;
-  background-color: var(--pink);
   padding: 1rem;
   border-radius: 10px;
-  min-height: 103px;
 }
 
-.accueil .alerte_dashbord > div:first-child {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
+.accueil :is(.list_alerte, .list_task) .alerte_dashbord svg:last-child {
+  width: 7rem;
+  height: 7rem;
 }
 
-.accueil .alerte_dashbord svg:first-child {
-  fill: var(--red);
-  background-color: var(--white);
+.accueil :is(.list_alerte, .list_task) .alerte_dashbord svg:first-child {
   padding: .5rem;
   width: 7rem;
   height: 7rem;
   border-radius: 10px;
 }
 
-.accueil .alerte_dashbord svg:last-child {
+.accueil :is(.list_alerte, .list_task) .alerte_dashbord > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.accueil :is(.list_alerte, .list_task) .alerte_dashbord > div:first-child > div {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.accueil :is(.list_alerte, .list_task) .alerte_dashbord :is(p, h3) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+/* alerte medic */
+
+.accueil .list_alerte .alerte_dashbord {
+  background-color: var(--pink);
+}
+
+.accueil .list_alerte .alerte_dashbord svg:first-child {
+  fill: var(--red);
+  background-color: var(--white);
+}
+
+.accueil .list_alerte .alerte_dashbord > svg:last-child {
   fill: var(--white);
-  width: 7rem;
-  height: 7rem;
 }
 
 .accueil progress {
@@ -1425,34 +1478,23 @@ progress.blue_bar::-moz-progress-bar {
   height: .9rem;
 }
 
-.alerte_dashbord.agenda_card {
-    background-color: var(--white);  
-    border: 2px solid var(--blue);  
-    color: var(--black);
+/*taches */
+
+.accueil .list_task .alerte_dashbord {
+  background-color: var(--white);
+  border: 1px solid var(--blue);
 }
 
-.icon_container_agenda {
-    background-color: #9CB9F2; 
-    border-radius: 12px;
-    width: 65px;
-    height: 65px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+.accueil .list_task .alerte_dashbord svg:first-child {
+  fill: var(--white);
+  background-color: var(--blue);
 }
 
-.icon_container_agenda svg {
-    fill: white !important; 
-    background: none !important;
-    padding: 0 !important;
+.accueil .list_task .alerte_dashbord > svg:last-child {
+  fill: var(--blue);
 }
 
-.arrow_forward {
-    fill: #9CB9F2 !important;
-    width: 45px;
-    height: 45px;
-}
+/* visite */
 
 .last_report {
   display: flex;
@@ -1472,6 +1514,9 @@ progress.blue_bar::-moz-progress-bar {
   background-color: var(--blue);
   border-radius: 10px;
   padding: 1.5rem;
+}
+
+.last_report > div > div:first-child :is(p, h2) {
   color: var(--white);
 }
 
@@ -1494,6 +1539,7 @@ progress.blue_bar::-moz-progress-bar {
 }
 
 .last_report .info_report p {
+  overflow-wrap: anywhere;
   text-align: justify;
 }
 
@@ -1512,18 +1558,19 @@ progress.blue_bar::-moz-progress-bar {
 .audit_log svg {
   width: 2.5rem;
 }
+/**/
 
-.audit_log .filter_group {
+.filter_group {
   position: relative;
 }
 
-.audit_log .filter_group > button {
+.filter_group > button {
   display: flex;
   align-items: center;
   gap: .5rem;
 }
 
-.audit_log .filter_group > div:last-child {
+.filter_group > div:last-child {
   display: none;
   position: absolute;
   background: var(--white);
@@ -1532,22 +1579,33 @@ progress.blue_bar::-moz-progress-bar {
   border-radius: 8px;
 }
 
-.audit_log .filter_group > div:last-child.active {
+.filter_group > div:last-child.active {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.audit_log .filter_group .checkbox {
+/* si checkbox */
+.filter_group .checkbox {
   display: flex;
   align-items: center;
   gap: 1rem;
+  white-space: nowrap;
 }
 
-.audit_log .filter_group:last-child {
-  display: flex;
-  gap: 2rem;
+/* si bouton */
+.filter_group > div:last-child button {
+  white-space: nowrap;
+  border-radius: 8px;
+  padding: .5rem;
 }
+
+.filter_group > div:last-child button.active {
+  background: var(--blue);
+  color: var(--white);
+}
+
+/**/
 
 .audit_log svg.spinning {
   transition: .2s var(--bezier);
@@ -1653,6 +1711,9 @@ progress.blue_bar::-moz-progress-bar {
     margin-bottom: 20px;
     white-space: pre-line;
 }
+.card-body p {
+  overflow-wrap: anywhere;
+}
 
 .card-footer {
     display: flex;
@@ -1691,6 +1752,144 @@ progress.blue_bar::-moz-progress-bar {
 
 .signalement-form > div:last-child button {
     width: 50%;
+}
+
+/* ------------------------------ */
+/* ----------- My DAY ----------- */
+/* ------------------------------ */
+
+.my_day {
+  margin: 0 3rem;
+}
+
+/* ------------------------------ */
+/* ------------ CGU ------------- */
+/* ------------------------------ */
+
+.cgu, 
+.privacy,
+.legal_mention {
+  display: flex;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.cgu > div, 
+.privacy > div,
+.legal_mention > div {
+  padding: 3rem;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+  background-color: var(--white);
+  border-radius: 20px;
+  border: .2px solid var(--gray);
+}
+
+.cgu h2,
+.privacy h2, 
+.legal_mention h2 {
+  padding-bottom: .5rem;
+}
+
+.cgu li,
+.privacy li,
+.legal_mention li {
+  list-style: inside;
+  text-align: justify;
+}
+
+.cgu > div > div,
+.cgu ul,
+.privacy ul,
+.privacy > div > div,
+.legal_mention ul,
+.legal_mention > div > div {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.cgu p, 
+.privacy p, 
+.legal_mention p {
+  text-align: justify;
+}
+
+/* ---------------------------------------- */
+/* ------------ ACCESSIBILITÉ ------------- */
+/* ---------------------------------------- */
+
+.accessibilite {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 20px;
+}
+
+.accessibilite section:nth-child(1) {
+  padding: 15px;
+  border: 2px solid var(--gray);
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--black);
+}
+
+.accessibilite section:nth-child(1) > div {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.accessibilite .viewer_color {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+}
+
+.accessibilite .viewer_color:nth-child(1) {
+  background: var(--blue);
+}
+
+.accessibilite .viewer_color:nth-child(2) {
+  background: var(--pink);
+}
+
+.accessibilite .viewer_color:nth-child(3) {
+  background: var(--red);
+}
+
+.accessibilite section:nth-child(2) > button {
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 8px;
+  border: none;
+  background: var(--blue);
+  color: var(--white);
+  width: 100%;
+}
+
+.accessibilite section:nth-child(3) > div {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.accessibilite section:nth-child(4) select {
+  padding: 10px;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--gray);
+}
+
+
+.notification h2 {
+  margin-bottom: 1.5rem;
+}
+
+.notification .notif_trajet {
+  margin-bottom: 2rem;
 }
 
 /* ----------------------------- */
@@ -1812,7 +2011,7 @@ button:disabled .loading-icon {
   padding: 0 3rem 2rem 3rem;
 }
 
-.role_membre .membre_list>div {
+.role_membre .membre_list > div {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1820,7 +2019,7 @@ button:disabled .loading-icon {
   padding: .5rem 3rem;
 }
 
-.role_membre .membre_list>div:last-child {
+.role_membre .membre_list > div:last-child {
   border-width: 1px 0 1px 0;
   border-color: var(--gray);
   border-style: solid;
@@ -1840,12 +2039,12 @@ button:disabled .loading-icon {
   fill: var(--black);
 }
 
-.form_role_membre>div:last-child {
+.form_role_membre > div:last-child {
   flex-direction: row;
   justify-content: space-between;
 }
 
-.form_role_membre>div:last-child>div:last-child {
+.form_role_membre > div:last-child > div:last-child {
   display: flex;
   gap: 2rem;
 }

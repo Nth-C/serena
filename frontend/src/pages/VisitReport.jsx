@@ -67,11 +67,38 @@ function LastVisitReport() {
   const [openMedicId, setOpenMedicId] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
+  // trie
+  const [sortOpen, setSortOpen] = useState(false);
+  const [sortOrder, setSortOrder] = useState('desc');
+
   const apiUrl = import.meta.env.VITE_API_URL;
 
+  const sortedRapports = [...rapports].sort((a, b) => {
+    // On combine la date et l'heure pour un tri chronologique précis
+    const dateTimeA = new Date(`${a.date}T${a.heure || '00:00:00'}`);
+    const dateTimeB = new Date(`${b.date}T${b.heure || '00:00:00'}`);
+    
+    return sortOrder === 'desc' ? dateTimeB - dateTimeA : dateTimeA - dateTimeB;
+  });
+
+  const sortRapport = (listeRapport) => {
+      const listSort = [...listeRapport].sort((a, b) => {
+          const dateTimeA = new Date(`${a.date}`);
+          const dateTimeB = new Date(`${b.date}`);
+          
+          return sortOrder === 'desc' ? dateTimeB - dateTimeA : dateTimeA - dateTimeB;
+      });
+
+      return listSort
+  }
+
   useEffect(() => {
+    setRapports(sortRapport(rapports))
+  }, [sortOrder]);
+
+  useEffect(() => {
+    fetchRapports()
     setMounted(true);
-    fetchRapports();
   }, []);
 
   const handleResetForm = () => {
@@ -86,9 +113,20 @@ function LastVisitReport() {
       const response = await fetch(`${apiUrl}/?route=rapport/list`, {
         credentials: 'include'
       });
-      const data = await response.json();
-      if (data.error) throw new Error(data.error);
-      setRapports(Array.isArray(data) ? data : []);
+
+      const result = await response.json();
+      
+      if (result.error) throw new Error(result.error);
+      
+      if(result.success) {
+        let data = Array.isArray(result.data) ? result.data : []
+        setRapports(sortRapport(data))
+      } else {
+        alert("Erreur: " + result.error);
+      }
+
+      //setRapports(Array.isArray(data) ? data : []);
+
     } catch (err) {
       console.error("Erreur de chargement:", err);
     } finally {
@@ -156,8 +194,6 @@ function LastVisitReport() {
   };
 
   const handleSearchMedecine = async (e) => { 
-    console.log(e);
-
     // change le controleur appeler en fonction de (créer / modifier)
     const route = 'nommedicament/search';
     
@@ -175,10 +211,8 @@ function LastVisitReport() {
       });
 
       const result = await response.json();
-      console.log(result);
       setListNomMedecine(result.resultats)
       if (result.isUnique) {
-        console.log(result.resultats)
         setListTypeMedecine(result.types)
         setIsNameGood(true)
         
@@ -336,9 +370,23 @@ function LastVisitReport() {
         <div className='container_top'>
           <div>
             <h1>Rapport de visite</h1>
-            <div className='sort'>
-              <img src="/icons/sort.svg" alt="" />
-              <p>Trier par</p>
+            <div className='filter_group'>
+              <button className='sort' onClick={() => setSortOpen(!sortOpen)}>
+                <img src="/icons/sort.svg" alt="" />
+                <p>Trier par</p>
+              </button>
+              <div className={sortOpen ? 'active' : ''}>
+                <button
+                  className={sortOrder === 'desc' ? 'active' : ''}
+                  onClick={() => {setSortOrder('desc') ; setSortOpen(false)}}>
+                    Plus récent
+                </button>
+                <button 
+                  className={sortOrder === 'asc' ? 'active' : ''}
+                  onClick={() => {setSortOrder('asc') ; setSortOpen(false)}}>
+                    Plus ancien
+                </button>
+              </div>
             </div>
           </div>
 
@@ -350,8 +398,8 @@ function LastVisitReport() {
         <div className="liste_report">
           {loading ? (
             <p>Chargement des rapports...</p>
-          ) : rapports.length > 0 ? (
-            rapports.map((rapport) => (
+          ) : sortedRapports.length > 0 ? (
+            sortedRapports.map((rapport) => (
               <div className="report_case" key={rapport.id_rapport} onClick={() => handleOpenDetails(rapport)}>
                 <div>
                   <h2>{rapport.nom || "Nom rapport"}</h2>
@@ -414,7 +462,6 @@ function LastVisitReport() {
       <Slide title={"Ajouter un médicament"} isOpen={isNewMedicineOpen} toggleOpen={toggleNewMedicine} zIndex={700}>
         <form className="new_medecine" onSubmit={handleMedecine}>
 
-
           <div>
             <label>Nom du médicament : </label>
             <input
@@ -429,7 +476,6 @@ function LastVisitReport() {
                 if(e.target.value != ""){
                   handleSearchMedecine(e.target.value);
                 }
-               
               }}
               required
               disabled={isEditing}
@@ -441,14 +487,10 @@ function LastVisitReport() {
             </datalist>
           </div>
 
-
-
-
           <div>
             <label>Type de médicament : </label>
             <select value={idCatalogueMedecine} onChange={(e) => {
               setIdCatalogueMedecine(e.target.value)
-
             }}
               required
               disabled={!isNameGood}>
@@ -460,7 +502,6 @@ function LastVisitReport() {
               ))}
             </select>
           </div>
-
 
          <div>
             <label>Stock initiale du médicament : </label>
