@@ -18,6 +18,8 @@
 }
 
 .menu .main_container {
+    display: flex;
+    flex-direction: column;
     position: fixed;
     z-index: 100;
     top: 0;
@@ -27,6 +29,7 @@
     background-color: var(--white);
     border-radius: 0 15px 15px 0;
     padding-right: 15px;
+    overflow: scroll;
 }
 
 .menu .hamburger_btn {
@@ -63,11 +66,6 @@
 
 .menu .hamburger_btn span:nth-child(2) {
     transform: translate(-50%, -50%) rotate(-45deg);
-}
-
-.menu .main_container {
-    display: flex;
-    flex-direction: column;
 }
 
 .menu .logout_container {

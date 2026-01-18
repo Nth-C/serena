@@ -53,6 +53,10 @@
     height: 100%;
 }
 
+.pop_up_date h2 {
+    color: var(--white);
+}
+
 /* date picker */
 
 /* cacher les jour qui ne sont pas dans le mois */

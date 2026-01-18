@@ -62,7 +62,8 @@ img {
 }
 
 .content {
-  width: 100%;
+  flex-grow: 1; /* Prend tout l'espace restant */
+  min-width: 0; /* CRUCIAL : permet au contenu de rétrécir si un mot est trop long */
   min-height: 100vh;
   padding-bottom: 15rem;
 }
@@ -755,12 +756,17 @@ button.add_medi {
 
 .details_report h2 {
   padding-bottom: 2%;
+  overflow-wrap: anywhere;
 }
 
 .details_report div:last-child {
   display: flex;
   flex-direction: row;
   gap: 15px;
+}
+
+.details_report p{
+  overflow-wrap: anywhere;
 }
 
 .details_report div:last-child button {
@@ -779,7 +785,6 @@ button.add_medi {
   justify-content: space-between;
   padding: 0.5rem 3rem;
   cursor: pointer;
-
 }
 
 .popup_report_add_medicament .container_medecine {
@@ -839,6 +844,16 @@ button.add_medi {
 
 .popup_report_add_medicament .add_medi button {
   width: 100%;
+}
+
+/* Tablettes (écrans > 768px) */
+@media (min-width: 768px) {
+
+}
+
+/* Desktops (écrans > 1024px) */
+@media (min-width: 1024px) {
+
 }
 
 /* -------------------------------- */
@@ -966,7 +981,7 @@ progress.blue_bar::-moz-progress-bar {
   gap: 2rem;
 }
 
-.agenda .container_date>button:first-child {
+.agenda .container_date > button:first-child {
   display: flex;
   gap: .5rem;
   cursor: pointer;
@@ -976,7 +991,7 @@ progress.blue_bar::-moz-progress-bar {
   padding: 0;
 }
 
-.agenda .container_date>button:first-child img {
+.agenda .container_date > button:first-child img {
   width: 1.5rem;
 }
 
@@ -1162,7 +1177,7 @@ progress.blue_bar::-moz-progress-bar {
   width: 100%;
   border: 1px dashed var(--black);
   border-radius: 10px;
-  color: slategray;
+  color: var(--gray);
   cursor: pointer;
 }
 
@@ -1215,6 +1230,18 @@ progress.blue_bar::-moz-progress-bar {
 
 .new_categorie div:last-child button {
   flex-basis: 50%;
+}
+
+/* Tablettes (écrans > 768px) */
+@media (min-width: 768px) {
+  .file_explorer {
+    width: 100%;
+  }
+}
+
+/* Desktops (écrans > 1024px) */
+@media (min-width: 1024px) {
+
 }
 
 /* ----------------------------- */
@@ -1454,6 +1481,7 @@ progress.blue_bar::-moz-progress-bar {
   overflow: hidden;
   text-overflow: ellipsis;
   width: 100%;
+  color: var(--black);
 }
 
 /* alerte medic */
@@ -1476,6 +1504,7 @@ progress.blue_bar::-moz-progress-bar {
   background-color: var(--white);
   border-radius: 50rem;
   height: .9rem;
+  width: 50%;
 }
 
 /*taches */
@@ -1541,6 +1570,28 @@ progress.blue_bar::-moz-progress-bar {
 .last_report .info_report p {
   overflow-wrap: anywhere;
   text-align: justify;
+}
+
+/* Tablettes (écrans > 768px) */
+@media (min-width: 768px) {
+  .accueil {
+    flex-direction: row;
+    flex-wrap: wrap
+  }
+
+  .accueil > div {
+    width: 45%;
+  }
+
+  .my_day {
+    width: 50%;
+
+  }
+}
+
+/* Desktops (écrans > 1024px) */
+@media (min-width: 1024px) {
+
 }
 
 /* ---------------------------- */
