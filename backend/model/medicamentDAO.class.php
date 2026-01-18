@@ -37,10 +37,15 @@ class MedicamentDAO {
     }
 
     public function getAllMedicamentsUrgent($id_famille): array {
+    // On utilise une clause WHERE avec une condition logique (OR)
     $query = 'SELECT * FROM STOCK_MEDICS 
               INNER JOIN CAT_MEDICS ON CAT_MEDICS.id_medics = STOCK_MEDICS.id_cat_medicament
               WHERE id_famille = :id_famille 
-              AND quantite <= 3';
+              AND (
+                  (total >= 10 AND quantite <= (total * 0.1)) -- Règle des 10%
+                  OR 
+                  (total < 10 AND quantite <= 1) -- Règle du 1 restant
+              )';
               
     $stmt = $this->dal->prepare($query);
     $stmt->execute(['id_famille' => $id_famille]);
