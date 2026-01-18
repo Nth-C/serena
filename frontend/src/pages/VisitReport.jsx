@@ -4,6 +4,8 @@ import Slide from '../components/slide/Slide';
 import PopUpDelete from '../components/popup_delete/PopUpDelete'
 import PopUpConfirmation from '../components/popup_confirmation/PopUpConfirmation'
 
+import { ROLES, hasPermission } from './../utils/roleManager';
+
 function MedicItem({ medicament, isOpen, onToggle, onAdd }) {
   return (
     <div className={`container_medecine ${isOpen ? 'open' : ''}`}>
@@ -439,9 +441,11 @@ function LastVisitReport() {
                 <p>Trier par</p>
               </div>*/}
             </div>
+            {hasPermission("Famille") && (
             <div className="add_medi">
               <button onClick={toggleNewMedicine} className="btn_blue">Ajouter un nouveau médicament</button>
             </div>
+            )}
             <div className="list">
 
               {listMedecine.map((med) => (

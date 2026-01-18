@@ -8,7 +8,7 @@ require_once(__DIR__ . '/../app.php');
 $app = new App();
 
 
-if (!$app->checkRole('Famille')) {
+if (!$app->checkRole('Professionelle')) {
     header('HTTP/1.1 403 Forbidden');
     echo json_encode([
         'success' => false, 
