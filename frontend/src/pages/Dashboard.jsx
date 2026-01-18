@@ -44,6 +44,12 @@ function Dashboard() {
     return 0
   }
 
+  const getProchaineTache = () => {
+    if (!taches || taches.length === 0) return null;
+    // Retourne la première tâche (supposée être déjà triée par date)
+    return taches[0];
+  }
+
   return (
     <div className="accueil">
       
@@ -105,25 +111,23 @@ function Dashboard() {
       <div>
         <h1>Prochaines tâches</h1>
         <div className="list_task">
-          {taches && taches.length > 0 ? (
-            taches.map((tache, index) => (
-              <NavLink key={index} to={`/agenda`}>
-                <div className="alerte_dashbord">
-                  <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="35px" fill="white">
-                      <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
-                    </svg>
-                    <div className="tache_info">
-                      <h3>{tache.nom}</h3>
-                      <p>{tache.note || "Aucune description"}</p>
-                    </div>
-                  </div>
-                  <svg className="arrow_forward" xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px">
-                    <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
+          {getProchaineTache() ? (
+            <NavLink to={`/agenda`} style={{ textDecoration: 'none', color: 'inherit' }}>
+              <div className="alerte_dashbord">
+                <div>
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="35px" fill="white">
+                    <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
                   </svg>
+                  <div className="tache_info">
+                    <h3>{getProchaineTache().nom}</h3>
+                    <p>{getProchaineTache().note || "Aucune description"}</p>
+                  </div>
                 </div>
-              </NavLink>
-            ))
+                <svg className="arrow_forward" xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px">
+                  <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
+                </svg>
+              </div>
+            </NavLink>
           ) : (
             <p className="aucun">Aucune tâche prévue prochainement</p>
           )}
