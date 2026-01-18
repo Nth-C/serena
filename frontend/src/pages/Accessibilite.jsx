@@ -68,7 +68,7 @@ const Accessibilite = () => {
                 </section>
 
                 {/* TEXTE */}
-                <section>
+                <section className='text_size'>
                     <h3>Taille du texte</h3>
                     <div>
                         <button onClick={() => setFontSizeBase(prev => Math.max(0.7, prev - 0.1))}>A-</button>
