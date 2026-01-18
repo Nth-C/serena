@@ -18,6 +18,7 @@ $route = $_GET['route'] ?? '';
 const _ROUTES = array(
   'evenement/add' => 'addEvenement',
   'evenement/delete' => 'deleteEvenement',
+  'evenement/update' => 'updateEvenement',
   'medicament/list' => 'viewMedicament',
   'medicament/add' => 'addMedicament',
   'medicament/delete' => 'deleteMedicament',

@@ -34,6 +34,9 @@ function Agenda() {
     id: null,
     title: null,
   })
+
+  // edit mode
+  const [isEditMode, setIsEditMode] = useState(false)
   
   const apiUrl = import.meta.env.VITE_API_URL
 
@@ -142,6 +145,45 @@ function Agenda() {
       } catch (error) {
           console.error("Erreur réseau Event:", error);
       }
+  };
+
+  const handleUpdateEvent = async (e) => {
+    if (e) e.preventDefault();
+
+    const payload = {
+        id_event: currentEvent.id_event,
+        titre: formData.titre,
+        lieu: formData.lieu,
+        accompagnants: formData.accompagnants,
+        debut: formData.debut,
+        fin: formData.fin,
+        recurrence: formData.recurrence,
+        description: formData.description
+    };
+
+    Object.keys(payload).forEach(key => {
+        if (payload[key] === '') payload[key] = null;
+    });
+
+    try {
+        const response = await fetch(`${apiUrl}/?route=evenement/update`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: 'include',
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            handleSuccess('Événement modifié avec succès !');
+            setIsEditMode(false);
+        } else {
+            console.error('Erreur lors de la modification de l\'événement', result.error);
+        }
+    } catch (error) {
+        console.error("Erreur réseau Update:", error);
+    }
   };
 
   const handleRemoveEvent = async (e) => {
@@ -522,9 +564,12 @@ function Agenda() {
     <Slide
         title={currentEvent ? currentEvent.titre : "Détails"}
         isOpen={eventOpen}
-        toggleOpen={() => setEventOpen(false)}
+        toggleOpen={() => {
+          setEventOpen(false)
+          setIsEditMode(false)
+        }}
     >
-        {currentEvent && (
+        {currentEvent && !isEditMode ? (
             <div className='event_details'>
                 <div className='detail_item'>
                     <strong>Lieu:</strong>
@@ -551,15 +596,94 @@ function Agenda() {
                 )}
 
                 <div className='actions'>
+                    <button className="btn_blue" onClick={() => {
+                      setFormData({
+                        titre: currentEvent.titre,
+                        lieu: currentEvent.lieu || '',
+                        accompagnants: '',
+                        debut: currentEvent.dateStart.toISOString().slice(0, 16),
+                        fin: currentEvent.dateEnd.toISOString().slice(0, 16),
+                        recurrence: '',
+                        description: currentEvent.description || '',
+                        effectue: 'aidant',
+                        societe: '',
+                        lieuDepart: '',
+                        lieuArrivee: '',
+                        id_event: ''
+                      })
+                      setIsEditMode(true)
+                    }}>Modifier</button>
                     <button className="btn_red" onClick={() => {
                       setPopUpDeleteOpen(true)
-                      setEventToDelete({id: currentEvent.id_event, title: currentEvent.title})
+                      setEventToDelete({id: currentEvent.id_event, title: currentEvent.titre})
                       setEventOpen(false)
                     }}>Supprimer</button>
                     <button className="btn_border" onClick={() => setEventOpen(false)}>Fermer</button>
                 </div>
             </div>
-        )}
+        ) : currentEvent && isEditMode ? (
+            <form className='edit_event' onSubmit={handleUpdateEvent}>
+              <div>
+                <label>Titre :</label>
+                <input 
+                  type="text" name="titre" placeholder="Ex: Rendez-vous médical"
+                  value={formData.titre} onChange={handleChange} required 
+                />
+              </div>
+
+              <div>
+                <label>Lieu :</label>
+                <input 
+                  type="text" name="lieu" placeholder="Ex: 67 Rue du Skibidi"
+                  value={formData.lieu} onChange={handleChange} 
+                />
+              </div>
+
+              <div>
+                <label>Accompagnants :</label>
+                <select name="accompagnants" value={formData.accompagnants} onChange={handleChange}>
+                  <option value="">-- Choisir un accompagnant --</option>
+                  {membresFamille.map((personne) => (
+                      <option key={personne.id} value={personne.id}>
+                          {personne.prenom} {personne.nom}
+                      </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="date-row">
+                <div>
+                  <label>Début :</label>
+                  <input type="datetime-local" name="debut" value={formData.debut} onChange={handleChange} required />
+                </div>
+                <div>
+                  <label>Fin :</label>
+                  <input type="datetime-local" name="fin" value={formData.fin} onChange={handleChange} required />
+                </div>
+              </div>
+
+              <div>
+                <label>Récurrence :</label>
+                <select name="recurrence" value={formData.recurrence} onChange={handleChange}>
+                  <option value="">Aucune</option>
+                  <option value="hebdo">Hebdomadaire</option>
+                  <option value="mensuel">Mensuel</option>
+                </select>
+              </div>
+
+              <div>
+                <label>Notes :</label>
+                <textarea name="description" value={formData.description} onChange={handleChange} />
+              </div>
+
+              <div>
+                  <button type='button' className='btn_border' onClick={() => {
+                    setIsEditMode(false)
+                  }}>Annuler</button>
+                  <button type='submit' className='btn_blue'>Valider</button>
+              </div>
+           </form>
+        ) : null}
     </Slide>
 
     <PopUpConfirmation

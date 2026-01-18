@@ -111,6 +111,21 @@ class EvenementDAO{
         return $evenements;
     }
 
+    public function updateEvenement($id_event, $nom, $debut, $fin, $lieu, $description): bool {
+    $query = 'UPDATE EVENEMENTS 
+              SET nom = :nom, date_deb = :date_deb, date_fin = :date_fin, lieu = :lieu, note = :note 
+              WHERE id_event = :id_event';
+    $stmt = $this->dal->prepare($query);
+
+    return $stmt->execute([
+        'nom' => $nom, 
+        'date_deb' => $debut, 
+        'date_fin' => $fin, 
+        'lieu' => $lieu, 
+        'note' => $description, 
+        'id_event' => $id_event
+    ]);
+}
     
 
 }

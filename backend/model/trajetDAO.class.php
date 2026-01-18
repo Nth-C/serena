@@ -130,25 +130,84 @@ class TrajetDAO {
 
 
     public function getAllDemandeDeTrajet(string $id_famille): array
-{
-    // On cherche les trajets liés aux événements de la famille
-    // Mais on exclut ceux qui sont déjà présents dans la table EFFECTUE
-    $query = "SELECT t.* FROM TRAJET t
-              JOIN EVENEMENTS e ON t.id_event = e.id_event
-              WHERE e.id_famille = :id_famille
-              AND t.id_trajet NOT IN (SELECT id_trajet FROM EFFECTUE)";
+    {
+        // On cherche les trajets liés aux événements de la famille
+        // Mais on exclut ceux qui sont déjà présents dans la table EFFECTUE
+        $query = "SELECT t.* FROM TRAJET t
+                JOIN EVENEMENTS e ON t.id_event = e.id_event
+                WHERE e.id_famille = :id_famille
+                AND t.id_trajet NOT IN (SELECT id_trajet FROM EFFECTUE)";
 
-    try {
-        $stmt = $this->dal->prepare($query);
-        $stmt->execute([':id_famille' => $id_famille]);
-        
-        // On récupère toutes les lignes
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        // En cas d'erreur, on retourne un tableau vide
-        return [];
+        try {
+            $stmt = $this->dal->prepare($query);
+            $stmt->execute([':id_famille' => $id_famille]);
+            
+            // On récupère toutes les lignes
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            // En cas d'erreur, on retourne un tableau vide
+            return [];
+        }
     }
-}
+
+    public function updateTrajet($id_event, $date_deb, $date_fin, $lieu_dep, $lieu_arr, $nom_societe) {
+        try {
+            $this->dal->beginTransaction();
+
+            // 1. Mise à jour des informations de base du trajet lié à l'événement
+            $query = "UPDATE TRAJET 
+                    SET date_deb = :date_deb, date_fin = :date_fin, lieu_dep = :lieu_dep, lieu_arr = :lieu_arr 
+                    WHERE id_event = :id_event 
+                    RETURNING id_trajet";
+            
+            $stmt = $this->dal->prepare($query);
+            $stmt->execute([
+                ':date_deb' => $date_deb,
+                ':date_fin' => $date_fin,
+                ':lieu_dep' => $lieu_dep,
+                ':lieu_arr' => $lieu_arr,
+                ':id_event' => $id_event
+            ]);
+
+            $result = $stmt->fetch();
+            
+            // Si un trajet existe et qu'une société est mentionnée, on met à jour la liaison
+            if ($result && !empty($nom_societe)) {
+                $id_trajet = $result['id_trajet'];
+
+                // Vérifier/Créer la société (logique identique à addTrajet)
+                $qSocCheck = "SELECT id_societe FROM SOCIETES WHERE nom = :nom";
+                $stmtCheck = $this->dal->prepare($qSocCheck);
+                $stmtCheck->execute([':nom' => $nom_societe]);
+                $socRes = $stmtCheck->fetch();
+
+                $id_societe = $socRes ? $socRes['id_societe'] : null;
+
+                if (!$id_societe) {
+                    $qSocCreate = "INSERT INTO SOCIETES (nom, adresse) VALUES (:nom, 'Non spécifiée') RETURNING id_societe";
+                    $stmtCreate = $this->dal->prepare($qSocCreate);
+                    $stmtCreate->execute([':nom' => $nom_societe]);
+                    $socNew = $stmtCreate->fetch();
+                    $id_societe = $socNew['id_societe'];
+                }
+
+                // Mise à jour ou insertion dans la table CHARGE
+                $qCharge = "INSERT INTO CHARGE (id_trajet, id_societe) 
+                            VALUES (:id_trajet, :id_societe) 
+                            ON CONFLICT (id_trajet) DO UPDATE SET id_societe = EXCLUDED.id_societe";
+                $stmtCharge = $this->dal->prepare($qCharge);
+                $stmtCharge->execute([
+                    ':id_trajet' => $id_trajet,
+                    ':id_societe' => $id_societe
+                ]);
+            }
+
+            return $this->dal->commit();
+        } catch (Exception $e) {
+            $this->dal->rollBack();
+            throw $e; 
+        }
+    }
     
 }
 ?>
