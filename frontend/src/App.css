@@ -1543,7 +1543,7 @@ progress.blue_bar::-moz-progress-bar {
   padding: 0;
 }
 
-.accueil :is(.list_alerte, .list_task) {
+.accueil :is(.list_alerte, .list_task, .list_trajet) {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -1558,19 +1558,19 @@ progress.blue_bar::-moz-progress-bar {
   border-radius: 10px;
 }
 
-.accueil :is(.list_alerte, .list_task) .alerte_dashbord svg:last-child {
+.accueil :is(.list_alerte, .list_task, .list_trajet) .alerte_dashbord svg:last-child {
   width: 7rem;
   height: 7rem;
 }
 
-.accueil :is(.list_alerte, .list_task) .alerte_dashbord svg:first-child {
+.accueil :is(.list_alerte, .list_task, .list_trajet) .alerte_dashbord svg:first-child {
   padding: .5rem;
   width: 7rem;
   height: 7rem;
   border-radius: 10px;
 }
 
-.accueil :is(.list_alerte, .list_task) .alerte_dashbord > div:first-child {
+.accueil :is(.list_alerte, .list_task, .list_trajet) .alerte_dashbord > div:first-child {
   display: flex;
   align-items: center;
   gap: 1.5rem;
@@ -1578,7 +1578,7 @@ progress.blue_bar::-moz-progress-bar {
   min-width: 0;
 }
 
-.accueil :is(.list_alerte, .list_task) .alerte_dashbord > div:first-child > div {
+.accueil :is(.list_alerte, .list_task, .list_trajet) .alerte_dashbord > div:first-child > div {
   flex: 1;
   min-width: 0;
   display: flex;
@@ -1593,10 +1593,30 @@ progress.blue_bar::-moz-progress-bar {
   color: var(--black);
 }
 
+/* alerte trajet */
+
+.accueil .list_trajet .alerte_dashbord {
+  background-color: var(--blue);
+}
+
+.accueil .list_trajet .alerte_dashbord svg:first-child {
+  fill: var(--blue);
+  background-color: var(--white);
+}
+
+.accueil .list_trajet .alerte_dashbord > svg:last-child {
+  fill: var(--white);
+}
+
+.accueil .list_trajet :is(h3, p) {
+  color: var(--white);
+}
+
+
 /* alerte medic */
 
 .accueil .list_alerte .alerte_dashbord {
-  background-color: #F6CAC9;
+  background-color: var(--pink);
 }
 
 .accueil .list_alerte .alerte_dashbord svg:first-child {
