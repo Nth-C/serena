@@ -39,6 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 // 5. Protection CSRF (qui va démarrer la session via csrf_ensure_session_started)
-require_once __DIR__ . '/csrf_guard.php';
+require_once __DIR__ . '/csrf.php';
 
 csrf_validate_request();

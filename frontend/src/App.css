@@ -379,6 +379,14 @@ input::placeholder {
   z-index: -1;
 }
 
+.add_famille > div:last-child {
+  flex-direction: row;
+}
+
+.add_famille > div:last-child button {
+  width: 50%;
+}
+
 /* ----------------------------- */
 /* ----------- LOGIN ----------- */
 /* ----------------------------- */
@@ -1000,12 +1008,12 @@ progress.blue_bar::-moz-progress-bar {
 
 /* add medicament */
 
-.new_medecine>div:last-child {
+.new_medecine > div:last-child {
   flex-direction: row;
   gap: 1rem;
 }
 
-.new_medecine>div:last-child button {
+.new_medecine > div:last-child button {
   flex-basis: 50%;
 }
 
@@ -1020,9 +1028,10 @@ progress.blue_bar::-moz-progress-bar {
 .agenda .container_date {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 2rem;
+  margin-bottom: 2rem;
 }
 
 .agenda .container_date > button:first-child {
@@ -1086,7 +1095,6 @@ progress.blue_bar::-moz-progress-bar {
 /* switch calendar */
 
 :is(.switch_event, .switch_calendar) {
-  margin-bottom: 2rem;
   border-radius: 8px;
   flex-grow: 1;
 }

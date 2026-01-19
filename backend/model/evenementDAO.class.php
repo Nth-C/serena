@@ -6,10 +6,10 @@ class EvenementDAO{
 
     private DAL $dal;
 
-    public function __construct()
-    {
-        $this->dal = DAL::get();
-    }
+public function __construct(?DAL $dal = null) {
+    // Si on passe une $dal (test), on l'utilise. Sinon, on prend la vraie (prod).
+    $this->dal = $dal ?? DAL::get();
+}
 
     public function findById(string $id): ?Evenement
     {

@@ -1,24 +1,35 @@
-  GNU nano 7.2                                            .htaccess
 RewriteEngine On
 RewriteBase /
 
-RewriteCond %{REQUEST_URI} ^/backend/ [NC]
-RewriteRule .* - [L]
+# 1. Empêcher le listage des répertoires
 Options -Indexes
+
+# 2. Sécurité : Forcer le HTTPS (souvent nécessaire sur Alwaysdata)
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# 3. ROUTAGE BACKEND (PHP)
+# Si l'URL commence par /backend ou s'il s'agit d'une route API connue
+# On redirige vers votre index.php backend
+RewriteCond %{REQUEST_URI} ^/(backend|api|home) [NC]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [L]
+
+# 4. ROUTAGE FRONTEND (React)
+# Pour toutes les autres routes, si le fichier n'existe pas, on sert le Frontend
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.html [L]
+
 <IfModule mod_headers.c>
-    # Empêche d'être affiché dans une iFrame (protection Clickjacking)
+    # Protection Clickjacking
     Header always set X-Frame-Options "SAMEORIGIN"
-
-    # Bloque le chargement de scripts si type MIME est incorrect (protection XSS)
+    # Protection MIME type (évite l'erreur 'Unexpected token export')
     Header always set X-Content-Type-Options "nosniff"
-
-    # Active la protection XSS intégrée aux navigateurs
+    # Protection XSS
     Header always set X-XSS-Protection "1; mode=block"
-
-    #Force le HTTPS strict pendant 1 an
+    # HSTS
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 </IfModule>
-

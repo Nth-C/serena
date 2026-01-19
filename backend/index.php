@@ -52,6 +52,7 @@ const _ROUTES = array(
   'document/delete' => 'deleteDocument',
   'categorie/add' => 'addCategorie',
   'categorie/update' => 'updateCategorie',
+  'categorie/delete' => 'deleteCategorie',
   'getfamillepersonne' => 'getfamillepersonne',
   'rolepersonne/update' => 'updateRolePersonne',
   'getevents' => 'getEvents',
