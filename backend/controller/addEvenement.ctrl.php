@@ -46,6 +46,10 @@ try {
         default:             $interval = '';         break;
     }
 
+    if($nbRecurrence >= 100){
+        $nbRecurrence = 100;
+    }
+
     for ($i = 0; $i < $nbRecurrence; $i++) {
         // Insertion de l'événement
         $newIdEvent = $modelEv->addEvenement(

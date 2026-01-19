@@ -264,7 +264,8 @@ function Agenda() {
       accompagnants: '',
       debut: '',
       fin: '',
-      recurrence: '',
+      recurrence: 'aucune',
+      nbRecurrence: 1,
       description: ''
     }));
   };
