@@ -2,6 +2,8 @@
 require_once(__DIR__ . '/../model/SecurityDAO.class.php');
 require_once(__DIR__ . '/../model/personneDAO.class.php');
 require_once(__DIR__ . '/../app.php');
+require_once(__DIR__ . '/../csrf.php');
+
 
 header('Content-Type: application/json');
 
