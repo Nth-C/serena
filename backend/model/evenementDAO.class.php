@@ -47,11 +47,23 @@ class EvenementDAO{
     }
 
     
-    public function addEvenement($id_famille,$nom, $debut, $fin, $lieu, $description): bool {
-        $query = 'INSERT INTO EVENEMENTS (nom,date_deb, date_fin, lieu ,note ,id_famille) VALUES (:nom, :date_deb, :date_fin, :lieu, :note, :id_famille)';
+    public function addEvenement($id_famille, $nom, $debut, $fin, $lieu, $description) {
+        $query = 'INSERT INTO EVENEMENTS (id_famille, nom, date_deb, date_fin, lieu, note) 
+                VALUES (:id_f, :nom, :deb, :fin, :lieu, :note) 
+                RETURNING id_event';
+        
         $stmt = $this->dal->prepare($query);
+        $stmt->execute([
+            'id_f'   => $id_famille,
+            'nom'    => $nom,
+            'deb'    => $debut,
+            'fin'    => $fin,
+            'lieu'   => $lieu,
+            'note'   => $description
+        ]);
 
-        return $stmt->execute(['nom' => $nom, 'date_deb' => $debut, 'date_fin' => $fin, 'lieu' => $lieu, 'note' => $description, 'id_famille' => $id_famille]);
+        $result = $stmt->fetch();
+        return $result ? $result['id_event'] : false;
     }
 
     public function deleteEvenement($id_famille, $id_evenement): bool {
@@ -112,22 +124,29 @@ class EvenementDAO{
     }
 
     public function updateEvenement($id_event, $nom, $debut, $fin, $lieu, $description): bool {
-    $query = 'UPDATE EVENEMENTS 
-              SET nom = :nom, date_deb = :date_deb, date_fin = :date_fin, lieu = :lieu, note = :note 
-              WHERE id_event = :id_event';
-    $stmt = $this->dal->prepare($query);
+        $query = 'UPDATE EVENEMENTS 
+                SET nom = :nom, date_deb = :date_deb, date_fin = :date_fin, lieu = :lieu, note = :note 
+                WHERE id_event = :id_event';
+        $stmt = $this->dal->prepare($query);
 
-    return $stmt->execute([
-        'nom' => $nom, 
-        'date_deb' => $debut, 
-        'date_fin' => $fin, 
-        'lieu' => $lieu, 
-        'note' => $description, 
-        'id_event' => $id_event
-    ]);
-}
-    
+        return $stmt->execute([
+            'nom' => $nom, 
+            'date_deb' => $debut, 
+            'date_fin' => $fin, 
+            'lieu' => $lieu, 
+            'note' => $description, 
+            'id_event' => $id_event
+        ]);
+    }
 
+    public function addAccompagnant($id_event, $id_personne){
+        $query = 'INSERT INTO accompagne(id_personne, id_event) VALUES (:id_personne, :id_event)';
+        $stmt = $this->dal->prepare($query);
+        return $stmt->execute([
+            'id_personne' => $id_personne,
+            'id_event' => $id_event
+        ]);
+    }
 }
 
 ?>
