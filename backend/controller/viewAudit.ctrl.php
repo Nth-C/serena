@@ -1,61 +1,42 @@
 <?php
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-header("Access-Control-Allow-Origin: $origin");
-header("Access-Control-Allow-Credentials: true");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
-header("Content-Type: application/json");
+require_once(__DIR__ . '/../app.php');
+require_once(__DIR__ . '/../model/auditDAO.class.php');
+
+header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
     exit();
 }
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_set_cookie_params([
-        'lifetime' => 0,
-        'path' => '/',
-        'domain' => '', 
-        'secure' => false, 
-        'httponly' => true,
-        'samesite' => 'Lax' 
-    ]);
-}
-
-require_once(__DIR__ . '/../app.php');
-require_once('model/auditDAO.class.php');
-
 $app = new App();
 
-
 if (!$app->connected) {
-    echo json_encode(['error' => 'Utilisateur non connecté']);
+    http_response_code(401);
+    echo json_encode(['success' => false, 'error' => 'Utilisateur non connecté']);
     exit();
 }
 
 if (empty($app->id_famille)) {
-    echo json_encode(['error' => 'Aucune famille associée à ce compte']);
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => 'Aucune famille active']);
     exit();
 }
 
 if (!$app->checkRole('Famille')) {
-    header('HTTP/1.1 403 Forbidden');
-    echo json_encode([
-        'success' => false, 
-        'message' => 'Erreur : Vous devez être un proche de la famille pour faire ça.'
-    ]);
+    http_response_code(403);
+    echo json_encode(['success' => false, 'error' => 'Droits insuffisants']);
     exit; 
 }
 
 try {
-    $auditDAO = new auditDAO();
-    
+    $auditDAO = new AuditDAO();
     $historique = $auditDAO->getAllAudit($app->id_famille);
     
     echo json_encode($historique ?: []);
 
 } catch (Exception $e) {
     http_response_code(500);
-    echo json_encode(['error' => $e->getMessage()]);
+    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }
-?>
+
+exit();

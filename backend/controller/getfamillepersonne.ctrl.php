@@ -1,11 +1,10 @@
 <?php
-// On inclut le DAO Famille car c'est lui qui gère les personnes de la famille
 require_once(__DIR__ . '/../model/famille.class.php'); 
 require_once(__DIR__ . '/../model/familleDAO.class.php');
 require_once(__DIR__ . '/../model/personne.class.php');
 require_once(__DIR__ . '/../app.php');
 
-header("Access-Control-Allow-Methods: GET, OPTIONS");
+header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
@@ -13,20 +12,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 $app = new App();
 
+if (!$app->connected || !$app->personne) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'error' => 'Non connecté']);
+    exit;
+}
+
 try {
-    // Vérification de sécurité : l'utilisateur doit avoir une famille
     if (empty($app->id_famille)) {
-        throw new Exception("Aucune famille identifiée pour cet utilisateur.");
+        http_response_code(400);
+        throw new Exception("Aucune famille identifiée.");
     }
 
     $dao = new FamilleDAO();
-    
-    // On utilise la méthode que tu as déjà codée dans FamilleDAO !
-    // Elle retourne un tableau d'objets Personne
     $membres = $dao->getPersFam($app->id_famille);
-
-    // On prépare les données pour React (on ne garde que l'utile)
-    
 
     echo json_encode([
         "success" => true,
@@ -34,9 +33,11 @@ try {
     ]);
 
 } catch (Exception $e) {
-    http_response_code(500); // Erreur serveur
+    http_response_code(500);
     echo json_encode([
         "success" => false, 
         "error" => $e->getMessage()
     ]);
 }
+
+exit();

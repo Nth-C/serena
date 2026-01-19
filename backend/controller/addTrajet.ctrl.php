@@ -1,6 +1,8 @@
 <?php
-require_once('model/trajetDAO.class.php');
+require_once(__DIR__ . '/../model/trajetDAO.class.php');
 require_once(__DIR__ . '/../app.php');
+
+header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
@@ -9,40 +11,56 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 $app = new App();
 
 if (!$app->checkRole('Proche')) {
-    header('HTTP/1.1 403 Forbidden');
+    http_response_code(403);
     echo json_encode([
         'success' => false, 
-        'message' => 'Erreur : Vous devez avoir au moins le role de Proche pour faire ça.'
+        'error' => 'Accès refusé.'
     ]);
     exit; 
 }
 
-    // 1. Récupération du JSON
-    $json = file_get_contents('php://input');
-    $data = json_decode($json, true);
+$json = file_get_contents('php://input');
+$data = json_decode($json, true);
 
-    // 2. Vérification des champs obligatoires
-    // Note : Selon ton JS, date_deb, lieux et id_event sont le minimum requis
-    if (empty($data['lieu_dep']) || empty($data['lieu_arr']) || empty($data['id_event']) || empty($data['date_deb'])) {
-        throw new Exception("Données manquantes (lieux, date ou événement lié).");
-    }
+$lieu_dep = filter_var($data['lieu_dep'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
+$lieu_arr = filter_var($data['lieu_arr'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
+$id_event = filter_var($data['id_event'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
+$date_deb = $data['date_deb'] ?? null;
+$date_fin = $data['date_fin'] ?? $date_deb;
+$societe  = filter_var($data['societe'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
+$aidant_id = $data['aidant_id'] ?? null;
 
+if (!empty($lieu_dep) && !empty($lieu_arr) && !empty($id_event) && !empty($date_deb) && $app->id_famille) {
     $model = new TrajetDAO();
+    
+    try {
+        $success = $model->addTrajet(
+            $date_deb,
+            $date_fin,
+            $lieu_dep,
+            $lieu_arr,
+            $id_event,
+            $aidant_id,
+            $societe,
+            $app->id_famille
+        );
 
-    // 3. Appel de la méthode
-    // On utilise l'opérateur "null coalescing" (??) pour gérer les champs optionnels
-    $success = $model->addTrajet(
-        $data['date_deb'],
-        $data['date_fin'] ?? $data['date_deb'], // Si fin vide, on utilise début
-        $data['lieu_dep'],
-        $data['lieu_arr'],
-        $data['id_event'],
-        $data['aidant_id'] ?? null, // Peut être null
-        $data['societe'] ?? null,    // Peut être null
-        $app->id_famille
-    );
-
+        echo json_encode([
+            "success" => $success
+        ]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode([
+            "success" => false,
+            "error" => $e->getMessage()
+        ]);
+    }
+} else {
+    http_response_code(400);
     echo json_encode([
-        "success" => $success,
+        "success" => false,
+        "error" => "Données manquantes"
     ]);
+}
 
+exit();

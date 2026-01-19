@@ -2,32 +2,59 @@
 require_once(__DIR__ . '/../model/familleDAO.class.php');
 require_once(__DIR__ . '/../app.php');
 
-header("Content-Type: application/json");
+header('Content-Type: application/json');
 
-$app = new App();
-
-// 1. Vérification de la connexion
-if (!$app->connected || !$app->personne) {
-    echo json_encode(['success' => false, 'error' => 'Utilisateur non connecté']);
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-// 2. Récupération de l'ID famille (soit du corps JSON, soit de la session active)
-$json = file_get_contents('php://input');
-$data = json_decode($json, true);
-$id_famille = $data['id_famille'] ?? '';
+$app = new App();
 
-if (!empty($id_famille)) {
-    $dao = new FamilleDAO();
-    
-    // 3. Appel de la méthode pour supprimer le lien d'appartenance
-    $reussi = $dao->QuitterFamille($app->personne->id, $id_famille);
-
-    if ($reussi) {
-        echo json_encode(['success' => true, 'message' => 'Vous avez quitté la famille.']);
-    } else {
-        echo json_encode(['success' => false, 'error' => 'Erreur lors de la sortie du groupe.']);
-    }
-} else {
-    echo json_encode(['success' => false, 'error' => 'ID de famille manquant.']);
+if (!$app->connected || !$app->personne) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'error' => 'Authentification requise']);
+    exit;
 }
+
+try {
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+    
+    $id_famille = filter_var($data['id_famille'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
+
+    if (!empty($id_famille)) {
+        $dao = new FamilleDAO();
+        $reussi = $dao->QuitterFamille($app->personne->id, $id_famille);
+
+        if ($reussi) {
+            if (isset($_SESSION['id_famille']) && $_SESSION['id_famille'] == $id_famille) {
+                unset($_SESSION['id_famille']);
+            }
+            
+            echo json_encode([
+                'success' => true, 
+                'message' => 'Action effectuée avec succès'
+            ]);
+        } else {
+            http_response_code(500);
+            echo json_encode([
+                'success' => false, 
+                'error' => 'Erreur lors du traitement de la demande'
+            ]);
+        }
+    } else {
+        http_response_code(400);
+        echo json_encode([
+            'success' => false, 
+            'error' => 'Paramètre manquant'
+        ]);
+    }
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false, 
+        'error' => 'Erreur système'
+    ]);
+}
+
+exit();
