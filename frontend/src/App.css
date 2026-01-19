@@ -1183,7 +1183,6 @@ progress.blue_bar::-moz-progress-bar {
 .agenda .container_date {
   display: flex;
   align-items: center;
-  justify-content: center;
   flex-wrap: wrap;
   gap: 2rem;
   margin-bottom: 2rem;
