@@ -11,7 +11,7 @@ if ($username === '' || $password === '') {
     exit();
 }
 
-// TODO: Implémenter l'authentification réelle (BDD) + password_verify()
+/ TODO: Implémenter l'authentification réelle (BDD) + password_verify()
 // Exemple (à adapter):
 // $user = find_user_by_username($username);
 // if ($user && password_verify($password . get_app_pepper(), $user['password_hash'])) { ... }
