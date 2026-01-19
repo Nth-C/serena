@@ -1,11 +1,8 @@
 <?php
-require_once('model/evenementDAO.class.php');
+require_once(__DIR__ . '/../model/evenementDAO.class.php');
 require_once(__DIR__ . '/../app.php');
 
-// Indispensable pour que React puisse communiquer avec PHP
-header("Access-Control-Allow-Origin: *"); 
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
+header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
@@ -13,20 +10,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 $app = new App();
 
+if (!$app->connected) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'error' => 'Non connecté']);
+    exit;
+}
+
 if (!$app->checkRole('Proche')) {
-    header('HTTP/1.1 403 Forbidden');
-    echo json_encode([
-        'success' => false, 
-        'message' => 'Erreur : Vous devez avoir au moins le role de Proche pour faire ça.'
-    ]);
+    http_response_code(403);
+    echo json_encode(['success' => false, 'error' => 'Droits insuffisants']);
     exit; 
 }
 
 try {
-    $model = new evenementDAO();
-    $evenements = $model->getAllEvenementsSemaine($app->id_famille,date('Y-m-d'));
-    // echo pour envoyer les données dans la vue
-    echo json_encode($evenements);
+    $model = new EvenementDAO();
+    
+    // Récupération des événements pour la semaine à venir à partir d'aujourd'hui
+    $evenements = $model->getAllEvenementsSemaine($app->id_famille, date('Y-m-d'));
+    
+    echo json_encode($evenements ?: []);
+
 } catch (Exception $e) {
-    echo json_encode(["error" => $e->getMessage()]);
+    http_response_code(500);
+    echo json_encode([
+        "success" => false,
+        "error" => $e->getMessage()
+    ]);
 }
+
+exit();

@@ -1,12 +1,32 @@
 <?php
-require_once('model/rapportDAO.class.php');
+require_once(__DIR__ . '/../model/rapportDAO.class.php');
 require_once(__DIR__ . '/../app.php');
 
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    exit;
+}
+
 $app = new App();
-$data = json_decode(file_get_contents('php://input'), true);
-$id_rapport = $data['id_rapport'];
+
+if (!$app->connected || !$app->id_famille) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'error' => 'Non connecté']);
+    exit;
+}
 
 try {
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+
+    $id_rapport = $data['id_rapport'] ?? null;
+
+    if (!$id_rapport) {
+        http_response_code(400);
+        throw new Exception("ID du rapport manquant");
+    }
+
     $model = new RapportDAO();
     
     $anciensMedics = $model->getMedicsByRapport($id_rapport);
@@ -15,8 +35,12 @@ try {
     }
 
     $model->clearConso($id_rapport);
--
-    $model->updateRapportInfos($id_rapport, $data['nom'], $data['description']);
+
+    $model->updateRapportInfos(
+        $id_rapport, 
+        filter_var($data['nom'], FILTER_SANITIZE_SPECIAL_CHARS), 
+        filter_var($data['description'], FILTER_SANITIZE_SPECIAL_CHARS)
+    );
 
     if (!empty($data['medicaments'])) {
         foreach ($data['medicaments'] as $med) {
@@ -26,6 +50,9 @@ try {
     }
 
     echo json_encode(["success" => true]);
+
 } catch (Exception $e) {
     echo json_encode(["success" => false, "error" => $e->getMessage()]);
 }
+
+exit();

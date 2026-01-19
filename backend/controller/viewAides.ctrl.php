@@ -1,37 +1,29 @@
 <?php
+require_once(__DIR__ . '/../model/aidesDAO.class.php');
+require_once(__DIR__ . '/../app.php');
 
-// 1. Sécurité et Headers
-ini_set('display_errors', 0);
-error_reporting(E_ALL);
+header('Content-Type: application/json');
 
-header("Content-Type: application/json");
-header("Access-Control-Allow-Headers: Content-Type");
-header("Access-Control-Allow-Credentials: true"); // Important pour les sessions
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    exit;
+}
+
+$app = new App();
 
 try {
-    // 2. Inclusions
-    require_once(__DIR__ . '/../model/aidesDAO.class.php');
-    require_once(__DIR__ . '/../app.php');
-
-    $app = new App();
-    $dao = new AidesDAO();
-
-    // 3. Vérification de l'ID famille pour éviter l'erreur UUID "0"
     if (empty($app->id_famille) || $app->id_famille === "0") {
         echo json_encode(["isFilled" => false]);
         exit;
     }
 
-    // 4. On vérifie si la famille a déjà rempli le formulaire
+    $dao = new AidesDAO();
     $existingData = $dao->getAideByFamille($app->id_famille);
 
     if (!$existingData) {
-        // Rien en base de données
         echo json_encode(["isFilled" => false]);
         exit;
     }
 
-    // 5. Si déjà rempli, on extrait les variables de la base de données
     $statut   = $existingData['statuspro'] ?? '';
     $depenses = $existingData['depense'] ?? '';
     $fiscal   = $existingData['fiscalite'] ?? '';
@@ -41,12 +33,10 @@ try {
     $medical  = $existingData['situation_medicale'] ?? '';
     $objectif = $existingData['objectif'] ?? '';
     
-    // Checkboxes (booléens de la BDD)
     $apa    = filter_var($existingData['aide_apa'] ?? false, FILTER_VALIDATE_BOOLEAN);
     $pch    = filter_var($existingData['aide_pch'] ?? false, FILTER_VALIDATE_BOOLEAN);
     $aucune = filter_var($existingData['aide_aucune'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
-    // 6. On lance le filtrage (Exactement ton code précédent)
     $allAides = $dao->getAllAides();
     $aidesValides = [];
 
@@ -106,9 +96,6 @@ try {
             case "22": case "Aide Bien Vieillir":
                 if ($gir === 'GIR 5-6' && $aucune === true) $show = true;
                 break;
-            default:
-                $show = false;
-                break;
         }
 
         if ($show) {
@@ -116,7 +103,6 @@ try {
         }
     }
 
-    // 7. Réponse finale (on renvoie isFilled: true et les résultats)
     echo json_encode([
         "isFilled" => true,
         "aides" => $aidesValides
@@ -126,6 +112,8 @@ try {
     http_response_code(500);
     echo json_encode([
         "success" => false,
-        "error" => "Erreur : " . $e->getMessage()
+        "error" => $e->getMessage()
     ]);
 }
+
+exit();

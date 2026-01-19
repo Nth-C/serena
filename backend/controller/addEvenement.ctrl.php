@@ -1,15 +1,21 @@
 <?php
-require_once('model/evenementDAO.class.php');
-require_once('model/trajetDAO.class.php');
+require_once(__DIR__ . '/../model/evenementDAO.class.php');
+require_once(__DIR__ . '/../model/trajetDAO.class.php');
 require_once(__DIR__ . '/../app.php');
+
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    exit;
+}
 
 $app = new App();
 
 if (!$app->checkRole('Proche')) {
-    header('HTTP/1.1 403 Forbidden');
+    http_response_code(403);
     echo json_encode([
         'success' => false, 
-        'message' => 'Erreur : Droits insuffisants.'
+        'error' => 'Droits insuffisants.'
     ]);
     exit; 
 }
@@ -22,11 +28,11 @@ try {
 
     $newIdEvent = $modelEv->addEvenement(
         $app->id_famille,
-        $data['titre'], 
-        $data['debut'], 
-        $data['fin'], 
-        $data['lieu'], 
-        $data['description']
+        $titre, 
+        $debut, 
+        $fin, 
+        $lieu, 
+        $description
     );
 
     if ($newIdEvent && !empty($data['accompagnants'])) {

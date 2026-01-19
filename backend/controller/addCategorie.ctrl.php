@@ -1,36 +1,52 @@
 <?php
-require_once('model/categorieDAO.class.php');
+require_once(__DIR__ . '/../model/categorieDAO.class.php');
 require_once(__DIR__ . '/../app.php');
 
+header('Content-Type: application/json');
 
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    exit;
+}
 
 $app = new App();
 
 if (!$app->checkRole('Famille')) {
-    header('HTTP/1.1 403 Forbidden');
+    http_response_code(403);
     echo json_encode([
         'success' => false, 
-        'message' => 'Erreur : Vous devez avoir au moins le role de famille pour faire ça.'
+        'error' => 'Accès refusé.'
     ]);
     exit; 
 }
 
-try {
-    $json = file_get_contents('php://input'); // lit le body du fetch
-    $data = json_decode($json, true); // transforme '$json' en tableau
+$json = file_get_contents('php://input');
+$data = json_decode($json, true);
 
-    if (empty($data['name'])) {
-        throw new Exception("Données manquantes (name).");
-    }
+$name = filter_var($data['name'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
+$role = filter_var($data['role'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
 
+if (!empty($name) && !empty($role) && $app->id_famille) {
     $model = new CategorieDAO();
-    $success = $model->addCategorie($app->id_famille,$data['name'],$data['role']);
-
-    // renvoie a la vue des informations
+    
+    try {
+        $success = $model->addCategorie($app->id_famille, $name, $role);
+        
+        echo json_encode([
+            "success" => $success
+        ]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode([
+            "success" => false,
+            "error" => $e->getMessage()
+        ]);
+    }
+} else {
+    http_response_code(400);
     echo json_encode([
-        "success" => $success,
+        "success" => false,
+        "error" => "Données manquantes"
     ]);
-
-} catch (Exception $e) {
-    echo json_encode(["error" => $e->getMessage()]);
 }
+
+exit();
