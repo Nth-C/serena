@@ -48,7 +48,8 @@ function Agenda() {
     accompagnants: '', 
     debut: '',
     fin: '',
-    recurrence: '',   
+    recurrence: 'aucun',
+    nbRecurrence: 1,   
     description: '',
 
     // Champs Trajet
@@ -120,6 +121,7 @@ function Agenda() {
           debut: formData.debut,
           fin: formData.fin,
           recurrence: formData.recurrence,
+          nbRecurrence: formData.nbRecurrence,
           description: formData.description
       };
 
@@ -435,10 +437,20 @@ function Agenda() {
                 <label>Récurrence :</label>
                 <select name="recurrence" value={formData.recurrence} onChange={handleChange}>
                   <option value="aucun">Aucune</option>
-                  <option value="hebdo">Hebdomadaire</option>
+                  <option value="journalier">Journalier</option>
+                  <option value="hebdomadaire">Hebdomadaire</option>
                   <option value="mensuel">Mensuel</option>
+                  <option value="annuel">Annuel</option>
                 </select>
               </div>
+              {formData.recurrence != 'aucun' && (
+              <div>
+                <label>Nombre de récurrence :</label>
+                <input type="number" min="1" max="100" name="nbRecurrence" value={formData.nbRecurrence} onChange={handleChange} required />
+              </div>
+              )}
+
+              
 
               <div>
                 <label>Notes :</label>
