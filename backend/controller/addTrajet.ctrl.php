@@ -36,7 +36,6 @@ if (!empty($lieu_dep) && !empty($lieu_arr) && !empty($id_event) && !empty($date_
     try {
         $success = $model->addTrajet(
             $date_deb,
-            $date_fin,
             $lieu_dep,
             $lieu_arr,
             $id_event,

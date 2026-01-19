@@ -42,7 +42,9 @@ try {
             'nom'      => $ev->nom,
             'date_deb' => $ev->date_deb,
             'date_fin' => $ev->date_fin,
-            'lieu'     => $ev->lieu
+            'lieu'     => $ev->lieu,
+            'description' => $ev->note,
+            'accompagnant' => $accompagnant
         ];
     }
 
