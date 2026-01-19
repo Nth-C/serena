@@ -76,7 +76,7 @@ class CategorieDAO {
     
 
     public function deleteCategorie($id_famille,$id_categorie) : bool {
-        $query = 'DELETE FROM CAT WHERE id_famille = :id_famille AND id_categorie = :id_categorie';
+        $query = 'DELETE FROM CAT WHERE id_famille = :id_famille AND id_cat = :id_categorie';
         $stmt = $this->dal->prepare($query);
 
         return $stmt->execute(['id_famille' => $id_famille,'id_categorie' => $id_categorie]);

@@ -55,11 +55,30 @@ function Agenda() {
     // Champs Trajet
     effectue: 'aidant',  // Valeur par défaut
     societe: '',         // Texte
-    aidantAffecte: '',
+    aidantAffecte: 'demande',
     lieuDepart: '',
     lieuArrivee: '',
     id_event: ''         // ID de l'événement lié
   })
+
+  const handleReset = async () => {
+      setFormData({
+      titre: '',
+      lieu: '',
+      accompagnants: '', 
+      debut: '',
+      fin: '',
+      recurrence: 'aucun',
+      nbRecurrence: 1,   
+      description: '',
+      effectue: 'aidant',
+      societe: '',
+      aidantAffecte: 'demande',
+      lieuDepart: '',
+      lieuArrivee: '',
+      id_event: ''
+    })
+  }
 
   const fetchMembres = async () => {
     try {
@@ -109,10 +128,17 @@ function Agenda() {
     }))
   }
 
+  const decodeHTML = (str) => {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = str;
+    return txt.value;
+};
+
   // --- Handler pour l'ÉVÉNEMENT ---
   const handleAddEvent = async (e) => {
       if (e) e.preventDefault(); // Empêche le rechargement si appelé via un bouton type submit
 
+      handleReset();
       // Préparation du payload spécifique à l'événement
       const payload = {
           titre: formData.titre,
@@ -330,13 +356,15 @@ function Agenda() {
         const accompagnantNom = ev.accompagnant 
           ? `${ev.accompagnant.prenom} ${ev.accompagnant.nom}`
           : "Non spécifié";
+        const accompagnantId = ev.accompagnant ? ev.accompagnant.id_personne : '';
 
         return {
           id_event: ev.id_event,
-          titre: ev.nom,
-          lieu: ev.lieu,
-          description: ev.description,
+          titre: decodeHTML(ev.nom), 
+          lieu: decodeHTML(ev.lieu || ""), 
+          description: decodeHTML(ev.description || ""), 
           accompagnant: accompagnantNom,
+          accompagnantId: accompagnantId,
           dateStart: startDate,
           dateEnd: endDate,
         };
@@ -374,7 +402,10 @@ function Agenda() {
       />
 
       {/* ajouter un evenement */}
-      <button className="btn_add" onClick={() => setNewEventOpen(true)}>
+      <button className="btn_add" onClick={() => {
+        handleReset()
+        setNewEventOpen(true)
+      }}>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
       </button>
 
@@ -459,10 +490,7 @@ function Agenda() {
               </div>
 
               <div>
-                  <button type='button' className='btn_border' onClick={() => {
-                    resetFormEvent() 
-                    setNewEventOpen(false)
-                  }}>Annuler</button>
+                  <button type='button' className='btn_border' onClick={handleReset}>Réinitialiser</button>
                   <button type='submit' className='btn_blue'>Valider</button>
               </div>
            </form>
@@ -562,10 +590,7 @@ function Agenda() {
               </div>
 
                 <div>
-                  <button type='button' className='btn_border' onClick={() => {
-                    resetFormTrajet()
-                    setNewEventOpen(false)
-                  }}>Annuler</button>
+                  <button type='button' className='btn_border' onClick={handleReset}>Réinitialiser</button>
                   <button type='submit' className='btn_blue'>Valider</button>
               </div>
            </form>
@@ -623,7 +648,7 @@ function Agenda() {
                       setFormData({
                         titre: currentEvent.titre,
                         lieu: currentEvent.lieu || '',
-                        accompagnants: '',
+                        accompagnants: currentEvent.accompagnantId || '',
                         debut: currentEvent.dateStart.toISOString().slice(0, 16),
                         fin: currentEvent.dateEnd.toISOString().slice(0, 16),
                         recurrence: '',
@@ -641,7 +666,6 @@ function Agenda() {
                       setEventToDelete({id: currentEvent.id_event, title: currentEvent.titre})
                       setEventOpen(false)
                     }}>Supprimer</button>
-                    <button className="btn_border" onClick={() => setEventOpen(false)}>Fermer</button>
                 </div>
             </div>
         ) : currentEvent && isEditMode ? (
@@ -700,9 +724,7 @@ function Agenda() {
               </div>
 
               <div>
-                  <button type='button' className='btn_border' onClick={() => {
-                    setIsEditMode(false)
-                  }}>Annuler</button>
+                  <button type='button' className='btn_border' onClick={handleReset}>Réinitialiser</button>
                   <button type='submit' className='btn_blue'>Valider</button>
               </div>
            </form>

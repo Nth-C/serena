@@ -1,24 +1,34 @@
-  GNU nano 7.2                                            .htaccess
 RewriteEngine On
 RewriteBase /
 
-RewriteCond %{REQUEST_URI} ^/backend/ [NC]
-RewriteRule .* - [L]
+#Empêcher le listage répertoires
 Options -Indexes
+
+#Forcer le HTTPS (essentiel en production)
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Redirige les appels API (ex: /home/dashboard, /api/users) vers le contrôleur frontal PHP.
+# corrige erreur 404.
+RewriteCond %{REQUEST_URI} ^/(backend|api|home) [NC]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [L]
+
+# Pour toutes les autres routes, si le fichier ou dossier n'existe pas, on sert l'application React.
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.html [L]
+
 <IfModule mod_headers.c>
-    # Empêche d'être affiché dans une iFrame (protection Clickjacking)
+    # Protection Clickjacking
     Header always set X-Frame-Options "SAMEORIGIN"
-
-    # Bloque le chargement de scripts si type MIME est incorrect (protection XSS)
+    # Protection contre le reniflage de type MIME
     Header always set X-Content-Type-Options "nosniff"
-
-    # Active la protection XSS intégrée aux navigateurs
+    # Protection XSS
     Header always set X-XSS-Protection "1; mode=block"
-
-    #Force le HTTPS strict pendant 1 an
+    # HSTS 
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 </IfModule>
 

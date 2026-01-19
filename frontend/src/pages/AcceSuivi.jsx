@@ -366,7 +366,7 @@ function AcceSuivi() {
             {message && <p className="success-msg">{message}</p>}
 
             <Slide title={"Créer une nouvelle famille"} isOpen={isNewSuiviOpen} toggleOpen={toggleNewSuvi}>
-                <form onSubmit={handleSubmit}>
+                <form className='add_famille' onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label>Nom de l'aidé : </label>
                         <input type="text" name="nom_aide" value={formData.nom_aide} onChange={handleChange} required />

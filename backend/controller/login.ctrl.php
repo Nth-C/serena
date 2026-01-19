@@ -2,6 +2,8 @@
 require_once(__DIR__ . '/../model/SecurityDAO.class.php');
 require_once(__DIR__ . '/../model/personneDAO.class.php');
 require_once(__DIR__ . '/../app.php');
+require_once(__DIR__ . '/../csrf.php');
+
 
 header('Content-Type: application/json');
 
@@ -59,6 +61,8 @@ $personne = $dao->findByUsername($username);
 if ($personne && password_verify($mdp . $pepper, $personne->mdp)) {
     // Succès : Reset des tentatives et création de session
     $securityDAO->clearAttempts($ip);
+    session_regenerate_id(true);
+    csrf_generate_token();
     $app->login($personne); 
     
     echo json_encode([

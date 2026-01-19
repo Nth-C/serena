@@ -10,13 +10,13 @@ Portée: Monorepo avec backend (PHP), frontend (React), service OCR (Python/Node
 - Mettre en place une CI (GitHub Actions/GitLab CI) qui lance tests unitaires (PHP/JS/Python), lint, vérifications de types, build, et build d’images Docker sur chaque push/PR.
 - Vérifier `.gitignore` pour couvrir `node_modules`, `vendor`, artefacts de build, logs, fichiers `.env` et volumes Docker. S’assurer qu’aucun secret n’est versionné.
 
-## Sécurité
-- Des fichiers d’environnement sont commités: `serena/backend/.env`, `frontend/.env.development`, `sere-na-llama-ocr/.env`. Les retirer du VCS, régénérer/rotation des secrets, charger via variables d’environnement/secrets manager.
+## Sécurité **FAIT** 
+**FAIT** Des fichiers d’environnement sont commités: `serena/backend/.env`, `frontend/.env.development`, `sere-na-llama-ocr/.env`. Les retirer du VCS, régénérer/rotation des secrets, charger via variables d’environnement/secrets manager.
 **FAIT** Valider et assainir toutes les entrées utilisateur côté serveur (PHP) et côté services. Centraliser la validation.
 **FAIT** - Protection CSRF pour les endpoints modifiant l’état (tokens ou cookies SameSite).
 **FAIT** CORS: définir explicitement les origines autorisées; éviter le joker en production.
-- Cookies de session/auth en HTTPS uniquement; définir Secure, HttpOnly, SameSite=strict.
-- Exécuter les images Docker en utilisateur non-root; ajouter la directive USER dans les Dockerfiles.
+**FAIT** Cookies de session/auth en HTTPS uniquement; définir Secure, HttpOnly, SameSite=strict.
+**FAIT** Exécuter les images Docker en utilisateur non-root; ajouter la directive USER dans les Dockerfiles.
 **FAIT** Scanner les dépendances pour vulnérabilités (npm, pip, composer) et pinner les versions avec des fichiers de verrouillage (lockfiles).
 
 ## Docker / DevOps

@@ -152,8 +152,6 @@ class TrajetDAO {
 
     public function getAllDemandeDeTrajet(string $id_famille): array
 {
-    // On sélectionne les trajets liés directement à l'ID famille via la table FAMILLE_TRAJET
-    // Et on exclut ceux qui ont déjà un aidant affecté dans la table EFFECTUE
     $query = "SELECT t.* FROM TRAJET t
               JOIN FAMILLE_TRAJET ft ON t.id_trajet = ft.id_trajet
               WHERE ft.id_famille = :id_famille
@@ -171,20 +169,19 @@ class TrajetDAO {
         }
     }
 
-    public function updateTrajet($id_event, $date_deb, $date_fin, $lieu_dep, $lieu_arr, $nom_societe) {
+    public function updateTrajet($id_event, $date_deb, $lieu_dep, $lieu_arr, $nom_societe) {
         try {
             $this->dal->beginTransaction();
 
             // 1. Mise à jour des informations de base du trajet lié à l'événement
             $query = "UPDATE TRAJET 
-                    SET date_deb = :date_deb, date_fin = :date_fin, lieu_dep = :lieu_dep, lieu_arr = :lieu_arr 
+                    SET date_deb = :date_deb lieu_dep = :lieu_dep, lieu_arr = :lieu_arr 
                     WHERE id_event = :id_event 
                     RETURNING id_trajet";
             
             $stmt = $this->dal->prepare($query);
             $stmt->execute([
                 ':date_deb' => $date_deb,
-                ':date_fin' => $date_fin,
                 ':lieu_dep' => $lieu_dep,
                 ':lieu_arr' => $lieu_arr,
                 ':id_event' => $id_event
