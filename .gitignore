@@ -7,12 +7,15 @@ frontend/dist/
 frontend/dist-ssr/
 frontend/.local
 frontend/package-lock.json
-.env.development
-.env.production
+frontend/.env
+frontend/.env.*
+!.*/.env.example
 frontend/test-results
 
 # --- BACKEND ---
-.env
+backend/.env
+backend/.env.*
+!.*/.env.example
 uploads
 
 # --- LOGS & OS ---
