@@ -1270,6 +1270,10 @@ progress.blue_bar::-moz-progress-bar {
   border-radius: 0 8px 8px 0;
 }
 
+.agenda .btn_add_trajet {
+  transform: translateY(-150%);
+}
+
 /* ----------------------------- */
 /* ------- FILE EXPLORER ------- */
 /* ----------------------------- */

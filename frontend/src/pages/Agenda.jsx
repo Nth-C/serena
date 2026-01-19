@@ -20,6 +20,10 @@ function Agenda() {
   const [eventOpen, setEventOpen] = useState(false)
   const [currentEvent, setCurrentEvent] = useState(null)
 
+  // popup trajet
+  const [trajetOpen, setTrajetOpen] = useState(false)
+  const [currentTrajet, setCurrentTrajet] = useState(null)
+
   const [date, setDate] = useState(new Date())
   const [popUpDateOpen, setPopUpDateOpen] = useState(false)
   const [isCalendarWeek, setIsCalendarWeek] = useState(false)
@@ -403,25 +407,37 @@ function Agenda() {
 
       {/* ajouter un evenement */}
       <button className="btn_add" onClick={() => {
-        handleReset()
+        handleReset() // mettre un handler uniquement pour l'event
         setNewEventOpen(true)
       }}>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
       </button>
 
-      <Slide
+      {/* ajouter un trajet */}
+      <button className="btn_add_trajet btn_add" onClick={() => {
+        handleReset() // mettre un handler uniquement pour le trajet
+        setTrajetOpen(true)
+      }}>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+      </button>
+
+    </div>
+
+    <PopUpSelectDate 
+      isOpen={popUpDateOpen}
+      onClose={() => setPopUpDateOpen(false)}
+      handlerValid={setDate}
+      startDate={date}
+    />
+
+    <Slide
         title={isTrajet ? "Nouveau Trajet" : "Nouvel Événement"} 
         isOpen={newEventOpen} 
         toggleOpen={() => setNewEventOpen(false)}
 
       >
-          {/* Switcher Event / Trajet */}
-          <div className='switch_event'>
-            <button type="button" className={!isTrajet ? 'active' : ''} onClick={() => setIsTrajet(false)} >Événement</button>
-            <button type="button" className={isTrajet ? 'active' : ''} onClick={() => setIsTrajet(true)} >Trajet</button>
-          </div>
 
-          {!isTrajet ? (
+          {!isTrajet && (
             /* =========================================
                PARTIE ÉVÉNEMENT
                ========================================= */
@@ -482,8 +498,6 @@ function Agenda() {
               </div>
               )}
 
-              
-
               <div>
                 <label>Notes :</label>
                 <textarea name="description" value={formData.description} onChange={handleChange} />
@@ -494,11 +508,17 @@ function Agenda() {
                   <button type='submit' className='btn_blue'>Valider</button>
               </div>
            </form>
-          ) : (
-            /* =========================================
-               PARTIE TRAJET
-               ========================================= */
-            <form className='add_trajet' onSubmit={handleAddTrajet}>  
+          )}
+      </Slide>
+
+    <Slide 
+      title={"Détails"}
+      isOpen={trajetOpen}
+      toggleOpen={() => {
+        setTrajetOpen(false)
+        setIsEditMode(false)
+      }}>
+                    <form className='add_trajet' onSubmit={handleAddTrajet}>  
               <div>
                   <label>Lier à l'événement :</label>
                   <select 
@@ -594,20 +614,10 @@ function Agenda() {
                   <button type='submit' className='btn_blue'>Valider</button>
               </div>
            </form>
-          )}
-      </Slide>
-
-    </div>
-
-    <PopUpSelectDate 
-      isOpen={popUpDateOpen}
-      onClose={() => setPopUpDateOpen(false)}
-      handlerValid={setDate}
-      startDate={date}
-    />
+    </Slide>
     
     <Slide
-        title={currentEvent ? currentEvent.titre : "Détails"}
+        title={currentEvent ? currentEvent.titre : "Trajet"}
         isOpen={eventOpen}
         toggleOpen={() => {
           setEventOpen(false)
