@@ -59,6 +59,8 @@ $personne = $dao->findByUsername($username);
 if ($personne && password_verify($mdp . $pepper, $personne->mdp)) {
     // Succès : Reset des tentatives et création de session
     $securityDAO->clearAttempts($ip);
+    session_regenerate_id(true);
+    csrf_generate_token();
     $app->login($personne); 
     
     echo json_encode([
