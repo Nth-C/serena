@@ -14,7 +14,7 @@ Portée: Monorepo avec backend (PHP), frontend (React), service OCR (Python/Node
 - Des fichiers d’environnement sont commités: `serena/backend/.env`, `frontend/.env.development`, `sere-na-llama-ocr/.env`. Les retirer du VCS, régénérer/rotation des secrets, charger via variables d’environnement/secrets manager.
 **FAIT** Valider et assainir toutes les entrées utilisateur côté serveur (PHP) et côté services. Centraliser la validation.
 **FAIT** - Protection CSRF pour les endpoints modifiant l’état (tokens ou cookies SameSite).
-- CORS: définir explicitement les origines autorisées; éviter le joker en production.
+**FAIT** CORS: définir explicitement les origines autorisées; éviter le joker en production.
 - Cookies de session/auth en HTTPS uniquement; définir Secure, HttpOnly, SameSite=strict.
 - Exécuter les images Docker en utilisateur non-root; ajouter la directive USER dans les Dockerfiles.
 **FAIT** Scanner les dépendances pour vulnérabilités (npm, pip, composer) et pinner les versions avec des fichiers de verrouillage (lockfiles).
@@ -65,13 +65,6 @@ Portée: Monorepo avec backend (PHP), frontend (React), service OCR (Python/Node
 - Tests: unitaires (Vitest/Jest) et composants (React Testing Library). E2E (Playwright/Cypress).
 - Performance: code splitting des routes; mémoïser les composants lourds; images optimisées.
 - Lint/format: ESLint + Prettier configurés et appliqués en CI.
-
-## Service OCR (sere-na-llama-ocr)
-- Clarifier l’architecture: présence de `index.js` (Node) et `tesseract-ocr/app.py` (Python). Documenter l’interaction. Supprimer le code mort si un seul est utilisé. Si les deux coexistent, définir interfaces et ports.
-- Dockerisation: un service par langage; ajouter des endpoints de healthcheck.
-- Python: pinner les dépendances, utiliser `requirements.txt` au bon niveau; venv dans Docker; exécuter en non-root; exposer le port; utiliser gunicorn/uvicorn pour prod.
-- Node: définir scripts package.json, lockfile, validation des entrées sur les endpoints.
-- Sécurité uploads: valider taille/type, assainir les noms de fichiers, stocker hors webroot, envisager un scan antivirus.
 
 ## Contrats d’API & Documentation
 - Fournir une spécification OpenAPI/Swagger pour le backend (et service OCR). L’utiliser pour générer types clients et docs.
