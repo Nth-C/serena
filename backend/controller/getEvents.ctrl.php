@@ -1,31 +1,33 @@
 <?php
-require_once('model/evenementDAO.class.php');
+require_once(__DIR__ . '/../model/evenementDAO.class.php');
 require_once(__DIR__ . '/../app.php');
 
-header("Access-Control-Allow-Methods: GET, OPTIONS");
+header('Content-Type: application/json');
 
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') { exit; }
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    exit;
+}
 
 $app = new App();
 
 if (!$app->checkRole('Proche')) {
-    header('HTTP/1.1 403 Forbidden');
+    http_response_code(403);
     echo json_encode([
         'success' => false, 
-        'message' => 'Erreur : Vous devez avoir au moins le role de Proche pour faire ça.'
+        'error' => 'Accès refusé.'
     ]);
     exit; 
 }
 
 try {
     if (empty($app->id_famille)) {
+        http_response_code(401);
         throw new Exception("Utilisateur non connecté ou sans famille.");
     }
 
     $dao = new EvenementDAO();
     $events = $dao->getFutureEvenements($app->id_famille);
 
-    // On prépare un tableau léger pour le select
     $dataExport = [];
     foreach ($events as $ev) {
         // Récupérer l'accompagnant de cet événement (un seul)
@@ -37,18 +39,24 @@ try {
 
         $dataExport[] = [
             'id_event' => $ev->id_event,
-            'nom' => $ev->nom,
+            'nom'      => $ev->nom,
             'date_deb' => $ev->date_deb,
             'date_fin' => $ev->date_fin,
-            'lieu' => $ev->lieu,
-            'description' => $ev->note,
-            'accompagnant' => $accompagnant
+            'lieu'     => $ev->lieu
         ];
     }
 
-    echo json_encode(["success" => true, "evenements" => $dataExport]);
+    echo json_encode([
+        "success" => true, 
+        "evenements" => $dataExport
+    ]);
 
 } catch (Exception $e) {
     http_response_code(500);
-    echo json_encode(["success" => false, "error" => $e->getMessage()]);
+    echo json_encode([
+        "success" => false, 
+        "error" => $e->getMessage()
+    ]);
 }
+
+exit();

@@ -366,6 +366,7 @@ function LastVisitReport() {
   }, [isNewRapportOpen, isNewMedicineOpen, isDetailsReportOpen, isPopUpDeleteOpen]);
 
   return (
+    <>
     <div className="last_visit_report">
       <div className="contener_report">
 
@@ -464,176 +465,170 @@ function LastVisitReport() {
         </div>,
         document.body
       )}
-
-      {/* Slide Ajout Médicament */}
-      <Slide title={"Ajouter un médicament"} isOpen={isNewMedicineOpen} toggleOpen={toggleNewMedicine} zIndex={700}>
-        <form className="new_medecine" onSubmit={handleMedecine}>
-
-          <div>
-            <label>Nom du médicament : </label>
-            <input
-              type="text"
-              list="medication-suggestions"
-              value={nameMedecine}
-              onChange={(e) => {
-                setCurrentStock("");
-                setInitialStock("");
-                setIdCatalogueMedecine("");
-                setNameMedecine(e.target.value);
-                if (e.target.value != "") {
-                  handleSearchMedecine(e.target.value);
-                }
-              }}
-              required
-              disabled={isEditing}
-            />
-            <datalist id="medication-suggestions">
-              {listNomMedecine?.map((suggestion, i) => (
-                <option key={i} value={suggestion.denomination_substance} />
-              ))}
-            </datalist>
-          </div>
-
-          <div>
-            <label>Type de médicament : </label>
-            <select value={idCatalogueMedecine} onChange={(e) => {
-              setIdCatalogueMedecine(e.target.value)
-            }}
-              required
-              disabled={!isNameGood}>
-              <option value=""></option>
-              {listTypeMedecine.map((listeMedicament) => (
-                <option key={listeMedicament.id_medics} value={listeMedicament.id_medics}>
-                  {listeMedicament.designation_elem_pharma}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label>Stock initiale du médicament : </label>
-            <input
-              type="number"
-              value={initialStock}
-              onChange={(e) => setInitialStock(e.target.value)}
-              required
-              disabled={!isNameGood || isEditing} // on ne peut pas modifier l'input si on modifie un medicament
-            />
-          </div>
-
-          <div>
-            <label>Stock actuel du médicament :</label>
-            <input
-              type="number"
-              value={currentStock}
-              onChange={(e) => setCurrentStock(e.target.value)}
-              required
-              disabled={!isNameGood}
-            />
-          </div>
-          <div>
-            <button type="reset" className="btn_border" onClick={handleResetMedecine}>Réinitialiser</button>
-            <button type="submit" className="btn_blue">Ajouter</button>
-          </div>
-        </form>
-      </Slide>
-
-      {/* Slide Nouveau/Modif Rapport */}
-      <Slide title={isEditing ? "Modifier le rapport" : "Créer un rapport de visite"} isOpen={isNewRapportOpen} toggleOpen={toggleNewRapport} zIndex={500}>
-        <form className="add_report" onSubmit={handleSubmitRapport}>
-          <div>
-            <label>Nom du rapport : </label>
-            <input type="text" value={nomRapport} onChange={(e) => setNomRapport(e.target.value)} required />
-          </div>
-          <div>
-            <label>Médicaments pris : </label>
-            <div className="selected_medics_container">
-              {selectedMedicsForReport.map((m) => {
-                const id = m.id_med || m.id_medicament;
-                return (
-                  <div key={id} className="list_medicament_report">
-                    <div>
-                      <p>{m.nomMedicament}</p>
-                      <input
-                        type="text"
-                        placeholder=""
-                        value={m.quantite}
-                        onChange={(e) => updateMedicQuantite(id, e.target.value)}
-                      />
-                      <button type="button" onClick={() => removeMedicFromSelection(id)}>✕</button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            <button type="button" className="btn_blue add_medi" onClick={() => {
-              togglePopup();
-              getMedecine()
-            }}
-            >Ajouter médicament</button>
-          </div>
-          <div>
-            <label>Information supplémentaire : </label>
-            <textarea value={descRapport} onChange={(e) => setDescRapport(e.target.value)} required></textarea>
-          </div>
-          <div>
-            <button type="button" className="btn_border" onClick={handleResetRapport}>Réinitialiser</button>
-            <button type="submit" className="btn_blue">{isEditing ? "Enregistrer" : "Ajouter"}</button>
-          </div>
-        </form>
-      </Slide>
-
-      {/* Slide Détails Rapport */}
-      <Slide title={selectedRapport ? selectedRapport.nom : "Détails"} isOpen={isDetailsReportOpen} toggleOpen={toggleDetailsReport} zIndex={100}>
-        {selectedRapport ? (
-          <div className="details_report">
-            <div>
-              <p>Fait par : <strong>{selectedRapport.auteur || "Utilisateur"}</strong></p>
-              <p>Le : {new Date(selectedRapport.date).toLocaleDateString('fr-FR')}</p>
-              <p>À : {selectedRapport.heure ? selectedRapport.heure.substring(0, 5) : "--:--"}</p>
-            </div>
-            <div className="list-medic">
-              <h2>Médicaments pris :</h2>
-              <ul>
-                {selectedRapport.medics_details && selectedRapport.medics_details.length > 0 ? (
-                  selectedRapport.medics_details.map((m, i) => (
-                    <li key={i}>
-                      <strong>{m.nom}</strong> : {m.quantite}
-                    </li>
-                  ))
-                ) : (
-                  <li>Aucun médicament enregistré.</li>
-                )}
-              </ul>
-            </div>
-            <div>
-              <h2>Informations supplémentaires :</h2>
-              <p>{selectedRapport.description}</p>
-            </div>
-            <div className="actions">
-              <button className="btn_red" onClick={() => {
-                setIdCurrentRapport(selectedRapport.id_rapport);
-                setNameToDelete(selectedRapport.nom);
-                togglePopUpDelete();
-              }}>Supprimer</button>
-              <button className="btn_blue" onClick={handleEditClick}>Modifier</button>
-            </div>
-          </div>
-        ) : null}
-      </Slide>
-
-      {/* Popups de confirmation et suppression */}
-      <PopUpDelete
-        toDelete={nameToDelete}
-        handleDelete={handleDeleteRapport}
-        isOpen={isPopUpDeleteOpen}
-        onClose={() => togglePopUpDelete()}
-      />
-
-      <PopUpConfirmation sentence={`Le rapport ${nameToDelete} a bien été supprimé.`} show={isShowRemove} setShow={setIsShowRemove} />
-      <PopUpConfirmation sentence={`Le rapport ${nameToDelete} a bien été ajouté.`} show={isShowAdd} setShow={setIsShowAdd} />
-      <PopUpConfirmation sentence={`Le rapport ${nameToDelete} a bien été modifié.`} show={isShowModify} setShow={setIsShowModify} />
     </div>
+
+          {/* Slide Ajout Médicament */}
+    <Slide title={"Ajouter un médicament"} isOpen={isNewMedicineOpen} toggleOpen={toggleNewMedicine} zIndex={700}>
+      <form className="new_medecine" onSubmit={handleMedecine}>
+        <div>
+          <label>Nom du médicament : </label>
+          <input
+            type="text"
+            list="medication-suggestions"
+            value={nameMedecine}
+            onChange={(e) => {
+              setCurrentStock("");
+              setInitialStock("");
+              setIdCatalogueMedecine("");
+              setNameMedecine(e.target.value);
+              if (e.target.value != "") {
+                handleSearchMedecine(e.target.value);
+              }
+            }}
+            required
+            disabled={isEditing}
+          />
+          <datalist id="medication-suggestions">
+            {listNomMedecine?.map((suggestion, i) => (
+              <option key={i} value={suggestion.denomination_substance} />
+            ))}
+          </datalist>
+        </div>
+        <div>
+          <label>Type de médicament : </label>
+          <select value={idCatalogueMedecine} onChange={(e) => {
+            setIdCatalogueMedecine(e.target.value)
+          }}
+            required
+            disabled={!isNameGood}>
+            <option value=""></option>
+            {listTypeMedecine.map((listeMedicament) => (
+              <option key={listeMedicament.id_medics} value={listeMedicament.id_medics}>
+                {listeMedicament.designation_elem_pharma}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label>Stock initiale du médicament : </label>
+          <input
+            type="number"
+            value={initialStock}
+            onChange={(e) => setInitialStock(e.target.value)}
+            required
+            disabled={!isNameGood || isEditing} // on ne peut pas modifier l'input si on modifie un medicament
+          />
+        </div>
+        <div>
+          <label>Stock actuel du médicament :</label>
+          <input
+            type="number"
+            value={currentStock}
+            onChange={(e) => setCurrentStock(e.target.value)}
+            required
+            disabled={!isNameGood}
+          />
+        </div>
+        <div>
+          <button type="reset" className="btn_border" onClick={handleResetMedecine}>Réinitialiser</button>
+          <button type="submit" className="btn_blue">Ajouter</button>
+        </div>
+      </form>
+    </Slide>
+    {/* Slide Nouveau/Modif Rapport */}
+    <Slide title={isEditing ? "Modifier le rapport" : "Créer un rapport de visite"} isOpen={isNewRapportOpen} toggleOpen={toggleNewRapport} zIndex={500}>
+      <form className="add_report" onSubmit={handleSubmitRapport}>
+        <div>
+          <label>Nom du rapport : </label>
+          <input type="text" value={nomRapport} onChange={(e) => setNomRapport(e.target.value)} required />
+        </div>
+        <div>
+          <label>Médicaments pris : </label>
+          <div className="selected_medics_container">
+            {selectedMedicsForReport.map((m) => {
+              const id = m.id_med || m.id_medicament;
+              return (
+                <div key={id} className="list_medicament_report">
+                  <div>
+                    <p>{m.nomMedicament}</p>
+                    <input
+                      type="text"
+                      placeholder=""
+                      value={m.quantite}
+                      onChange={(e) => updateMedicQuantite(id, e.target.value)}
+                    />
+                    <button type="button" onClick={() => removeMedicFromSelection(id)}>✕</button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <button type="button" className="btn_blue add_medi" onClick={() => {
+            togglePopup();
+            getMedecine()
+          }}
+          >Ajouter médicament</button>
+        </div>
+        <div>
+          <label>Information supplémentaire : </label>
+          <textarea value={descRapport} onChange={(e) => setDescRapport(e.target.value)} required></textarea>
+        </div>
+        <div>
+          <button type="button" className="btn_border" onClick={handleResetRapport}>Réinitialiser</button>
+          <button type="submit" className="btn_blue">{isEditing ? "Enregistrer" : "Ajouter"}</button>
+        </div>
+      </form>
+    </Slide>
+    {/* Slide Détails Rapport */}
+    <Slide title={selectedRapport ? selectedRapport.nom : "Détails"} isOpen={isDetailsReportOpen} toggleOpen={toggleDetailsReport} zIndex={100}>
+      {selectedRapport ? (
+        <div className="details_report">
+          <div>
+            <p>Fait par : <strong>{selectedRapport.auteur || "Utilisateur"}</strong></p>
+            <p>Le : {new Date(selectedRapport.date).toLocaleDateString('fr-FR')}</p>
+            <p>À : {selectedRapport.heure ? selectedRapport.heure.substring(0, 5) : "--:--"}</p>
+          </div>
+          <div className="list-medic">
+            <h2>Médicaments pris :</h2>
+            <ul>
+              {selectedRapport.medics_details && selectedRapport.medics_details.length > 0 ? (
+                selectedRapport.medics_details.map((m, i) => (
+                  <li key={i}>
+                    <strong>{m.nom}</strong> : {m.quantite}
+                  </li>
+                ))
+              ) : (
+                <li>Aucun médicament enregistré.</li>
+              )}
+            </ul>
+          </div>
+          <div>
+            <h2>Informations supplémentaires :</h2>
+            <p>{selectedRapport.description}</p>
+          </div>
+          <div className="actions">
+            <button className="btn_red" onClick={() => {
+              setIdCurrentRapport(selectedRapport.id_rapport);
+              setNameToDelete(selectedRapport.nom);
+              togglePopUpDelete();
+            }}>Supprimer</button>
+            <button className="btn_blue" onClick={handleEditClick}>Modifier</button>
+          </div>
+        </div>
+      ) : null}
+    </Slide>
+    {/* Popups de confirmation et suppression */}
+    <PopUpDelete
+      toDelete={nameToDelete}
+      handleDelete={handleDeleteRapport}
+      isOpen={isPopUpDeleteOpen}
+      onClose={() => togglePopUpDelete()}
+    />
+
+    <PopUpConfirmation sentence={`Le rapport ${nameToDelete} a bien été supprimé.`} show={isShowRemove} setShow={setIsShowRemove} />
+    <PopUpConfirmation sentence={`Le rapport ${nameToDelete} a bien été ajouté.`} show={isShowAdd} setShow={setIsShowAdd} />
+    <PopUpConfirmation sentence={`Le rapport ${nameToDelete} a bien été modifié.`} show={isShowModify} setShow={setIsShowModify} />
+    </>
   )
 }
 

@@ -1,36 +1,47 @@
 <?php
-require_once('model/medicamentDAO.class.php');
+require_once(__DIR__ . '/../model/medicamentDAO.class.php');
 require_once(__DIR__ . '/../app.php');
 
+header('Content-Type: application/json');
 
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    exit;
+}
 
 $app = new App();
 
 if (!$app->checkRole('Famille')) {
-    header('HTTP/1.1 403 Forbidden');
+    http_response_code(403);
     echo json_encode([
         'success' => false, 
-        'message' => 'Erreur : Vous devez être un proche de la famille pour faire ça.'
+        'error' => 'Accès refusé.'
     ]);
     exit; 
 }
 
 try {
-    $json = file_get_contents('php://input'); // lit le body du fetch
-    $data = json_decode($json, true); // transforme '$json' en tableau
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
 
-    if (empty($data['id'])) {
+    $id = filter_var($data['id'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
+
+    if (empty($id)) {
+        http_response_code(400);
         throw new Exception("ID manquant pour la suppression.");
     }
 
     $model = new MedicamentDAO();
-    $success = $model->deleteMedecine($app->id_famille,$data['id']);
+    $success = $model->deleteMedecine($app->id_famille, $id);
 
-    // renvoie a la vue des informations
     echo json_encode([
         "success" => $success, 
     ]);
 
 } catch (Exception $e) {
-    echo json_encode(["error" => $e->getMessage()]);
+    echo json_encode([
+        "success" => false,
+        "error" => $e->getMessage()
+    ]);
 }
+
+exit();

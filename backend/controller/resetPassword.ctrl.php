@@ -1,27 +1,42 @@
 <?php
 require_once(__DIR__ . '/../model/personneDAO.class.php');
+require_once(__DIR__ . '/../app.php');
 
-$json = file_get_contents('php://input');
-$data = json_decode($json, true);
+header('Content-Type: application/json');
 
-$email = $data['email'] ?? '';
-$newMdp = $data['newMdp'] ?? '';
-$pepper = $_ENV['APP_PEPPER']; // Important : le même poivre que pour le Login !
-
-if (empty($email) || empty($newMdp)) {
-    echo json_encode(['success' => false, 'message' => 'Champs manquants']);
-    exit();
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    exit;
 }
 
-// Hachage du nouveau mot de passe (Même méthode que Register)
-$hashedMdp = password_hash($newMdp . $pepper, PASSWORD_BCRYPT);
+try {
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
 
-$dao = new PersonneDAO();
-// On met à jour
-$result = $dao->updatePasswordByEmail($email, $hashedMdp);
+    $email = filter_var($data['email'] ?? '', FILTER_VALIDATE_EMAIL);
+    $newMdp = $data['newMdp'] ?? '';
+    $pepper = $_ENV['APP_PEPPER'] ?? '';
 
-if ($result) {
-    echo json_encode(['success' => true]);
-} else {
-    echo json_encode(['success' => false, 'message' => 'Erreur SQL ou Email inconnu']);
+    if (!$email || empty($newMdp)) {
+        http_response_code(400);
+        throw new Exception("Champs manquants ou email invalide");
+    }
+
+    $hashedMdp = password_hash($newMdp . $pepper, PASSWORD_BCRYPT);
+
+    $dao = new PersonneDAO();
+    $result = $dao->updatePasswordByEmail($email, $hashedMdp);
+
+    if ($result) {
+        echo json_encode(['success' => true]);
+    } else {
+        http_response_code(500);
+        throw new Exception("Erreur lors de la mise à jour");
+    }
+} catch (Exception $e) {
+    echo json_encode([
+        'success' => false, 
+        'error' => $e->getMessage()
+    ]);
 }
+
+exit();
