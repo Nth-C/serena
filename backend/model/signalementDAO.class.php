@@ -5,9 +5,9 @@ require_once(__DIR__ . '/dal.class.php');
 class SignalementDAO {
     private DAL $dal;
 
-    public function __construct() {
-        $this->dal = DAL::get();
-    }
+    public function __construct(?DAL $dal = null) {
+    $this->dal = $dal ?? DAL::get();
+}
 
     // Récupérer tous les signalements d'une personne
     public function getAllSignalement($id_pers): array {
