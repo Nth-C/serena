@@ -27,6 +27,7 @@ import Accessibilite from './pages/Accessibilite';
 import Signalement from './pages/Signalement';
 import VerifyAccount from './pages/VerifyAccount';
 import LegalMention from './pages/legalMention';
+import Ocr from './pages/Ocr';
 
 import { ROLES, hasPermission } from './utils/roleManager';
 
@@ -212,6 +213,15 @@ function App() {
           </ProtectedRoute>
         }>
           <Route index element={<Agenda />} />
+        </Route>
+
+        {/* OCR */}
+        <Route path="ocr" element={
+          <ProtectedRoute>
+            <Layout submenu={[]} />
+          </ProtectedRoute>
+        }>
+          <Route index element={<Ocr />} />
         </Route>
 
         {/* SUIVI */}

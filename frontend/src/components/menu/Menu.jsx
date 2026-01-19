@@ -114,6 +114,10 @@ function Menu({isOpen , onHamburgerClick}) {
                             <p>Liste membres</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
+                        <NavLink to={"/ocr"} onClick={onHamburgerClick}>
+                            <p>Lecteur d'ordonnance</p>
+                            <img src="/icons/chevron_right.svg" alt=">" />
+                        </NavLink>
                         <NavLink to={"/signalement"} onClick={onHamburgerClick}>
                             <p>Signalement</p>
                             <img src="/icons/chevron_right.svg" alt=">" />

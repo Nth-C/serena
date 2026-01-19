@@ -1,0 +1,80 @@
+.ocr-container {
+    padding: 2rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+.ocr-container h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.ocr-container p {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #666;
+}
+
+.ocr-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.ocr-controls input[type="file"] {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+
+.ocr-controls button {
+    padding: 0.75rem 1.5rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.ocr-controls button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.ocr-controls button:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+.ocr-error {
+    color: #dc3545;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.ocr-result {
+    margin-top: 2rem;
+}
+
+.ocr-result h3 {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.ocr-result textarea {
+    width: 100%;
+    height: 200px;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.9rem;
+    background-color: #fff;
+    resize: vertical;
+}

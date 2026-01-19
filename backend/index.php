@@ -69,6 +69,7 @@ const _ROUTES = array(
   'user/delete' => 'deleteCompte',
   'aides/calculer' => 'getAides',
   'aides/get' => 'viewAides',
+  'ocr' => 'ocr',
 );
 
 if (!array_key_exists($route, _ROUTES)) {

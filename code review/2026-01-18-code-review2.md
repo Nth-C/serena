@@ -11,6 +11,7 @@
 *   **Absence de Validation des Entrées Côté Serveur :**
     *   **Description :** La plupart des contrôleurs (ex: `register.ctrl.php`) utilisent directement les données de `$_POST` ou `$_GET` sans validation ni nettoyage. Cela expose l'application à des risques de corruption de données, d'erreurs inattendues et de vulnérabilités de type Cross-Site Scripting (XSS) stocké.
     *   **Recommandation :** Implémenter une validation systématique pour toutes les données entrantes. Utiliser des fonctions comme `filter_input()` ou des bibliothèques de validation pour s'assurer que les données sont du type et du format attendus avant de les traiter.
+    
 
 *   **Politique CORS (Cross-Origin Resource Sharing) trop permissive :**
     *   **Description :** L'utilisation de `header("Access-Control-Allow-Origin: *");` permet à n'importe quel domaine d'envoyer des requêtes à votre API. Cela peut poser des problèmes de sécurité.

@@ -9,5 +9,11 @@ export default defineConfig({
     },
     host: true,
     port: 5173,
+    proxy: {
+      '/backend': {
+        target: 'http://localhost',
+        changeOrigin: true,
+      },
+    },
   },
 })
