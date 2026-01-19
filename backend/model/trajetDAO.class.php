@@ -11,7 +11,7 @@ class TrajetDAO {
         $this->dal = DAL::get();
     }
 
-    public function addTrajet($date_deb, $date_fin, $lieu_dep, $lieu_arr, $id_event, $aidant_id, $nom_societe, $id_famille)
+    public function addTrajet($date_deb, $lieu_dep, $lieu_arr, $id_event, $aidant_id, $nom_societe, $id_famille)
     {
         try {
             // Démarrage de la transaction (sécurité)
@@ -19,14 +19,13 @@ class TrajetDAO {
 
             // 1. Insertion dans TRAJET
             // J'ai retiré 'demande_trajet' et 'TRUE' de la requête
-            $query = "INSERT INTO TRAJET (date_deb, date_fin, lieu_dep, lieu_arr, id_event) 
-                      VALUES (:date_deb, :date_fin, :lieu_dep, :lieu_arr, :id_event) 
+            $query = "INSERT INTO TRAJET (date_deb, lieu_dep, lieu_arr, id_event) 
+                      VALUES (:date_deb, :lieu_dep, :lieu_arr, :id_event) 
                       RETURNING id_trajet";
             
             $stmt = $this->dal->prepare($query);
             $stmt->execute([
                 ':date_deb' => $date_deb,
-                ':date_fin' => $date_fin,
                 ':lieu_dep' => $lieu_dep,
                 ':lieu_arr' => $lieu_arr,
                 ':id_event' => $id_event
