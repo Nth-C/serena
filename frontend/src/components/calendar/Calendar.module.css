@@ -40,6 +40,10 @@
     width: 100%;
 }
 
+:is(.calendar_day, .calendar_week) .event:hover {
+    background-color: var(--blue-hover);
+}
+
 
 :is(.calendar_day, .calendar_week) .event p {
     white-space: nowrap;
