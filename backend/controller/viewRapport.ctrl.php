@@ -1,8 +1,8 @@
 <?php
-require_once('model/rapportDAO.class.php');
+require_once(__DIR__ . '/../model/rapportDAO.class.php');
 require_once(__DIR__ . '/../app.php');
 
-
+header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
@@ -10,17 +10,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 $app = new App();
 
+if (!$app->connected || !$app->id_famille) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'error' => 'Non connecté ou famille non sélectionnée']);
+    exit;
+}
+
 try {
     $model = new RapportDAO();
+    
+    // Récupération de l'historique complet des rapports pour la famille
     $rapports = $model->getAllRapports($app->id_famille);
 
-     foreach ($rapports as &$row) {
-        $row['medics_details'] = $model->getMedicsByRapport($row['id_rapport']);
+    // Hydratation : On ajoute le détail des médicaments consommés pour chaque rapport
+    foreach ($rapports as &$row) {
+        $row['medics_details'] = $model->getMedicsByRapport($row['id_rapport']) ?: [];
     }
 
-    echo json_encode(["success" => true, "data" => $rapports]);
+    echo json_encode([
+        "success" => true, 
+        "data" => $rapports ?: []
+    ]);
 
-    //echo json_encode($rapports);
 } catch (Exception $e) {
-    echo json_encode(["error" => $e->getMessage()]);
+    http_response_code(500);
+    echo json_encode([
+        "success" => false, 
+        "error" => $e->getMessage()
+    ]);
 }
+
+exit();

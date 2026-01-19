@@ -1,14 +1,19 @@
 <?php
-require_once('model/categorieDAO.class.php');
-require_once('model/documentDAO.class.php');
+require_once(__DIR__ . '/../model/categorieDAO.class.php');
+require_once(__DIR__ . '/../model/documentDAO.class.php');
 require_once(__DIR__ . '/../app.php');
 
-header("Content-Type: application/json");
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    exit;
+}
 
 $app = new App();
 
 if (!$app->connected || !$app->id_famille) {
-    echo json_encode(["error" => "Session invalide ou famille non sélectionnée"]);
+    http_response_code(401);
+    echo json_encode(["success" => false, "error" => "Session invalide ou famille non sélectionnée"]);
     exit;
 }
 
@@ -16,11 +21,12 @@ try {
     $categorieDao = new CategorieDAO();
     $documentDao = new DocumentDAO();
 
-    $categories = $categorieDao->getAllCategories($app->id_famille,$app->getRole());
-    foreach($categories as $categorie){
+    $categories = $categorieDao->getAllCategories($app->id_famille, $app->getRole());
+    
+    foreach ($categories as $categorie) {
         $documents = $documentDao->getDocumentsDeIdCategorie($app->id_famille, $categorie->id_cat);
         
-        foreach($documents as $document){
+        foreach ($documents as $document) {
             $categorie->ajouterDocument($document);
         }
     }
@@ -28,5 +34,8 @@ try {
     echo json_encode($categories);
 
 } catch (Exception $e) {
-    echo json_encode(["error" => $e->getMessage()]);
+    http_response_code(500);
+    echo json_encode(["success" => false, "error" => $e->getMessage()]);
 }
+
+exit();

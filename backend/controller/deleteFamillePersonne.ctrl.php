@@ -1,36 +1,47 @@
 <?php
-require_once('model/FamilleDAO.class.php');
+require_once(__DIR__ . '/../model/FamilleDAO.class.php');
 require_once(__DIR__ . '/../app.php');
 
+header('Content-Type: application/json');
 
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    exit;
+}
 
 $app = new App();
 
-try {
-    $json = file_get_contents('php://input'); // lit le body du fetch
-    $data = json_decode($json, true); // transforme '$json' en tableau
-
-    if (empty($data['id_personne'])) {
-        throw new Exception("ID personne manquant pour la suppression.");
-    }
-
-    if (!$app->checkRole('Createur')) {
-    header('HTTP/1.1 403 Forbidden');
+if (!$app->checkRole('Createur')) {
+    http_response_code(403);
     echo json_encode([
         'success' => false, 
-        'message' => 'Erreur : Vous devez avoir au moins de chef famille pour faire ça.'
+        'error' => 'Droits insuffisants : Seul le créateur peut faire cela.'
     ]);
     exit; 
 }
 
-    $model = new FamilleDAO();
-    $success = $model->deletePersonneDeFamille($app->id_famille,$data['id_personne']);
+try {
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
 
-    // renvoie a la vue des informations
+    $id_personne = filter_var($data['id_personne'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
+
+    if (empty($id_personne)) {
+        http_response_code(400);
+        throw new Exception("ID personne manquant pour la suppression.");
+    }
+
+    $model = new FamilleDAO();
+    $success = $model->deletePersonneDeFamille($app->id_famille, $id_personne);
+
     echo json_encode([
         "success" => $success, 
     ]);
 
 } catch (Exception $e) {
-    echo json_encode(["error" => $e->getMessage()]);
+    echo json_encode([
+        "success" => false,
+        "error" => $e->getMessage()
+    ]);
 }
+
+exit();
