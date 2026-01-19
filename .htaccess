@@ -1,24 +1,22 @@
 RewriteEngine On
 RewriteBase /
 
-# 1. Empêcher le listage des répertoires
+#Empêcher le listage répertoires
 Options -Indexes
 
-# 2. Sécurité : Forcer le HTTPS (souvent nécessaire sur Alwaysdata)
+#Forcer le HTTPS (essentiel en production)
 RewriteCond %{HTTP:X-Forwarded-Proto} !https
 RewriteCond %{HTTPS} off
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-# 3. ROUTAGE BACKEND (PHP)
-# Si l'URL commence par /backend ou s'il s'agit d'une route API connue
-# On redirige vers votre index.php backend
+# Redirige les appels API (ex: /home/dashboard, /api/users) vers le contrôleur frontal PHP.
+# corrige erreur 404.
 RewriteCond %{REQUEST_URI} ^/(backend|api|home) [NC]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [L]
 
-# 4. ROUTAGE FRONTEND (React)
-# Pour toutes les autres routes, si le fichier n'existe pas, on sert le Frontend
+# Pour toutes les autres routes, si le fichier ou dossier n'existe pas, on sert l'application React.
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.html [L]
@@ -26,10 +24,11 @@ RewriteRule . /index.html [L]
 <IfModule mod_headers.c>
     # Protection Clickjacking
     Header always set X-Frame-Options "SAMEORIGIN"
-    # Protection MIME type (évite l'erreur 'Unexpected token export')
+    # Protection contre le reniflage de type MIME
     Header always set X-Content-Type-Options "nosniff"
     # Protection XSS
     Header always set X-XSS-Protection "1; mode=block"
-    # HSTS
+    # HSTS 
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 </IfModule>
+
