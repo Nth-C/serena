@@ -4,9 +4,10 @@ require_once(__DIR__ . '/medicament.class.php');
 class MedicamentDAO {
     private DAL $dal;
 
-    public function __construct() {
-        $this->dal = DAL::get();
-    }
+
+public function __construct(?DAL $dal = null) {
+    $this->dal = $dal ?? DAL::get();
+}
 
      public function getNbMedicament($id_famille,$nomMedicament): array {
         $query = 'SELECT quantite FROM STOCK_MEDICS WHERE designation_medicament LIKE :nomMedicament AND id_famille = :id_famille';

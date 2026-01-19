@@ -127,7 +127,7 @@ function Agenda() {
       [name]: value
     }))
   }
-  
+
   const decodeHTML = (str) => {
     const txt = document.createElement("textarea");
     txt.innerHTML = str;
@@ -666,7 +666,6 @@ function Agenda() {
                       setEventToDelete({id: currentEvent.id_event, title: currentEvent.titre})
                       setEventOpen(false)
                     }}>Supprimer</button>
-                    <button className="btn_border" onClick={() => setEventOpen(false)}>Fermer</button>
                 </div>
             </div>
         ) : currentEvent && isEditMode ? (
