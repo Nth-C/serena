@@ -147,6 +147,16 @@ class EvenementDAO{
             'id_event' => $id_event
         ]);
     }
+
+    public function getAccompagnants($id_event): array {
+        $query = 'SELECT a.id_personne, p.prenom, p.nom 
+                FROM accompagne a 
+                JOIN PERSONNES p ON a.id_personne = p.id_personne 
+                WHERE a.id_event = :id_event';
+        $stmt = $this->dal->prepare($query);
+        $stmt->execute(['id_event' => $id_event]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 
 ?>

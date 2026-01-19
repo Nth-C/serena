@@ -30,12 +30,21 @@ try {
 
     $dataExport = [];
     foreach ($events as $ev) {
+        // Récupérer l'accompagnant de cet événement (un seul)
+        $accompantsData = $dao->getAccompagnants($ev->id_event);
+        $accompagnant = null;
+        if (!empty($accompantsData)) {
+            $accompagnant = $accompantsData[0]; // Il n'y en a qu'un
+        }
+
         $dataExport[] = [
             'id_event' => $ev->id_event,
             'nom'      => $ev->nom,
             'date_deb' => $ev->date_deb,
             'date_fin' => $ev->date_fin,
-            'lieu'     => $ev->lieu
+            'lieu'     => $ev->lieu,
+            'description' => $ev->note,
+            'accompagnant' => $accompagnant
         ];
     }
 

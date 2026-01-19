@@ -1981,7 +1981,7 @@ progress.blue_bar::-moz-progress-bar {
 .privacy > div,
 .legal_mention > div {
   padding: 3rem;
-  width: 50%;
+  max-width: 60rem;
   display: flex;
   flex-direction: column;
   gap: 5rem;

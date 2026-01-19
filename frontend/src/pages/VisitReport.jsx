@@ -552,9 +552,10 @@ function LastVisitReport() {
                   <div>
                     <p>{m.nomMedicament}</p>
                     <input
-                      type="text"
+                      type="number"
                       placeholder=""
                       value={m.quantite}
+                      min="1"
                       onChange={(e) => updateMedicQuantite(id, e.target.value)}
                     />
                     <button type="button" onClick={() => removeMedicFromSelection(id)}>✕</button>
