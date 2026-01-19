@@ -403,7 +403,7 @@ function LastVisitReport() {
             <p>Chargement des rapports...</p>
           ) : sortedRapports.length > 0 ? (
             sortedRapports.map((rapport) => (
-              <div className="report_case" key={rapport.id_rapport} onClick={() => handleOpenDetails(rapport)}>
+              <div className="report_case hover_blue" key={rapport.id_rapport} onClick={() => handleOpenDetails(rapport)}>
                 <div>
                   <h2>{rapport.nom || "Nom rapport"}</h2>
                   <p>

@@ -282,6 +282,10 @@ input::placeholder {
   margin-top: 2rem;
 }
 
+.hover_blue:hover {
+  background-color: var(--blue-hover);
+}
+
 /* ----------------------------------- */
 /* ----------- LAYOUT MENU ----------- */
 /* ----------------------------------- */
@@ -1628,6 +1632,10 @@ progress.blue_bar::-moz-progress-bar {
   flex-direction: column;
   gap: 30px;
   margin-bottom: 15%;
+}
+
+.assistance .reset {
+  width: 100%;
 }
 
 .assistance .box_check {

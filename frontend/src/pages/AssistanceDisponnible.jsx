@@ -66,7 +66,7 @@ function AssistanceDisponnible({ aides, resetForm }) {
             )}
             
             <button 
-                className="btn_blue" 
+                className="btn_blue reset" 
                 onClick={resetForm} 
             >
                 Modifier ma situation
