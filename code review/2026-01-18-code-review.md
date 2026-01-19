@@ -13,7 +13,7 @@ Portée: Monorepo avec backend (PHP), frontend (React), service OCR (Python/Node
 ## Sécurité
 - Des fichiers d’environnement sont commités: `serena/backend/.env`, `frontend/.env.development`, `sere-na-llama-ocr/.env`. Les retirer du VCS, régénérer/rotation des secrets, charger via variables d’environnement/secrets manager.
 - Valider et assainir toutes les entrées utilisateur côté serveur (PHP) et côté services. Centraliser la validation.
-- Protection CSRF pour les endpoints modifiant l’état (tokens ou cookies SameSite).
+**FAIT** - Protection CSRF pour les endpoints modifiant l’état (tokens ou cookies SameSite).
 - CORS: définir explicitement les origines autorisées; éviter le joker en production.
 - Cookies de session/auth en HTTPS uniquement; définir Secure, HttpOnly, SameSite=strict.
 - Exécuter les images Docker en utilisateur non-root; ajouter la directive USER dans les Dockerfiles.
