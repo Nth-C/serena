@@ -54,7 +54,7 @@ function Agenda() {
     // Champs Trajet
     effectue: 'aidant',  // Valeur par défaut
     societe: '',         // Texte
-    aidantAffecte: 'demande',
+    aidantAffecte: '',
     lieuDepart: '',
     lieuArrivee: '',
     id_event: ''         // ID de l'événement lié
@@ -323,11 +323,17 @@ function Agenda() {
         const startDate = realStart < rangeStart ? new Date(rangeStart) : realStart;
         const endDate = realEnd > rangeEnd ? new Date(rangeEnd) : realEnd;
 
+        // Afficher l'accompagnant s'il existe
+        const accompagnantNom = ev.accompagnant 
+          ? `${ev.accompagnant.prenom} ${ev.accompagnant.nom}`
+          : "Non spécifié";
+
         return {
           id_event: ev.id_event,
           titre: ev.nom,
           lieu: ev.lieu,
           description: ev.description,
+          accompagnant: accompagnantNom,
           dateStart: startDate,
           dateEnd: endDate,
         };
@@ -575,6 +581,11 @@ function Agenda() {
                 <div className='detail_item'>
                     <strong>Lieu:</strong>
                     <p>{currentEvent.lieu || "Non spécifié"}</p>
+                </div>
+
+                <div className='detail_item'>
+                    <strong>Accompagnant:</strong>
+                    <p>{currentEvent.accompagnant}</p>
                 </div>
                 
                 <div className='detail_item'>
