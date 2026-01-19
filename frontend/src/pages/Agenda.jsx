@@ -591,12 +591,10 @@ function Agenda() {
                 <div className='detail_item'>
                     <strong>Horaire:</strong>
                     <p>
-                        De {getFormatDate(currentEvent.dateStart)}
-                        à {getFormatTime(currentEvent.dateStart)}
+                        Du {getFormatDate(currentEvent.dateStart)} à {getFormatTime(currentEvent.dateStart)}
                     </p>
                     <p>
-                        De {getFormatDate(currentEvent.dateEnd)}
-                        à {getFormatTime(currentEvent.dateEnd)}
+                        Au {getFormatDate(currentEvent.dateEnd)} à {getFormatTime(currentEvent.dateEnd)}
                     </p>
                 </div>
 
