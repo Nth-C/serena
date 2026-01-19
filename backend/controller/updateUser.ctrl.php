@@ -29,7 +29,7 @@ try {
     $prenom   = filter_var($data['prenom'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
     $mail     = filter_var($data['mail'] ?? '', FILTER_VALIDATE_EMAIL);
     $username = filter_var($data['username'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
-    $date_naiss = $data['date_naissance'] ?? null;
+    $date_naissance = $data['date_naissance'] ?? null;
 
     if (!$mail) {
         throw new Exception("Format d'email invalide");
@@ -38,11 +38,11 @@ try {
     $model = new PersonneDAO();
     $success = $model->updateUser(
         $app->personne->id,
+        $mail,
         $nom,
         $prenom,
-        $mail,
         $username,
-        $date_naiss
+        $date_naissance
     );
 
     echo json_encode(["success" => $success]);
