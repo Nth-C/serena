@@ -428,89 +428,78 @@ function Agenda() {
       startDate={date}
     />
 
+    {/* ajouter evenement */}
     <Slide
-        title={isTrajet ? "Nouveau Trajet" : "Nouvel Événement"} 
-        isOpen={newEventOpen} 
-        toggleOpen={() => setNewEventOpen(false)}
-
-      >
-
-          {!isTrajet && (
-            /* =========================================
-               PARTIE ÉVÉNEMENT
-               ========================================= */
-            <form className='add_event' onSubmit={handleAddEvent}>  
-              <div>
-                <label>Titre :</label>
-                <input 
-                  type="text" name="titre" placeholder="Ex: Rendez-vous médical"
-                  value={formData.titre} onChange={handleChange} required 
-                />
-              </div>
-
-              <div>
-                <label>Lieu :</label>
-                <input 
-                  type="text" name="lieu" placeholder="Ex: 67 Rue du Skibidi"
-                  value={formData.lieu} onChange={handleChange} 
-                />
-              </div>
-
-              <div>
-                <label>Accompagnants :</label>
-                <select name="accompagnants" value={formData.accompagnants} onChange={handleChange} required>
-                  <option value="">-- Choisir un accompagnant --</option>
-                  {membresFamille.map((personne) => (
-                      <option key={personne.id} value={personne.id}>
-                          {personne.prenom} {personne.nom}
-                      </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="date-row">
-                <div>
-                  <label>Début :</label>
-                  <input type="datetime-local" name="debut" value={formData.debut} onChange={handleChange} required />
-                </div>
-                <div>
-                  <label>Fin :</label>
-                  <input type="datetime-local" name="fin" value={formData.fin} onChange={handleChange} required />
-                </div>
-              </div>
-
-              <div>
-                <label>Récurrence :</label>
-                <select name="recurrence" value={formData.recurrence} onChange={handleChange}>
-                  <option value="aucun">Aucune</option>
-                  <option value="journalier">Journalier</option>
-                  <option value="hebdomadaire">Hebdomadaire</option>
-                  <option value="mensuel">Mensuel</option>
-                  <option value="annuel">Annuel</option>
-                </select>
-              </div>
-              {formData.recurrence != 'aucun' && (
-              <div>
-                <label>Nombre de récurrence :</label>
-                <input type="number" min="1" max="100" name="nbRecurrence" value={formData.nbRecurrence} onChange={handleChange} required />
-              </div>
-              )}
-
-              <div>
-                <label>Notes :</label>
-                <textarea name="description" value={formData.description} onChange={handleChange} />
-              </div>
-
-              <div>
-                  <button type='button' className='btn_border' onClick={handleReset}>Réinitialiser</button>
-                  <button type='submit' className='btn_blue'>Valider</button>
-              </div>
-           </form>
-          )}
-      </Slide>
-
+      title="Nouvel événement"
+      isOpen={newEventOpen} 
+      toggleOpen={() => setNewEventOpen(false)}
+    >
+      <form className='add_event' onSubmit={handleAddEvent}>  
+        <div>
+          <label>Titre :</label>
+          <input 
+            type="text" name="titre" placeholder="Ex: Rendez-vous médical"
+            value={formData.titre} onChange={handleChange} required 
+          />
+        </div>
+        <div>
+          <label>Lieu :</label>
+          <input 
+            type="text" name="lieu" placeholder="Ex: 67 Rue du Skibidi"
+            value={formData.lieu} onChange={handleChange} 
+          />
+        </div>
+        <div>
+          <label>Accompagnants :</label>
+          <select name="accompagnants" value={formData.accompagnants} onChange={handleChange} required>
+            <option value="">-- Choisir un accompagnant --</option>
+            {membresFamille.map((personne) => (
+                <option key={personne.id} value={personne.id}>
+                    {personne.prenom} {personne.nom}
+                </option>
+            ))}
+          </select>
+        </div>
+        <div className="date-row">
+          <div>
+            <label>Début :</label>
+            <input type="datetime-local" name="debut" value={formData.debut} onChange={handleChange} required />
+          </div>
+          <div>
+            <label>Fin :</label>
+            <input type="datetime-local" name="fin" value={formData.fin} onChange={handleChange} required />
+          </div>
+        </div>
+        <div>
+          <label>Récurrence :</label>
+          <select name="recurrence" value={formData.recurrence} onChange={handleChange}>
+            <option value="aucun">Aucune</option>
+            <option value="journalier">Journalier</option>
+            <option value="hebdomadaire">Hebdomadaire</option>
+            <option value="mensuel">Mensuel</option>
+            <option value="annuel">Annuel</option>
+          </select>
+        </div>
+        {formData.recurrence != 'aucun' && (
+        <div>
+          <label>Nombre de récurrence :</label>
+          <input type="number" min="1" max="100" name="nbRecurrence" value={formData.nbRecurrence} onChange={handleChange} required />
+        </div>
+        )}
+        <div>
+          <label>Notes :</label>
+          <textarea name="description" value={formData.description} onChange={handleChange} />
+        </div>
+        <div>
+            <button type='button' className='btn_border' onClick={handleReset}>Réinitialiser</button>
+            <button type='submit' className='btn_blue'>Valider</button>
+        </div>
+     </form>
+    </Slide>
+    
+    {/* ajouter trajet */}
     <Slide 
-      title={"Détails"}
+      title={"Nouveau trajet"}
       isOpen={trajetOpen}
       toggleOpen={() => {
         setTrajetOpen(false)
@@ -533,9 +522,9 @@ function Agenda() {
                     const dateStr = !isNaN(d) ? d.toLocaleDateString('fr-FR') : ev.date_deb;
                     
                     return (
-                        <option key={ev.id_event} value={ev.id_event}>
-                            {ev.nom} ({dateStr})
-                        </option>
+                      <option key={ev.id_event} value={ev.id_event}>
+                        {ev.nom} ({dateStr})
+                      </option>
                     )
                 })}
             </select>
@@ -556,7 +545,7 @@ function Agenda() {
                 checked={formData.effectue === 'externe'} 
                 onChange={handleChange}
             />
-            <label htmlFor="externe">Société Externe</label> 
+            <label htmlFor="externe">Société Externe :</label> 
           </div> 
         </div>
         {formData.effectue === 'externe' ? (
@@ -571,7 +560,7 @@ function Agenda() {
           <div>
             <label>Aidant affecté :</label>
             <select name="aidantAffecte" value={formData.aidantAffecte} onChange={handleChange} required>
-              <option value="demande">Envoyer une demande aux aidants</option>
+              <option value="demande">Envoyer une demande aux aidants :</option>
               {membresFamille.map((personne) => (
                   <option key={personne.id} value={personne.id}>
                       {personne.prenom} {personne.nom}
@@ -608,8 +597,9 @@ function Agenda() {
       </form>
     </Slide>
     
+    {/* details + modifier */}
     <Slide
-        title={currentEvent ? currentEvent.titre : "Trajet"}
+        title={currentEvent ? currentEvent.titre : "Détails"}
         isOpen={eventOpen}
         toggleOpen={() => {
           setEventOpen(false)
@@ -670,7 +660,18 @@ function Agenda() {
                     }}>Supprimer</button>
                 </div>
             </div>
-        ) : currentEvent && isEditMode ? (
+        ) : (currentEvent && isEditMode) && (
+          <>
+            {/* 
+              Switcher Event / Trajet 
+              rajouter une condition pour verifier si un un trajet est bien lié a l'evenement
+            */}
+            <div className='switch_event'>
+              <button type="button" className={!isTrajet ? 'active' : ''} onClick={() => setIsTrajet(false)} >Événement</button>
+              <button type="button" className={isTrajet ? 'active' : ''} onClick={() => setIsTrajet(true)} >Trajet</button>
+            </div>
+
+            {!isTrajet ? (
             <form className='edit_event' onSubmit={handleUpdateEvent}>
               <div>
                 <label>Titre :</label>
@@ -730,7 +731,14 @@ function Agenda() {
                   <button type='submit' className='btn_blue'>Valider</button>
               </div>
            </form>
-        ) : null}
+            ) : (
+              <>
+                modifier trajet
+              </>
+            )}
+          </>
+        )}
+        
     </Slide>
 
     <PopUpConfirmation
