@@ -1,5 +1,5 @@
 <?php
-require_once('model/medicamentDAO.class.php');
+require_once(__DIR__ . '/../model/medicamentDAO.class.php');
 require_once(__DIR__ . '/../app.php');
 
 
@@ -10,34 +10,65 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 $app = new App();
 
+// --- 2. VÉRIFICATION SÉCURITÉ (Rôle) ---
+// Note: credentials: 'include' dans fetch est requis pour que ceci fonctionne
 if (!$app->checkRole('Famille')) {
-    header('HTTP/1.1 403 Forbidden');
     echo json_encode([
         'success' => false, 
-        'message' => 'Erreur : Vous devez être un proche de la famille pour faire ça.'
+        'error' => 'Accès refusé : Vous devez être connecté.'
     ]);
-    exit; 
+    exit;
 }
 
+$id_famille = $app->id_famille;
 
+// --- 3. RÉCUPÉRATION DES DONNÉES JSON ---
+// Comme filter_input(INPUT_POST) ne lit pas le JSON, on fait ceci :
+$json = file_get_contents('php://input');
+$data = json_decode($json, true);
 
-$model = new MedicamentDAO();
-try {
-    $id_famille = $app->id_famille;
-    $json = file_get_contents('php://input'); // lit le body du fetch
-    $data = json_decode($json, true); // transforme '$json' en tableau
+// Équivalent de filter_input pour le format JSON
+$name        = filter_var($data['name'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
+$stock       = filter_var($data['stock'] ?? null, FILTER_VALIDATE_INT);
+$stockTotal  = filter_var($data['stockTotal'] ?? null, FILTER_VALIDATE_INT);
+$idCatalogue = filter_var($data['idCatalogueMedecine'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
+// --- 4. VALIDATION ET INSERTION ---
+if ($name && $stock !== false && $stockTotal !== false && $id_famille) {
+    
+    $model = new MedicamentDAO();
+    
+    try {
+        $success = $model->addMedecine(
+            $id_famille, 
+            $name, 
+            $stock, 
+            $stockTotal, 
+            $idCatalogue
+        );
 
-    if (empty($data['name']) || !isset($data['stock'])) {
-        throw new Exception("Données manquantes (name ou stock).");
+        echo json_encode([
+            "success" => $success,
+            "message" => "Médicament ajouté."
+        ]);
+
+    } catch (Exception $e) {
+        echo json_encode([
+            "success" => false, 
+            "error" => "Erreur serveur : " . $e->getMessage()
+        ]);
+    }
+
+} else {
+    // Si une donnée est mal formée ou manquante
+    $errorMsg = 'Veuillez remplir tous les champs correctement.';
+    if ($stock === false || $stockTotal === false) {
+        $errorMsg = 'Les stocks doivent être des nombres entiers.';
     }
     
-    $success = $model->addMedecine($id_famille,$data['name'], $data['stock'], $data['stockTotal'], $data['idCatalogueMedecine']);
-
-    // renvoie a la vue des informations
     echo json_encode([
-        "success" => $success,
+        'success' => false, 
+        'error' => $errorMsg
     ]);
-
-} catch (Exception $e) {
-    echo json_encode(["error" => $e->getMessage()]);
 }
+
+exit();

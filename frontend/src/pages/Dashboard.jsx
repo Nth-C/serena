@@ -1,10 +1,16 @@
 import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom';
+import { getFormatDate, getFormatTime } from '../utils/timeFormat';
+import Slide from '../components/slide/Slide';
 
 function Dashboard() {
   const [medicaments, setMedicaments] = useState([])
   const [trajets, setTrajets] = useState([])
   const [taches, setTaches] = useState([])
+
+  const [isTrajetOpen, setIsTrajetOpen] = useState(false)
+  const [selectedTrajet, setSelectedTrajet] = useState(null);
+
   const [error, setError] = useState(null)
 
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -51,21 +57,23 @@ function Dashboard() {
   }
 
   return (
+    <>
     <div className="accueil">
-      
       {/*SECTION DEMANDE (Trajets) */}
       <div>
         <h1>Demande</h1>
         {trajets?.length === 0 ? (
           <p className="aucun">Aucune demande de trajet</p>
         ) : (
-          <div className='list_alerte'>
+          <div className='list_trajet'>
             {trajets.map((m, i) => (
-              <div key={i} className='alerte_dashbord'>
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z" /></svg>
+              <div key={i} className='alerte_dashbord' onClick={() => {setIsTrajetOpen(true); setSelectedTrajet(m)}}>
                 <div>
-                  <h3>Demande de Trajet</h3>
-                  <p>{m.description || "Besoin d'un accompagnateur"}</p>
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#252525"><path d="m480-80-10-120h-10q-142 0-241-99t-99-241q0-142 99-241t241-99q71 0 132.5 26.5t108 73q46.5 46.5 73 108T800-540q0 75-24.5 144t-67 128q-42.5 59-101 107T480-80Zm80-146q71-60 115.5-140.5T720-540q0-109-75.5-184.5T460-800q-109 0-184.5 75.5T200-540q0 109 75.5 184.5T460-280h100v54Zm-101-95q17 0 29-12t12-29q0-17-12-29t-29-12q-17 0-29 12t-12 29q0 17 12 29t29 12Zm-29-127h60q0-30 6-42t38-44q18-18 30-39t12-45q0-51-34.5-76.5T460-720q-44 0-74 24.5T344-636l56 22q5-17 19-33.5t41-16.5q27 0 40.5 15t13.5 33q0 17-10 30.5T480-558q-35 30-42.5 47.5T430-448Zm30-65Z"/></svg>
+                  <div>
+                    <h3>Demande de Trajet</h3>
+                    <p>{m.description || "Besoin d'un accompagnateur"}</p>
+                  </div>
                 </div>
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" /></svg>
               </div>
@@ -82,8 +90,8 @@ function Dashboard() {
             <p className="aucun">Aucune alerte de stock</p>
           ) : (
             medicaments.map((m, i) => (
-              <NavLink to={`/suivi/medicine`} style={{ textDecoration: 'none', color: 'inherit' }}>
-              <div key={i} className='alerte_dashbord'>
+              <NavLink key={i} to={`/suivi/medicine`}>
+              <div className='alerte_dashbord'>
                 <div>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z" /></svg>
                   <div>
@@ -114,7 +122,7 @@ function Dashboard() {
         <h1>Prochaines tâches</h1>
         <div className="list_task">
           {getProchaineTache() ? (
-            <NavLink to={`/agenda`} style={{ textDecoration: 'none', color: 'inherit' }}>
+            <NavLink to={`/agenda`}>
               <div className="alerte_dashbord">
                 <div>
                   <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="35px" fill="white">
@@ -136,6 +144,30 @@ function Dashboard() {
         </div>
       </div>
     </div>
+    
+    <Slide
+      title={"Détails du Trajet"}
+      isOpen={isTrajetOpen}
+      toggleOpen={() => setIsTrajetOpen(false)}
+    >
+      {selectedTrajet && (
+        <div className="details_trajet">
+          <div>
+            <p><strong>Départ :</strong> {selectedTrajet.lieu_dep}</p>
+            <p><strong>Arrivée :</strong> {selectedTrajet.lieu_arr}</p>
+          </div>
+          
+          <div>
+            <p><strong>Date prévue :</strong> {getFormatDate(new Date(selectedTrajet.date_deb))} {getFormatTime(new Date(selectedTrajet.date_deb))}</p>
+          </div>
+
+          <div className="actions">
+            <button className="btn_blue">Accepter le trajet</button>
+          </div>
+        </div>
+      )}
+    </Slide>
+    </>
   );
 }
 
