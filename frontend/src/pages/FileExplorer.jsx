@@ -158,6 +158,29 @@ function FileExplorer() {
     }
   };
 
+  const handleDeleteCategorie = async (e) => {
+
+    const route = 'categorie/delete';
+    try {
+      const response = await fetch(`${apiUrl}/?route=${route}`, {
+        method: "POST",
+        credentials: 'include',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({id_cat : e})
+      });
+      const result = await response.json();
+      if (result.success) {
+        getDocument();
+        toggleNewCategorie();
+      } else {
+        setMessage("Erreur: " + result.error);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -357,8 +380,11 @@ function FileExplorer() {
               </select>
           </div>
           <div>
-            <button type="button" className="btn_border" onClick={handleResetCategorie}>Réinitialiser</button>
-            <button type="submit" className="btn_blue">Ajouter</button>
+          <button type='button' className="btn_red" onClick={() => {
+            handleDeleteCategorie(idCurrentCategorie);
+            }}>Supprimer
+          </button>
+          <button type="submit" className="btn_blue">{isEditing ? "Modifier" : "Ajouter"}</button>
           </div>
         </form>
       </Slide>

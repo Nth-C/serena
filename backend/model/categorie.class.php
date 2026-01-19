@@ -6,12 +6,15 @@ class Categorie
   public readonly string $id_cat;
   public string $nom;
   public array $documents;
+  public string $role;
+
 
   public function __construct(array $data = array())
   {
     $this->id_cat = $data['id_cat'] ?? -1;
     $this->nom = $data['nom'] ?? '';
     $this->documents = $data['documents'] ?? [];
+    $this->role = $data['role'] ?? 'Professionelle';
   }
 
   public function ajouterDocument(Document $document){
