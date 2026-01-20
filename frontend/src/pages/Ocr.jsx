@@ -254,20 +254,6 @@ function OCR() {
           </div>
 
           <div>
-          <label>Type de médicament : </label>
-          <select value={idCatalogueMedecine} onChange={(e) => {
-            setIdCatalogueMedecine(e.target.value)
-          }}
-            required
-            disabled={!isNameGood || isEditing}>
-            <option value=""></option>
-            {listTypeMedecine.map((listeMedicament) => (
-              <option key={listeMedicament.id_medics} value={listeMedicament.id_medics}>
-                {listeMedicament.designation_elem_pharma}
-              </option>
-            ))}
-          </select>
-        </div>
             <label>Type de médicament : </label>
             <select
               value={formIdCatalogue}
@@ -275,9 +261,9 @@ function OCR() {
               required
             >
               <option value=""></option>
-              {listTypeMedecine.map((listeMedicament) => (
-                <option key={listeMedicament.id_medics} value={listeMedicament.id_medics}>
-                  {listeMedicament.designation_elem_pharma}
+              {listTypeMedecine.map((type) => (
+                <option key={type.id_medics} value={type.id_medics}>
+                  {type.designation_elem_pharma}
                 </option>
               ))}
             </select>
@@ -300,7 +286,6 @@ function OCR() {
               value={formStock}
               onChange={(e) => setFormStock(e.target.value)}
               required
-
             />
           </div>
 
