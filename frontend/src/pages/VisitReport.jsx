@@ -59,10 +59,7 @@ function LastVisitReport() {
   const [nameToDelete, setNameToDelete] = useState("");
 
   /* pop up confirmation */
-  const [isShowRemove, setIsShowRemove] = useState(false);
-  const [isShowAdd, setIsShowAdd] = useState(false);
-  const [isShowModify, setIsShowModify] = useState(false);
-
+  const [showConfirmation , setShowConfirmation] = useState(false)
   const [msgConfirmation , setMsgConfirmation] = useState('')
 
 
@@ -188,7 +185,15 @@ function LastVisitReport() {
         handleResetForm()
         getMedecine()
         setIsMedicineOpen(false)
-        !isEditing ? setIsShowAdd(true) : setIsShowModify(true)
+
+        //!isEditing ? setIsShowAdd(true) : setIsShowModify(true)
+        if(!isEditing) {
+          setMsgConfirmation(`Le rapport ${nouveauMedoc.name} a bien été ajouté.`)
+        } else {
+          setMsgConfirmation(`Le rapport ${nouveauMedoc.name} a bien été modifié.`)
+        }
+        setShowConfirmation(true)
+
         setNameMedecineToDisplay(nameMedecine)
       } else {
         setMessage("Erreur: " + result.error);
@@ -221,7 +226,6 @@ function LastVisitReport() {
       if (result.isUnique) {
         setListTypeMedecine(result.types)
         setIsNameGood(true)
-
 
       } else {
         setListTypeMedecine([])
@@ -322,9 +326,11 @@ function LastVisitReport() {
         setIsNewRapportOpen(false);
 
         // Ajout : Utiliser le nom sauvegardé
-        setNameToDelete(nomPourNotification);
+        //setNameToDelete(nomPourNotification);
+        setMsgConfirmation(`Le rapport ${nomPourNotification} a bien été ajouté.`)
+        setShowConfirmation(true)
 
-        isEditing ? setIsShowModify(true) : setIsShowAdd(true);
+        //isEditing ? setIsShowModify(true) : setIsShowAdd(true);
         handleResetRapport();
         setSelectedMedicsForReport([]);
         setIsEditing(false);
@@ -350,7 +356,9 @@ function LastVisitReport() {
       if (result.success) {
         setIsPopUpDeleteOpen(false);
         setIsDetailsReportpen(false);
-        setIsShowRemove(true);
+
+        setShowConfirmation(true)
+
         fetchRapports();
       }
     } catch (error) {
@@ -365,6 +373,7 @@ function LastVisitReport() {
   const toggleMedic = (id) => {
     setOpenMedicId(openMedicId === id ? null : id);
   };
+
   useEffect(() => {
     document.documentElement.classList.toggle('menu-active', isNewRapportOpen || isNewMedicineOpen || isDetailsReportOpen || isPopUpDeleteOpen);
   }, [isNewRapportOpen, isNewMedicineOpen, isDetailsReportOpen, isPopUpDeleteOpen]);
@@ -618,6 +627,7 @@ function LastVisitReport() {
               setIdCurrentRapport(selectedRapport.id_rapport);
               setNameToDelete(selectedRapport.nom);
               togglePopUpDelete();
+              setMsgConfirmation(`Le rapport ${selectedRapport.nom} a bien été suprimmé.`)
             }}>Supprimer</button>
             <button className="btn_blue" onClick={handleEditClick}>Modifier</button>
           </div>
@@ -633,9 +643,8 @@ function LastVisitReport() {
       onClose={() => togglePopUpDelete()}
     />
 
-    <PopUpConfirmation sentence={`Le rapport ${nameToDelete} a bien été supprimé.`} show={isShowRemove} setShow={setIsShowRemove} />
-    <PopUpConfirmation sentence={`Le rapport ${nameToDelete} a bien été ajouté.`} show={isShowAdd} setShow={setIsShowAdd} />
-    <PopUpConfirmation sentence={`Le rapport ${nameToDelete} a bien été modifié.`} show={isShowModify} setShow={setIsShowModify} />
+    <PopUpConfirmation sentence={msgConfirmation} show={showConfirmation} setShow={setShowConfirmation} />
+    
     </>
   )
 }
