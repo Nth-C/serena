@@ -71,6 +71,7 @@ const _ROUTES = array(
   'aides/calculer' => 'getAides',
   'aides/get' => 'viewAides',
   'ocr' => 'ocr',
+  'ocr/extract' => 'analyseOCR'
 );
 
 if (!array_key_exists($route, _ROUTES)) {
