@@ -31,7 +31,7 @@ try {
     
     $anciensMedics = $model->getMedicsByRapport($id_rapport);
     foreach ($anciensMedics as $old) {
-        $model->restockMedic($old['id_medicament'], $old['nombre_medic_conso']);
+        $model->restockMedic($old['id_medicament'], $old['quantite']);
     }
 
     $model->clearConso($id_rapport);
