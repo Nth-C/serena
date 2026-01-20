@@ -83,7 +83,7 @@ public function __construct(?DAL $dal = null) {
     // On compte si le nom existe exactement dans la table
     $query = 'SELECT 1 
               FROM CAT_MEDICS 
-              WHERE denomination_substance = :search 
+              WHERE denomination_substance ILIKE :search 
               LIMIT 1';
     
     $stmt = $this->dal->prepare($query);
@@ -103,7 +103,7 @@ public function getTypesByNomExact($nomExact): array {
                      id_medics, 
                      designation_elem_pharma 
               FROM CAT_MEDICS 
-              WHERE denomination_substance = :nom 
+              WHERE denomination_substance ILIKE :nom 
               ORDER BY designation_elem_pharma ASC, id_medics ASC';
     
     $stmt = $this->dal->prepare($query);

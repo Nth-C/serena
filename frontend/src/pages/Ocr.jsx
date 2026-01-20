@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Tesseract from 'tesseract.js';
 import './OCR.css'; // Fichier CSS pour le style (à créer)
+import Slide from '../components/slide/Slide';
 
 function OCR() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -8,6 +9,17 @@ function OCR() {
   const [isLoading, setIsLoading] = useState(false);
   const [ocrResult, setOcrResult] = useState({ raw_text: '', medicaments: [] });
   const [error, setError] = useState('');
+
+  // États pour le formulaire d'ajout (comme dans Medecine.jsx)
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [formName, setFormName] = useState("");
+  const [formIdCatalogue, setFormIdCatalogue] = useState("");
+  const [formStock, setFormStock] = useState("");
+  const [formStockTotal, setFormStockTotal] = useState("");
+  
+  const [listNomMedecine, setListNomMedecine] = useState([]);
+  const [listTypeMedecine, setListTypeMedecine] = useState([]);
+  const [isNameGood, setIsNameGood] = useState(false);
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -28,33 +40,6 @@ function OCR() {
     }
   };
 
-  // Ajoute un médicament au stock via l'API
-  const handleAddMedicament = async (medName) => {
-    try {
-      const response = await fetch(`${apiUrl}/?route=medicament/add`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ 
-            name: medName,
-            stock: 1,
-            stockTotal: 1,
-            idCatalogueMedecine: '' // On laisse vide pour l'instant
-        }),
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        alert(`Médicament "${medName}" ajouté au stock.`);
-      } else {
-        alert(data.error || "Erreur lors de l'ajout.");
-      }
-    } catch (err) {
-      alert("Erreur réseau lors de l'ajout.");
-    }
-  };
 
   // Appelle l'API pour l'analyse OCR
   const handleOcrAnalysis = async () => {
@@ -115,6 +100,82 @@ function OCR() {
     }
   };
 
+  // Recherche les types de médicaments (logique identique à Medecine.jsx)
+  const handleSearchMedecine = async (val) => {
+    try {
+      const response = await fetch(`${apiUrl}/?route=nommedicament/search`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ texteNomMedicament: val }),
+      });
+      const result = await response.json();
+      
+      setListNomMedecine(result.resultats || []);
+      if (result.isUnique) {
+        setListTypeMedecine(result.types || []);
+        setIsNameGood(true);
+        // Pré-sélectionne le premier type si disponible
+        if (result.types && result.types.length > 0) {
+             setFormIdCatalogue(result.types[0].id_medics);
+        }
+      } else {
+        setListTypeMedecine([]);
+        setFormIdCatalogue("");
+        setIsNameGood(false);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Ouvre le formulaire avec le nom pré-rempli
+  const openAddForm = (rawName) => {
+    const name = rawName ? rawName.trim() : "";
+    setFormName(name);
+    setFormStock("");
+    setFormStockTotal("");
+    setFormIdCatalogue("");
+    setIsNameGood(false);
+    setListTypeMedecine([]);
+    
+    if (name) {
+        handleSearchMedecine(name);
+    }
+    setIsAddModalOpen(true);
+  };
+
+  // Soumet le formulaire d'ajout
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const addResponse = await fetch(`${apiUrl}/?route=medicament/add`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          name: formName,
+          idCatalogueMedecine: formIdCatalogue,
+          stock: formStock,
+          stockTotal: formStockTotal
+        }),
+      });
+
+      const addResult = await addResponse.json();
+
+      if (addResult.success) {
+        alert(`Le médicament "${formName}" a été ajouté au stock.`);
+        setIsAddModalOpen(false);
+      } else {
+        alert(`Erreur lors de l'ajout : ${addResult.error}`);
+      }
+    } catch (error) {
+      console.error("Erreur réseau:", error);
+      alert("Une erreur est survenue.");
+    }
+  };
+
   return (
     <div className="ocr_page">
       <h1>Analyse d'Ordonnance (OCR)</h1>
@@ -149,7 +210,7 @@ function OCR() {
                 <li key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                   <strong>{name}</strong>
                   {typeof med !== 'string' && med.dosage && <span> - {med.dosage}</span>}
-                  <button className="btn_blue" onClick={() => handleAddMedicament(name)} style={{ padding: '0.5rem 1rem' }}>
+                  <button className="btn_blue" onClick={() => openAddForm(name)} style={{ padding: '0.5rem 1rem' }}>
                     Ajouter
                   </button>
                 </li>
@@ -161,13 +222,95 @@ function OCR() {
         </div>
       </div>
 
-      {/* Div optionnelle pour afficher le texte brut extrait */}
-      {ocrResult.raw_text && (
-        <div className="ocr_raw_text">
-          <h2>Texte brut extrait</h2>
-          <pre>{ocrResult.raw_text}</pre>
+      {/* Slide pour ajouter manuellement les détails */}
+      <Slide
+        title="Ajouter un médicament"
+        isOpen={isAddModalOpen}
+        toggleOpen={() => setIsAddModalOpen(false)}
+      >
+        <form className="new_medecine" onSubmit={handleFormSubmit}>
+          <div>
+            <label>Nom du médicament : </label>
+            <input
+              type="text"
+              list="medication-suggestions"
+              value={formName}
+              onChange={(e) => {
+                setFormStock("");
+                setFormStockTotal("");
+                setFormIdCatalogue("");
+                setFormName(e.target.value);
+                if (e.target.value !== "") {
+                  handleSearchMedecine(e.target.value);
+                }
+              }}
+              required
+            />
+            <datalist id="medication-suggestions">
+              {listNomMedecine?.map((suggestion, i) => (
+                <option key={i} value={suggestion.denomination_substance} />
+              ))}
+            </datalist>
+          </div>
+
+          <div>
+          <label>Type de médicament : </label>
+          <select value={idCatalogueMedecine} onChange={(e) => {
+            setIdCatalogueMedecine(e.target.value)
+          }}
+            required
+            disabled={!isNameGood || isEditing}>
+            <option value=""></option>
+            {listTypeMedecine.map((listeMedicament) => (
+              <option key={listeMedicament.id_medics} value={listeMedicament.id_medics}>
+                {listeMedicament.designation_elem_pharma}
+              </option>
+            ))}
+          </select>
         </div>
-      )}
+            <label>Type de médicament : </label>
+            <select
+              value={formIdCatalogue}
+              onChange={(e) => setFormIdCatalogue(e.target.value)}
+              required
+            >
+              <option value=""></option>
+              {listTypeMedecine.map((listeMedicament) => (
+                <option key={listeMedicament.id_medics} value={listeMedicament.id_medics}>
+                  {listeMedicament.designation_elem_pharma}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label>Stock initial (Total) : </label>
+            <input
+              type="number"
+              value={formStockTotal}
+              onChange={(e) => setFormStockTotal(e.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <label>Stock actuel :</label>
+            <input
+              type="number"
+              value={formStock}
+              onChange={(e) => setFormStock(e.target.value)}
+              required
+
+            />
+          </div>
+
+          <div>
+            <button type="button" className="btn_border" onClick={() => setIsAddModalOpen(false)}>Annuler</button>
+            <button type="submit" className="btn_blue">Ajouter</button>
+          </div>
+        </form>
+      </Slide>
+
     </div>
   );
 }
