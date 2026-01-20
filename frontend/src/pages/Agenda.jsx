@@ -176,6 +176,13 @@ function Agenda() {
       }
   };
 
+  const toLocalISO = (date) => {
+    const offset = date.getTimezoneOffset() * 60000; // Décalage en millisecondes
+    const localISOTime = (new Date(date - offset)).toISOString().slice(0, 16);
+    return localISOTime;
+  };
+
+
   const handleUpdateEvent = async (e) => {
     if (e) e.preventDefault();
 
@@ -184,8 +191,8 @@ function Agenda() {
         titre: formData.titre,
         lieu: formData.lieu,
         accompagnants: formData.accompagnants,
-        debut: formData.debut,
-        fin: formData.fin,
+        debut: toLocalISO(currentEvent.dateStart),
+        fin: toLocalISO(currentEvent.dateEnd),
         recurrence: formData.recurrence,
         description: formData.description
     };

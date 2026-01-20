@@ -45,7 +45,6 @@ try {
             $data['trajet']['date_deb'],
             filter_var($data['trajet']['lieu_dep'], FILTER_SANITIZE_SPECIAL_CHARS),
             filter_var($data['trajet']['lieu_arr'], FILTER_SANITIZE_SPECIAL_CHARS),
-            filter_var($data['trajet']['societe'], FILTER_SANITIZE_SPECIAL_CHARS)
         );
     }
 
