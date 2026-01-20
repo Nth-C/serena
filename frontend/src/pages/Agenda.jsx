@@ -244,10 +244,16 @@ function Agenda() {
         titre: formData.titre,
         lieu: formData.lieu,
         accompagnants: formData.accompagnants,
-        debut: toLocalISO(currentEvent.dateStart),
-        fin: toLocalISO(currentEvent.dateEnd),
-        recurrence: formData.recurrence,
-        description: formData.description
+        debut: formData.debut, 
+        fin: formData.fin,
+        description: formData.description,
+        trajet: {
+            date_deb: formData.debut,
+            lieu_dep: formData.lieuDepart,
+            lieu_arr: formData.lieuArrivee,
+            societe: formData.effectue === 'externe' ? formData.societe : null,
+            aidant_id: formData.effectue === 'aidant' ? formData.aidantAffecte : null
+        }
     };
 
     Object.keys(payload).forEach(key => {
@@ -722,20 +728,20 @@ const handleRemoveRecurrenceEvent = async (e) => {
 
                 <div className='actions'>
                     <button className="btn_blue" onClick={() => {
-                      setFormData({
-                        titre: currentEvent.titre,
-                        lieu: currentEvent.lieu || '',
-                        accompagnants: currentEvent.accompagnantId || '',
-                        debut: currentEvent.dateStart.toISOString().slice(0, 16),
-                        fin: currentEvent.dateEnd.toISOString().slice(0, 16),
-                        recurrence: '',
-                        description: currentEvent.description || '',
-                        effectue: 'aidant',
-                        societe: '',
-                        lieuDepart: '',
-                        lieuArrivee: '',
-                        id_event: ''
-                      })
+                    setFormData({
+                      ...formData,
+                      titre: currentEvent.titre,
+                      lieu: currentEvent.lieu || '',
+                      accompagnants: currentEvent.accompagnantId || '',
+                      debut: toLocalISO(currentEvent.dateStart),
+                      fin: toLocalISO(currentEvent.dateEnd),
+                      description: currentEvent.description || '',
+                      id_event: currentEvent.id_event,
+                      lieuDepart: currentEvent.trajet?.lieu_dep || '',
+                      lieuArrivee: currentEvent.trajet?.lieu_arr || '',
+                      societe: currentEvent.trajet?.societe || '',
+                      effectue: currentEvent.trajet?.societe ? 'externe' : 'aidant'
+                    });
                       setIsEditMode(true)
                     }}>Modifier</button>
                     {currentEvent.id_recurrence !== null && (
