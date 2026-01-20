@@ -20,6 +20,7 @@ const _ROUTES = array(
   'evenement/delete' => 'deleteEvenement',
   'evenementrecurrence/delete' => 'deleteEvenementRecurrence',
   'evenement/update' => 'updateEvenement',
+  'trajet/accepter' => 'accepterDemandeTrajet',
   'medicament/list' => 'viewMedicament',
   'medicament/add' => 'addMedicament',
   'medicament/delete' => 'deleteMedicament',
