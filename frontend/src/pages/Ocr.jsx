@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Tesseract from 'tesseract.js';
 import './OCR.css'; // Fichier CSS pour le style (à créer)
 
 function OCR() {
@@ -27,6 +28,34 @@ function OCR() {
     }
   };
 
+  // Ajoute un médicament au stock via l'API
+  const handleAddMedicament = async (medName) => {
+    try {
+      const response = await fetch(`${apiUrl}/?route=medicament/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ 
+            name: medName,
+            stock: 1,
+            stockTotal: 1,
+            idCatalogueMedecine: '' // On laisse vide pour l'instant
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        alert(`Médicament "${medName}" ajouté au stock.`);
+      } else {
+        alert(data.error || "Erreur lors de l'ajout.");
+      }
+    } catch (err) {
+      alert("Erreur réseau lors de l'ajout.");
+    }
+  };
+
   // Appelle l'API pour l'analyse OCR
   const handleOcrAnalysis = async () => {
     if (!selectedFile) {
@@ -36,15 +65,19 @@ function OCR() {
 
     setIsLoading(true);
     setError('');
-    const formData = new FormData();
-    formData.append('ordonnance', selectedFile);
 
     try {
-      // Note: la route 'ocr/extract' est un exemple, adaptez-la à votre backend
+      // 1. Extraction du texte directement dans le navigateur
+      const { data: { text } } = await Tesseract.recognize(selectedFile, 'fra');
+
+      // 2. Envoi du texte extrait au backend pour analyse des médicaments
       const response = await fetch(`${apiUrl}/?route=ocr/extract`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         credentials: 'include',
-        body: formData,
+        body: JSON.stringify({ ocrText: text }),
       });
 
       // On lit d'abord la réponse en tant que texte. Ça fonctionne toujours.
@@ -109,13 +142,18 @@ function OCR() {
           {isLoading && <p>Chargement...</p>}
           {!isLoading && ocrResult.medicaments.length > 0 ? (
             <ul>
-              {ocrResult.medicaments.map((med, index) => (
-                <li key={index}>
-                  <strong>{med.nom}</strong>
-                  {med.dosage && <span> - {med.dosage}</span>}
-                  {med.posologie && <small>{med.posologie}</small>}
+              {ocrResult.medicaments.map((med, index) => {
+                // Gestion compatible : soit objet (ancien code), soit string (nouveau backend)
+                const name = typeof med === 'string' ? med : med.nom;
+                return (
+                <li key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                  <strong>{name}</strong>
+                  {typeof med !== 'string' && med.dosage && <span> - {med.dosage}</span>}
+                  <button className="btn_blue" onClick={() => handleAddMedicament(name)} style={{ padding: '0.5rem 1rem' }}>
+                    Ajouter
+                  </button>
                 </li>
-              ))}
+              )})}
             </ul>
           ) : (
             !isLoading && <p className="aucun">Aucun médicament extrait pour le moment.</p>
