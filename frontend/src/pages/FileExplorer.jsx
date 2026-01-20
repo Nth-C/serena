@@ -42,6 +42,10 @@ function FileExplorer() {
   const [isFileError, setIsFileError] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
+  /* pop up confirmation */
+  const [showConfirmation , setShowConfirmation] = useState(false)
+  const [msgConfirmation , setMsgConfirmation] = useState('')
+
   const apiUrl = import.meta.env.VITE_API_URL;
 
   // fonction pour ouvrir/fermer le newDocument
@@ -127,10 +131,13 @@ function FileExplorer() {
       });
       const result = await response.json();
       if (result.success) {
-        setIsShowAdd(true); // Confirmation ajout
+        // setIsShowAdd(true); // Confirmation ajout
         handleResetForm();
         getDocument();
         toggleNewDocument();
+
+        setMsgConfirmation(`Le document ${nameDocument} a bien été ajouté.`)
+        setShowConfirmation(true)
       } else {
         setMessage("Erreur: " + result.error);
       }
@@ -157,6 +164,14 @@ function FileExplorer() {
         setNameCategorie('')
         toggleNewCategorie();
         getDocument()
+
+        if(!isEditing) {
+          setMsgConfirmation(`La catégorie ${nouvelleCategorie.name} a bien été ajouté.`)
+        } else {
+          setMsgConfirmation(`La catégorie ${updateCategorie.name} a bien été modifié.`)
+        }
+
+        setShowConfirmation(true)
       } else {
         setMessage("Erreur: " + result.error);
       }
@@ -178,6 +193,8 @@ function FileExplorer() {
       const result = await response.json();
       if (result.success) {
         getDocument();
+        setMsgConfirmation(`La catégorie ${infosCategorieDelete.name} a bien été supprimé.`)
+        setShowConfirmation(true)
       } else {
         setMessage("Erreur: " + result.error);
       }
@@ -185,7 +202,6 @@ function FileExplorer() {
       console.error(error);
     }
   };
-
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -229,7 +245,8 @@ function FileExplorer() {
       const result = await response.json();
       if (result.success) {
         setIsPopUpDeleteOpen(false);
-        setIsShowRemove(true);
+        setShowConfirmation(true)
+
         getDocument();
       } else {
         alert("Erreur: " + result.error);
@@ -301,7 +318,7 @@ function FileExplorer() {
                           src="/icons/bin.svg"
                           alt="bin"
                           style={{ cursor: 'pointer' }}
-                          onClick={() => openDeleteModal(doc)}
+                          onClick={() => {openDeleteModal(doc); setMsgConfirmation(`Le document "${doc.nom_doc}" a bien été supprimé.`)}}
                         />
                         )}
                       </div>
@@ -417,8 +434,11 @@ function FileExplorer() {
         onClose={() => setIsPopUpDeleteCatOpen(false)}
       />
 
-      <PopUpConfirmation sentence={`Le document "${nameToDelete}" a bien été supprimé.`} show={isShowRemove} setShow={setIsShowRemove} />
-      <PopUpConfirmation sentence={`Le document a bien été ajouté.`} show={isShowAdd} setShow={setIsShowAdd} />
+      
+      <PopUpConfirmation sentence={msgConfirmation} show={showConfirmation} setShow={setShowConfirmation} />
+
+      {/* <PopUpConfirmation sentence={`Le document "${nameToDelete}" a bien été supprimé.`} show={isShowRemove} setShow={setIsShowRemove} />
+      <PopUpConfirmation sentence={`Le document a bien été ajouté.`} show={isShowAdd} setShow={setIsShowAdd} /> */}
 
     </div>
   )
