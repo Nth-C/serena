@@ -4,9 +4,9 @@ require_once(__DIR__ . '/categorie.class.php');
 class CategorieDAO {
     private DAL $dal;
 
-    public function __construct() {
-        $this->dal = DAL::get();
-    }
+    public function __construct(?DAL $dal = null) {
+    $this->dal = $dal ?? DAL::get();
+}
 
     public function getAllCategories($id_famille, $role): array
 {
