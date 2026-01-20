@@ -44,7 +44,8 @@ try {
             'date_fin' => $ev->date_fin,
             'lieu'     => $ev->lieu,
             'description' => $ev->note,
-            'accompagnant' => $accompagnant
+            'id_recurrence' => $ev->id_recurrence,
+            'accompagnant' => $accompagnant,
         ];
     }
 
