@@ -60,6 +60,14 @@ header .submenu_container a {
     padding: .6rem 0;
 }
 
+header .submenu_container a:hover {
+    background-color: var(--blue-hover);
+}
+
+header .submenu_container a:hover p {
+    color: var(--white);
+}
+
 header .submenu_container a.active {
     color: var(--white);
     background: var(--blue);
@@ -67,6 +75,7 @@ header .submenu_container a.active {
 
 /* Tablettes (écrans > 768px) */
 @media (min-width: 768px) {
+
     header .banner_container {
         border-bottom: 0;
     }
@@ -99,7 +108,11 @@ header .submenu_container a.active {
     }
 }
 
-/* Desktops (écrans > 1024px) */
-@media (min-width: 1024px) {
-
+@media (max-width: 768px) {
+    header .submenu_container a:first-child {
+        width: 20%;
+    }
 }
+
+/* Desktops (écrans > 1024px) */
+@media (min-width: 1024px) {}

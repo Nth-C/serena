@@ -372,7 +372,7 @@ function LastVisitReport() {
 
         <div className='container_top'>
           <div>
-            <h1>Rapport de visite</h1>
+            <h1>Notes de Visites</h1>
             <div className='filter_group'>
               <button className='sort' onClick={() => setSortOpen(!sortOpen)}>
                 <img src="/icons/sort.svg" alt="" />
