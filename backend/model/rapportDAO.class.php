@@ -129,26 +129,7 @@ class RapportDAO {
     try {
         $this->dal->beginTransaction();
 
-        // 1. Récupérer les médicaments consommés dans ce rapport pour les remettre en stock
-        $sqlFetchConso = "SELECT id_medicament, nombre_medic_conso FROM CONSO WHERE id_rapport = ?";
-        $stmtFetch = $this->dal->prepare($sqlFetchConso);
-        $stmtFetch->execute([$id_rapport]);
-        $consommations = $stmtFetch->fetchAll();
-
-        // 2. Remettre chaque quantité en stock
-        foreach ($consommations as $conso) {
-            $sqlRestock = "UPDATE STOCK_MEDICS 
-                           SET quantite = quantite + ? 
-                           WHERE id_medicament = ?";
-            $this->dal->prepare($sqlRestock)->execute([
-                $conso['nombre_medic_conso'], 
-                $conso['id_medicament']
-            ]);
-        }
-
-        // 3. Supprimer d'abord les lignes dans CONSO (si pas de CASCADE en BDD)
-        $queryDelConso = 'DELETE FROM CONSO WHERE id_rapport = :id';
-        $this->dal->prepare($queryDelConso)->execute(['id' => $id_rapport]);
+        
 
         // 4. Supprimer le rapport final
         $queryDelRapport = 'DELETE FROM RAPPORTS WHERE id_rapport = :id AND id_famille = :id_f';
