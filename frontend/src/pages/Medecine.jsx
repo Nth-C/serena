@@ -2,12 +2,10 @@ import { useEffect, useState } from 'react'
 import Slide from '../components/slide/Slide';
 import PopUpDelete from '../components/popup_delete/PopUpDelete'
 import PopUpConfirmation from '../components/popup_confirmation/PopUpConfirmation'
-import PopUpAddStock from '../components/popup_add_stock/PopUpAddStock'
 
 function Medecine() {
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-
 
   // recuperer les medicaments (les variables sont dans la class medicaments)
   const [listMedecine , setListMedecine] = useState([])
@@ -23,9 +21,6 @@ function Medecine() {
   const [idCatalogueMedecine , setIdCatalogueMedecine] = useState("")
   const [initialStock , setInitialStock] = useState("")
   const [currentStock , setCurrentStock] = useState("")
-
-  // ajout stock
-  //const [isAddStockOpen , setIsAddStockOpen] = useState(false) // page
 
   // popup suppression
   const [isPopUpDeleteOpen , setIsPopUpDeleteOpen] = useState(false) // page
@@ -217,15 +212,13 @@ function Medecine() {
     getMedecine()
   }, []);
 
-  // change les couleur des progress bar
+  // calcul pour changer les couleurs des progress bar
   const calcProgressBar = (totalStock, currentStock) => {
     if(totalStock > 0) {
       return ((currentStock / totalStock) * 100).toFixed(0)
     }
     return 0
   }
-
-
 
   return (
     <>
@@ -273,7 +266,6 @@ function Medecine() {
                       setIsPopUpDeleteOpen(true)
                     }}>Supprimer</button>
                     <button className="btn_blue" onClick={() => {
-                      /*setIsAddStockOpen(true)*/
                       handleEditMedecine(med)
                     }}>Modifier</button>
                   </div>
@@ -366,13 +358,6 @@ function Medecine() {
         </div>
       </form>
     </Slide>
-
-    {/* <PopUpAddStock
-      // il manque le handler pour ajouter le stock
-      nameMedecine={nameCurrentMedecine}
-      isOpen={isAddStockOpen}
-      toggleOpen={() => setIsAddStockOpen(false)}
-    /> */}
 
     <PopUpDelete
       toDelete={nameCurrentMedecine}

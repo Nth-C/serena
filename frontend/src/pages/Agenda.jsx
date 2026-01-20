@@ -824,9 +824,97 @@ const handleRemoveRecurrenceEvent = async (e) => {
               </div>
            </form>
             ) : (
-              <>
-                modifier trajet
-              </>
+              <form className='add_trajet' /*onSubmit={handleAddTrajet}*/>  
+                <div>
+                    <label>Lier à l'événement :</label>
+                    <select 
+                        name="id_event" 
+                        value={formData.id_event} 
+                        onChange={handleChange} 
+                        required
+                    >
+                        <option value="">-- Choisir un événement --</option>
+                        {listeEvenements.map((ev) => {
+                            // Traitement de la date
+                            const d = new Date(ev.date_deb);
+                            // On n'affiche que la date car le JSON ne contient pas l'heure
+                            const dateStr = !isNaN(d) ? d.toLocaleDateString('fr-FR') : ev.date_deb;
+                            
+                            return (
+                              <option key={ev.id_event} value={ev.id_event}>
+                                {ev.nom} ({dateStr})
+                              </option>
+                            )
+                        })}
+                    </select>
+                </div>
+                <div className='effectue_trajet'>
+                  <p>Qui effectue le trajet : </p>
+                  <div>
+                    <input 
+                        type="radio" id="aidant" name="effectue" value="aidant" 
+                        checked={formData.effectue === 'aidant'} 
+                        onChange={handleChange}
+                    />
+                    <label htmlFor="aidant">Aidant</label>
+                  </div>
+                  <div>
+                    <input 
+                        type="radio" id="externe" name="effectue" value="externe" 
+                        checked={formData.effectue === 'externe'} 
+                        onChange={handleChange}
+                    />
+                    <label htmlFor="externe">Société Externe :</label> 
+                  </div> 
+                </div>
+                {formData.effectue === 'externe' ? (
+                    <div>
+                        <label>Nom de la société :</label>
+                        <input 
+                            type="text" name="societe" placeholder="Ex: Taxi Ambulance"
+                            value={formData.societe} onChange={handleChange} required 
+                        />
+                    </div>
+                ) : (
+                  <div>
+                    <label>Aidant affecté :</label>
+                    <select name="aidantAffecte" value={formData.aidantAffecte} onChange={handleChange} required>
+                      <option value="demande">Envoyer une demande aux aidants :</option>
+                      {membresFamille.map((personne) => (
+                          <option key={personne.id} value={personne.id}>
+                              {personne.prenom} {personne.nom}
+                          </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+                <div>
+                  <label>Date et heure du trajet :</label>
+                  <input 
+                    type="datetime-local" name="debut" 
+                    value={formData.debut} onChange={handleChange} required 
+                  />
+                </div>
+                <div>
+                  <label>Lieu de départ :</label>
+                  <input 
+                    type="text" name="lieuDepart" placeholder="Ex: Maison"
+                    value={formData.lieuDepart} onChange={handleChange} required 
+                  />
+                </div>
+                <div>
+                  <label>Lieu d'arrivée :</label>
+                  <input 
+                    type="text" name="lieuArrivee" placeholder="Ex: Centre ville"
+                    value={formData.lieuArrivee} onChange={handleChange} required 
+                  />
+                </div>
+                  <div>
+                    <button type='button' className='btn_border' onClick={handleReset}>Réinitialiser</button>
+                    <button type='submit' className='btn_blue'>Valider</button>
+                </div>
+              </form>
+              
             )}
           </>
         )}
