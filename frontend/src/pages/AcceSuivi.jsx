@@ -319,7 +319,7 @@ function AcceSuivi() {
             <img src="/img/logo-name.png" alt="Logo" />
             
             {/* Le message affichera désormais "Bienvenue M. Scapin" pour "scapinb" */}
-            <h1 className="bienvenue">Bienvenue, {nomComplet} 👋</h1>
+            <h1 className="bienvenue">Bienvenue, {nomComplet}</h1>
             
             <h1>Liste de vos familles</h1>
 

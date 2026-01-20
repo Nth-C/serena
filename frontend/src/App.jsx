@@ -28,10 +28,13 @@ import Signalement from './pages/Signalement';
 import VerifyAccount from './pages/VerifyAccount';
 import LegalMention from './pages/legalMention';
 import Ocr from './pages/Ocr';
+import CGUStart from './pages/CGUStart';
 
 import { ROLES, hasPermission } from './utils/roleManager';
 
 import { applyAccessibilitySettings } from './utils/applySettings';
+import CGUNotAccept from './pages/CGUNotAccept';
+
 
 
 
@@ -65,7 +68,7 @@ function App() {
       <Routes location={location} key={location.pathname}>
         <Route path="">
           {/* quand on est sur / dans l'url on redirige vers home/dashboard */}
-          <Route index element={<Navigate to="login" replace />} />
+          <Route index element={<Navigate to="CGU_start" replace />} />
         </Route>
 
         {/* PAGES MENU */}
@@ -163,6 +166,17 @@ function App() {
           </ProtectedRoute>}>
         </Route>
 
+        {/* ACCEPTATION DES CGU */}
+        <Route path="CGU_start" element={
+          <CGUStart />
+        }>
+        </Route>
+
+        {/* REFUS DES CGU */}
+        <Route path="CGU_not_accept" element={
+          <CGUNotAccept />
+        }>
+        </Route>
         
         {/* SE CONNECTER */}
         <Route path="login" element={
