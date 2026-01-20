@@ -34,9 +34,11 @@ function Agenda() {
 
   // popup delete
   const [popUpDeleteOpen , setPopUpDeleteOpen] = useState(false)
+  const [popUpDeleteRecuOpen , setPopUpDeleteRecuOpen] = useState(false)
   const [eventToDelete , setEventToDelete] = useState({
     id: null,
     title: null,
+    id_recurrence: null
   })
 
   // edit mode
@@ -58,6 +60,7 @@ function Agenda() {
     debut: '',
     fin: '',
     recurrence: 'aucun',
+    id_recurrence: '',
     nbRecurrence: 1,   
     description: '',
 
@@ -78,6 +81,7 @@ function Agenda() {
       debut: '',
       fin: '',
       recurrence: 'aucun',
+      id_recurrence: '',
       nbRecurrence: 1,   
       description: '',
       effectue: 'aidant',
@@ -299,6 +303,34 @@ function Agenda() {
     }
 };
 
+const handleRemoveRecurrenceEvent = async (e) => {
+    // Préparation du payload spécifique
+    const payload = {
+        id_recurrence: e,
+    };
+
+    try {
+        const response = await fetch(`${apiUrl}/?route=evenementrecurrence/delete`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: 'include',
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            handleSuccess('Événement supprimé avec succès !');
+            fetchEvents();
+            setEventOpen(false);
+        } else {
+          console.error('Erreur lors de la suppression de l\'événement', result.error)
+        }
+    } catch (error) {
+        console.error("Erreur réseau Suppression:", error);
+    }
+};
+
   // --- Handler pour le TRAJET ---
   const handleAddTrajet = async (e) => {
       if (e) e.preventDefault();
@@ -416,6 +448,7 @@ function Agenda() {
 
         return {
           id_event: ev.id_event,
+          id_recurrence: ev.id_recurrence,
           titre: decodeHTML(ev.nom), 
           lieu: decodeHTML(ev.lieu || ""), 
           description: decodeHTML(ev.description || ""), 
@@ -705,6 +738,13 @@ function Agenda() {
                       })
                       setIsEditMode(true)
                     }}>Modifier</button>
+                    {currentEvent.id_recurrence !== null && (
+                    <button className="btn_red" onClick={() => {
+                      setPopUpDeleteRecuOpen(true)
+                      setEventToDelete({id: currentEvent.id_event, title: currentEvent.titre, id_recurrence: currentEvent.id_recurrence})
+                      setEventOpen(false)
+                    }}>Supprimer les évènements de la récurrence</button>
+                  )}
                     <button className="btn_red" onClick={() => {
                       setPopUpDeleteOpen(true)
                       setEventToDelete({id: currentEvent.id_event, title: currentEvent.titre})
@@ -797,6 +837,13 @@ function Agenda() {
         sentence={msgConfirmation}
         show={isShowConfirmation}
         setShow={setIsShowConfirmation}
+    />
+
+    <PopUpDelete
+      toDelete={eventToDelete.title}
+      handleDelete={() => handleRemoveRecurrenceEvent(eventToDelete.id_recurrence)}
+      isOpen={popUpDeleteRecuOpen}
+      onClose={() => setPopUpDeleteRecuOpen(false)}
     />
 
     <PopUpDelete
