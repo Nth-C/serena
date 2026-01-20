@@ -223,7 +223,24 @@ function Medecine() {
   return (
     <>
     <div className="medecine">
-      <h1>Liste des médicaments</h1>
+      <div className='container_top'>
+        <div>
+          <h1>Rapport de visite</h1>
+          <div className='filter_group'>
+             <button className='sort'> 
+              <img src="/icons/sort.svg" alt="" />
+              <p>Trier par</p>
+            </button>
+            <div> 
+              {/* bouton de trie */}
+            </div>
+          </div>
+        </div>
+        <div className="search_report">
+          <input type="search" placeholder="Rechercher un rapport" />
+        </div>
+      </div>
+
       <div className="list">
           {loading ? (
             <p>Chargement des médicaments...</p>

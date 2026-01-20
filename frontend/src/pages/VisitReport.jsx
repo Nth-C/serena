@@ -326,7 +326,6 @@ function LastVisitReport() {
         setIsNewRapportOpen(false);
 
         // Ajout : Utiliser le nom sauvegardé
-        //setNameToDelete(nomPourNotification);
         setMsgConfirmation(`Le rapport ${nomPourNotification} a bien été ajouté.`)
         setShowConfirmation(true)
 

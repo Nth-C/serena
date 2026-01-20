@@ -143,8 +143,6 @@ function App() {
           }>
         </Route>
 
-        
-
         <Route path="privacy" 
           element={
           <ProtectedRoute>
@@ -163,6 +161,14 @@ function App() {
           element={
           <ProtectedRoute>
             <Signalement />
+          </ProtectedRoute>}>
+        </Route>
+
+        {/* OCR */}
+        <Route path="ocr" 
+          element={
+          <ProtectedRoute>
+            <Ocr />
           </ProtectedRoute>}>
         </Route>
 
@@ -227,15 +233,6 @@ function App() {
           </ProtectedRoute>
         }>
           <Route index element={<Agenda />} />
-        </Route>
-
-        {/* OCR */}
-        <Route path="ocr" element={
-          <ProtectedRoute>
-            <Layout submenu={[]} />
-          </ProtectedRoute>
-        }>
-          <Route index element={<Ocr />} />
         </Route>
 
         {/* SUIVI */}
