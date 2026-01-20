@@ -27,6 +27,7 @@ try {
     $typeRecurrence = $data['recurrence'] ?? 'aucun';
     $nbRecurrence = isset($data['nbRecurrence']) ? (int)$data['nbRecurrence'] : 1;
 
+    $idSerie = ($data['recurrence'] !== 'aucun') ? uniqid('SERIE_') : null;
     // Si aucune récurrence, on force à 1 itération
     if ($typeRecurrence === 'aucun') {
         $nbRecurrence = 1;
@@ -58,7 +59,8 @@ try {
             $currentStart->format('Y-m-d H:i:s'), 
             $currentEnd->format('Y-m-d H:i:s'), 
             filter_var($data['lieu'], FILTER_SANITIZE_SPECIAL_CHARS), 
-            filter_var($data['description'], FILTER_SANITIZE_SPECIAL_CHARS)
+            filter_var($data['description'], FILTER_SANITIZE_SPECIAL_CHARS),
+            $idSerie,
         );
 
         if (!$newIdEvent) {
