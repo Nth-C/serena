@@ -39,6 +39,47 @@ function Dashboard() {
     }
   };
 
+
+
+  const accepterDemandeTrajet = async (id) => {
+    try {
+
+
+      const payload = {
+          id_trajet: id 
+      };
+
+      const response = await fetch(`${apiUrl}/?route=trajet/accepter`, {
+        credentials: 'include',
+        body: JSON.stringify(payload),
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      if (data.success) {
+        fetchDashboard();
+        setIsTrajetOpen(false);
+      }
+      // On met à jour les différents états avec les données du PHP
+      
+
+      setError(null);
+    } catch (err) {
+      console.error("Erreur de récupération dashboard:", err.message);
+      setError(err.message || "Impossible de contacter le serveur");
+    }
+  };
+
+
+
   useEffect(() => {
     fetchDashboard();
   }, []);
@@ -162,7 +203,7 @@ function Dashboard() {
           </div>
 
           <div className="actions">
-            <button className="btn_blue">Accepter le trajet</button>
+            <button className="btn_blue" onClick={() => accepterDemandeTrajet(selectedTrajet.id_trajet)}>Accepter le trajet</button>
           </div>
         </div>
       )}

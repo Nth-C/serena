@@ -46,9 +46,9 @@ public function __construct(?DAL $dal = null) {
     }
 
     
-    public function addEvenement($id_famille, $nom, $debut, $fin, $lieu, $description) {
-        $query = 'INSERT INTO EVENEMENTS (id_famille, nom, date_deb, date_fin, lieu, note) 
-                VALUES (:id_f, :nom, :deb, :fin, :lieu, :note) 
+    public function addEvenement($id_famille, $nom, $debut, $fin, $lieu, $description, $id_recurrence = null) {
+        $query = 'INSERT INTO EVENEMENTS (id_famille, nom, date_deb, date_fin, lieu, note, id_recurrence) 
+                VALUES (:id_f, :nom, :deb, :fin, :lieu, :note, :id_recurrence) 
                 RETURNING id_event';
         
         $stmt = $this->dal->prepare($query);
@@ -58,7 +58,9 @@ public function __construct(?DAL $dal = null) {
             'deb'    => $debut,
             'fin'    => $fin,
             'lieu'   => $lieu,
-            'note'   => $description
+            'note'   => $description,
+            'id_recurrence' => $id_recurrence,
+
         ]);
 
         $result = $stmt->fetch();
@@ -91,6 +93,58 @@ public function __construct(?DAL $dal = null) {
         throw $e; 
     }
 }
+
+   public function deleteEvenementRecurrence($id_famille, $id_recurrence): bool {
+    try {
+        // On démarre la transaction via ton objet DAL
+        $this->dal->beginTransaction();
+
+        // 1. Supprimer les charges liées aux trajets de TOUS les événements de la série
+        $q0 = 'DELETE FROM CHARGE 
+               WHERE id_trajet IN (
+                   SELECT id_trajet FROM TRAJET 
+                   WHERE id_event IN (SELECT id_event FROM EVENEMENTS WHERE id_recurrence = :id_rec AND id_famille = :id_f)
+               )';
+        $this->dal->prepare($q0)->execute(['id_rec' => $id_recurrence, 'id_f' => $id_famille]);
+
+        // 2. Supprimer les affectations (EFFECTUE) liées aux trajets de la série
+        $q1 = 'DELETE FROM EFFECTUE 
+               WHERE id_trajet IN (
+                   SELECT id_trajet FROM TRAJET 
+                   WHERE id_event IN (SELECT id_event FROM EVENEMENTS WHERE id_recurrence = :id_rec AND id_famille = :id_f)
+               )';
+        $this->dal->prepare($q1)->execute(['id_rec' => $id_recurrence, 'id_f' => $id_famille]);
+
+        // 3. Supprimer les trajets liés à la série d'événements
+        $q2 = 'DELETE FROM TRAJET 
+               WHERE id_event IN (SELECT id_event FROM EVENEMENTS WHERE id_recurrence = :id_rec AND id_famille = :id_f)';
+        $this->dal->prepare($q2)->execute(['id_rec' => $id_recurrence, 'id_f' => $id_famille]);
+
+        // 4. Supprimer tous les événements de la série
+        $q3 = 'DELETE FROM EVENEMENTS WHERE id_famille = :id_f AND id_recurrence = :id_rec';
+        $stmt = $this->dal->prepare($q3);
+        $res = $stmt->execute([
+            'id_f' => $id_famille,
+            'id_rec' => $id_recurrence
+        ]);
+
+        // On valide
+        return $this->dal->commit();
+
+    } catch (Exception $e) {
+        // Correction ici : on tente le rollback sans la condition inTransaction()
+        // La plupart des drivers PDO gèrent le fait de rollback même si c'est déjà fait
+        try {
+            $this->dal->rollBack();
+        } catch (Exception $rollbackEx) {
+            // On ignore l'erreur de rollback si la transaction n'existe pas
+        }
+        throw $e; 
+    }
+}
+
+
+
 
 
     public function getAllEvenementsSemaine($id_famille, $date_debut, $date_fin): array {

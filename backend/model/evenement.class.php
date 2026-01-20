@@ -4,6 +4,7 @@ class Evenement
 {
     // On met les propriétés en public pour que le contrôleur puisse faire $ev->nom, $ev->id_event, etc.
     public ?string $id_event = null;
+    public ?string $id_recurrence = null;
     public ?string $nom = '';        // Correspond à 'titre'
     public ?string $lieu = '';
     public ?string $note = '';       // Correspond à 'description'
@@ -18,10 +19,13 @@ class Evenement
     public array $accompagnants = [];
     public array $trajets = [];
 
+    
+
     public function __construct(array $data = array())
     {
         // 1. Récupération de l'ID (important pour le select !)
         $this->id_event = $data['id_event'] ?? null;
+        $this->id_recurrence = $data['id_recurrence'] ?? null;
 
         // 2. Mapping des noms de colonnes BDD vers l'objet
         // On utilise '??' pour éviter l'erreur "Undefined array key" si la colonne manque

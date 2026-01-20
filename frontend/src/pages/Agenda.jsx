@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import Slide from '../components/slide/Slide';
 import { getFormatDate, getFormatTime } from '../utils/timeFormat';
 import PopUpDelete from '../components/popup_delete/PopUpDelete'
@@ -34,13 +34,20 @@ function Agenda() {
 
   // popup delete
   const [popUpDeleteOpen , setPopUpDeleteOpen] = useState(false)
+  const [popUpDeleteRecuOpen , setPopUpDeleteRecuOpen] = useState(false)
   const [eventToDelete , setEventToDelete] = useState({
     id: null,
     title: null,
+    id_recurrence: null
   })
 
   // edit mode
   const [isEditMode, setIsEditMode] = useState(false)
+
+  // swipe detection
+  const touchStartX = useRef(0)
+
+  const SWIPE_THRESHOLD = 50 // sistance minimale pour déclencher le swipe
   
   const apiUrl = import.meta.env.VITE_API_URL
 
@@ -53,6 +60,7 @@ function Agenda() {
     debut: '',
     fin: '',
     recurrence: 'aucun',
+    id_recurrence: '',
     nbRecurrence: 1,   
     description: '',
 
@@ -73,6 +81,7 @@ function Agenda() {
       debut: '',
       fin: '',
       recurrence: 'aucun',
+      id_recurrence: '',
       nbRecurrence: 1,   
       description: '',
       effectue: 'aidant',
@@ -82,6 +91,46 @@ function Agenda() {
       lieuArrivee: '',
       id_event: ''
     })
+  }
+
+  // handle pour le swipe
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX
+  }
+
+  const handleTouchEnd = (e) => {
+    const touchEndX = e.changedTouches[0].clientX
+    
+    const deltaX = touchEndX - touchStartX.current
+    
+    // vérification de la taile du swipe
+    if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      
+      if (deltaX > 0) {
+        // swipe vers la droite = jour/semaine précédent
+        const newDate = new Date(date)
+        if (isCalendarWeek) {
+          newDate.setDate(newDate.getDate() - 7)
+        } else {
+          newDate.setDate(newDate.getDate() - 1)
+        }
+        // vérifier que la nouvelle date n'est pas avant aujourd'hui
+        if (newDate >= today) {
+          setDate(newDate)
+        }
+      } else {
+        // swipe vers la gauche = jour/semaine suivant
+        const newDate = new Date(date)
+        if (isCalendarWeek) {
+          newDate.setDate(newDate.getDate() + 7)
+        } else {
+          newDate.setDate(newDate.getDate() + 1)
+        }
+        setDate(newDate)
+      }
+    }
   }
 
   const fetchMembres = async () => {
@@ -254,6 +303,34 @@ function Agenda() {
     }
 };
 
+const handleRemoveRecurrenceEvent = async (e) => {
+    // Préparation du payload spécifique
+    const payload = {
+        id_recurrence: e,
+    };
+
+    try {
+        const response = await fetch(`${apiUrl}/?route=evenementrecurrence/delete`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: 'include',
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            handleSuccess('Événement supprimé avec succès !');
+            fetchEvents();
+            setEventOpen(false);
+        } else {
+          console.error('Erreur lors de la suppression de l\'événement', result.error)
+        }
+    } catch (error) {
+        console.error("Erreur réseau Suppression:", error);
+    }
+};
+
   // --- Handler pour le TRAJET ---
   const handleAddTrajet = async (e) => {
       if (e) e.preventDefault();
@@ -371,6 +448,7 @@ function Agenda() {
 
         return {
           id_event: ev.id_event,
+          id_recurrence: ev.id_recurrence,
           titre: decodeHTML(ev.nom), 
           lieu: decodeHTML(ev.lieu || ""), 
           description: decodeHTML(ev.description || ""), 
@@ -386,7 +464,7 @@ function Agenda() {
 
   return (
     <> 
-    <div className="agenda">
+    <div className="agenda" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
 
       {/* selecteurs haut de page */}
       <div className='container_date'>
@@ -660,6 +738,13 @@ function Agenda() {
                       })
                       setIsEditMode(true)
                     }}>Modifier</button>
+                    {currentEvent.id_recurrence !== null && (
+                    <button className="btn_red" onClick={() => {
+                      setPopUpDeleteRecuOpen(true)
+                      setEventToDelete({id: currentEvent.id_event, title: currentEvent.titre, id_recurrence: currentEvent.id_recurrence})
+                      setEventOpen(false)
+                    }}>Supprimer les évènements de la récurrence</button>
+                  )}
                     <button className="btn_red" onClick={() => {
                       setPopUpDeleteOpen(true)
                       setEventToDelete({id: currentEvent.id_event, title: currentEvent.titre})
@@ -840,6 +925,13 @@ function Agenda() {
         sentence={msgConfirmation}
         show={isShowConfirmation}
         setShow={setIsShowConfirmation}
+    />
+
+    <PopUpDelete
+      toDelete={eventToDelete.title}
+      handleDelete={() => handleRemoveRecurrenceEvent(eventToDelete.id_recurrence)}
+      isOpen={popUpDeleteRecuOpen}
+      onClose={() => setPopUpDeleteRecuOpen(false)}
     />
 
     <PopUpDelete
