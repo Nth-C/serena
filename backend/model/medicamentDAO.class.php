@@ -83,7 +83,7 @@ public function __construct(?DAL $dal = null) {
     // On compte si le nom existe exactement dans la table
     $query = 'SELECT 1 
               FROM CAT_MEDICS 
-              WHERE denomination_substance = :search 
+              WHERE denomination_substance ILIKE :search 
               LIMIT 1';
     
     $stmt = $this->dal->prepare($query);
@@ -103,7 +103,7 @@ public function getTypesByNomExact($nomExact): array {
                      id_medics, 
                      designation_elem_pharma 
               FROM CAT_MEDICS 
-              WHERE denomination_substance = :nom 
+              WHERE denomination_substance ILIKE :nom 
               ORDER BY designation_elem_pharma ASC, id_medics ASC';
     
     $stmt = $this->dal->prepare($query);
@@ -143,12 +143,28 @@ public function getTypesByNomExact($nomExact): array {
     ]);
     }
 
-    public function deleteMedecine($id_famille,$id_medicament) : bool {
-        $query = 'DELETE FROM STOCK_MEDICS WHERE id_famille = :id_famille AND id_medicament = :id_medicament';
-        $stmt = $this->dal->prepare($query);
+    public function deleteMedecine($id_famille, $id_medicament): bool {
+    try {
+        $this->dal->beginTransaction();
 
-        return $stmt->execute(['id_famille' => $id_famille,'id_medicament' => $id_medicament]);
+        // 1. On supprime d'abord les traces de consommation (la contrainte bloquante)
+        $queryConso = 'DELETE FROM CONSO WHERE id_medicament = :id_m';
+        $this->dal->prepare($queryConso)->execute(['id_m' => $id_medicament]);
+
+        // 2. On supprime le médicament du stock
+        $queryStock = 'DELETE FROM STOCK_MEDICS WHERE id_famille = :id_f AND id_medicament = :id_m';
+        $stmt = $this->dal->prepare($queryStock);
+        $res = $stmt->execute([
+            'id_f' => $id_famille,
+            'id_m' => $id_medicament
+        ]);
+
+        return $this->dal->commit();
+    } catch (Exception $e) {
+        $this->dal->rollBack();
+        throw $e;
     }
+}
 
     public function addMedecine($id_famille, $name, $stock, $stockTotal, $id_cat_medicament): bool {
     // Sécurité : Si le total est inférieur au stock actuel, on l'aligne
@@ -169,6 +185,15 @@ public function getTypesByNomExact($nomExact): array {
         'id_cat_medicament'       => $id_cat_medicament     // On force le type string
     ]);    
     }
+
+
+    public function getStockById($id_m) {
+    $query = 'SELECT quantite FROM STOCK_MEDICS WHERE id_medicament = :id';
+    $stmt = $this->dal->prepare($query);
+    $stmt->execute(['id' => $id_m]);
+    $res = $stmt->fetch();
+    return $res ? (int)$res['quantite'] : 0;
+}
 
 
 }

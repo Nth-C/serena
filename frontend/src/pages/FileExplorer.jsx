@@ -14,9 +14,15 @@ function FileExplorer() {
   const [typeDocument, setTypeDocument] = useState("")
   const [emplacementDocument, setEmplacementDocument] = useState("")
 
+  /* doc */
   const [isNewCategorieOpen, setIsNewCategorieOpen] = useState(false) // page
   const [nameCategorie, setNameCategorie] = useState("")
   const [roleCategorie, setRoleCategorie] = useState("Professionelle")
+  const [isPopUpDeleteCatOpen, setIsPopUpDeleteCatOpen] = useState(false);
+  const [infosCategorieDelete, setInfosCategorieDelete] = useState({
+    id: '',
+    name: ''
+  })
 
   const [idCurrentCategorie , setIdCurrentCategorie] = useState(null)
 
@@ -25,6 +31,7 @@ function FileExplorer() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState(null)
 
+  /* docs */
   const [isPopUpDeleteOpen, setIsPopUpDeleteOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
   const [nameToDelete, setNameToDelete] = useState("");
@@ -171,7 +178,6 @@ function FileExplorer() {
       const result = await response.json();
       if (result.success) {
         getDocument();
-        toggleNewCategorie();
       } else {
         setMessage("Erreur: " + result.error);
       }
@@ -381,20 +387,34 @@ function FileExplorer() {
           </div>
           <div>
           <button type='button' className="btn_red" onClick={() => {
-            handleDeleteCategorie(idCurrentCategorie);
-            }}>Supprimer
+            //handleDeleteCategorie(idCurrentCategorie);
+            setInfosCategorieDelete({
+              id: idCurrentCategorie,
+              name: nameCategorie
+            })
+            setIsPopUpDeleteCatOpen(true)
+            toggleNewCategorie()
+          }}>Supprimer
           </button>
           <button type="submit" className="btn_blue">{isEditing ? "Modifier" : "Ajouter"}</button>
           </div>
         </form>
       </Slide>
 
-      {/* --- POPUPS --- */}
+      {/* --- POPUPS DOC --- */}
       <PopUpDelete
         toDelete={nameToDelete}
         handleDelete={handleDeleteConfirm}
         isOpen={isPopUpDeleteOpen}
         onClose={togglePopUpDelete}
+      />
+
+      {/* --- POPUPS DOSSIER --- */}
+      <PopUpDelete
+        toDelete={infosCategorieDelete.name}
+        handleDelete={() => handleDeleteCategorie(infosCategorieDelete.id)}
+        isOpen={isPopUpDeleteCatOpen}
+        onClose={() => setIsPopUpDeleteCatOpen(false)}
       />
 
       <PopUpConfirmation sentence={`Le document "${nameToDelete}" a bien été supprimé.`} show={isShowRemove} setShow={setIsShowRemove} />

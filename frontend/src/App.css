@@ -232,7 +232,6 @@ textarea {
 .btn_border:hover {
   background-color: var(--blue-hover);
   color: var(--white);
-  border: 1px solid var(--blue);
 }
 
 .btn_red {
@@ -331,12 +330,12 @@ input::placeholder {
 .create_account,
 .forgot_password,
 .reset_password {
-  overflow: hidden;
   position: relative;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: hidden;
 }
 
 .CGU_start,
@@ -644,6 +643,7 @@ input::placeholder {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  overflow: hidden;
 }
 
 .acce_suivi img:first-child {
@@ -739,7 +739,7 @@ button.creer_suivi {
   padding: 0 3rem;
 }
 
-.contener_report .container_top>div:first-child {
+.contener_report .container_top > div:first-child {
   display: flex;
   justify-content: space-between;
 }
@@ -1067,6 +1067,19 @@ button.add_medi {
   border-width: 0 0 1px 0;
   border-color: var(--gray);
   border-style: solid;
+}
+
+.medecine .container_top > div:first-child {
+  display: flex;
+  justify-content: space-between;
+}
+
+.medecine .container_top {
+  padding: 0 3rem;
+}
+
+.medecine .container_top h1 {
+  padding: 0;
 }
 
 .medecine .container_medecine:first-child {
@@ -2386,17 +2399,6 @@ progress.blue_bar::-moz-progress-bar {
 .add_membre .membre_list svg {
   width: 2.5rem;
   fill: var(--blue);
-}
-
-.add_membre .container_btn_invite {
-  position: absolute;
-  text-align: center;
-  bottom: 3rem;
-  width: 100%;
-}
-
-.add_membre .container_btn_invite button {
-  width: 80%;
 }
 
 

@@ -18,7 +18,9 @@ $route = $_GET['route'] ?? '';
 const _ROUTES = array(
   'evenement/add' => 'addEvenement',
   'evenement/delete' => 'deleteEvenement',
+  'evenementrecurrence/delete' => 'deleteEvenementRecurrence',
   'evenement/update' => 'updateEvenement',
+  'trajet/accepter' => 'accepterDemandeTrajet',
   'medicament/list' => 'viewMedicament',
   'medicament/add' => 'addMedicament',
   'medicament/delete' => 'deleteMedicament',
@@ -71,13 +73,14 @@ const _ROUTES = array(
   'aides/calculer' => 'getAides',
   'aides/get' => 'viewAides',
   'ocr' => 'ocr',
+  'ocr/extract' => 'analyseOCR'
+  
 );
 
 if (!array_key_exists($route, _ROUTES)) {
   throw new Exception("Bad route : '" . $route . "'");
   exit(-1);
 }
-
 $_controllerName = _ROUTES[$route];
 
 require_once('controller/' . $_controllerName . '.ctrl.php');

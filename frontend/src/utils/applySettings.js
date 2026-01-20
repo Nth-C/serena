@@ -28,7 +28,7 @@ export const applyAccessibilitySettings = () => {
     root.style.setProperty('--red', colors.red);
 
     // 3. Font Size
-    root.style.setProperty('--font-sm', `${1.5 * fontSizeBase}rem`);
-    root.style.setProperty('--font-md', `${1.8 * fontSizeBase}rem`);
-    root.style.setProperty('--font-lg', `${2.0 * fontSizeBase}rem`);
+    root.style.setProperty('--font-sm', `${(1.5 * fontSizeBase)}rem`);
+    root.style.setProperty('--font-md', `${(1.8 * fontSizeBase)}rem`);
+    root.style.setProperty('--font-lg', `${(2.0 * fontSizeBase)}rem`);
 };

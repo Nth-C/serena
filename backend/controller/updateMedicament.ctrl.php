@@ -32,6 +32,10 @@ try {
     $id_medicament = filter_var($data['id_medicament'], FILTER_SANITIZE_SPECIAL_CHARS);
     $nouveauStock = filter_var($data['nouveauStock'], FILTER_SANITIZE_NUMBER_INT);
 
+    if($nouveauStock < 0){
+        $nouveauStock = 0;
+    }
+
     $model = new MedicamentDAO();
     $success = $model->updateMedecine($id_famille, $nouveauStock, $id_medicament);
 

@@ -172,20 +172,6 @@ function Menu({isOpen , onHamburgerClick}) {
 
             <div className={styles.background} onClick={onHamburgerClick}></div>
         </div>
-        
-        {/* <AddMembre 
-            isOpen={addMembreOpen}
-            onClose ={() => setAddMembreOpen(false)}
-        />
-        <RoleMembre 
-            isOpen={roleMembreOpen}
-            onClose ={() => setRoleMembreOpen(false)}
-        />
-        <AuditLog 
-            isOpen={logOpen}
-            onClose ={() => setLogOpen(false)}
-        /> */}
-
         </>
     )
 }

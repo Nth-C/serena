@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 
 function PopUpConfirmation({sentence, show, setShow}) {
 
+    // fais apparaitre le pop up pendant 3 sec
     useEffect(() => {
         if(show) {
             setTimeout(() => {
