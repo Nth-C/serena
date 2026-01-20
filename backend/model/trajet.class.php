@@ -37,14 +37,13 @@ class Trajet {
             // Optionnel : vérifiez ici si $accompagnant est bien un objet Personne ou un array à convertir
             $this->accompagnants[] = $accompagnant;
         }
-        }
-    public function getNbAccompagnants() {
-        $i = 0;
-        foreach($accompagnants as $accompagnant){
-            $i = $i + 1; 
-        }
     }
-        
-
+    
+    // public function getNbAccompagnants() {
+    //     $i = 0;
+    //    foreach($accompagnants as $accompagnant){
+    //       $i = $i + 1; 
+    //    }
+    //}
     }
 ?>
