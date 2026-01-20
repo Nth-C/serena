@@ -437,9 +437,6 @@ function FileExplorer() {
       
       <PopUpConfirmation sentence={msgConfirmation} show={showConfirmation} setShow={setShowConfirmation} />
 
-      {/* <PopUpConfirmation sentence={`Le document "${nameToDelete}" a bien été supprimé.`} show={isShowRemove} setShow={setIsShowRemove} />
-      <PopUpConfirmation sentence={`Le document a bien été ajouté.`} show={isShowAdd} setShow={setIsShowAdd} /> */}
-
     </div>
   )
 }

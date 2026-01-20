@@ -23,7 +23,7 @@ function Slide({children, title, isOpen, toggleOpen, zIndex = 500}) {
 
       <div className={styles.main_container}>
         <div>
-            <h2>{title}</h2>
+            <h1>{title}</h1>
             <button className={styles.hamburger_btn} onClick={toggleOpen}>
               <span></span>
               <span></span>
