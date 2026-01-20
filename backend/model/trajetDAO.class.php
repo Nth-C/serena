@@ -175,7 +175,7 @@ class TrajetDAO {
 
             // 1. Mise à jour des informations de base du trajet lié à l'événement
             $query = "UPDATE TRAJET 
-                    SET date_deb = :date_deb lieu_dep = :lieu_dep, lieu_arr = :lieu_arr 
+                    SET date_deb = :date_deb lieu_dep = :lieu_dep, lieu_arr = :lieu_arr
                     WHERE id_event = :id_event 
                     RETURNING id_trajet";
             
