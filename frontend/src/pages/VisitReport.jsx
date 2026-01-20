@@ -58,9 +58,13 @@ function LastVisitReport() {
   const [idCurrentRapport, setIdCurrentRapport] = useState(null);
   const [nameToDelete, setNameToDelete] = useState("");
 
+  /* pop up confirmation */
   const [isShowRemove, setIsShowRemove] = useState(false);
   const [isShowAdd, setIsShowAdd] = useState(false);
   const [isShowModify, setIsShowModify] = useState(false);
+
+  const [msgConfirmation , setMsgConfirmation] = useState('')
+
 
   const [nameMedecine, setNameMedecine] = useState("");
   const [typeMedecine, setTypeMedecine] = useState("");
@@ -467,7 +471,7 @@ function LastVisitReport() {
       )}
     </div>
 
-          {/* Slide Ajout Médicament */}
+    {/* Slide Ajout Médicament */}
     <Slide title={"Ajouter un médicament"} isOpen={isNewMedicineOpen} toggleOpen={toggleNewMedicine} zIndex={700}>
       <form className="new_medecine" onSubmit={handleMedecine}>
         <div>
@@ -535,6 +539,7 @@ function LastVisitReport() {
         </div>
       </form>
     </Slide>
+
     {/* Slide Nouveau/Modif Rapport */}
     <Slide title={isEditing ? "Modifier le rapport" : "Créer un rapport de visite"} isOpen={isNewRapportOpen} toggleOpen={toggleNewRapport} zIndex={500}>
       <form className="add_report" onSubmit={handleSubmitRapport}>
@@ -580,6 +585,7 @@ function LastVisitReport() {
         </div>
       </form>
     </Slide>
+
     {/* Slide Détails Rapport */}
     <Slide title={selectedRapport ? selectedRapport.nom : "Détails"} isOpen={isDetailsReportOpen} toggleOpen={toggleDetailsReport} zIndex={100}>
       {selectedRapport ? (
@@ -618,6 +624,7 @@ function LastVisitReport() {
         </div>
       ) : null}
     </Slide>
+
     {/* Popups de confirmation et suppression */}
     <PopUpDelete
       toDelete={nameToDelete}

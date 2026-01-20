@@ -28,7 +28,7 @@ const PopUpSelectDate = ({isOpen, onClose, handlerValid }) => {
                         showOutsideDays={false} 
                         locale="fr"
                         fixedHeight
-                        minDate={new Date()} // // empeche de cliquer sur les jours anterieur
+                        minDate={new Date()} // empeche de cliquer sur les jours anterieur
                     />
                 </div>
                 <div>

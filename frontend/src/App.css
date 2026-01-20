@@ -2388,17 +2388,6 @@ progress.blue_bar::-moz-progress-bar {
   fill: var(--blue);
 }
 
-.add_membre .container_btn_invite {
-  position: absolute;
-  text-align: center;
-  bottom: 3rem;
-  width: 100%;
-}
-
-.add_membre .container_btn_invite button {
-  width: 80%;
-}
-
 
 /* Définition de l'animation */
 @keyframes rotate-loading {
