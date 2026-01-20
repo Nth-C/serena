@@ -1,107 +1,125 @@
-# Revue de Code Complète - Serena (2026-01-20)
+# Revue de Code Critique & Consolidée - Serena (2026-01-20)
 
-## 1. Vue d'ensemble
-Cette revue couvre l'intégralité des fichiers fournis (Backend PHP, Frontend React, Tests Unitaires).
+**Portée :** Analyse approfondie du Backend (PHP), Frontend (React), Tests et Infrastructure.
+**Objectif :** Identifier les dettes techniques, les failles de sécurité résiduelles et les problèmes de performance.
 
-**État général :** Le projet est en transition vers une architecture API/SPA robuste. Les pratiques de sécurité (CSRF, CORS, Session) sont en place. La couverture de tests unitaires côté backend est excellente sur les DAOs, utilisant correctement les Mocks.
+## 1. Architecture & Global
 
----
+*   **Dette Technique Majeure (Architecture Hybride) :** Le projet souffre d'une schizophrénie architecturale.
+    *   *Problème :* Coexistence de contrôleurs API modernes (`*.ctrl.php` retournant du JSON) et de scripts Legacy (`login_action.php`, `profile.php` avec redirections HTML).
+    *   *Impact :* Duplication de la logique de session et confusion pour les développeurs.
+    *   *Action :* **Priorité P1.** Supprimer les fichiers Legacy et migrer 100% des flux vers l'API REST.
+*   **Absence de Routeur Central :**
+    *   *Problème :* L'API repose sur l'accès direct aux fichiers ou des paramètres `?route=`.
+    *   *Action :* Implémenter un `index.php` (Front Controller) qui centralise toutes les entrées, gère le routing et les erreurs 404.
 
 ## 2. Backend (PHP)
 
-### A. Infrastructure & Initialisation (`init.php`)
-*   **Sécurité des Sessions :** Configuration très robuste (`Strict`, `HttpOnly`, `Secure`). C'est un point fort pour prévenir le vol de session XSS.
-*   **CORS :** La gestion dynamique de l'`Access-Control-Allow-Origin` basée sur une liste blanche (`$allowed_origins`) est correcte.
-*   **CSRF :** L'inclusion de `csrf.php` dès l'init est une bonne pratique.
-    *   *Attention :* Assurez-vous que `csrf_validate_request()` sait gérer les requêtes JSON (qui n'ont pas de `$_POST`), sinon les appels API échoueront.
+### A. Sécurité & Infrastructure (`init.php`, `csrf.php`)
+*   **Faille CSRF sur API JSON :**
+    *   *Défaut :* La protection actuelle vérifie `$_POST`. Or, les appels `fetch` en JSON (`php://input`) laissent `$_POST` vide.
+    *   *Risque :* Les endpoints API sont vulnérables aux attaques CSRF.
+    *   *Correction :* Modifier le middleware pour accepter le token via un Header HTTP (ex: `X-CSRF-Token`).
+*   **Fuite d'informations (Connexion DB) :**
+    *   *Défaut :* En cas d'échec de connexion PDO (ex: incident du 20/01), l'exception par défaut affiche l'IP et le port de la base de données.
+    *   *Correction :* Encapsuler la connexion `new PDO` dans un `try/catch` et logger l'erreur en interne, sans jamais l'afficher au client.
 
-### B. Modèles de Données (DAO)
+### B. Contrôleurs (`addMedicament.ctrl.php`)
+*   **Mauvaise sémantique HTTP :**
+    *   *Défaut :* Le contrôleur renvoie un code HTTP `200 OK` même quand `success: false` (erreur logique ou validation).
+    *   *Impact :* Complique la gestion d'erreur côté Frontend (oblige à parser le JSON pour savoir si ça a marché).
+    *   *Correction :* Utiliser `http_response_code(400)` pour les erreurs client et `500` pour le serveur.
+*   **Testabilité :**
+    *   *Défaut :* L'utilisation de `exit()` ou `die()` dans le contrôleur rend les tests unitaires du contrôleur impossibles (arrête le script de test).
+    *   *Correction :* Retourner une réponse et laisser le routeur gérer l'envoi et la fin du script.
 
-#### `SecurityDAO.class.php`
-*   **Points forts :** Hachage des IP (`sha512`) avant stockage, respectant la confidentialité (GDPR).
-*   **Problème de Performance :** La méthode `getSecurityStatus` exécute un `DELETE` (nettoyage des logs > 24h) à *chaque* appel. Sur un site à fort trafic, cela va verrouiller la table inutilement.
-    *   *Action :* Déplacer ce nettoyage dans une tâche CRON ou l'exécuter de manière probabiliste (ex: `if (rand(1, 100) === 1) ...`).
-*   **Robustesse :** `verifierActif` gère bien les différents types de retour booléens de PostgreSQL/MySQL (`t`, `1`, `true`).
+### C. Modèles & Performance (`SecurityDAO`, `DocumentDAO`)
+*   **Goulot d'étranglement (SecurityDAO) :**
+    *   *Défaut :* `getSecurityStatus` effectue un `DELETE` (nettoyage des logs) à chaque lecture.
+    *   *Impact :* Verrouillage de table inutile sur fort trafic.
+    *   *Correction :* Passer ce nettoyage en tâche CRON ou en exécution probabiliste (1 fois sur 100).
+*   **Qualité du code DAO :**
+    *   *Positif :* L'utilisation systématique de `prepare/execute` protège bien des injections SQL.
 
-### C. Contrôleurs (`addMedicament.ctrl.php`)
-*   **Architecture :** Le contrôleur suit une logique procédurale simple, adaptée pour une API sans framework lourd.
-*   **Sécurité :**
-    *   Vérification du rôle (`checkRole('Famille')`) effectuée avant tout traitement.
-    *   Sanitization des entrées (`filter_var`) présente.
-*   **Traitement JSON :** Lecture correcte via `php://input` (nécessaire car `$_POST` est vide pour les requêtes `application/json`).
-*   **Amélioration HTTP :** Le code de réponse HTTP est toujours 200, même en cas d'erreur logique `{success: false}`.
-    *   *Action :* Utiliser `http_response_code(400)` ou `403` pour permettre au frontend de gérer les erreurs plus proprement.
+## 3. Frontend (React)
 
-### D. Tests Unitaires (PHPUnit)
-Les tests (`DocumentDAOTest`, `EvenementDAOTest`, `CategorieDAOTest`, `FamilleDAOTest`) sont d'excellente qualité technique.
+### A. Qualité du Code (`Dashboard.jsx`, `ocr.jsx`)
+*   **Code "Spaghetti" UI :**
+    *   *Défaut :* Les icônes SVG sont hardcodées dans le JSX du Dashboard (+150 lignes inutiles).
+    *   *Correction :* Extraire dans des composants `<Icon... />`.
+*   **Gestion d'erreur Fetch :**
+    *   *Défaut :* `fetch` ne rejette pas la promesse sur les erreurs 4xx/5xx. Le code tente de parser du JSON sur une page d'erreur HTML, provoquant un crash JS.
+    *   *Correction :* Ajouter systématiquement :
+      ```javascript
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      ```
+*   **Nettoyage (`ocr.jsx`) :**
+    *   *Défaut :* Présence de variables d'état inutilisées (`idCatalogueMedecine`) et usage de `alert()` bloquant.
 
-*   **Isolation :** Utilisation correcte des Mocks pour `DAL` et `PDOStatement`. Les tests ne dépendent pas d'une base de données réelle, ce qui les rend rapides et fiables.
-*   **Scénarios couverts :**
-    *   **Transactions :** `EvenementDAOTest::testDeleteEvenementRollbackOnFailure` vérifie que le `rollBack()` est appelé en cas d'exception. C'est critique pour l'intégrité des données.
-    *   **Logique Métier :** `CategorieDAOTest` valide la logique complexe de filtrage par rôle (Createur vs Proche vs Famille).
-    *   **Cas Limites :** `DocumentDAOTest` vérifie le retour de tableaux vides au lieu de `false`.
+## 4. Tests Unitaires (PHPUnit)
 
----
+*   **Points Forts :**
+    *   Les tests (`DocumentDAOTest`, `EvenementDAOTest`) sont excellents. L'utilisation de Mocks pour `DAL` et `PDOStatement` prouve une bonne compréhension de l'isolation des tests.
+    *   La couverture des transactions (`testDeleteEvenementRollbackOnFailure`) est un très bon point.
 
-## 3. Frontend (React - `Dashboard.jsx`)
+*   **Manquements :**
+    *   Absence de tests d'intégration. Les Mocks valident la logique PHP, mais ne garantissent pas que la requête SQL réelle fonctionne sur la base PostgreSQL.
+    *   Absence de tests pour les Contrôleurs API.
 
-### A. Logique et État
-*   **Appels API :** Utilisation correcte de `fetch` avec `credentials: 'include'` pour passer les cookies de session PHP.
-*   **Gestion d'erreur :** Le dashboard gère l'affichage des erreurs via l'état `error`.
-    *   *Manquant :* `fetch` ne rejette pas la promesse sur les erreurs HTTP (404, 500). Il faut ajouter `if (!response.ok) throw new Error(...)` avant de parser le JSON.
-*   **Tri des données :** `getProchaineTache` retourne `taches[0]`. Cela suppose que l'API renvoie les tâches *déjà triées* par date. Si ce n'est pas garanti par la requête SQL, un `.sort()` côté client est nécessaire pour éviter d'afficher une tâche lointaine.
+## 5. DevOps & Base de Données
 
-### B. Qualité du Code UI
-*   **Code SVG :** Les icônes SVG sont "hardcodées" directement dans le JSX. Cela rend le composant `Dashboard` très long (plus de 150 lignes) et difficile à maintenir.
-    *   *Action :* Créer des composants dédiés (ex: `<IconTrajet />`, `<IconAlert />`) ou utiliser une librairie d'icônes.
-*   **Composant Slide :** Bonne réutilisation du composant pour les détails ("Détails du Trajet").
-
----
-
-## 4. Synthèse des Actions Recommandées
-
-### Priorité Haute (Sécurité & Stabilité)
-1.  **Backend (`SecurityDAO`) :** Sortir la requête `DELETE` de nettoyage de la méthode de lecture `getSecurityStatus`.
-2.  **Backend (`init.php` / `csrf.php`) :** Vérifier que la validation CSRF supporte la lecture des headers (ex: `X-CSRF-Token`) pour les appels AJAX/JSON, car `$_POST` sera vide.
-
-### Priorité Moyenne (Qualité & Maintenance)
-3.  **Frontend (`Dashboard.jsx`) :** Extraire les SVG dans des fichiers séparés pour alléger le code.
-4.  **Frontend (`Dashboard.jsx`) :** Ajouter la vérification `response.ok` dans les appels `fetch`.
-5.  **Backend (Contrôleurs) :** Implémenter les codes de réponse HTTP standards (400, 401, 403, 500).
-
-### Priorité Basse (Optimisation)
-6.  **Backend (`init.php`) :** S'assurer que la liste `$allowed_origins` est bien synchronisée avec les variables d'environnement de production pour éviter les erreurs CORS après déploiement.
+*   **Base de Données :**
+    *   *Incident :* `SQLSTATE[08006] Connection refused`.
+    *   *Action :* Vérifier les timeouts de connexion et s'assurer que le service DB redémarre automatiquement.
+*   **Docker :**
+    *   *Sécurité :* Les conteneurs tournent-ils bien en utilisateur non-root ? (Point marqué comme "FAIT" mais à vérifier en CI).
+    *   *Secrets :* Le fichier `.env.example` est présent, c'est bien. S'assurer qu'aucun `.env` réel n'est dans l'historique Git.
 
 ---
 
-## 5. Exemple de Refactoring (SecurityDAO)
+## Synthèse des Actions Prioritaires (Plan de Bataille)
+
+| Priorité | Composant | Action Requise |
+| :--- | :--- | :--- |
+| **P0 (Critique)** | Backend | **Sécuriser la connexion DB** (try/catch) pour ne pas exposer l'infra en prod. |
+| **P0 (Critique)** | Backend | **Fix CSRF** : Supporter les headers `X-CSRF-Token` pour les appels API. |
+| **P1 (Majeur)** | Backend | **Refactoring HTTP** : Renvoyer les bons codes (400, 401, 403) dans les contrôleurs. |
+| **P1 (Majeur)** | Frontend | **Robustesse Fetch** : Gérer `response.ok` avant le parsing JSON. |
+| **P2 (Moyen)** | Backend | **Performance** : Optimiser le nettoyage des logs dans `SecurityDAO`. |
+| **P2 (Moyen)** | Frontend | **Refactoring UI** : Extraire les SVG du Dashboard. |
+
+---
+
+## Exemple de Correction : Gestionnaire d'Erreur API
+
+Pour éviter les `200 OK` avec `{success: false}`, voici un helper suggéré :
 
 ```php
-// Avant
-public function getSecurityStatus(string $ip): array {
-    $ip_hashed = $this->hashIp($ip);
-    // Mauvais : Side-effect lourd en lecture
-    $this->dal->prepare("DELETE FROM login_attempts WHERE attempt_time < NOW() - INTERVAL '24 hours'")->execute();
-    // ... suite du code
-}
-
-// Après (Proposition)
-public function getSecurityStatus(string $ip): array {
-    $ip_hashed = $this->hashIp($ip);
-    
-    // Nettoyage probabiliste (1 chance sur 100) pour éviter de surcharger la DB
-    if (rand(1, 100) === 1) {
-        $this->cleanOldAttempts();
+// utils/Response.php
+class Response {
+    public static function json($data, $status = 200) {
+        http_response_code($status);
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit;
     }
     
-    // ... suite du code
+    public static function error($message, $status = 400) {
+        self::json(['success' => false, 'error' => $message], $status);
+    }
 }
 
-private function cleanOldAttempts(): void {
-    try {
-        $this->dal->prepare("DELETE FROM login_attempts WHERE attempt_time < NOW() - INTERVAL '24 hours'")->execute();
-    } catch (Exception $e) {
-        // On ignore silencieusement l'erreur de nettoyage pour ne pas bloquer le login
-    }
+// Utilisation dans addMedicament.ctrl.php
+if (!$app->checkRole('Famille')) {
+    Response::error('Accès refusé', 403);
+}
+
+try {
+    // ... logique ...
+    Response::json(['success' => true, 'data' => $result]);
+} catch (Exception $e) {
+    // En prod, on log $e->getMessage() mais on affiche un message générique
+    error_log($e->getMessage()); 
+    Response::error('Erreur serveur interne', 500);
 }
 ```
