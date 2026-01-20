@@ -78,10 +78,39 @@ class RapportDAO {
     }
 
     public function restockMedic($id_m, $qte) {
-        $query = 'UPDATE STOCK_MEDICS SET quantite = quantite + :q WHERE id_medicament = :id';
-        $stmt = $this->dal->prepare($query);
-        return $stmt->execute(['q'=>(int)$qte, 'id'=>$id_m]);
+    try {
+        // 1. Récupérer la quantité actuelle pour vérifier le seuil
+        $querySelect = 'SELECT quantite FROM STOCK_MEDICS WHERE id_medicament = :id';
+        $stmtSelect = $this->dal->prepare($querySelect);
+        $stmtSelect->execute(['id' => $id_m]);
+        $result = $stmtSelect->fetch();
+
+        if (!$result) {
+            throw new Exception("Médicament introuvable.");
+        }
+
+        $stockActuel = (int)$result['quantite'];
+        $nouveauStock = $stockActuel + (int)$qte;
+
+        // 2. Vérification : Interdire un stock négatif
+        if ($nouveauStock < 0) {
+            throw new Exception("Opération impossible : stock insuffisant (actuel : $stockActuel).");
+        }
+
+        // 3. Mise à jour si tout est bon
+        $queryUpdate = 'UPDATE STOCK_MEDICS SET quantite = :q_new WHERE id_medicament = :id';
+        $stmtUpdate = $this->dal->prepare($queryUpdate);
+        
+        return $stmtUpdate->execute([
+            'q_new' => $nouveauStock, 
+            'id'    => $id_m
+        ]);
+
+    } catch (Exception $e) {
+        // On propage l'erreur pour qu'elle soit attrapée par le contrôleur
+        throw $e;
     }
+}
 
     public function clearConso($id_rapport) {
         $query = 'DELETE FROM CONSO WHERE id_rapport = :id';
@@ -103,4 +132,63 @@ class RapportDAO {
             'id_f' => $id_famille
         ]);
     }
+
+    public function createFullRapport($id_famille, $id_personne, $nom, $description, $medicaments) {
+    try {
+        $this->dal->beginTransaction();
+
+        // 1. Création du rapport
+        $sql = "INSERT INTO RAPPORTS (id_famille, id_personne, nom, description) 
+                VALUES (?, ?, ?, ?) RETURNING id_rapport";
+        
+        $stmt = $this->dal->prepare($sql);
+        $stmt->execute([$id_famille, $id_personne, $nom, $description]);
+        
+        $row = $stmt->fetch();
+        if (!$row) {
+            throw new Exception("Erreur lors de la récupération de l'ID du rapport.");
+        }
+        $id_rapport = $row['id_rapport'];
+
+        
+        // 2. Gestion des médicaments
+        if (!empty($medicaments) && is_array($medicaments)) {
+            foreach ($medicaments as $med) {
+                $id_med = $med['id_med'];
+                $qte_demandee = (int)$med['quantite'];
+
+                if ($qte_demandee <= 0) continue;
+
+                // CORRECTION : Utilisation de "designation_med" au lieu de "nom"
+                $sqlStock = "SELECT quantite, designation_med FROM STOCK_MEDICS WHERE id_medicament = ?";
+                $stmtStock = $this->dal->prepare($sqlStock);
+                $stmtStock->execute([$id_med]);
+                $stockData = $stmtStock->fetch();
+
+                if (!$stockData) {
+                    throw new Exception("Médicament introuvable (ID: $id_med)");
+                }
+                
+                if ($stockData['quantite'] < $qte_demandee) {
+                    $nomMed = $stockData['designation_med'] ?? "Inconnu";
+                    throw new Exception("Stock insuffisant pour : $nomMed (Restant : " . $stockData['quantite'] . ")");
+                }
+
+                // Note : Vérifie si ta table s'appelle CONSO ou CONSOMMER (tu as utilisé les deux dans ton code)
+                $sqlConso = "INSERT INTO CONSO (id_medicament, id_rapport, nombre_medic_conso) VALUES (?, ?, ?)";
+                $this->dal->prepare($sqlConso)->execute([$id_med, $id_rapport, $qte_demandee]);
+
+                $sqlUpdate = "UPDATE STOCK_MEDICS SET quantite = quantite - ? WHERE id_medicament = ?";
+                $this->dal->prepare($sqlUpdate)->execute([$qte_demandee, $id_med]);
+            }
+        }
+
+        $this->dal->commit();
+        return true;
+
+    } catch (Exception $e) {
+        $this->dal->rollBack();
+        throw $e; 
+    }
+}
 }
