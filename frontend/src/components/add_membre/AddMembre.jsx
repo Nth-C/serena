@@ -3,16 +3,14 @@ import { useState, useEffect } from 'react'
 import LayoutMenu from '../../LayoutMenu'
 
 // Il ne faut pas qu'on puisse afficher tout les aidants d'un coup (il faut une limite)
-const AddMembre = ({isOpen, onClose }) => {
+const AddMembre = () => {
     
-    const [infosMembre, setSettingsOf] = useState({id : '',name: '', role: ''})
     const [membresFamille, setMembresFamille] = useState([]) 
     const [usernameSearch , setUsernameSearch] = useState("")
 
     const apiUrl = import.meta.env.VITE_API_URL;
     
     const handleAddInvitePersonne = async (id) => {
-    // Petit ajout de sécurité : confirmer la suppression
     
     try {
         const response = await fetch(`${apiUrl}/?route=invitepersonnefamille/add`, {
@@ -32,51 +30,48 @@ const AddMembre = ({isOpen, onClose }) => {
     } catch (error) {
         console.error("Erreur lors de la demande invité :", error);
     }
-};
+    };
 
 
     const fetchMembres = async (valeur = usernameSearch) => {
-    try {
-        const response = await fetch(`${apiUrl}/?route=allpersonne/view`, {
-            method: "POST",
-            credentials: 'include',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ texte: valeur }) 
-        });
-        
-        const data = await response.json();
+        try {
+            const response = await fetch(`${apiUrl}/?route=allpersonne/view`, {
+                method: "POST",
+                credentials: 'include',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ texte: valeur }) 
+            });
+            
+            const data = await response.json();
 
-        // On vérifie si data est un tableau (puisque c'est ce que ton PHP renvoie)
-        if (Array.isArray(data)) {
-            setMembresFamille(data);
-        } else if (data.success) {
-            // Au cas où tu modifies ton PHP plus tard pour renvoyer {success: true, membres: []}
-            setMembresFamille(data.membres || []);
+            // On vérifie si data est un tableau (puisque c'est ce que ton PHP renvoie)
+            if (Array.isArray(data)) {
+                setMembresFamille(data);
+            } else if (data.success) {
+                // Au cas où tu modifies ton PHP plus tard pour renvoyer {success: true, membres: []}
+                setMembresFamille(data.membres || []);
+            }
+        } catch (error) {
+            console.error("Erreur chargement personnes", error);
         }
-    } catch (error) {
-        console.error("Erreur chargement personnes", error);
-    }
-};
+    };
 
-// Appelle-la au chargement
-useEffect(() => {
-    fetchMembres();
-}, [apiUrl]);
+    // Appelle-la au chargement
+    useEffect(() => {
+        fetchMembres();
+    }, [apiUrl]);
 
     return (
         <LayoutMenu
             title={"Inviter des contact"} 
-            isOpen={isOpen} 
-            onClose={onClose}
         >
             <div className={styles.add_membre}>
                 <div className={styles.container_search}>
                     <input type="search" placeholder="Rechercher"
-                    onChange={(e) => {
-                    setUsernameSearch(e.target.value);
-                    fetchMembres(e.target.value);
-              }}
-                    
+                        onChange={(e) => {
+                            setUsernameSearch(e.target.value);
+                            fetchMembres(e.target.value);
+                        }}
                     />
                 </div>
 
