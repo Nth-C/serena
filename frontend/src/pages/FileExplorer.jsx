@@ -24,7 +24,7 @@ function FileExplorer() {
     name: ''
   })
 
-  const [idCurrentCategorie , setIdCurrentCategorie] = useState(null)
+  const [idCurrentCategorie, setIdCurrentCategorie] = useState(null)
 
   const [isUploaded, setIsUploaded] = useState(false);
 
@@ -43,8 +43,8 @@ function FileExplorer() {
   const [isEditing, setIsEditing] = useState(false);
 
   /* pop up confirmation */
-  const [showConfirmation , setShowConfirmation] = useState(false)
-  const [msgConfirmation , setMsgConfirmation] = useState('')
+  const [showConfirmation, setShowConfirmation] = useState(false)
+  const [msgConfirmation, setMsgConfirmation] = useState('')
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -55,7 +55,7 @@ function FileExplorer() {
   }
 
   const toggleNewCategorie = () => {
-    if(isEditing){
+    if (isEditing) {
       setIsEditing(false);
       handleResetCategorie()
     }
@@ -77,7 +77,7 @@ function FileExplorer() {
     setRoleCategorie(cat.role || "Professionelle"); // Charge le rôle actuel
     setIdCurrentCategorie(cat.id_cat);
     setIsNewCategorieOpen(true);
-};
+  };
 
   const handleResetUploadFile = () => {
     setNameDocument('');
@@ -149,7 +149,7 @@ function FileExplorer() {
   const handleAddCategorie = async (e) => {
     e.preventDefault()
     const nouvelleCategorie = { name: nameCategorie, role: roleCategorie }
-    const updateCategorie = {id_categorie : idCurrentCategorie, name : nameCategorie, role: roleCategorie}
+    const updateCategorie = { id_categorie: idCurrentCategorie, name: nameCategorie, role: roleCategorie }
 
     const route = isEditing ? 'categorie/update' : 'categorie/add';
     try {
@@ -165,7 +165,7 @@ function FileExplorer() {
         toggleNewCategorie();
         getDocument()
 
-        if(!isEditing) {
+        if (!isEditing) {
           setMsgConfirmation(`La catégorie ${nouvelleCategorie.name} a bien été ajouté.`)
         } else {
           setMsgConfirmation(`La catégorie ${updateCategorie.name} a bien été modifié.`)
@@ -188,7 +188,7 @@ function FileExplorer() {
         method: "POST",
         credentials: 'include',
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({id_cat : e})
+        body: JSON.stringify({ id_cat: e })
       });
       const result = await response.json();
       if (result.success) {
@@ -263,13 +263,13 @@ function FileExplorer() {
       <div className='new_categories'>
         <h1>Documents</h1>
         {hasPermission("Famille") && (
-        <div onClick={toggleNewCategorie}>
+          <div onClick={toggleNewCategorie}>
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M440-280h80v-160h160v-80H520v-160h-80v160H280v80h160v160Zm40 200q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" /></svg>
             <p>Nouvelle catégorie</p>
-        </div>
+          </div>
         )}
       </div>
-      
+
 
       <div className="search_container">
         <div className="search_document">
@@ -277,9 +277,12 @@ function FileExplorer() {
         </div>
       </div>
       {hasPermission("Famille") && (
-      <button className="btn_add" onClick={toggleNewDocument}>
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" /></svg>
-      </button>
+        <div className='btn_add_container'>
+          <button className="btn_add" onClick={toggleNewDocument}>
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" /></svg>
+          </button>
+          <p onClick={toggleNewDocument}>ajouter un document</p>
+        </div>
       )}
 
       <div className="list">
@@ -291,11 +294,11 @@ function FileExplorer() {
                   <p><strong>{cat.nom}</strong></p>
                 </div>
                 {hasPermission("Famille") && (
-                <div>
-                  <button onClick={() => handleEditCategorie(cat)}>
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z" /></svg>
-                  </button>
-                </div>
+                  <div>
+                    <button onClick={() => handleEditCategorie(cat)}>
+                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z" /></svg>
+                    </button>
+                  </div>
                 )}
               </div>
 
@@ -308,18 +311,18 @@ function FileExplorer() {
                         <p>{doc.type}</p>
                       </div>
                       <div style={{ display: 'flex', gap: '10px' }}>
-                        
+
                         <div onClick={() => handleDownload(doc.url)} style={{ cursor: 'pointer' }}>
                           <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#0000FF"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" /></svg>
                         </div>
-                        
+
                         {hasPermission("Famille") && (
-                        <img
-                          src="/icons/bin.svg"
-                          alt="bin"
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => {openDeleteModal(doc); setMsgConfirmation(`Le document "${doc.nom_doc}" a bien été supprimé.`)}}
-                        />
+                          <img
+                            src="/icons/bin.svg"
+                            alt="bin"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => { openDeleteModal(doc); setMsgConfirmation(`Le document "${doc.nom_doc}" a bien été supprimé.`) }}
+                          />
                         )}
                       </div>
                     </div>
@@ -355,9 +358,9 @@ function FileExplorer() {
                   <>
                     <div>
                       <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z" /></svg>
-                      <p className="doc_type_erreur">Les document en .{typeDocument} ne sont pas pris en compte seule les images et les PDF sont autorisés</p>
+                      <p className="doc_type_erreur">Les document en .{typeDocument} ne sont pas pris en compte seule les document en .png, .jpg, .JPEG et .pdf sont autorisés</p>
                     </div>
-                    <button type="button" onClick={() =>  handleResetUploadFile()} className="btn_blue">Changer de fichier</button>
+                    <button type="button" onClick={() => handleResetUploadFile()} className="btn_blue">Changer de fichier</button>
                   </>
 
                 )}
@@ -392,28 +395,28 @@ function FileExplorer() {
           </div>
           <div>
             <label>Role :</label>
-              <select
-                name="role"
-                value={roleCategorie}
-                onChange={(e) => setRoleCategorie(e.target.value)} // selectionne directement le bon role
-              >
+            <select
+              name="role"
+              value={roleCategorie}
+              onChange={(e) => setRoleCategorie(e.target.value)} // selectionne directement le bon role
+            >
               <option value="Famille">Famille</option>
               <option value="Proche">Proche</option>
               <option value="Professionelle">Professionelle</option>
-              </select>
+            </select>
           </div>
           <div>
-          <button type='button' className="btn_red" onClick={() => {
-            //handleDeleteCategorie(idCurrentCategorie);
-            setInfosCategorieDelete({
-              id: idCurrentCategorie,
-              name: nameCategorie
-            })
-            setIsPopUpDeleteCatOpen(true)
-            toggleNewCategorie()
-          }}>Supprimer
-          </button>
-          <button type="submit" className="btn_blue">{isEditing ? "Modifier" : "Ajouter"}</button>
+            <button type='button' className="btn_red" onClick={() => {
+              //handleDeleteCategorie(idCurrentCategorie);
+              setInfosCategorieDelete({
+                id: idCurrentCategorie,
+                name: nameCategorie
+              })
+              setIsPopUpDeleteCatOpen(true)
+              toggleNewCategorie()
+            }}>Supprimer
+            </button>
+            <button type="submit" className="btn_blue">{isEditing ? "Modifier" : "Ajouter"}</button>
           </div>
         </form>
       </Slide>
@@ -434,7 +437,7 @@ function FileExplorer() {
         onClose={() => setIsPopUpDeleteCatOpen(false)}
       />
 
-      
+
       <PopUpConfirmation sentence={msgConfirmation} show={showConfirmation} setShow={setShowConfirmation} />
 
     </div>
