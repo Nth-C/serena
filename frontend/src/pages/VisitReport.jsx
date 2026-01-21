@@ -453,10 +453,6 @@ function LastVisitReport() {
                 <img src="/icons/arrow_back.svg" alt="" onClick={() => setIsPopupOpen(false)} />
                 <input type="search" placeholder="Rechercher un médicament" />
               </div>
-          {/* <div>
-                <img src="/icons/sort.svg" alt="" />
-                <p>Trier par</p>
-              </div>*/}
             </div>
             {hasPermission("Famille") && (
             <div className="add_medi">
