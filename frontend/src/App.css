@@ -280,7 +280,7 @@ textarea {
   position: fixed;
 }
 
-.btn_add:hover,
+.btn_add_container:hover .btn_add,
 .btn_add_agenda:hover {
   background-color: var(--pink-hover);
 }
