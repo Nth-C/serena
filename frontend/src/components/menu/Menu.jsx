@@ -75,7 +75,7 @@ function Menu({isOpen , onHamburgerClick}) {
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
                         <NavLink to={"/add_contact"} onClick={onHamburgerClick}>
-                            <p>Inviter des contact</p>
+                            <p>Ajouter des membres</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
                         <NavLink to={"/role_membre"} onClick={onHamburgerClick}>

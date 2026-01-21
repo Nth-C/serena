@@ -28,11 +28,6 @@ function CGUStart() {
             <h1>Avant d'accéder à Serena</h1>
             <div>
                 <div>
-                    <label htmlFor="">Entrer votre email : </label>
-                    <input type="email" />
-                </div>
-
-                <div>
                     <div class="terms-container" id="termsBox" ref={termsRef} onScroll={handleScroll}>
                         <h3>Conditions d'Utilisation</h3>
                         <div>
