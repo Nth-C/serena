@@ -21,3 +21,16 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+
+  playwright:
+    build: ./frontend
+    environment:
+      - VITE_API_URL=http://backend:80
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    # On ne mappe pas le port 5173 pour éviter le conflit avec ton front actuel
+    # Playwright communiquera en interne sur le port 5173 de CE conteneur
+    command: npx playwright test
+    depends_on:
+      - backend
