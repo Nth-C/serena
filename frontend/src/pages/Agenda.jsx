@@ -157,9 +157,6 @@ function Agenda() {
 
       if (data.success) {
         setListeEvenements(data.evenements)
-
-        //console.log('event : ', data.evenements)
-        //console.log('premier event complet : ', data.evenements[0])
       }
     } catch (error) {
       console.error("Erreur chargement événements", error)

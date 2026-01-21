@@ -779,9 +779,15 @@ button.creer_suivi {
 }
 
 .acce_suivi form div:last-child {
-  display: flex;
   flex-direction: row;
-  gap: 1rem;
+}
+
+.edit_famille > div:last-child {
+  flex-direction: row;
+}
+
+.edit_famille > div:last-child button {
+  width: 50%;
 }
 
 :is(.acce_suivi, .notification) .principal_infos {

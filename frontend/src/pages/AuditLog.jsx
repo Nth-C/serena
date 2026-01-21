@@ -231,7 +231,7 @@ const AuditLog = () => {
                             <tbody>
                                 {filteredAndSortedhistorique.map((log) => (
                                     <tr key={log.id_audit || Math.random()}>
-                                        <td style={{}}>{getFormatDate(new Date(log.action_tstamp), true)}</td>
+                                        <td style={{}}>{getFormatDate(new Date(log.action_tstamp), true)} <br />{getFormatTime(new Date(log.action_tstamp))}</td>
                                         <td>{log.user_name}</td>
                                         <td>
                                             <div>

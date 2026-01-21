@@ -159,8 +159,6 @@ function Medecine() {
 
 
   const handleSearchMedecine = async (e) => {
-    console.log(e);
-
     // change le controleur appeler en fonction de (créer / modifier)
     const route = 'nommedicament/search';
 
@@ -178,10 +176,8 @@ function Medecine() {
       });
 
       const result = await response.json();
-      console.log(result);
       setListNomMedecine(result.resultats)
       if (result.isUnique) {
-        console.log(result.resultats)
         setListTypeMedecine(result.types)
         setIsNameGood(true)
 
