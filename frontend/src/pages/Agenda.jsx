@@ -277,6 +277,7 @@ function Agenda() {
       if (result.success) {
         handleSuccess('Événement modifié avec succès !');
         setIsEditMode(false);
+        setEventOpen(false)
       } else {
         console.error('Erreur lors de la modification de l\'événement', result.error);
       }
@@ -762,45 +763,46 @@ function Agenda() {
               </div>
             )}
 
-                <div className='actions'>
-                    <button className="btn_blue" onClick={() => {
-                    setFormData({
-                      ...formData,
-                      titre: currentEvent.titre,
-                      lieu: currentEvent.lieu || '',
-                      accompagnants: currentEvent.accompagnantId || '',
-                      debut: toLocalISO(currentEvent.dateStart),
-                      fin: toLocalISO(currentEvent.dateEnd),
-                      description: currentEvent.description || '',
-                      id_event: currentEvent.id_event,
-                      lieuDepart: currentEvent.trajet?.lieu_dep || '',
-                      lieuArrivee: currentEvent.trajet?.lieu_arr || '',
-                      societe: currentEvent.trajet?.societe || '',
-                      effectue: currentEvent.trajet?.societe ? 'externe' : 'aidant'
-                    });
-                      setIsEditMode(true);
-                      setIsTrajet(false);
-                    }}>Modifier</button>
-                    {currentEvent.id_recurrence !== null && (
-                    <button className="btn_red" onClick={() => {
-                      setPopUpDeleteRecuOpen(true)
-                      setEventToDelete({id: currentEvent.id_event, title: currentEvent.titre, id_recurrence: currentEvent.id_recurrence})
-                      setEventOpen(false)
-                    }}>Supprimer les évènements de la récurrence</button>
-                  )}
-                    <button className="btn_red" onClick={() => {
-                      setPopUpDeleteOpen(true)
-                      setEventToDelete({id: currentEvent.id_event, title: currentEvent.titre})
-                      setEventOpen(false)
-                    }}>Supprimer</button>
-                </div>
+            <div className='actions'>
+                <button className="btn_blue" onClick={() => {
+                setFormData({
+                  ...formData,
+                  titre: currentEvent.titre,
+                  lieu: currentEvent.lieu || '',
+                  accompagnants: currentEvent.accompagnantId || '',
+                  debut: toLocalISO(currentEvent.dateStart),
+                  fin: toLocalISO(currentEvent.dateEnd),
+                  description: currentEvent.description || '',
+                  id_event: currentEvent.id_event,
+                  lieuDepart: currentEvent.trajet?.lieu_dep || '',
+                  lieuArrivee: currentEvent.trajet?.lieu_arr || '',
+                  societe: currentEvent.trajet?.societe || '',
+                  effectue: currentEvent.trajet?.societe ? 'externe' : 'aidant'
+                });
+                  setIsEditMode(true);
+                  setIsTrajet(false);
+                }}>Modifier</button>
+                {currentEvent.id_recurrence !== null && (
+                <button className="btn_red" onClick={() => {
+                  setPopUpDeleteRecuOpen(true)
+                  setEventToDelete({id: currentEvent.id_event, title: currentEvent.titre, id_recurrence: currentEvent.id_recurrence})
+                  setEventOpen(false)
+                }}>Supprimer les évènements de la récurrence</button>
+              )}
+                <button className="btn_red" onClick={() => {
+                  setPopUpDeleteOpen(true)
+                  setEventToDelete({id: currentEvent.id_event, title: currentEvent.titre})
+                  setEventOpen(false)
+                }}>Supprimer</button>
             </div>
+        </div>
         ) : (currentEvent && isEditMode) && (
           <>
             {/* 
               Switcher Event / Trajet 
-              rajouter une condition pour verifier si un un trajet est bien lié a l'evenement
+              s'affiche uniquement si l'evenement est liée a un trajet
             */}
+            {(currentEvent.trajets && currentEvent.trajets.length > 0) && (
             <div className='switch_event'>
               <button type="button" className={!isTrajet ? 'active' : ''} onClick={() => setIsTrajet(false)} >Événement</button>
               <button 
@@ -808,7 +810,6 @@ function Agenda() {
                   className={isTrajet ? 'active' : ''}
                   onClick={() => {
                       const trajet = currentEvent.trajets[0];
-                      console.log('Trajet récupéré:', trajet);
                       setCurrentTrajet(trajet); 
                       const dateStr = trajet.date_deb ? trajet.date_deb.replace(" ", "T").replace(/\+\d{2}$/, '') : '';
                       const dateTrajet = dateStr ? toLocalISO(new Date(dateStr)) : '';
@@ -823,11 +824,11 @@ function Agenda() {
                           aidantAffecte: trajet.aidant_id || 'demande'
                       }));
                       setIsTrajet(true);
-                  }}
-                  disabled={!currentEvent.trajets || currentEvent.trajets.length === 0}>
+                  }}>
                   Trajet
               </button>            
-              </div>
+            </div>
+            )}
 
             {!isTrajet ? (
               <form className='edit_event' onSubmit={handleUpdateEvent}>
@@ -980,7 +981,6 @@ function Agenda() {
                   <button type='submit' className='btn_blue'>Valider</button>
                 </div>
               </form>
-
             )}
           </>
         )}

@@ -59,10 +59,10 @@ function AssistanceDisponnible({ aides, resetForm }) {
                             </div>
                         </div>
                     ))}
-                    <p className='end_list'>Fin des aides disponibles</p>
+                    <p className='end_list'>Aucune autre aide disponible</p>
                 </div>
             ) : (
-                <p className="aucun">Aucune aide disponible pour votre situation.</p>
+                <p className="aucun">Aucune aide disponible pour votre situation</p>
             )}
             
             <button 

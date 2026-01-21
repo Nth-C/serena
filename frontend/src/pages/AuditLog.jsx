@@ -37,7 +37,7 @@ const AuditLog = () => {
             if (data.error) throw new Error(data.error);
 
             setListhistorique(Array.isArray(data) ? data : []);
-            
+
         } catch (err) {
             console.error("Erreur Audit:", err);
             setError(err.message || "Impossible de récupérer l'historique");
@@ -107,7 +107,7 @@ const AuditLog = () => {
         try {
             const oldData = log.old_values ? JSON.parse(log.old_values) : {};
             const newData = log.new_values ? JSON.parse(log.new_values) : {};
-            
+
             let nomItem = "Inconnu";
             const dataToRead = log.operation === 'DELETE' ? oldData : newData;
 
@@ -119,8 +119,8 @@ const AuditLog = () => {
                     nomItem = dataToRead.nom_doc || 'Fichier';
                     break;
                 case 'personnes':
-                    nomItem = (dataToRead.prenom && dataToRead.nom) 
-                        ? `${dataToRead.prenom} ${dataToRead.nom}` 
+                    nomItem = (dataToRead.prenom && dataToRead.nom)
+                        ? `${dataToRead.prenom} ${dataToRead.nom}`
                         : (dataToRead.username || 'Utilisateur');
                     break;
                 case 'evenements':
@@ -134,9 +134,9 @@ const AuditLog = () => {
             }
 
             if (log.operation === 'DELETE') {
-                return <span style={{color: 'var(--red)'}}>A supprimé : <strong>{nomItem}</strong></span>;
+                return <span style={{ color: 'var(--red)' }}>A supprimé : <strong>{nomItem}</strong></span>;
             } else if (log.operation === 'INSERT') {
-                return <span style={{color: 'var(--blue)'}}>A ajouté : <strong>{nomItem}</strong></span>;
+                return <span style={{ color: 'var(--blue)' }}>A ajouté : <strong>{nomItem}</strong></span>;
             } else if (log.operation === 'UPDATE') {
 
                 return (
@@ -164,13 +164,11 @@ const AuditLog = () => {
             title={"Historique des actions"}
         >
             <div className='audit_log'>
-                
+
                 <div className='filter_bar'>
                     <div className='filter_group'>
-                        <button className='sort' onClick={() => setSortOpen(!sortOpen)}>
-                            <img src="/icons/sort.svg" alt="" />
-                            <p>Trier par</p>
-                        </button>
+                        <img src="/icons/sort.svg" alt="" />
+                        <button className='sort' onClick={() => setSortOpen(!sortOpen)}>Trier par</button>
                         <div className={sortOpen ? 'active' : ''}>
                             <div className='checkbox'>
                                 <input id='logs_insert' type="checkbox" checked={filters.INSERT} onChange={() => toggleFilter('INSERT')} />
@@ -188,31 +186,28 @@ const AuditLog = () => {
                     </div>
 
                     <div className='filter_group'>
-                        <button className='sort_btn' onClick={toggleSort}>
+                        <div className='sort_btn' onClick={toggleSort}>
                             {sortOrder === 'DESC' ? (
                                 <>
-                                    <svg viewBox="0 -960 960 960"><path d="M440-160v-487L216-423l-56-57 320-320 320 320-56 57-224-224v487h-80Z"/></svg>
-                                    Plus récent
+                                    <svg viewBox="0 -960 960 960"><path d="M440-160v-487L216-423l-56-57 320-320 320 320-56 57-224-224v487h-80Z" /></svg>
+                                    <p>Plus récent</p>
                                 </>
                             ) : (
                                 <>
-                                    <svg viewBox="0 -960 960 960"><path d="M440-800v487l-224-224-56 57 320 320 320-320-56-57-224 224v-487h-80Z"/></svg>
-                                    Plus ancien
+                                    <svg viewBox="0 -960 960 960"><path d="M440-800v487l-224-224-56 57 320 320 320-320-56-57-224 224v-487h-80Z" /></svg>
+                                    <p>Plus ancien</p>
                                 </>
                             )}
-                        </button>
+                        </div>
 
-                        <button 
-                            className='refresh_btn' 
-                            onClick={gethistorique} 
+                        <div className='refresh_btn'
+                            onClick={gethistorique}
                             disabled={loading}
-                            title="Actualiser la liste"
-                        >
-                            <svg className={loading ? 'spinning' : ''} viewBox="0 -960 960 960">
-                                <path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z"/>
-                            </svg>
-                            Actualiser
-                        </button>
+                            title="Actualiser la liste">
+                           <svg className={loading ? 'spinning' : ''} viewBox="0 -960 960 960"><path d="M480-160q-134 0-227-93t-93-227q0-134 93-227t227-93q69 0 132 28.5T720-690v-110h80v280H520v-80h168q-32-56-87.5-88T480-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h84q-28 106-114 173t-196 67Z" /></svg>
+                            <p>Actualiser</p>
+                        </div>
+
                     </div>
                 </div>
 
@@ -231,20 +226,17 @@ const AuditLog = () => {
                                     <th>Date</th>
                                     <th>Utilisateur</th>
                                     <th>Action</th>
-                                    <th>Cible</th>
-                                    <th>Description</th> {}
                                 </tr>
                             </thead>
                             <tbody>
                                 {filteredAndSortedhistorique.map((log) => (
                                     <tr key={log.id_audit || Math.random()}>
-                                        <td style={{whiteSpace: 'nowrap'}}>{`${getFormatDate(new Date(log.action_tstamp), true)} ${getFormatTime(new Date(log.action_tstamp))}`}</td>
+                                        <td style={{}}>{getFormatDate(new Date(log.action_tstamp), true)}</td>
                                         <td>{log.user_name}</td>
-                                        <td>{formatOperation(log.operation)}</td>
-                                        <td>{formatTableName(log.table_name)}</td>
                                         <td>
-                                            {/* On appelle notre nouvelle fonction de formatage */}
-                                            {formatLogDetails(log)}
+                                            <div>
+                                                {formatOperation(log.operation)} {formatTableName(log.table_name)}
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -253,8 +245,8 @@ const AuditLog = () => {
                     </div>
                 ) : (
                     <p className='empty'>
-                        {listhistorique.length === 0 
-                            ? "Aucun historique disponible." 
+                        {listhistorique.length === 0
+                            ? "Aucun historique disponible."
                             : "Aucun résultat pour ces filtres."}
                     </p>
                 )}

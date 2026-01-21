@@ -124,7 +124,7 @@ function AcceSuivi() {
         fetchInvites();
 
         // --- LOGIQUE DE NOM MODIFIEE ---
-        const userStored = localStorage.getItem('user');
+        const userStored = sessionStorage.getItem('user');
         if (userStored) {
             try {
                 const user = JSON.parse(userStored);

@@ -249,6 +249,10 @@ textarea {
   right: 2rem;
 }
 
+.btn_add_container:hover {
+  cursor: pointer;
+}
+
 .btn_add_container:hover p {
   color: var(--pink-hover);
 }
@@ -276,7 +280,7 @@ textarea {
   position: fixed;
 }
 
-.btn_add:hover,
+.btn_add_container:hover .btn_add,
 .btn_add_agenda:hover {
   background-color: var(--pink-hover);
 }
@@ -308,6 +312,41 @@ input::placeholder {
 
 .hover_blue:hover {
   background-color: var(--blue-hover);
+}
+
+/* switch btn */
+
+:is(.switch_event, .switch_calendar) {
+  border-radius: 8px;
+  flex-grow: 1;
+}
+
+.switch_event {
+  margin-bottom: 2rem;
+}
+
+:is(.switch_event, .switch_calendar) button {
+  width: 50%;
+  padding: 0.5rem 3rem;
+  cursor: pointer;
+  background-color: var(--bg-black);
+  color: var(--white);
+}
+
+:is(.switch_event, .switch_calendar) button.active {
+  background-color: var(--blue);
+}
+
+:is(.switch_event, .switch_calendar) button:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+:is(.switch_event, .switch_calendar) button:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+.agenda .btn_add_trajet {
+  transform: translateY(-150%);
 }
 
 /* ----------------------------------- */
@@ -392,8 +431,7 @@ input::placeholder {
 .login h1,
 .create_account h1,
 .forgot_password h1,
-.reset_password h1
-.CGU_start h1,
+.reset_password h1 .CGU_start h1,
 .CGU_not_accept h1 {
   color: var(--blue);
   padding: 0;
@@ -445,11 +483,11 @@ input::placeholder {
   z-index: -1;
 }
 
-.add_famille > div:last-child {
+.add_famille>div:last-child {
   flex-direction: row;
 }
 
-.add_famille > div:last-child button {
+.add_famille>div:last-child button {
   width: 50%;
 }
 
@@ -457,7 +495,7 @@ input::placeholder {
 /* --- CGU START + NOT ACCES --- */
 /* ----------------------------- */
 
-.CGU_start, 
+.CGU_start,
 .CGU_not_accept {
   padding: 3rem;
 }
@@ -466,7 +504,7 @@ input::placeholder {
   height: 100vh;
 }
 
-.CGU_not_accept > div {
+.CGU_not_accept>div {
   height: 100%;
   gap: 20px;
   display: flex;
@@ -815,7 +853,7 @@ button.creer_suivi {
   padding: 0 3rem;
 }
 
-.contener_report .container_top > div:first-child {
+.contener_report .container_top>div:first-child {
   display: flex;
   justify-content: space-between;
 }
@@ -1145,7 +1183,7 @@ button.add_medi {
   border-style: solid;
 }
 
-.medecine .container_top > div:first-child {
+.medecine .container_top>div:first-child {
   display: flex;
   justify-content: space-between;
 }
@@ -1252,12 +1290,12 @@ progress.blue_bar::-moz-progress-bar {
 
 /* add medicament */
 
-.new_medecine > div:last-child {
+.new_medecine>div:last-child {
   flex-direction: row;
   gap: 1rem;
 }
 
-.new_medecine > div:last-child button {
+.new_medecine>div:last-child button {
   flex-basis: 50%;
 }
 
@@ -1293,20 +1331,20 @@ progress.blue_bar::-moz-progress-bar {
 
 /*  slide event */
 
-:is(.add_event, .add_trajet)>div:last-child {
+:is(.add_event, .add_trajet, .edit_event)>div:last-child {
   flex-direction: row;
 }
 
-:is(.add_event, .add_trajet)>div:last-child button {
+:is(.add_event, .add_trajet, .edit_event)>div:last-child button {
   width: 50%;
 }
 
-.add_event .date-row {
+:is(.add_event, .edit_event) .date-row {
   flex-direction: row;
   justify-content: space-between;
 }
 
-.add_event .date-row>div {
+:is(.add_event, .edit_event) .date-row > div {
   display: flex;
   flex-direction: column;
   gap: .5rem;
@@ -1334,39 +1372,6 @@ progress.blue_bar::-moz-progress-bar {
 .event_details>div:last-child button {
   width: 50%;
 }
-
-/* switch calendar */
-
-:is(.switch_event, .switch_calendar) {
-  border-radius: 8px;
-  flex-grow: 1;
-}
-
-:is(.switch_event, .switch_calendar) button {
-  width: 50%;
-  padding: 0.5rem 3rem;
-  cursor: pointer;
-  background-color: var(--bg-black);
-  color: var(--white);
-}
-
-:is(.switch_event, .switch_calendar) button.active {
-  background-color: var(--blue);
-}
-
-:is(.switch_event, .switch_calendar) button:first-child {
-  border-radius: 8px 0 0 8px;
-}
-
-:is(.switch_event, .switch_calendar) button:last-child {
-  border-radius: 0 8px 8px 0;
-}
-
-.agenda .btn_add_trajet {
-  transform: translateY(-150%);
-}
-
-
 
 /* ----------------------------- */
 /* ------- FILE EXPLORER ------- */
@@ -1612,6 +1617,7 @@ progress.blue_bar::-moz-progress-bar {
 }
 
 .switch_assis_categorie {
+  display: flex;
   border-radius: 8px;
   flex-grow: 1;
 }
@@ -1661,25 +1667,27 @@ progress.blue_bar::-moz-progress-bar {
   display: flex;
   justify-content: space-between;
   width: 100%;
+  gap: 20px;
 }
 
 .assistance .selector_container_relation {
   display: flex;
-  flex-wrap: wrap;
+  gap: 20px;
   width: 100%;
-  gap: 20%;
 }
 
 .assistance .selector_container_relation>div {
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .assistance .selector_container>div {
   display: flex;
 }
 
-.assistance .selector_container input[type="radio"] {
+.assistance .selector_container input[type="radio"],
+.assistance .selector_container_relation input[type="radio"] {
   display: none;
 }
 
@@ -1688,11 +1696,12 @@ progress.blue_bar::-moz-progress-bar {
 }
 
 .assistance .selector_container_relation label:hover {
-  color: var(--blue);
+  border: 1px solid var(--blue);
 }
 
-.assistance .selector_container .card {
-  width: 150px;
+.assistance .selector_container .card,
+.assistance .selector_container_relation .choice {
+  width: 100%;
   height: 50px;
   border: 1px solid var(--black);
   border-radius: 10px;
@@ -1714,7 +1723,9 @@ progress.blue_bar::-moz-progress-bar {
 }
 
 .assistance .selector_container_relation input[type="radio"]:checked+.choice {
-  color: var(--blue);
+  background-color: var(--blue);
+  border: 1px solid var(--blue);
+  color: var(--white);
 }
 
 .assistance .selector_container_relation .choice {
@@ -1994,25 +2005,39 @@ progress.blue_bar::-moz-progress-bar {
   margin: 1rem 3rem;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .audit_log svg {
   width: 2.5rem;
 }
 
-/**/
-
-.filter_group {
-  position: relative;
-}
-
-.filter_group>button {
+.audit_log .filter_bar .filter_group {
   display: flex;
   align-items: center;
   gap: .5rem;
 }
 
-.filter_group>div:last-child {
+.audit_log .filter_bar .filter_group .sort_btn,
+.audit_log .filter_bar .filter_group .refresh_btn{
+  display: flex;
+  align-items: center;
+  padding: .5rem;
+  cursor: pointer;
+  border: 1px solid var(--blue);
+  background-color: var(--blue);
+  border-radius: 4px;
+  color: var(--white);
+}
+
+.audit_log .filter_bar .filter_group .sort_btn svg,
+.audit_log .filter_bar .filter_group .refresh_btn {
+  fill: var(--white);
+}
+
+
+
+.audit_log .filter_bar .filter_group:first-child >div:last-child {
   display: none;
   position: absolute;
   background: var(--white);
@@ -2021,14 +2046,28 @@ progress.blue_bar::-moz-progress-bar {
   border-radius: 8px;
 }
 
-.filter_group>div:last-child.active {
+.audit_log .filter_bar .filter_group:first-child >div:last-child.active {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  left: 29px;
+  top: 108px;
+}
+
+.filter_group >div:last-child {
+    display: none;
+}
+
+.filter_group >div:last-child.active {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid var(--black);
+  border-radius: 10px;
 }
 
 /* si checkbox */
-.filter_group .checkbox {
+.audit_log .filter_bar .filter_group .checkbox {
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -2071,9 +2110,20 @@ progress.blue_bar::-moz-progress-bar {
 
 .audit_table th,
 .audit_table td {
+  text-wrap: nowrap;
   text-align: left;
-  padding: 1rem 3rem;
+  font-size: 13px;
+  padding: 1rem 1rem;
   border-bottom: 1px solid var(--gray);
+}
+
+.audit_table td:last-child div {
+  border: 1px solid var(--blue);
+  width: 135px;
+  padding: 1rem;
+  border-radius: 50px;
+  background-color: var(--blue);
+  color: var(--white);
 }
 
 /* ------------------------------ */
@@ -2102,6 +2152,14 @@ progress.blue_bar::-moz-progress-bar {
 
 .compte form>div:last-child.active {
   display: flex;
+}
+
+.compte div > p:first-child {
+  font-weight: bold;
+}
+
+.div_btn {
+  margin-top: 10%;
 }
 
 
@@ -2226,6 +2284,11 @@ progress.blue_bar::-moz-progress-bar {
 
 .signalement-form>div:last-child button {
   width: 50%;
+}
+
+.signalement .delete svg {
+  fill: var(--red);
+  border: var(--red);
 }
 
 /* ------------------------------ */
@@ -2401,6 +2464,7 @@ progress.blue_bar::-moz-progress-bar {
 
 .notification h2 {
   margin-bottom: 1.5rem;
+  padding-left: 3rem;
 }
 
 .notification .notif_trajet {
@@ -2471,7 +2535,14 @@ progress.blue_bar::-moz-progress-bar {
 
 .add_membre .membre_list .container_name {
   display: flex;
+  max-width: 50rem;
+  min-width: 25rem;
   gap: 2rem;
+}
+
+.add_membre .membre_list .container_name p {
+  max-width: 20rem;
+  min-width: 24rem;
 }
 
 .add_membre .membre_list .container_name p:first-child {
@@ -2484,7 +2555,6 @@ progress.blue_bar::-moz-progress-bar {
 }
 
 
-/* Définition de l'animation */
 @keyframes rotate-loading {
   from {
     transform: rotate(0deg);
@@ -2495,23 +2565,17 @@ progress.blue_bar::-moz-progress-bar {
   }
 }
 
-/* La classe spécifique pour ton SVG */
 .loading-icon {
   width: 24px;
-  /* Ajuste la taille si besoin */
   height: 24px;
   animation: rotate-loading 1s linear infinite;
   display: inline-block;
   vertical-align: middle;
   color: blue;
 }
-
-/* Optionnel : on peut griser légèrement le bouton quand il charge */
 button:disabled .loading-icon {
   opacity: 0.8;
 }
-
-/*-------------------------------------*/
 
 .role_membre .container_search {
   padding: 0 3rem 2rem 3rem;
@@ -2534,6 +2598,14 @@ button:disabled .loading-icon {
 .role_membre .membre_list .container_name {
   display: flex;
   gap: 2rem;
+  max-width: 50rem;
+  min-width: 20rem;
+  justify-content: space-between;
+}
+
+.role_membre .membre_list .container_name p{
+  max-width: 20rem;
+  min-width: 15rem;
 }
 
 .role_membre .membre_list .container_name p:first-child {
@@ -2545,9 +2617,17 @@ button:disabled .loading-icon {
   fill: var(--black);
 }
 
-.form_role_membre>div:last-child {
-  flex-direction: row;
-  justify-content: space-between;
+.form_role_membre > div:last-child > div:first-child {
+  display: flex;
+  gap: 5px;
+}
+
+.form_role_membre > div > div:first-child button {
+  width: 50%;
+}
+
+.form_role_membre > div > div:last-child button {
+  width: 100%;
 }
 
 .form_role_membre>div:last-child>div:last-child {

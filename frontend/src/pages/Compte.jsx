@@ -93,65 +93,93 @@ const Compte = () => {
 
     return (
         <>
-        <LayoutMenu title={"Compte"}>
-            <div className="compte">
-                <h2>Mes informations</h2>
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <label>E-mail : </label>
-                        <input type="email" name="mail" value={formData.mail} onChange={handleChange} required disabled={!isEditing}/>
-                    </div>
-                    <div>
-                        <label>Nom : </label>
-                        <input type="text" name="nom" value={formData.nom} onChange={handleChange} required disabled={!isEditing}/>
-                    </div>
-                    <div>
-                        <label>Prénom : </label>
-                        <input type="text" name="prenom" value={formData.prenom} onChange={handleChange} required disabled={!isEditing}/>
-                    </div>
-                    <div>
-                        <label>Date de naissance : </label>
-                        <input type="date" name="date_naissance" value={formData.date_naissance} onChange={handleChange} required disabled={!isEditing}/>
-                    </div>
-                    <div>
-                        <label>Nom d'utilisateur : </label>
-                        <input type="text" name="username" value={formData.username} onChange={handleChange} required disabled={!isEditing}/>
-                    </div>
-                    <div>
-                        <button type="button" className="btn_red" onClick={togglePopUpDelete}>Supprimer</button>                       
-                        {/* change de bouton en fonction de si on modifie les données ou pas   */}
-                        {isEditing ? (
-                            <button type="button" className="btn_border" onClick={() => {setIsEditing(false); handleCancel()}}>Annuler</button>
+            <LayoutMenu title={"Compte"}>
+                <div className="compte">
+                    <h2>Mes informations</h2>
+                    <form onSubmit={handleSubmit}>
+                        {!isEditing ? (
+                            <>
+                                <div>
+                                    <p>E-mail : </p>
+                                    <p>{formData.mail}</p>
+                                </div>
+                                <div>
+                                    <p>Nom : </p>
+                                    <p>{formData.nom}</p>
+                                </div>
+                                <div>
+                                    <p>Prénom : </p>
+                                    <p>{formData.prenom}</p>
+                                </div>
+                                <div>
+                                    <p>Date de naissance : </p>
+                                    <p>{formData.date_naissance}</p>
+                                </div>
+                                <div>
+                                    <p>Nom d'utilisateur : </p>
+                                    <p>{formData.username}</p>
+                                </div>
+                            </>
                         ) : (
-                            <button type="button" className="btn_blue" onClick={() => setIsEditing(true)}>Modifier</button>
+                            <>
+                                <div>
+                                    <label>E-mail : </label>
+                                    <input type="email" name="mail" value={formData.mail} onChange={handleChange} required />
+                                </div>
+                                <div>
+                                    <label>Nom : </label>
+                                    <input type="text" name="nom" value={formData.nom} onChange={handleChange} required />
+                                </div>
+                                <div>
+                                    <label>Prénom : </label>
+                                    <input type="text" name="prenom" value={formData.prenom} onChange={handleChange} required />
+                                </div>
+                                <div>
+                                    <label>Date de naissance : </label>
+                                    <input type="date" name="date_naissance" value={formData.date_naissance} onChange={handleChange} required />
+                                </div>
+                                <div>
+                                    <label>Nom d'utilisateur : </label>
+                                    <input type="text" name="username" value={formData.username} onChange={handleChange} required />
+                                </div>
+                            </>
                         )}
-                    </div>
-                    <div className={isEditing ? 'active' : ''}>
-                        <button type="submit" className="btn_blue">Enregistrer</button>                       
-                    </div>
-                </form>
-            </div>
-        </LayoutMenu>
 
-        {/* Popups */}
-        <PopUpDelete
-            toDelete={formData.username}
-            handleDelete={handleDeleteAccount}
-            isOpen={isPopUpDeleteOpen}
-            onClose={togglePopUpDelete}
-        />
+                        <div className='div_btn'>
+                            <button type="button" className="btn_red" onClick={togglePopUpDelete}>Supprimer</button>
+                            {/* change de bouton en fonction de si on modifie les données ou pas   */}
+                            {isEditing ? (
+                                <button type="button" className="btn_border" onClick={() => { setIsEditing(false); handleCancel() }}>Annuler</button>
+                            ) : (
+                                <button type="button" className="btn_blue" onClick={() => setIsEditing(true)}>Modifier</button>
+                            )}
+                        </div>
+                        <div className={isEditing ? 'active' : ''}>
+                            <button type="submit" className="btn_blue">Enregistrer</button>
+                        </div>
+                    </form>
+                </div>
+            </LayoutMenu>
 
-        <PopUpConfirmation 
-            sentence={`Vos informations ont bien été modifiées.`} 
-            show={isShowModify} 
-            setShow={setIsShowModify} 
-        />
+            {/* Popups */}
+            <PopUpDelete
+                toDelete={formData.username}
+                handleDelete={handleDeleteAccount}
+                isOpen={isPopUpDeleteOpen}
+                onClose={togglePopUpDelete}
+            />
 
-        <PopUpConfirmation 
-            sentence={`Votre compte a été supprimé.`} 
-            show={isShowRemove} 
-            setShow={setIsShowRemove} 
-        />
+            <PopUpConfirmation
+                sentence={`Vos informations ont bien été modifiées.`}
+                show={isShowModify}
+                setShow={setIsShowModify}
+            />
+
+            <PopUpConfirmation
+                sentence={`Votre compte a été supprimé.`}
+                show={isShowRemove}
+                setShow={setIsShowRemove}
+            />
         </>
 
     );

@@ -4,18 +4,18 @@ import LayoutMenu from '../LayoutMenu'
 
 import Slide from '../components/slide/Slide'
 
-const RoleMembre = ({isOpen, onClose }) => {
+const RoleMembre = ({ isOpen, onClose }) => {
     // Les états pour la modification sont toujours là mais ne servent plus
-    const [infosMembre, setSettingsOf] = useState({id : '',name: '', role: ''})
+    const [infosMembre, setSettingsOf] = useState({ id: '', name: '', role: '' })
     const [settingsOfOpen, setSettingsOfOpen] = useState(false)
-    const [membresFamille, setMembresFamille] = useState([]) 
+    const [membresFamille, setMembresFamille] = useState([])
 
     const apiUrl = import.meta.env.VITE_API_URL;
 
     const fetchMembres = async () => {
         try {
             const response = await fetch(`${apiUrl}/?route=getfamillepersonne`, {
-                credentials: 'include' 
+                credentials: 'include'
             });
             const data = await response.json();
             if (data.success) {
@@ -34,7 +34,7 @@ const RoleMembre = ({isOpen, onClose }) => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id_personne: id })
             });
-            
+
             const data = await response.json();
 
             if (data.success) {
@@ -81,63 +81,63 @@ const RoleMembre = ({isOpen, onClose }) => {
 
     return (
         <>
-        <LayoutMenu
-            title={"Liste membre"} 
-            isOpen={isOpen} 
-            onClose={onClose}
-        >
-            <div className={styles.role_membre}>
-                <div className={styles.container_search}>
-                    <input type="search" placeholder="Rechercher"/>
-                </div>
+            <LayoutMenu
+                title={"Liste membre"}
+                isOpen={isOpen}
+                onClose={onClose}
+            >
+                <div className="add_membre">
+                    <div className="container_search">
+                        <input type="search" placeholder="Rechercher" />
+                    </div>
 
-                <div className={styles.membre_list}>
-                {membresFamille.map((membre) => (
-                    <div key={membre.id}>
-            <div className={styles.container_name}>
-                <p>{membre.nom} {membre.prenom}</p>
-                <p>{membre.role}</p>
-            </div>
-        </div>
-                ))}
-            </div>
-            </div>
-        </LayoutMenu>
-
-        <Slide
-            title={infosMembre.name || ''}
-            isOpen={settingsOfOpen}
-            toggleOpen={() => setSettingsOfOpen(false)}
-            zIndex={"9999"}
-        >
-            <form className={styles.form_role_membre} onSubmit={UpdateRole}>
-                <div>
-                    <label>Role :</label>
-                    <select
-                        name="role" 
-                        value={infosMembre.role} 
-                        onChange={(e) => setSettingsOf({ ...infosMembre, role: e.target.value })}
-                    >
-                        <option value="Aidant">Aidant</option>
-                        <option value="Visiteur">Visiteur</option>
-                    </select>
+                    <div className="membre_list">
+                        {membresFamille.map((membre) => (
+                            <div key={membre.id}>
+                                <div className="container_name">
+                                    <p>{membre.nom} {membre.prenom}</p>
+                                    <p>{membre.role}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-                <div>
+            </LayoutMenu>
+
+            <Slide
+                title={infosMembre.name || ''}
+                isOpen={settingsOfOpen}
+                toggleOpen={() => setSettingsOfOpen(false)}
+                zIndex={"9999"}
+            >
+                <form className="form_role_membre" onSubmit={UpdateRole}>
                     <div>
-                        <button 
-                            onClick={() => handleDeletePersonneFromFamille(infosMembre.id)}
-                            type="button" 
-                            className='btn_red'
+                        <label>Role :</label>
+                        <select
+                            name="role"
+                            value={infosMembre.role}
+                            onChange={(e) => setSettingsOf({ ...infosMembre, role: e.target.value })}
+                        >
+                            <option value="Aidant">Aidant</option>
+                            <option value="Visiteur">Visiteur</option>
+                        </select>
+                    </div>
+                    <div>
+                        <div>
+                            <button
+                                onClick={() => handleDeletePersonneFromFamille(infosMembre.id)}
+                                type="button"
+                                className='btn_red'
                             >Retirer l’aidant
-                        </button>
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button" className='btn_border'>Annuler</button>
+                            <button className='btn_blue'>Valider</button>
+                        </div>
                     </div>
-                    <div>
-                        <button type="button" className='btn_border'>Annuler</button>
-                        <button className='btn_blue'>Valider</button>
-                    </div>
-                </div>
-            </form>
-        </Slide>
+                </form>
+            </Slide>
         </>
     )
 }
