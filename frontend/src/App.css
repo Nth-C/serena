@@ -310,6 +310,41 @@ input::placeholder {
   background-color: var(--blue-hover);
 }
 
+/* switch btn */
+
+:is(.switch_event, .switch_calendar) {
+  border-radius: 8px;
+  flex-grow: 1;
+}
+
+.switch_event {
+  margin-bottom: 2rem;
+}
+
+:is(.switch_event, .switch_calendar) button {
+  width: 50%;
+  padding: 0.5rem 3rem;
+  cursor: pointer;
+  background-color: var(--bg-black);
+  color: var(--white);
+}
+
+:is(.switch_event, .switch_calendar) button.active {
+  background-color: var(--blue);
+}
+
+:is(.switch_event, .switch_calendar) button:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+:is(.switch_event, .switch_calendar) button:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+.agenda .btn_add_trajet {
+  transform: translateY(-150%);
+}
+
 /* ----------------------------------- */
 /* ----------- LAYOUT MENU ----------- */
 /* ----------------------------------- */
@@ -1242,20 +1277,20 @@ progress.blue_bar::-moz-progress-bar {
 
 /*  slide event */
 
-:is(.add_event, .add_trajet)>div:last-child {
+:is(.add_event, .add_trajet, .edit_event)>div:last-child {
   flex-direction: row;
 }
 
-:is(.add_event, .add_trajet)>div:last-child button {
+:is(.add_event, .add_trajet, .edit_event)>div:last-child button {
   width: 50%;
 }
 
-.add_event .date-row {
+:is(.add_event, .edit_event) .date-row {
   flex-direction: row;
   justify-content: space-between;
 }
 
-.add_event .date-row>div {
+:is(.add_event, .edit_event) .date-row > div {
   display: flex;
   flex-direction: column;
   gap: .5rem;
@@ -1283,39 +1318,6 @@ progress.blue_bar::-moz-progress-bar {
 .event_details>div:last-child button {
   width: 50%;
 }
-
-/* switch calendar */
-
-:is(.switch_event, .switch_calendar) {
-  border-radius: 8px;
-  flex-grow: 1;
-}
-
-:is(.switch_event, .switch_calendar) button {
-  width: 50%;
-  padding: 0.5rem 3rem;
-  cursor: pointer;
-  background-color: var(--bg-black);
-  color: var(--white);
-}
-
-:is(.switch_event, .switch_calendar) button.active {
-  background-color: var(--blue);
-}
-
-:is(.switch_event, .switch_calendar) button:first-child {
-  border-radius: 8px 0 0 8px;
-}
-
-:is(.switch_event, .switch_calendar) button:last-child {
-  border-radius: 0 8px 8px 0;
-}
-
-.agenda .btn_add_trajet {
-  transform: translateY(-150%);
-}
-
-
 
 /* ----------------------------- */
 /* ------- FILE EXPLORER ------- */
