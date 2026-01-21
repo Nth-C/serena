@@ -6,26 +6,24 @@ class OcrController {
     public function extractMedicaments() {
         header('Content-Type: application/json');
         
-        if (!isset($_FILES['ordonnance'])) {
-            echo json_encode(['error' => 'Aucun fichier uploadé']);
-            return;
-        }
+        // Lire le JSON envoyé depuis le frontend
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
         
-        $file = $_FILES['ordonnance'];
-        
-        if ($file['error'] !== UPLOAD_ERR_OK) {
-            echo json_encode(['error' => 'Erreur lors de l\'upload']);
+        if (!isset($data['ocrText']) || empty($data['ocrText'])) {
+            echo json_encode(['error' => 'Aucun texte OCR fourni']);
             return;
         }
         
         try {
-            $imagePath = $file['tmp_name'];
-            $rawText = $this->performOCR($imagePath);
-            $medicaments = $this->findMedicamentsInText($rawText);
+            $ocrText = $data['ocrText'];
+            
+            // Extraire les médicaments du texte OCR
+            $medicaments = $this->findMedicamentsInText($ocrText);
             
             echo json_encode([
                 'success' => true,
-                'raw_text' => $rawText,
+                'raw_text' => $ocrText,
                 'medicaments' => $medicaments
             ]);
             
@@ -34,29 +32,51 @@ class OcrController {
         }
     }
     
-    private function performOCR($imagePath) {
-        $command = "tesseract " . escapeshellarg($imagePath) . " stdout -l fra 2>&1";
-        $output = shell_exec($command);
-        return $output ?: 'Aucun texte extrait';
-    }
-    
     private function findMedicamentsInText($text) {
+        // Liste COMPLÈTE de médicaments courants français
         $medicamentsConnus = [
-            'DOLIPRANE', 'EFFERALGAN', 'DAFALGAN', 'IBUPROFENE',
-            'PARACETAMOL', 'ASPIRINE', 'AMOXICILLINE', 'VENTOLINE',
-            'SPASFON', 'SMECTA', 'VOGALENE', 'LEVOTHYROX'
+            // Antalgiques / Anti-inflammatoires
+            'DOLIPRANE', 'EFFERALGAN', 'DAFALGAN', 'PARACETAMOL',
+            'IBUPROFENE', 'ADVIL', 'NUROFEN', 'SPEDIFEN',
+            'ASPIRINE', 'ASPEGIC', 'KARDEGIC',
+            
+            // Antibiotiques
+            'AMOXICILLINE', 'AUGMENTIN', 'CLAMOXYL',
+            'AZITHROMYCINE', 'ZITHROMAX',
+            'CIPROFLOXACINE', 'CIFLOX',
+            
+            // Troubles digestifs
+            'SPASFON', 'SMECTA', 'GAVISCON', 'MAALOX',
+            'IMODIUM', 'MOTILIUM', 'VOGALENE', 'PRIMPERAN',
+            
+            // Antihistaminiques
+            'CETIRIZINE', 'ZYRTEC', 'AERIUS', 'CLARITYNE',
+            
+            // Respiratoire
+            'VENTOLINE', 'FLIXOTIDE', 'SERETIDE',
+            
+            // Cardiovasculaire
+            'KARDEGIC', 'PLAVIX', 'PREVISCAN', 'COVERSYL',
+            
+            // Thyroïde
+            'LEVOTHYROX', 'L-THYROXINE',
+            
+            // Autres courants
+            'DAFLON', 'GINKOR', 'LYRICA', 'LAMALINE',
+            'TRAMADOL', 'CODOLIPRANE', 'TOPALGIC'
         ];
         
         $texteUpper = strtoupper($text);
         $medsFound = [];
         
         foreach ($medicamentsConnus as $med) {
+            // Recherche flexible : avec ou sans accents, tirets, etc.
             if (strpos($texteUpper, $med) !== false) {
                 $medsFound[] = $med;
             }
         }
         
-        return array_unique($medsFound);
+        return array_values(array_unique($medsFound));
     }
 }
-?>  
+?>
