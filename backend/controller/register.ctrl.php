@@ -80,7 +80,7 @@ if ($nom && $prenom && $mail && $username && $mdp && $date_naissance) {
             $mailObj->Subject = 'Activez votre compte Sere-na';
             
             // Lien vers le Frontend React
-            $link = "http://localhost:5173/verify-account?token=" . $tokenActivation;
+            $link = "https://sere-na.alwaysdata.net/verify-account?token=" . $tokenActivation;
             
             $mailObj->Body = "Bonjour $prenom,<br><br>Votre compte a été créé. Merci de l'activer en cliquant ici : <br><a href='$link'>Activer mon compte</a>";
             $mailObj->AltBody = "Lien d'activation : $link";
