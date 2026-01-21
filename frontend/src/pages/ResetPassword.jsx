@@ -4,7 +4,10 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 function ResetPassword() {
     const [formData, setFormData] = useState({ email: '', newMdp: '' });
     const [message, setMessage] = useState('');
-    const [searchParams] = useSearchParams(); // Pour lire ?email=... dans l'url
+    // Nouvel état pour gérer l'affichage de la popup
+    const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+    
+    const [searchParams] = useSearchParams(); 
     const navigate = useNavigate();
     const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -27,8 +30,8 @@ function ResetPassword() {
             const data = await response.json();
 
             if (data.success) {
-                alert("Mot de passe modifié avec succès !");
-                navigate('/login');
+                // Au lieu de l'alert, on déclenche l'affichage de la popup
+                setShowSuccessPopup(true);
             } else {
                 setMessage(data.message || "Erreur lors de la modification.");
             }
@@ -37,13 +40,21 @@ function ResetPassword() {
         }
     };
 
+    // Fonction pour fermer la popup et rediriger vers le login
+    const handleClosePopup = () => {
+        setShowSuccessPopup(false);
+        navigate('/login');
+    };
+
     return (
         <div className="reset_password">
             <img src="/img/logo-name.png" alt="" />
 
             <h1>Réinitialisation</h1>
 
-            {message && <p>{message}</p>}
+            {/* On cache le message d'erreur si la popup de succès est affichée */}
+            {message && !showSuccessPopup && <p style={{color: 'red'}}>{message}</p>}
+            
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Email du compte : </label>
@@ -67,6 +78,20 @@ function ResetPassword() {
             </form>
 
             <img src="/img/logo.svg" alt="" />
+
+            {/* --- LE CODE DE LA POPUP --- */}
+            {showSuccessPopup && (
+                <div className="popup_overlay">
+                    <div className="popup_content">
+                        <h2>Succès !</h2>
+                        <p>Votre mot de passe a été modifié avec succès.</p>
+                        <p>Vous pouvez maintenant vous connecter.</p>
+                        <button onClick={handleClosePopup} className="btn_blue">
+                            Se connecter
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

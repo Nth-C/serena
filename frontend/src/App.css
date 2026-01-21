@@ -657,7 +657,58 @@ input::placeholder {
 .create_account h1 {
   padding: 0;
 }
+/* ------------------------------------ */
+/* --------- POPUP CREATE ACCOUNT ----- */
+/* ------------------------------------ */
 
+.popup_overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Fond gris transparent */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px); /* Petit effet de flou moderne */
+}
+
+.popup_content {
+  background-color: var(--white);
+  padding: 3rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  border: 1px solid var(--blue);
+}
+
+.popup_content h2 {
+  color: var(--blue);
+  font-size: var(--font-md);
+  margin-bottom: 1rem;
+}
+
+.popup_content p {
+  font-size: var(--font-sm);
+  color: var(--black);
+}
+
+.popup_content .email_confirm {
+  font-weight: 700;
+  color: var(--blue);
+}
+
+.popup_content button {
+  width: 100%;
+  margin-top: 1rem;
+}
 /* ----------------------------- */
 /* --------- ACCE SUIVI -------- */
 /* ----------------------------- */

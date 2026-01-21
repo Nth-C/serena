@@ -1,8 +1,8 @@
-import { NavLink, useNavigate } from 'react-router-dom'; // Ajout de useNavigate
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 function CreateAccount() {
-    const navigate = useNavigate(); // Initialisation du hook de navigation
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         nom: '',
         prenom: '',
@@ -13,6 +13,8 @@ function CreateAccount() {
         date_naissance: ''
     });
     const [message, setMessage] = useState('');
+    // Nouvel état pour gérer l'affichage de la popup
+    const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
     const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -28,7 +30,6 @@ function CreateAccount() {
         }
 
         try {
-            // On utilise FormData pour que PHP reçoive les données dans $_POST
             const dataToSend = new FormData();
             dataToSend.append('nom', formData.nom);
             dataToSend.append('prenom', formData.prenom);
@@ -42,12 +43,11 @@ function CreateAccount() {
                 body: dataToSend
             });
 
-            // On vérifie si la réponse est du JSON valide
             const result = await response.json();
 
             if (response.ok && result.success) {
-                setMessage('Inscription réussie !');
-                setTimeout(() => navigate('/'), 1500);
+                // Au lieu de rediriger tout de suite, on affiche la popup
+                setShowSuccessPopup(true);
             } else {
                 setMessage(result.error || 'Erreur lors de l\'inscription');
             }
@@ -57,14 +57,19 @@ function CreateAccount() {
         }
     };
 
+    // Fonction pour fermer la popup et rediriger vers le login
+    const handleClosePopup = () => {
+        setShowSuccessPopup(false);
+        navigate('/login'); // Redirection vers la page de connexion
+    };
+
     return (
         <div className="create_account">
             <img src="/img/logo-name.png" alt="" />
 
             <h1>Créer un compte</h1>
 
-            {/* Affichage du message avec une couleur simple pour la visibilité */}
-            {message && (
+            {message && !showSuccessPopup && (
                 <p style={{ color: message.includes('réussie') ? 'green' : 'red' }}>
                     {message}
                 </p>
@@ -104,12 +109,26 @@ function CreateAccount() {
 
                 <div>
                     <NavLink to="/" className="btn_border">Retour</NavLink>
-
                     <button type="submit" className="btn_blue">Créer</button>
                 </div>
             </form>
 
             <img src="/img/logo.svg" alt="" />
+
+            {/* --- LE CODE DE LA POPUP --- */}
+            {showSuccessPopup && (
+                <div className="popup_overlay">
+                    <div className="popup_content">
+                        <h2>Inscription réussie !</h2>
+                        <p>Un mail de confirmation a été envoyé à :</p>
+                        <p className="email_confirm">{formData.mail}</p>
+                        <p>Veuillez cliquer sur le lien reçu pour activer votre compte.</p>
+                        <button onClick={handleClosePopup} className="btn_blue">
+                            Retour à la connexion
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
