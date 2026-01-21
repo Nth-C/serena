@@ -1,5 +1,6 @@
 <?php
 require_once(__DIR__ . '/../model/evenementDAO.class.php');
+require_once(__DIR__ . '/../model/trajetDAO.class.php');
 require_once(__DIR__ . '/../app.php');
 
 header('Content-Type: application/json');
@@ -25,17 +26,21 @@ try {
         throw new Exception("Utilisateur non connecté ou sans famille.");
     }
 
-    $dao = new EvenementDAO();
-    $events = $dao->getFutureEvenements($app->id_famille);
+    $daoEvent = new EvenementDAO();
+    $daoTrajet = new TrajetDAO();
+    $events = $daoEvent->getFutureEvenements($app->id_famille);
 
     $dataExport = [];
     foreach ($events as $ev) {
         // Récupérer l'accompagnant de cet événement (un seul)
-        $accompantsData = $dao->getAccompagnants($ev->id_event);
+        $accompantsData = $daoEvent->getAccompagnants($ev->id_event);
         $accompagnant = null;
         if (!empty($accompantsData)) {
             $accompagnant = $accompantsData[0]; // Il n'y en a qu'un
         }
+
+        // Récupérer les trajets liés à cet événement
+        $trajets = $daoTrajet->getTrajetsParEvent($ev->id_event);
 
         $dataExport[] = [
             'id_event' => $ev->id_event,
@@ -46,6 +51,7 @@ try {
             'description' => $ev->note,
             'id_recurrence' => $ev->id_recurrence,
             'accompagnant' => $accompagnant,
+            'trajets' => $trajets,
         ];
     }
 

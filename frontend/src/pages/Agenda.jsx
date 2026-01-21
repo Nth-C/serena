@@ -160,6 +160,7 @@ function Agenda() {
         setListeEvenements(data.evenements)
         
         //console.log('event : ', data.evenements)
+        //console.log('premier event complet : ', data.evenements[0])
       }
     } catch (error) {
       console.error("Erreur chargement événements", error)
@@ -230,6 +231,9 @@ function Agenda() {
   };
 
   const toLocalISO = (date) => {
+    if (!date || isNaN(date.getTime())) {
+      return '';
+    }
     const offset = date.getTimezoneOffset() * 60000; // Décalage en millisecondes
     const localISOTime = (new Date(date - offset)).toISOString().slice(0, 16);
     return localISOTime;
@@ -344,7 +348,6 @@ const handleRemoveRecurrenceEvent = async (e) => {
       // Préparation du payload spécifique au trajet (mapping avec tes noms de colonnes SQL)
       const payload = {
           date_deb: formData.debut,
-          date_fin: formData.debut, 
           lieu_dep: formData.lieuDepart,
           lieu_arr: formData.lieuArrivee,
           id_event: formData.id_event,
@@ -374,6 +377,38 @@ const handleRemoveRecurrenceEvent = async (e) => {
       } catch (error) {
           console.error("Erreur réseau Trajet:", error);
       }
+  };
+
+  const handleUpdateTrajet = async (e) => {
+    if (e) e.preventDefault();
+
+    const payload = {
+      id_event: formData.id_event,
+      date_deb: formData.debut,
+      lieu_dep: formData.lieuDepart,
+      lieu_arr: formData.lieuArrivee,
+      societe: formData.effectue === 'externe' ? formData.societe : null,
+      aidant_id: formData.effectue === 'aidant' ? formData.aidantAffecte : null
+    };
+
+    try {
+      const response = await fetch(`${apiUrl}/?route=trajet/update`, { // Assurez-vous que cette route existe dans votre API
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: 'include',
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        handleSuccess('Trajet mis à jour avec succès !');
+        setIsEditMode(false);
+      } else {
+        console.error('Erreur update trajet:', result.error);
+      }
+    } catch (error) {
+      console.error("Erreur réseau Trajet Update:", error);
+    }
   };
 
   const resetFormEvent = () => {
@@ -435,7 +470,7 @@ const handleRemoveRecurrenceEvent = async (e) => {
     const filtered = listeEvenements
       .map(ev => {
         const realStart = new Date(ev.date_deb.replace(" ", "T"));
-        const realEnd = new Date(ev.date_fin.replace(" ", "T"));
+        const realEnd = ev.date_fin ? new Date(ev.date_fin.replace(" ", "T")) : new Date(realStart);
         
         return { ...ev, realStart, realEnd };
       })
@@ -462,6 +497,7 @@ const handleRemoveRecurrenceEvent = async (e) => {
           accompagnantId: accompagnantId,
           dateStart: startDate,
           dateEnd: endDate,
+          trajets: ev.trajets
         };
       });
 
@@ -742,7 +778,8 @@ const handleRemoveRecurrenceEvent = async (e) => {
                       societe: currentEvent.trajet?.societe || '',
                       effectue: currentEvent.trajet?.societe ? 'externe' : 'aidant'
                     });
-                      setIsEditMode(true)
+                      setIsEditMode(true);
+                      setIsTrajet(false);
                     }}>Modifier</button>
                     {currentEvent.id_recurrence !== null && (
                     <button className="btn_red" onClick={() => {
@@ -766,8 +803,31 @@ const handleRemoveRecurrenceEvent = async (e) => {
             */}
             <div className='switch_event'>
               <button type="button" className={!isTrajet ? 'active' : ''} onClick={() => setIsTrajet(false)} >Événement</button>
-              <button type="button" className={isTrajet ? 'active' : ''} onClick={() => setIsTrajet(true)} >Trajet</button>
-            </div>
+              <button 
+                  type="button"
+                  className={isTrajet ? 'active' : ''}
+                  onClick={() => {
+                      const trajet = currentEvent.trajets[0];
+                      console.log('Trajet récupéré:', trajet);
+                      setCurrentTrajet(trajet); 
+                      const dateStr = trajet.date_deb ? trajet.date_deb.replace(" ", "T").replace(/\+\d{2}$/, '') : '';
+                      const dateTrajet = dateStr ? toLocalISO(new Date(dateStr)) : '';
+                      setFormData(prev => ({
+                          ...prev,
+                          id_event: currentEvent.id_event,
+                          debut: dateTrajet,
+                          lieuDepart: trajet.lieu_dep || '',
+                          lieuArrivee: trajet.lieu_arr || '',
+                          societe: trajet.societe || '',
+                          effectue: trajet.societe ? 'externe' : 'aidant',
+                          aidantAffecte: trajet.aidant_id || 'demande'
+                      }));
+                      setIsTrajet(true);
+                  }}
+                  disabled={!currentEvent.trajets || currentEvent.trajets.length === 0}>
+                  Trajet
+              </button>            
+              </div>
 
             {!isTrajet ? (
             <form className='edit_event' onSubmit={handleUpdateEvent}>
@@ -830,7 +890,7 @@ const handleRemoveRecurrenceEvent = async (e) => {
               </div>
            </form>
             ) : (
-              <form className='add_trajet' /*onSubmit={handleAddTrajet}*/>  
+              <form className='add_trajet' onSubmit={handleUpdateTrajet}>  
                 <div>
                     <label>Lier à l'événement :</label>
                     <select 

@@ -56,6 +56,18 @@ class Evenement
                 $this->trajets[] = $trajet;
             }
         }
+        if (isset($data['id_trajet']) && $data['id_trajet'] !== null) {
+            $this->trajets = [
+                [
+                    'id_trajet' => $data['id_trajet'],
+                    'lieu_dep'  => $data['lieu_dep'] ?? '',
+                    'lieu_arr'  => $data['lieu_arr'] ?? '',
+                    'date_deb'  => $data['trajet_date'] ?? null
+                ]
+            ];
+        } else {
+            $this->trajets = []; // Tableau vide si pas de trajet
+        }
     }
 }
 ?>

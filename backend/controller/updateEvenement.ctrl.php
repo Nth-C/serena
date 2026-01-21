@@ -42,9 +42,10 @@ try {
         $trDAO->updateTrajet(
             $data['id_event'],
             $data['trajet']['date_deb'],
-            $data['trajet']['date_deb'],
             filter_var($data['trajet']['lieu_dep'], FILTER_SANITIZE_SPECIAL_CHARS),
             filter_var($data['trajet']['lieu_arr'], FILTER_SANITIZE_SPECIAL_CHARS),
+            $data['trajet']['societe'] ?? null,  // AJOUTÉ
+            $data['trajet']['aidant_id'] ?? null // AJOUTÉ
         );
     }
 
