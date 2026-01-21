@@ -15,17 +15,17 @@ function Layout({submenu}) {
 
     const breadcrumbList = [
         // home
-        { path : "/home/dashboard", breadcrumb: "Accueil > Journal de bord" },
-        { path : "/home/my_day", breadcrumb: "Accueil > Ma Journée" },
-        { path : "/home/last_visit_report", breadcrumb: "Accueil > Dernier Rapport" },
+        { path : "/home/dashboard", breadcrumb: "Fil d'actu > Alerte" },
+        { path : "/home/my_day", breadcrumb: "Fil d'actu > Programme du jour" },
+        { path : "/home/last_visit_report", breadcrumb: "Fil d'actu > Dernier nouvelles" },
         // agenda
         { path : "/agenda", breadcrumb: "Agenda" },
         // suivi
-        { path : "/suivi/visit_report", breadcrumb: "Suivi > Rapport de visite" },
-        { path : "/suivi/medicine", breadcrumb: "Suivi > Médicament" },
+        { path : "/suivi/visit_report", breadcrumb: "Santé > Notes de Visites" },
+        { path : "/suivi/medicine", breadcrumb: "Santé > Médicament" },
         // document
-        { path : "/document/explorateur", breadcrumb: "Document > Explorateur" },
-        { path : "/document/aides", breadcrumb: "Document > Aides" }
+        { path : "/document/explorateur", breadcrumb: "Espace Aidant > Documents" },
+        { path : "/document/aides", breadcrumb: "Espace Aidant > Trouver des aides" }
     ]
 
     // recupere le bon file d'ariane en fonction le l'url

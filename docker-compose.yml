@@ -1,23 +1,4 @@
 services:
-  db:
-    # MODIFICATION : On construit notre image perso au lieu de télécharger l'officielle
-    build:
-      context: .
-      dockerfile: Dockerfile.db
-    environment:
-      POSTGRES_DB: ma_base
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password123
-    volumes:
-      - ./data:/docker-entrypoint-initdb.d
-    command: >
-      postgres 
-        -c "shared_preload_libraries=pgaudit,auth_delay" 
-        -c "pgaudit.log=write,role,ddl" 
-        -c "auth_delay.milliseconds=1000"
-        -c "log_statement=mod"
-
-
   backend:
     build: ./backend
     env_file:
@@ -26,17 +7,12 @@ services:
       # --- CONFIGURATION ALWAYS DATA ---
       - SMTP_HOST=smtp-sere-na.alwaysdata.net
       - SMTP_PORT=587
-      # Attention : souvent l'identifiant complet est nécessaire (nom@alwaysdata.net)
-      # D'après tes infos, ton compte est 'sere-na', donc l'email par défaut est souvent :
       - SMTP_USER=sere-na@alwaysdata.net 
-      # Tu dois mettre le mot de passe de ce compte email ici :
       - SMTP_PASS=abraham38Rayan
     ports:
       - "8080:80"
     volumes:
       - ./backend:/var/www/html
-    depends_on:
-      - db
 
   frontend:
     build: ./frontend

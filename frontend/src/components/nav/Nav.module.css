@@ -20,8 +20,18 @@ nav a {
     font-weight: 600;
 }
 
+nav a:hover p,
+nav a:hover svg{
+    color: var(--blue-hover);
+    fill: var(--blue-hover);
+}
+
 nav a.active {
     border-top: .2rem solid var(--blue);
+    color: var(--blue);
+}
+
+nav a.active:hover p {
     color: var(--blue);
 }
 

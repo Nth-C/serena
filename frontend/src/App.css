@@ -232,7 +232,6 @@ textarea {
 .btn_border:hover {
   background-color: var(--blue-hover);
   color: var(--white);
-  border: 1px solid var(--blue);
 }
 
 .btn_red {
@@ -240,20 +239,45 @@ textarea {
   color: var(--white);
 }
 
-.btn_add {
+.btn_add_container {
   position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  bottom: 9rem;
+  right: 2rem;
+}
+
+.btn_add_container:hover p {
+  color: var(--pink-hover);
+}
+
+.btn_add_container p {
+  font-size: 12px;
+  text-shadow: 2px 2px 5px var(--gray);
+  cursor: pointer;
+}
+
+.btn_add,
+.btn_add_agenda {
   width: 5.5rem;
   height: 5.5rem;
   border-radius: 50%;
   box-shadow: 2px 2px 10px var(--gray);
   background: var(--pink);
-  bottom: 10rem;
-  right: 2rem;
+  bottom: 11rem;
+  right: 4rem;
   cursor: pointer;
   z-index: 50;
 }
 
-.btn_add:hover {
+.btn_add_agenda {
+  position: fixed;
+}
+
+.btn_add:hover,
+.btn_add_agenda:hover {
   background-color: var(--pink-hover);
 }
 
@@ -331,12 +355,12 @@ input::placeholder {
 .create_account,
 .forgot_password,
 .reset_password {
-  overflow: hidden;
   position: relative;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: hidden;
 }
 
 .CGU_start,
@@ -640,10 +664,11 @@ input::placeholder {
 
 .acce_suivi {
   position: relative;
-  height: 100vh;
   display: flex;
+  height: 100vh;
   flex-direction: column;
   gap: 10px;
+  overflow: hidden;
 }
 
 .acce_suivi img:first-child {
@@ -657,7 +682,7 @@ input::placeholder {
 
 button.creer_suivi,
 .acce_suivi .form-actions {
-  margin: 0 auto 0 auto;
+  margin: 0 auto 10% auto;
 }
 
 button.creer_suivi {
@@ -674,7 +699,7 @@ button.creer_suivi {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5rem 3rem;
+  padding: 1rem 3rem;
   cursor: pointer;
 
 }
@@ -727,7 +752,7 @@ button.creer_suivi {
 }
 
 .acce_suivi .list {
-  padding-bottom: 5rem;
+  padding-bottom: 2rem;
 }
 
 /* -------------------------------- */
@@ -739,7 +764,7 @@ button.creer_suivi {
   padding: 0 3rem;
 }
 
-.contener_report .container_top>div:first-child {
+.contener_report .container_top > div:first-child {
   display: flex;
   justify-content: space-between;
 }
@@ -1067,6 +1092,19 @@ button.add_medi {
   border-width: 0 0 1px 0;
   border-color: var(--gray);
   border-style: solid;
+}
+
+.medecine .container_top > div:first-child {
+  display: flex;
+  justify-content: space-between;
+}
+
+.medecine .container_top {
+  padding: 0 3rem;
+}
+
+.medecine .container_top h1 {
+  padding: 0;
 }
 
 .medecine .container_medecine:first-child {
@@ -1468,6 +1506,10 @@ progress.blue_bar::-moz-progress-bar {
 
 .upload_success>div svg {
   fill: var(--red);
+}
+
+.upload_success .doc_warning svg {
+  fill: var(--blue);
 }
 
 /* si erreur de l'upload, type pas accépté */

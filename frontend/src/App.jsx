@@ -143,8 +143,6 @@ function App() {
           }>
         </Route>
 
-        
-
         <Route path="privacy" 
           element={
           <ProtectedRoute>
@@ -163,6 +161,14 @@ function App() {
           element={
           <ProtectedRoute>
             <Signalement />
+          </ProtectedRoute>}>
+        </Route>
+
+        {/* OCR */}
+        <Route path="ocr" 
+          element={
+          <ProtectedRoute>
+            <Ocr />
           </ProtectedRoute>}>
         </Route>
 
@@ -204,9 +210,9 @@ function App() {
         <Route path="home" element={
           <ProtectedRoute>
             <Layout submenu={[
-                { label: "Tableau de bord", path: "home/dashboard" },
-                { label: "Ma journée", path: "home/my_day" },
-                { label: "Dernier rapport", path: "home/last_visit_report" },
+                { label: "Alerte", path: "home/dashboard" },
+                { label: "programme du jour", path: "home/my_day" },
+                { label: "Dernier nouvelles", path: "home/last_visit_report" },
               ]}
             />
           </ProtectedRoute>
@@ -229,20 +235,11 @@ function App() {
           <Route index element={<Agenda />} />
         </Route>
 
-        {/* OCR */}
-        <Route path="ocr" element={
-          <ProtectedRoute>
-            <Layout submenu={[]} />
-          </ProtectedRoute>
-        }>
-          <Route index element={<Ocr />} />
-        </Route>
-
         {/* SUIVI */}
         <Route path="suivi" element= {
           <ProtectedRoute>
             <Layout submenu={[
-                { label: "Rapport de visite", path: "suivi/visit_report" },
+                { label: "Notes de Visites", path: "suivi/visit_report" },
                 ...(hasPermission("Proche") 
                 ? [{ label: "Médicament", path: "suivi/medicine" }] 
                 : [])
@@ -262,10 +259,10 @@ function App() {
         <Route path="document" element= {
           <ProtectedRoute>
             <Layout submenu={[
-            { label: "Explorateur", path: "document/explorateur" },
+            { label: "Documents", path: "document/explorateur" },
             // On ajoute "Aides" seulement si l'utilisateur est Aidant
             ...(hasPermission("Famille") 
-                ? [{ label: "Aides", path: "document/aides" }] 
+                ? [{ label: "Trouver des aides", path: "document/aides" }] 
                 : [])
           ]}/>
           </ProtectedRoute>

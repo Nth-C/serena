@@ -5,7 +5,7 @@ function FamilleItem({ famille, onModifier, onAcceder, isOpen, onToggle }) {
     return (
         <div className={`container_suivi_groupe ${isOpen ? 'open' : ''}`}>
             <div className="principal_infos" onClick={onToggle}>
-                <p>Espace de la famille : {famille.nom}</p> 
+                <p>Espace du groupe : {famille.nom}</p> 
             </div>
 
             {isOpen && (
@@ -42,7 +42,7 @@ function InvitationItem({ invitation, onModifier, onAcceder, isOpen, onToggle })
     return (
         <div className={`container_suivi_groupe ${isOpen ? 'open' : ''}`}>
             <div className="principal_infos" onClick={onToggle}>
-                <p>invitation de {invitation.id_invitation} dans la famille : {invitation.nom_famille}</p> 
+                <p>invitation de {invitation.id_invitation} dans le groupe : {invitation.nom_famille}</p> 
             </div>
 
             {isOpen && (
@@ -321,7 +321,7 @@ function AcceSuivi() {
             {/* Le message affichera désormais "Bienvenue M. Scapin" pour "scapinb" */}
             <h1 className="bienvenue">Bienvenue, {nomComplet}</h1>
             
-            <h1>Liste de vos familles</h1>
+            <h1>Mes groupes : </h1>
 
             <div className="list">
                 {familles.length > 0 ? (
@@ -336,12 +336,12 @@ function AcceSuivi() {
                         />
                     ))
                 ) : (
-                    <p className="aucun">Aucune famille disponible.</p>
+                    <p className="aucun">Vous ne faites parties d'aucun groupe.</p>
                 )}
             </div>
 
 
-            <h1>Invitations en attente</h1>
+            <h1>Invitations en attente : </h1>
 
             <div className="list">
                 {invitations.length > 0 ? (
@@ -356,27 +356,27 @@ function AcceSuivi() {
                         />
                     ))
                 ) : (
-                    <p className="aucun">Aucune Invitation.</p>
+                    <p className="aucun">Aucune Invitation en attente.</p>
                 )}
             </div>
 
             <span className='border'></span>
 
-            <button className="btn_blue creer_suivi" onClick={toggleNewSuvi}>Créer une nouvelle famille</button>
+            <button className="btn_blue creer_suivi" onClick={toggleNewSuvi}>Créer un nouveau groupe</button>
             {message && <p className="success-msg">{message}</p>}
 
-            <Slide title={"Créer une nouvelle famille"} isOpen={isNewSuiviOpen} toggleOpen={toggleNewSuvi}>
+            <Slide title={"Créer un nouveau groupe"} isOpen={isNewSuiviOpen} toggleOpen={toggleNewSuvi}>
                 <form className='add_famille' onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label>Nom de l'aidé : </label>
+                        <label>Nom de la personne aidé : </label>
                         <input type="text" name="nom_aide" value={formData.nom_aide} onChange={handleChange} required />
                     </div>
                     <div className="form-group">
-                        <label>Nom de la famille : </label>
+                        <label>Nom du groupe : </label>
                         <input type="text" name="nom_groupe" value={formData.nom_groupe} onChange={handleChange} required />
                     </div>
                     <div className="form-group">
-                        <label>Courte description : </label>
+                        <label>Information importante sur le groupe : </label>
                         <textarea name="description" value={formData.description} onChange={handleChange}></textarea>
                     </div>
                     <div>

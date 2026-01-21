@@ -1,14 +1,27 @@
 FROM php:8.5-apache
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Installation des dépendances (Postgres + SSL pour les mails)
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
-    zip
-# Récupère Composer depuis l'image officielle
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-# Installation de l'extension PDO pour PostgreSQL
-RUN apt-get update && apt-get install -y libpq-dev \
+    zip \
+    libpq-dev \
+    libssl-dev \
     && docker-php-ext-install pdo pdo_pgsql
-# Activation du mod_rewrite pour les routes propres
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
 RUN a2enmod rewrite
+
+WORKDIR /var/www/html
+
+# --- PHPMailer ---
+COPY composer.json composer.lock* ./
+
+RUN composer install --no-scripts --no-autoloader
+
 COPY . /var/www/html/
+
+RUN composer dump-autoload --optimize
+
+RUN chown -R www-data:www-data /var/www/html
