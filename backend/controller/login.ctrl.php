@@ -2,6 +2,7 @@
 require_once(__DIR__ . '/../model/SecurityDAO.class.php');
 require_once(__DIR__ . '/../model/personneDAO.class.php');
 require_once(__DIR__ . '/../app.php');
+$config = require __DIR__ . '/../config.php';
 require_once(__DIR__ . '/../csrf.php');
 
 
@@ -37,7 +38,7 @@ $data = json_decode($json, true);
 
 $username = filter_var($data['username'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
 $mdp      = $data['mdp'] ?? '';
-$pepper   = $_ENV['APP_PEPPER'] ?? '';
+$pepper   = $config['APP_PEPPER'] ?? '';
 
 if (empty($username) || empty($mdp)) {
     http_response_code(400);
