@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Tesseract from 'tesseract.js';
 import Slide from '../components/slide/Slide';
 import PopUpDelete from '../components/popup_delete/PopUpDelete'
 import PopUpConfirmation from '../components/popup_confirmation/PopUpConfirmation'
@@ -42,6 +43,24 @@ function FileExplorer() {
   const [isFileError, setIsFileError] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
+  /* --- OCR STATES --- */
+  const [isOcrOpen, setIsOcrOpen] = useState(false);
+  const [ocrFile, setOcrFile] = useState(null);
+  const [ocrPreview, setOcrPreview] = useState(null);
+  const [ocrLoading, setOcrLoading] = useState(false);
+  const [ocrResult, setOcrResult] = useState({ raw_text: '', medicaments: [] });
+  const [ocrError, setOcrError] = useState('');
+
+  /* --- ADD MEDICINE FROM OCR STATES --- */
+  const [isAddMedicOpen, setIsAddMedicOpen] = useState(false);
+  const [medicName, setMedicName] = useState("");
+  const [medicIdCatalogue, setMedicIdCatalogue] = useState("");
+  const [medicStock, setMedicStock] = useState("");
+  const [medicStockTotal, setMedicStockTotal] = useState("");
+  const [listNomMedecine, setListNomMedecine] = useState([]);
+  const [listTypeMedecine, setListTypeMedecine] = useState([]);
+  const [isMedicNameGood, setIsMedicNameGood] = useState(false);
+
   /* pop up confirmation */
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [msgConfirmation, setMsgConfirmation] = useState('')
@@ -52,6 +71,17 @@ function FileExplorer() {
   const toggleNewDocument = () => {
     handleResetUploadFile()
     setIsNewDocumentOpen(!isNewDocumentOpen)
+  }
+
+  const toggleOcr = () => {
+    if (!isOcrOpen) {
+      // Reset OCR state on open
+      setOcrFile(null);
+      setOcrPreview(null);
+      setOcrResult({ raw_text: '', medicaments: [] });
+      setOcrError('');
+    }
+    setIsOcrOpen(!isOcrOpen);
   }
 
   const toggleNewCategorie = () => {
@@ -258,6 +288,122 @@ function FileExplorer() {
 
   const [searchText, setSearchText] = useState('');
 
+  /* --- OCR LOGIC --- */
+  const handleOcrFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setOcrFile(file);
+      setOcrError('');
+      setOcrResult({ raw_text: '', medicaments: [] });
+      const reader = new FileReader();
+      reader.onloadend = () => setOcrPreview(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleOcrAnalysis = async () => {
+    if (!ocrFile) {
+      setOcrError("Veuillez d'abord sélectionner une image.");
+      return;
+    }
+    setOcrLoading(true);
+    setOcrError('');
+    try {
+      const { data: { text } } = await Tesseract.recognize(ocrFile, 'fra');
+      const response = await fetch(`${apiUrl}/?route=ocr/extract`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ ocrText: text }),
+      });
+      const responseText = await response.text();
+      if (!response.ok) throw new Error(responseText || `Erreur HTTP ${response.status}`);
+      
+      try {
+        const data = JSON.parse(responseText);
+        if (data.error) throw new Error(data.error);
+        setOcrResult({
+          raw_text: data.raw_text || '',
+          medicaments: Array.isArray(data.medicaments) ? data.medicaments : []
+        });
+      } catch (jsonError) {
+        throw new Error("Réponse invalide du serveur.");
+      }
+    } catch (err) {
+      setOcrError(err.message);
+      setOcrResult({ raw_text: '', medicaments: [] });
+    } finally {
+      setOcrLoading(false);
+    }
+  };
+
+  const handleSearchMedecine = async (val) => {
+    const route = 'nommedicament/search';
+
+    try {
+      const response = await fetch(`${apiUrl}/?route=${route}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ texteNomMedicament: val }),
+      });
+      const result = await response.json();
+
+      setListNomMedecine(result.resultats);
+      if (result.isUnique) {
+        setListTypeMedecine(result.types);
+        setIsMedicNameGood(true);
+      } else {
+        setListTypeMedecine([]);
+        setMedicIdCatalogue("");
+        setIsMedicNameGood(false);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const openAddMedicForm = (rawName) => {
+    const name = rawName ? rawName.trim() : "";
+    setMedicName(name);
+    setMedicStock("");
+    setMedicStockTotal("");
+    setMedicIdCatalogue("");
+    setIsMedicNameGood(false);
+    setListTypeMedecine([]);
+    if (name) handleSearchMedecine(name);
+    setIsAddMedicOpen(true);
+  };
+
+  const handleAddMedicSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(`${apiUrl}/?route=medicament/add`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          name: medicName,
+          idCatalogueMedecine: medicIdCatalogue,
+          stock: parseInt(medicStock, 10),
+          stockTotal: parseInt(medicStockTotal, 10)
+        }),
+      });
+      const result = await response.json();
+
+      if (result.success) {
+        setMsgConfirmation(`Le médicament ${medicName} a bien été ajouté.`);
+        setShowConfirmation(true);
+        setIsAddMedicOpen(false);
+      } else {
+        setOcrError(`Erreur lors de l'ajout : ${result.error}`);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
     <div className="file_explorer">
@@ -278,12 +424,20 @@ function FileExplorer() {
         </div>
       </div>
       {hasPermission("Famille") && (
-        <div className='btn_add_container' onClick={toggleNewDocument}>
-          <button className="btn_add">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" /></svg>
-          </button>
-          <p >ajouter un document</p>
-        </div>
+        <>
+          <div className='btn_add_container' onClick={toggleNewDocument}>
+            <button className="btn_add">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" /></svg>
+            </button>
+            <p>Ajouter un document</p>
+          </div>
+          <div className='btn_add_container' onClick={toggleOcr} style={{ right: '10rem' }}>
+            <button className="btn_add" style={{ backgroundColor: '#777BB4' }}>
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M120-120v-80h80v80h-80Zm0-160v-80h80v80h-80Zm0-160v-80h80v80h-80Zm0-160v-80h80v80h-80Zm160 480v-80h80v80h-80Zm0-160v-80h80v80h-80Zm0-160v-80h80v80h-80Zm0-160v-80h80v80h-80Zm160 480v-80h80v80h-80Zm0-160v-80h80v80h-80Zm0-160v-80h80v80h-80Zm0-160v-80h80v80h-80Z"/></svg>
+            </button>
+            <p>Analyser Ordonnance</p>
+          </div>
+        </>
       )}
 
       <div className="list">
@@ -418,6 +572,94 @@ function FileExplorer() {
         }}>Supprimer
         </button>
         <button type="submit" className="btn_blue">{isEditing ? "Modifier" : "Ajouter"}</button>
+        </div>
+      </form>
+    </Slide>
+
+    {/* --- SLIDE OCR --- */}
+    <Slide title="Analyse d'Ordonnance" isOpen={isOcrOpen} toggleOpen={toggleOcr} zIndex={500}>
+      <div className="ocr_content" style={{ padding: '1rem' }}>
+        <p style={{ marginBottom: '1rem', textAlign: 'center', color: '#666' }}>Téléchargez l'image d'une ordonnance pour en extraire les médicaments.</p>
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center', marginBottom: '1.5rem' }}>
+          <input type="file" onChange={handleOcrFileChange} accept="image/png, image/jpeg" style={{ width: '100%' }} />
+          <button onClick={handleOcrAnalysis} className="btn_blue" disabled={ocrLoading || !ocrFile} style={{ width: '100%' }}>
+            {ocrLoading ? "Analyse en cours..." : "Lancer l'analyse"}
+          </button>
+        </div>
+
+        {ocrError && <p className="error_message" style={{ color: 'red', textAlign: 'center' }}>{ocrError}</p>}
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <div>
+            <h3 style={{ marginBottom: '0.5rem' }}>Résultats</h3>
+            {ocrLoading && <p>Chargement...</p>}
+            {!ocrLoading && ocrResult.medicaments.length > 0 ? (
+              <ul style={{ listStyle: 'none', padding: 0 }}>
+                {ocrResult.medicaments.map((med, index) => {
+                  const name = typeof med === 'string' ? med : med.nom;
+                  return (
+                    <li key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem', borderBottom: '1px solid #eee' }}>
+                      <span style={{ fontWeight: 'bold' }}>{name}</span>
+                      <button className="btn_blue" onClick={() => openAddMedicForm(name)} style={{ padding: '0.3rem 0.8rem', fontSize: '0.9rem' }}>
+                        Ajouter
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              !ocrLoading && <p className="aucun">Aucun médicament extrait.</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </Slide>
+
+    {/* --- SLIDE AJOUT MEDICAMENT (OCR) --- */}
+    <Slide title="Ajouter au stock" isOpen={isAddMedicOpen} toggleOpen={() => setIsAddMedicOpen(false)} zIndex={700}>
+      <form className="new_medecine" onSubmit={handleAddMedicSubmit}>
+        <div>
+          <label>Nom du médicament : </label>
+          <input
+            type="text"
+            list="ocr-medication-suggestions"
+            value={medicName}
+            onChange={(e) => {
+              setMedicStock("");
+              setMedicStockTotal("");
+              setMedicIdCatalogue("");
+              setMedicName(e.target.value);
+              if (e.target.value !== "") handleSearchMedecine(e.target.value);
+            }}
+            required
+          />
+          <datalist id="ocr-medication-suggestions">
+            {listNomMedecine?.map((suggestion, i) => (
+              <option key={i} value={suggestion.denomination_substance} />
+            ))}
+          </datalist>
+        </div>
+        <div>
+          <label>Type : </label>
+          <select value={medicIdCatalogue} onChange={(e) => setMedicIdCatalogue(e.target.value)} required disabled={!isMedicNameGood}>
+            <option value=""></option>
+            {listTypeMedecine.map((type) => (
+              <option key={type.id_medics} value={type.id_medics}>{type.designation_elem_pharma}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label>Stock Total : </label>
+          <input type="number" value={medicStockTotal} onChange={(e) => setMedicStockTotal(e.target.value)} required disabled={!isMedicNameGood} />
+        </div>
+        <div>
+          <label>Stock Actuel :</label>
+          <input type="number" value={medicStock} onChange={(e) => setMedicStock(e.target.value)} required disabled={!isMedicNameGood} />
+        </div>
+        <div>
+          <button type="button" className="btn_border" onClick={() => setIsAddMedicOpen(false)}>Annuler</button>
+          <button type="submit" className="btn_blue" disabled={!isMedicNameGood}>Ajouter</button>
         </div>
       </form>
     </Slide>

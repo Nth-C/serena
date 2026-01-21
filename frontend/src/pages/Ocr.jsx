@@ -2,38 +2,7 @@ import { useState } from 'react';
 import Tesseract from 'tesseract.js';
 import './OCR.css'; // Fichier CSS pour le style (à créer)
 import Slide from '../components/slide/Slide';
-
-const MEDICAMENT_TYPES = [
-  "capsule",
-  "collyre",
-  "comprimé",
-  "comprimé blanc",
-  "comprimé bleu",
-  "comprimé jour",
-  "comprimé nuit",
-  "crème",
-  "dispositif",
-  "gaz",
-  "gel",
-  "granules",
-  "granulés",
-  "gélule",
-  "liquide",
-  "lyophilisat",
-  "mélange de plantes",
-  "mousse",
-  "pastille",
-  "pommade",
-  "poudre",
-  "poudre orale",
-  "pâte",
-  "sirop",
-  "solution",
-  "solution buvable en ampoules",
-  "solution buvable en gouttes",
-  "suppositoire",
-  "suspension"
-];
+import PopUpConfirmation from '../components/popup_confirmation/PopUpConfirmation';
 
 function OCR() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -52,6 +21,10 @@ function OCR() {
   const [listNomMedecine, setListNomMedecine] = useState([]);
   const [listTypeMedecine, setListTypeMedecine] = useState([]);
   const [isNameGood, setIsNameGood] = useState(false);
+
+  // Popup confirmation
+  const [isShowConfirmation, setIsShowConfirmation] = useState(false);
+  const [msgConfirmation, setMsgConfirmation] = useState('');
 
   const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -147,11 +120,6 @@ function OCR() {
       if (result.isUnique) {
         setListTypeMedecine(result.types || []);
         setIsNameGood(true);
-        // Pré-sélectionne le premier type si disponible
-        if (result.types && result.types.length > 0) {
-             setFormIdCatalogue(result.types[0].id_medics);
-             setFormIdCatalogue(result.types[0].designation_elem_pharma);
-        }
       } else {
         setListTypeMedecine([]);
         setFormIdCatalogue("");
@@ -190,22 +158,23 @@ function OCR() {
         body: JSON.stringify({
           name: formName,
           idCatalogueMedecine: formIdCatalogue,
-          stock: formStock,
-          stockTotal: formStockTotal
+          stock: parseInt(formStock, 10),
+          stockTotal: parseInt(formStockTotal, 10)
         }),
       });
 
       const addResult = await addResponse.json();
 
       if (addResult.success) {
-        alert(`Le médicament "${formName}" a été ajouté au stock.`);
+        setMsgConfirmation(`Le médicament "${formName}" a été ajouté au stock.`);
+        setIsShowConfirmation(true);
         setIsAddModalOpen(false);
       } else {
-        alert(`Erreur lors de l'ajout : ${addResult.error}`);
+        setError(`Erreur lors de l'ajout : ${addResult.error}`);
       }
     } catch (error) {
       console.error("Erreur réseau:", error);
-      alert("Une erreur est survenue.");
+      setError("Une erreur est survenue.");
     }
   };
 
@@ -292,11 +261,12 @@ function OCR() {
               value={formIdCatalogue}
               onChange={(e) => setFormIdCatalogue(e.target.value)}
               required
+              disabled={!isNameGood}
             >
               <option value=""></option>
-              {MEDICAMENT_TYPES.map((type, index) => (
-                <option key={index} value={type}>
-                  {type}
+              {listTypeMedecine.map((type) => (
+                <option key={type.id_medics} value={type.id_medics}>
+                  {type.designation_elem_pharma}
                 </option>
               ))}
             </select>
@@ -309,6 +279,7 @@ function OCR() {
               value={formStockTotal}
               onChange={(e) => setFormStockTotal(e.target.value)}
               required
+              disabled={!isNameGood}
             />
           </div>
 
@@ -319,15 +290,22 @@ function OCR() {
               value={formStock}
               onChange={(e) => setFormStock(e.target.value)}
               required
+              disabled={!isNameGood}
             />
           </div>
 
           <div>
             <button type="button" className="btn_border" onClick={() => setIsAddModalOpen(false)}>Annuler</button>
-            <button type="submit" className="btn_blue">Ajouter</button>
+            <button type="submit" className="btn_blue" disabled={!isNameGood}>Ajouter</button>
           </div>
         </form>
       </Slide>
+
+      <PopUpConfirmation
+        sentence={msgConfirmation}
+        show={isShowConfirmation}
+        setShow={setIsShowConfirmation}
+      />
 
     </div>
   );

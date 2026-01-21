@@ -172,15 +172,15 @@ const AuditLog = () => {
                         <div className={sortOpen ? 'active' : ''}>
                             <div className='checkbox'>
                                 <input id='logs_insert' type="checkbox" checked={filters.INSERT} onChange={() => toggleFilter('INSERT')} />
-                                <label for='logs_insert'>Ajouts</label>
+                                <label htmlFor='logs_insert'>Ajouts</label>
                             </div>
                             <div className='checkbox'>
                                 <input id='logs_update' type="checkbox" checked={filters.UPDATE} onChange={() => toggleFilter('UPDATE')} />
-                                <label for='logs_update'>Modifs</label>
+                                <label htmlFor='logs_update'>Modifs</label>
                             </div>
                             <div className='checkbox'>
                                 <input id='logs_delete' type="checkbox" checked={filters.DELETE} onChange={() => toggleFilter('DELETE')} />
-                                <label for='logs_delete'>Suppr</label>
+                                <label htmlFor='logs_delete'>Suppr</label>
                             </div>
                         </div>
                     </div>

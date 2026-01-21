@@ -112,8 +112,8 @@ function Medecine() {
     const nouveauMedoc = {
       name: nameMedecine,
       idCatalogueMedecine: idCatalogueMedecine,
-      stock: currentStock,
-      stockTotal: initialStock
+      stock: parseInt(currentStock, 10),
+      stockTotal: parseInt(initialStock, 10)
     }
 
     // change le controleur appeler en fonction de (créer / modifier)
@@ -130,7 +130,7 @@ function Medecine() {
             ? nouveauMedoc
             : {
               id_medicament: activeInList,
-              nouveauStock: currentStock
+              nouveauStock: parseInt(currentStock, 10)
             }
         )
       });
@@ -225,7 +225,7 @@ function Medecine() {
       <div className="medecine">
         <div className='container_top'>
           <div>
-            <h1>Rapport de visite</h1>
+            <h1>Médicaments</h1>
             <div className='filter_group'>
               <button className='sort'>
                 <img src="/icons/sort.svg" alt="" />
@@ -237,7 +237,7 @@ function Medecine() {
             </div>
           </div>
           <div className="search_report">
-            <input type="search" placeholder="Rechercher un rapport" />
+            <input type="search" placeholder="Rechercher un médicament" />
           </div>
         </div>
 
