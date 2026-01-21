@@ -1672,7 +1672,7 @@ progress.blue_bar::-moz-progress-bar {
 
 .assistance .selector_container_relation {
   display: flex;
-  gap: 20px;
+  gap: 5px;
   width: 100%;
 }
 
@@ -2542,7 +2542,7 @@ progress.blue_bar::-moz-progress-bar {
 
 .add_membre .membre_list .container_name p {
   max-width: 20rem;
-  min-width: 24rem;
+  min-width: 12rem;
 }
 
 .add_membre .membre_list .container_name p:first-child {

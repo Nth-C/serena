@@ -69,6 +69,7 @@ function Medecine() {
 
       // On vérifie si data est un tableau, sinon on met un tableau vide
       setListMedecine(Array.isArray(data) ? data : []);
+      setLoading(false);
     } catch (err) {
       console.error("Erreur de récupération:", err.message);
       setListMedecine([]);
@@ -223,7 +224,7 @@ function Medecine() {
       <div className="medecine">
         <div className='container_top'>
           <div>
-            <h1>Rapport de visite</h1>
+            <h1>Médicament</h1>
             <div className='filter_group'>
               <button className='sort'>
                 <img src="/icons/sort.svg" alt="" />
