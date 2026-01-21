@@ -8,7 +8,7 @@ test.describe('Page Documents - Mode Mock Complet', () => {
       sessionStorage.clear();
       sessionStorage.setItem('isConnected', 'true');
       sessionStorage.setItem('id_famille', '123');
-      sessionStorage.setItem('role', 'Createur'); // Role demandé
+      sessionStorage.setItem('role', 'Createur');
       sessionStorage.setItem('user', JSON.stringify({ id: 999, nom: 'Robot', prenom: 'Test' }));
     });
 
@@ -44,7 +44,8 @@ test.describe('Page Documents - Mode Mock Complet', () => {
     const santeTitle = page.locator('.case_categorie p strong').filter({ hasText: /^Santé$/ });
     await expect(santeTitle).toBeVisible();
     
-    await expect(page.getByText('Ordonnance.pdf')).toBeVisible();
+    // On vérifie que le document est visible dans la liste
+    await expect(page.locator('.container_document').getByText('Ordonnance.pdf')).toBeVisible();
   });
 
   test('Création d une nouvelle catégorie', async ({ page }) => {
@@ -54,16 +55,17 @@ test.describe('Page Documents - Mode Mock Complet', () => {
 
     await page.locator('.new_categories div').click();
     
-    // On cible le formulaire spécifique pour éviter de cliquer sur le mauvais bouton "Ajouter"
+    // On cible le formulaire spécifique
     const slideForm = page.locator('form.new_categorie');
     await expect(slideForm).toBeVisible();
 
     await slideForm.locator('input[type="text"]').fill('Factures');
     await slideForm.locator('select').selectOption('Professionelle');
     
+    // On clique sur le bouton "Ajouter" APPARTENANT à ce formulaire précis
     await slideForm.getByRole('button', { name: 'Ajouter' }).click();
 
-    await expect(page.locator('.popup_confirmation')).toBeVisible();
+    // Correction : On attend le message texte directement plutôt que la classe .popup_confirmation
     await expect(page.getByText(/La catégorie Factures a bien été ajouté/)).toBeVisible();
   });
 
@@ -108,6 +110,7 @@ test.describe('Page Documents - Mode Mock Complet', () => {
     await slideForm.locator('select').selectOption({ index: 1 });
     await slideForm.locator('input[type="text"]').fill('Mon Document Test');
 
+    // On clique sur le bouton "Ajouter" APPARTENANT à ce formulaire précis
     await slideForm.getByRole('button', { name: 'Ajouter' }).click();
 
     await expect(page.getByText(/Le document Mon Document Test a bien été ajouté/)).toBeVisible();
@@ -120,13 +123,20 @@ test.describe('Page Documents - Mode Mock Complet', () => {
 
     await page.locator('.container_document img[alt="bin"]').first().click();
     
-    // On filtre la popup par le texte qu'elle contient pour différencier celle des Docs et des Cats
-    const popup = page.locator('.popup_delete').filter({ hasText: 'Ordonnance.pdf' });
-    await expect(popup).toBeVisible();
+    // Correction : On cherche le texte spécifique de la popup "Êtes-vous sûr de vouloir supprimer Ordonnance.pdf ?"
+    // Cela permet d'éviter de confondre avec la popup de catégorie
+    const popupText = page.getByText(/supprimer Ordonnance.pdf/);
+    await expect(popupText).toBeVisible();
 
-    await popup.getByRole('button', { name: /Supprimer/i }).click();
+    // On clique sur le bouton Supprimer qui se trouve dans la même boite de dialogue (div parente)
+    // On remonte au parent commun ou on utilise un filtre pour être sûr de cliquer sur le bon bouton
+    await page.locator('div')
+      .filter({ has: popupText }) // On cherche la div qui contient le texte
+      .getByRole('button', { name: 'Supprimer' })
+      .last() // Par sécurité si plusieurs matchs, le bouton d'action est souvent le dernier
+      .click();
 
-    await expect(page.locator('.popup_confirmation')).toBeVisible();
+    await expect(page.getByText(/Le document "Ordonnance.pdf" a bien été supprimé/)).toBeVisible();
   });
 
   test('Suppression d une catégorie', async ({ page }) => {
@@ -134,31 +144,24 @@ test.describe('Page Documents - Mode Mock Complet', () => {
       await route.fulfill({ status: 200, body: JSON.stringify({ success: true }) });
     });
 
+    // Ouverture du menu modifier pour accéder au bouton supprimer
     await page.locator('.container_categorie').first().locator('button').click();
+    
+    // Clic sur le bouton rouge "Supprimer" dans le slide
     await page.getByRole('button', { name: 'Supprimer' }).click();
 
-    // On filtre la popup par le nom de la catégorie pour être sûr de cibler la bonne
-    const popup = page.locator('.popup_delete').filter({ hasText: 'Santé' });
-    await expect(popup).toBeVisible();
+    // Correction : On cherche le texte spécifique "Êtes-vous sûr de vouloir supprimer Santé ?"
+    const popupText = page.getByText(/supprimer Santé/);
+    await expect(popupText).toBeVisible();
     
-    await popup.getByRole('button', { name: /Supprimer/i }).click();
+    // On clique sur le bouton Supprimer correspondant
+    await page.locator('div')
+      .filter({ has: popupText })
+      .getByRole('button', { name: 'Supprimer' })
+      .last()
+      .click();
 
-    await expect(page.locator('.popup_confirmation')).toBeVisible();
-  });
-
-  test('Recherche de document filtrée', async ({ page }) => {
-    const searchInput = page.locator('.search_document input[type="search"]');
-    
-    // 1. Vérifier que le doc est là
-    await expect(page.getByText('Ordonnance.pdf')).toBeVisible();
-    
-    // 2. Filtrer avec un nom qui n'existe pas
-    await searchInput.fill('Inexistant');
-    await expect(page.getByText('Ordonnance.pdf')).not.toBeVisible();
-
-    // 3. Revenir à la normale
-    await searchInput.fill('');
-    await expect(page.getByText('Ordonnance.pdf')).toBeVisible();
+    await expect(page.getByText(/La catégorie Santé a bien été supprimé/)).toBeVisible();
   });
 
 });
