@@ -169,8 +169,8 @@ function LastVisitReport() {
     const nouveauMedoc = {
       name: nameMedecine,
       idCatalogueMedecine: idCatalogueMedecine,
-      stock: currentStock,
-      stockTotal: initialStock
+      stock: parseInt(currentStock, 10),
+      stockTotal: parseInt(initialStock, 10)
     }
 
     const route = isEditing ? 'medicament/update' : 'medicament/add';

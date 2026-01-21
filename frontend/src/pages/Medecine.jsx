@@ -111,8 +111,8 @@ function Medecine() {
     const nouveauMedoc = {
       name: nameMedecine,
       idCatalogueMedecine: idCatalogueMedecine,
-      stock: currentStock,
-      stockTotal: initialStock
+      stock: parseInt(currentStock, 10),
+      stockTotal: parseInt(initialStock, 10)
     }
 
     // change le controleur appeler en fonction de (créer / modifier)
@@ -129,7 +129,7 @@ function Medecine() {
             ? nouveauMedoc
             : {
               id_medicament: activeInList,
-              nouveauStock: currentStock
+              nouveauStock: parseInt(currentStock, 10)
             }
         )
       });
@@ -159,8 +159,6 @@ function Medecine() {
 
 
   const handleSearchMedecine = async (e) => {
-    console.log(e);
-
     // change le controleur appeler en fonction de (créer / modifier)
     const route = 'nommedicament/search';
 
@@ -178,10 +176,8 @@ function Medecine() {
       });
 
       const result = await response.json();
-      console.log(result);
       setListNomMedecine(result.resultats)
       if (result.isUnique) {
-        console.log(result.resultats)
         setListTypeMedecine(result.types)
         setIsNameGood(true)
 
@@ -236,7 +232,7 @@ function Medecine() {
             </div>
           </div>
           <div className="search_report">
-            <input type="search" placeholder="Rechercher un rapport" />
+            <input type="search" placeholder="Rechercher un médicament" />
           </div>
         </div>
 

@@ -216,18 +216,18 @@ function Dashboard() {
     >
       {selectedTrajet && (
         <div className="details_trajet">
-          <div>
-            <p><strong>Départ :</strong> {selectedTrajet.lieu_dep}</p>
-            <p><strong>Arrivée :</strong> {selectedTrajet.lieu_arr}</p>
-          </div>
-          
-          <div>
-            <p><strong>Date prévue :</strong> {getFormatDate(new Date(selectedTrajet.date_deb))} {getFormatTime(new Date(selectedTrajet.date_deb))}</p>
-          </div>
 
-          <div className="actions">
-            <button className="btn_blue" onClick={() => accepterDemandeTrajet(selectedTrajet.id_trajet)}>Accepter le trajet</button>
-          </div>
+          <p><strong>Évenement associé :</strong> ...</p>
+
+          <p><strong>Description évenement :</strong> ...</p>
+
+          <p><strong>Départ :</strong> {selectedTrajet.lieu_dep}</p>
+
+          <p><strong>Arrivée :</strong> {selectedTrajet.lieu_arr}</p>
+          
+          <p><strong>Date prévue :</strong> {getFormatDate(new Date(selectedTrajet.date_deb))} {getFormatTime(new Date(selectedTrajet.date_deb))}</p>
+          
+          <button className="btn_blue" onClick={() => accepterDemandeTrajet(selectedTrajet.id_trajet)}>Accepter le trajet</button>
         </div>
       )}
     </Slide>

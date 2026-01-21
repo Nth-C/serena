@@ -11,6 +11,9 @@ services:
       - SMTP_PASS=abraham38Rayan
     ports:
       - "8080:80"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     volumes:
       - ./backend:/var/www/html
 

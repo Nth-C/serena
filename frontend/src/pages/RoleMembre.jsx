@@ -55,7 +55,6 @@ const RoleMembre = ({ isOpen, onClose }) => {
             idPersonne: infosMembre.id,
             nouveauRole: infosMembre.role
         };
-        console.log(infosMembre.id);
         const route = 'rolepersonne/update';
 
         try {

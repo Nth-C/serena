@@ -172,15 +172,15 @@ const AuditLog = () => {
                         <div className={sortOpen ? 'active' : ''}>
                             <div className='checkbox'>
                                 <input id='logs_insert' type="checkbox" checked={filters.INSERT} onChange={() => toggleFilter('INSERT')} />
-                                <label for='logs_insert'>Ajouts</label>
+                                <label htmlFor='logs_insert'>Ajouts</label>
                             </div>
                             <div className='checkbox'>
                                 <input id='logs_update' type="checkbox" checked={filters.UPDATE} onChange={() => toggleFilter('UPDATE')} />
-                                <label for='logs_update'>Modifs</label>
+                                <label htmlFor='logs_update'>Modifs</label>
                             </div>
                             <div className='checkbox'>
                                 <input id='logs_delete' type="checkbox" checked={filters.DELETE} onChange={() => toggleFilter('DELETE')} />
-                                <label for='logs_delete'>Suppr</label>
+                                <label htmlFor='logs_delete'>Suppr</label>
                             </div>
                         </div>
                     </div>
@@ -231,7 +231,7 @@ const AuditLog = () => {
                             <tbody>
                                 {filteredAndSortedhistorique.map((log) => (
                                     <tr key={log.id_audit || Math.random()}>
-                                        <td style={{}}>{getFormatDate(new Date(log.action_tstamp), true)}</td>
+                                        <td style={{}}>{getFormatDate(new Date(log.action_tstamp), true)} <br />{getFormatTime(new Date(log.action_tstamp))}</td>
                                         <td>{log.user_name}</td>
                                         <td>
                                             <div>
