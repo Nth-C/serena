@@ -498,6 +498,7 @@ input::placeholder {
 .CGU_start,
 .CGU_not_accept {
   padding: 3rem;
+  min-height: 100vh;
 }
 
 .CGU_not_accept {
@@ -565,9 +566,9 @@ input::placeholder {
 /* texte des conditions */
 
 .CGU_start .terms-container {
-  height: 37rem;
+  height: 55vh;
   overflow-y: scroll;
-  border: 1px solid #ccc;
+  border: 1px solid var(--gray);
   padding: 10px;
   margin-bottom: 15px;
 }
@@ -588,6 +589,12 @@ input::placeholder {
   list-style: outside;
   text-align: justify;
   padding-bottom: 0;
+}
+
+.CGU_start > div > div:first-child > div:last-child  {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
 }
 
 .CGU_start .terms-container p,
@@ -1836,6 +1843,7 @@ progress.blue_bar::-moz-progress-bar {
   gap: 10px;
   padding: 1rem;
   border-radius: 10px;
+  cursor: pointer;
 }
 
 .accueil :is(.list_alerte, .list_task, .list_trajet) .alerte_dashbord svg:last-child {
@@ -1892,6 +1900,11 @@ progress.blue_bar::-moz-progress-bar {
   color: var(--white);
 }
 
+.details_trajet {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;;
+}
 
 /* alerte medic */
 

@@ -27,7 +27,6 @@ import Accessibilite from './pages/Accessibilite';
 import Signalement from './pages/Signalement';
 import VerifyAccount from './pages/VerifyAccount';
 import LegalMention from './pages/legalMention';
-import Ocr from './pages/Ocr';
 import CGUStart from './pages/CGUStart';
 
 import { ROLES, hasPermission } from './utils/roleManager';
@@ -161,14 +160,6 @@ function App() {
           element={
           <ProtectedRoute>
             <Signalement />
-          </ProtectedRoute>}>
-        </Route>
-
-        {/* OCR */}
-        <Route path="ocr" 
-          element={
-          <ProtectedRoute>
-            <Ocr />
           </ProtectedRoute>}>
         </Route>
 
