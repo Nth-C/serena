@@ -39,8 +39,6 @@ function MyDay() {
       
       if (data.success) {
         setListeEvenements(data.evenements)
-        
-        //console.log('event : ', data.evenements)
       }
     } catch (error) {
       console.error("Erreur chargement événements", error)

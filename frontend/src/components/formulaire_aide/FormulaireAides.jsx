@@ -16,12 +16,35 @@ const FormulaireAides = ({ step, setStep, isDejaFait, onFinaliser }) => {
         objectif: ""
     });
 
+    
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setFormData({
-            ...formData,
-            [name]: type === "checkbox" ? checked : value
-        });
+        if (type === "checkbox") {
+            if (name === "aide_aucune") {
+                setFormData({                               // Si aucun cocher alors on décoche le reste
+                    ...formData,
+                    aide_apa: false,
+                    aide_pch: false,
+                    aide_aucune: true
+                });
+            } else if ((name === "aide_apa" || name === "aide_pch")) {
+                setFormData({                           // si une aide est coher alors on décoche aucun
+                    ...formData,
+                    [name]: true,
+                    aide_aucune: false
+                });
+            } else {
+                setFormData({
+                    ...formData,
+                    [name]: checked
+                });
+            }
+        } else {
+            setFormData({
+                ...formData,
+                [name]: value
+            });
+        }
     };
 
     const finaliser = (e) => {
@@ -95,15 +118,15 @@ const FormulaireAides = ({ step, setStep, isDejaFait, onFinaliser }) => {
                             <h2>Lien avec l'aidé</h2>
                             <div className="selector_container_relation">
                                 <div>
-                                    <input type="radio" name="role" value='conjoint' id='conjoint' checked={formData.role === "conjoint"} onChange={handleChange}/>
+                                    <input type="radio" name="role" value='conjoint' id='conjoint' checked={formData.role === "conjoint"} onChange={handleChange} />
                                     <label htmlFor="conjoint" className='choice'>Conjoint</label>
                                 </div>
                                 <div>
-                                    <input type="radio" name="role" value='famille' id='famille' checked={formData.role === "famille"} onChange={handleChange}/>
+                                    <input type="radio" name="role" value='famille' id='famille' checked={formData.role === "famille"} onChange={handleChange} />
                                     <label htmlFor="famille" className='choice'>Enfant-Famille</label>
                                 </div>
                                 <div>
-                                    <input type="radio" name="role" value='proche' id='proche' checked={formData.role === "proche"} onChange={handleChange}/>
+                                    <input type="radio" name="role" value='proche' id='proche' checked={formData.role === "proche"} onChange={handleChange} />
                                     <label htmlFor="proche" className='choice'>Ami-Voisin</label>
                                 </div>
                             </div>

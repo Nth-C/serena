@@ -387,7 +387,7 @@ function AcceSuivi() {
             </Slide>
 
             <Slide title={`Modifier le suivi de ${formData.nom_groupe}`} isOpen={isModifSuiviOpen} toggleOpen={() => setIsModifSuiviOpen(false)}>
-                <form onSubmit={handleUpdate}>
+                <form className='edit_famille' onSubmit={handleUpdate}>
                     <div className="form-group">
                         <label>Nom de l'aidé : </label>
                         <input type="text" name="nom_aide" value={formData.nom_aide} onChange={handleChange} required />
@@ -402,10 +402,10 @@ function AcceSuivi() {
                     </div>
                     <div className="form-actions">
                         <button type="button" className="btn_red" onClick={() => handleQuitterFamille(formData.id_famille)}>Quitter la famille</button>
-                        <div>
-                            <button type="button" className="btn_border" onClick={() => setIsModifSuiviOpen(false)}>Annuler</button>
-                            <button type="submit" className="btn_blue">Enregistrer</button>
-                        </div>
+                    </div>
+                    <div>
+                        <button type="button" className="btn_border" onClick={() => setIsModifSuiviOpen(false)}>Annuler</button>
+                        <button type="submit" className="btn_blue">Enregistrer</button>
                     </div>
                 </form>
             </Slide>

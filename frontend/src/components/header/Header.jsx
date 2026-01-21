@@ -10,9 +10,7 @@ function Header({submenu, onHamburgerClick}) {
       <div className={styles.banner_container}>
         <div className={styles.hamburger_container}>
           <button className={styles.hamburger_btn} onClick={onHamburgerClick}>
-            <span></span>
-            <span></span>
-            <span></span>
+            <img src="/icons/menu.svg" alt="" />
           </button>
         </div>
 

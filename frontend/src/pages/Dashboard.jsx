@@ -13,6 +13,13 @@ function Dashboard() {
   const [isTrajetOpen, setIsTrajetOpen] = useState(false)
   const [selectedTrajet, setSelectedTrajet] = useState(null);
 
+  // loading fetch
+  const [loading, setLoading] = useState({
+    medicaments: true,
+    trajets: true,
+    taches: true
+  });
+
   const apiUrl = import.meta.env.VITE_API_URL;
 
   /**
@@ -38,6 +45,12 @@ function Dashboard() {
 
     } catch (err) {
       console.error("Erreur de récupération dashboard:", err.message);
+    } finally {
+      setLoading({
+        medicaments: false,
+        trajets: false,
+        taches: false
+      });
     }
   };
 
@@ -107,8 +120,10 @@ function Dashboard() {
       {/*SECTION DEMANDE (Trajets) */}
       <div>
         <h1>Demande</h1>
-        {trajets?.length === 0 ? (
-          <p className="aucun">Aucune demande de trajet</p>
+        {loading.trajets ? (
+          <p>Chargement des demandes de trajet...</p>
+        ) : trajets.length === 0 ? (
+          <p className="aucun">Aucune demande de trajet.</p>
         ) : (
           <div className='list_trajet'>
             {trajets.map((m, i) => (
@@ -130,63 +145,67 @@ function Dashboard() {
       {/*SECTION ALERTES (Médicaments) */}
       <div>
         <h1>Alertes</h1>
-        <div className='list_alerte'>
-          {medicaments.length === 0 ? (
-            <p className="aucun">Aucune alerte de stock</p>
-          ) : (
-            medicaments.map((m, i) => (
-              <NavLink key={i} to={`/suivi/medicine`}>
-              <div className='alerte_dashbord'>
+        {loading.medicaments ? (
+          <p>Chargement des médicaments...</p>
+        ) : medicaments.length === 0 ? (
+          <p className="aucun">Aucune alerte de stock.</p>
+        ) : (
+          <div className='list_alerte'>
+          {medicaments.map((m, i) => (
+            <NavLink key={i} to={`/suivi/medicine`}>
+            <div className='alerte_dashbord'>
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z" /></svg>
                 <div>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z" /></svg>
-                  <div>
-                    <h3>Médicaments</h3>
-                    <p>Stock de {m.nomMedicament} faible</p>
-                    <progress
-                      className={
-                        calcProgressBar(m.stockTotal, m.stock) < 33 ? "red_bar" :
-                        calcProgressBar(m.stockTotal, m.stock) < 66 ? "pink_bar" : "blue_bar"
-                      }
-                      max="100"
-                      value={calcProgressBar(m.stockTotal, m.stock)}
-                    ></progress>
-                  </div>
+                  <h3>Médicaments</h3>
+                  <p>Stock de {m.nomMedicament} faible</p>
+                  <progress
+                    className={
+                      calcProgressBar(m.stockTotal, m.stock) < 33 ? "red_bar" :
+                      calcProgressBar(m.stockTotal, m.stock) < 66 ? "pink_bar" : "blue_bar"
+                    }
+                    max="100"
+                    value={calcProgressBar(m.stockTotal, m.stock)}
+                  ></progress>
                 </div>
-                <svg className="arrow_forward" xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px">
-                  <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
-                </svg>              
               </div>
-              </NavLink>
-            ))
-          )}
-        </div>
+              <svg className="arrow_forward" xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px">
+                <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
+              </svg>              
+            </div>
+            </NavLink>
+          ))}
+          </div>
+        )}
       </div>
 
       {/*SECTION PROCHAINES TÂCHES */}
       <div>
         <h1>Prochaines tâches</h1>
+        {loading.taches ? (
+          <p>Chargement de la Prochaine tâche...</p>
+        ) : !getProchaineTache() ? (
+          <p className="aucun">Aucune tâche prévue prochainement.</p>
+        ) : (
         <div className="list_task">
-          {getProchaineTache() ? (
-            <NavLink to={`/agenda`}>
-              <div className="alerte_dashbord">
-                <div>
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="35px">
-                    <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
-                  </svg>
-                  <div className="tache_info">
-                    <h3>{getProchaineTache().nom}</h3>
-                    <p>{getProchaineTache().note || "Aucune description"}</p>
-                  </div>
-                </div>
-                <svg className="arrow_forward" xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px">
-                  <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
+          <NavLink to={`/agenda`}>
+            <div className="alerte_dashbord">
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="35px">
+                  <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/>
                 </svg>
+                <div className="tache_info">
+                  <h3>{getProchaineTache().nom}</h3>
+                  <p>{getProchaineTache().note || "Aucune description"}</p>
+                </div>
               </div>
-            </NavLink>
-          ) : (
-            <p className="aucun">Aucune tâche prévue prochainement</p>
-          )}
+              <svg className="arrow_forward" xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px">
+                <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
+              </svg>
+            </div>
+          </NavLink>
         </div>
+        )}
       </div>
     </div>
     

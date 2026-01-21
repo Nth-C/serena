@@ -30,7 +30,7 @@ try {
         $dao = new FamilleDAO();
         
         $famille = new Famille([
-            'id_famille' => (int)$id,
+            'id_famille' => $id,
             'nom'        => $nom,
             'description'=> $desc,
             'nom_aide'   => $nom_aide

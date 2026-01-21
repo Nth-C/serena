@@ -28,9 +28,7 @@ const Signalement = () => {
                 credentials: 'include'
             });
             const data = await response.json();
-            
-            console.log("Raw data from API:", JSON.stringify(data, null, 2)); // DEBUG: voir structure exacte
-            
+                        
             if (Array.isArray(data)) {
                 setSignalements(data);
             } else {
@@ -56,14 +54,8 @@ const Signalement = () => {
         e.preventDefault();
         setStatusMsg({ type: 'info', msg: 'Envoi en cours...' });
 
-        console.log("DEBUG: API URL =", apiUrl);
-        console.log("DEBUG: Form data =", formData);
-
         try {
-            // Enregistrement BDD
             const url = `${apiUrl}/?route=signalement/add`;
-            console.log("DEBUG: Sending to URL:", url);
-            console.log("DEBUG: Request body:", JSON.stringify(formData));
 
             const resDb = await fetch(url, {
                 method: 'POST',
@@ -72,11 +64,7 @@ const Signalement = () => {
                 body: JSON.stringify(formData)
             });
 
-            console.log("DEBUG: Response status:", resDb.status);
-            console.log("DEBUG: Response OK:", resDb.ok);
-
             const dataDb = await resDb.json();
-            console.log("DEBUG: Response data:", dataDb);
 
             if (dataDb.error) throw new Error(dataDb.error);
             if (!dataDb.success) throw new Error("L'ajout a échoué");

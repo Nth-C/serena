@@ -69,11 +69,10 @@ function Medecine() {
 
       // On vérifie si data est un tableau, sinon on met un tableau vide
       setListMedecine(Array.isArray(data) ? data : []);
+      setLoading(false);
     } catch (err) {
       console.error("Erreur de récupération:", err.message);
-      setListMedecine([]); // Évite le crash du .map() en cas d'erreur
-    } finally {
-      // Si tu as un état de chargement, tu peux le stopper ici
+      setListMedecine([]);
       setLoading(false);
     }
   }
@@ -160,8 +159,6 @@ function Medecine() {
 
 
   const handleSearchMedecine = async (e) => {
-    console.log(e);
-
     // change le controleur appeler en fonction de (créer / modifier)
     const route = 'nommedicament/search';
 
@@ -179,10 +176,8 @@ function Medecine() {
       });
 
       const result = await response.json();
-      console.log(result);
       setListNomMedecine(result.resultats)
       if (result.isUnique) {
-        console.log(result.resultats)
         setListTypeMedecine(result.types)
         setIsNameGood(true)
 
@@ -225,7 +220,7 @@ function Medecine() {
       <div className="medecine">
         <div className='container_top'>
           <div>
-            <h1>Médicaments</h1>
+            <h1>Médicament</h1>
             <div className='filter_group'>
               <button className='sort'>
                 <img src="/icons/sort.svg" alt="" />

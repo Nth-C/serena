@@ -211,7 +211,7 @@ function App() {
           <ProtectedRoute>
             <Layout submenu={[
                 { label: "Alerte", path: "home/dashboard" },
-                { label: "programme du jour", path: "home/my_day" },
+                { label: "Programme du jour", path: "home/my_day" },
                 { label: "Dernier nouvelles", path: "home/last_visit_report" },
               ]}
             />

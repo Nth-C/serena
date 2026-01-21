@@ -22,7 +22,6 @@ function Agenda() {
 
   // popup trajet
   const [trajetOpen, setTrajetOpen] = useState(false)
-  const [currentTrajet, setCurrentTrajet] = useState(null)
 
   const [date, setDate] = useState(new Date())
   const [popUpDateOpen, setPopUpDateOpen] = useState(false)
@@ -158,9 +157,6 @@ function Agenda() {
 
       if (data.success) {
         setListeEvenements(data.evenements)
-
-        //console.log('event : ', data.evenements)
-        //console.log('premier event complet : ', data.evenements[0])
       }
     } catch (error) {
       console.error("Erreur chargement événements", error)
@@ -171,7 +167,7 @@ function Agenda() {
   useEffect(() => {
     fetchMembres()
     fetchEvents()
-  }, []);
+  }, [apiUrl]);
 
   // --- Gestion des changements dans les inputs ---
   const handleChange = (e) => {
@@ -810,7 +806,6 @@ function Agenda() {
                   className={isTrajet ? 'active' : ''}
                   onClick={() => {
                       const trajet = currentEvent.trajets[0];
-                      setCurrentTrajet(trajet); 
                       const dateStr = trajet.date_deb ? trajet.date_deb.replace(" ", "T").replace(/\+\d{2}$/, '') : '';
                       const dateTrajet = dateStr ? toLocalISO(new Date(dateStr)) : '';
                       setFormData(prev => ({

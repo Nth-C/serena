@@ -9,7 +9,7 @@ header {
 header .banner_container {
     position: relative;
     display: flex;
-    height: 5rem;
+    height: 6rem;
     border-bottom: 1px solid var(--gray);
 }
 
@@ -20,22 +20,16 @@ header .hamburger_container {
 }
 
 header .hamburger_btn {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 3rem;
-    height: 1.7rem;
+    width: 3.7rem;
     cursor: pointer;
 }
 
-header .hamburger_btn span {
-    display: block;
+header .hamburger_btn img {
     width: 100%;
-    height: .3rem;
-    background: var(--black);
+    height: 100%;;
 }
 
-header img {
+header .principal_container img {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -47,13 +41,14 @@ header img {
 
 header .submenu_container {
     display: flex;
+    width: 100%;
 }
 
 header .submenu_container a {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-grow: 1;
+    flex: 1;
     color: var(--black);
     font-size: 1.2rem;
     font-weight: 200;
@@ -75,31 +70,30 @@ header .submenu_container a.active {
 
 /* Tablettes (écrans > 768px) */
 @media (min-width: 768px) {
-
     header .banner_container {
         border-bottom: 0;
     }
 
     header .hamburger_container {
-        width: 20rem;
+        min-width: 20rem;
     }
 
     header .submenu_container {
         position: absolute;
+        width: 55%;
+        height: 100%;
         top: 50%;
         right: 0;
         transform: translateY(-50%);
     }
 
-    header .submenu_container a {
-        padding: 1rem 1.4rem;
-    }
-
-    header img {
+    header .principal_container img {
         position: relative;
         top: 50%;
         left: 0;
         transform: translateY(-50%);
+        height: 55%;
+        width: auto;
     }
 
     header .principal_container {
@@ -108,11 +102,13 @@ header .submenu_container a.active {
     }
 }
 
-@media (max-width: 768px) {
-    header .submenu_container a:first-child {
-        width: 30%;
+/*  (écrans > 1160px) */
+@media (min-width: 1160px) {
+    header .submenu_container {
+        width: 40%;
+    }
+
+    header img {
+        height: 70%;
     }
 }
-
-/* Desktops (écrans > 1024px) */
-@media (min-width: 1024px) {}
