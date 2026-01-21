@@ -85,19 +85,23 @@ function LastVisitReport() {
   });
 
   const sortRapport = (listeRapport) => {
-    const listSort = [...listeRapport].sort((a, b) => {
-      const dateTimeA = new Date(`${a.date}`);
-      const dateTimeB = new Date(`${b.date}`);
+  const listSort = [...listeRapport].sort((a, b) => {
+    
+    const timeA = a.heure ? a.heure.split('+')[0] : '00:00:00';
+    const timeB = b.heure ? b.heure.split('+')[0] : '00:00:00';
+    
+    const dateTimeA = new Date(`${a.date}T${timeA}`);
+    const dateTimeB = new Date(`${b.date}T${timeB}`);
 
-      return sortOrder === 'desc' ? dateTimeB - dateTimeA : dateTimeA - dateTimeB;
-    });
+    return sortOrder === 'desc' ? dateTimeB - dateTimeA : dateTimeA - dateTimeB;
+  });
 
-    return listSort
-  }
+  return listSort;
+};
 
   useEffect(() => {
-    setRapports(sortRapport(rapports))
-  }, [sortOrder]);
+  setRapports(prev => sortRapport(prev));
+}, [sortOrder]);
 
   useEffect(() => {
     fetchRapports()
@@ -186,14 +190,12 @@ function LastVisitReport() {
         getMedecine()
         setIsMedicineOpen(false)
 
-        //!isEditing ? setIsShowAdd(true) : setIsShowModify(true)
         if(!isEditing) {
           setMsgConfirmation(`Le rapport ${nouveauMedoc.name} a bien été ajouté.`)
         } else {
           setMsgConfirmation(`Le rapport ${nouveauMedoc.name} a bien été modifié.`)
         }
         setShowConfirmation(true)
-
         setNameMedecineToDisplay(nameMedecine)
       } else {
         setMessage("Erreur: " + result.error);
@@ -205,7 +207,7 @@ function LastVisitReport() {
   };
 
   const handleSearchMedecine = async (e) => {
-    // change le controleur appeler en fonction de (créer / modifier)
+    
     const route = 'nommedicament/search';
 
     try {
@@ -214,7 +216,6 @@ function LastVisitReport() {
         credentials: 'include',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
-          // change les donné envoyer (créer / modifier)
           {
             texteNomMedicament: e
           }
@@ -275,6 +276,7 @@ function LastVisitReport() {
       setSelectedMedicsForReport([]);
       setIsEditing(false);
     }
+    setMessage("");
     setIsNewRapportOpen(!isNewRapportOpen);
   };
 
@@ -334,6 +336,8 @@ function LastVisitReport() {
         setSelectedMedicsForReport([]);
         setIsEditing(false);
         fetchRapports();
+      }else{
+        setMessage(result.error);
       }
     } catch (err) {
       alert("Erreur lors de l'envoi");
@@ -550,6 +554,7 @@ function LastVisitReport() {
 
     {/* Slide Nouveau/Modif Rapport */}
     <Slide title={isEditing ? "Modifier le rapport" : "Créer un rapport de visite"} isOpen={isNewRapportOpen} toggleOpen={toggleNewRapport} zIndex={500}>
+      {message && <p className="error_message" style={{ color: 'red' }}>{message}</p>}
       <form className="add_report" onSubmit={handleSubmitRapport}>
         <div>
           <label>Nom du rapport : </label>
