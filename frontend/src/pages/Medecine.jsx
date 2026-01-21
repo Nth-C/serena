@@ -71,9 +71,7 @@ function Medecine() {
       setListMedecine(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Erreur de récupération:", err.message);
-      setListMedecine([]); // Évite le crash du .map() en cas d'erreur
-    } finally {
-      // Si tu as un état de chargement, tu peux le stopper ici
+      setListMedecine([]);
       setLoading(false);
     }
   }
