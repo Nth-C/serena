@@ -223,7 +223,7 @@ function Medecine() {
       <div className="medecine">
         <div className='container_top'>
           <div>
-            <h1>Rapport de visite</h1>
+            <h1>Médicament</h1>
             <div className='filter_group'>
               <button className='sort'>
                 <img src="/icons/sort.svg" alt="" />
