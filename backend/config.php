@@ -1,12 +1,11 @@
 <?php
-// config.php
-// Read sensitive configuration strictly from environment variables.
-// Ensure these are provided via runtime env or a secrets manager.
-// Never commit secrets to VCS.
+// backend/config.php
+
 return [
-    'SMTP_HOST' => getenv('SMTP_HOST') ?: ($_ENV['SMTP_HOST'] ?? ''),
-    'SMTP_PORT' => (int)(getenv('SMTP_PORT') ?: ($_ENV['SMTP_PORT'] ?? 0)),
-    'SMTP_USER' => getenv('SMTP_USER') ?: ($_ENV['SMTP_USER'] ?? ''),
-    'SMTP_PASS' => getenv('SMTP_PASS') ?: ($_ENV['SMTP_PASS'] ?? ''),
-    'APP_PEPPER' => getenv('APP_PEPPER') ?: ($_ENV['APP_PEPPER'] ?? ''),
+    
+    'SMTP_HOST' => 'smtp-sere-na.alwaysdata.net',
+    'SMTP_PORT' => 587,
+    'SMTP_USER' => 'sere-na@alwaysdata.net',
+    'SMTP_PASS' => 'abraham38Rayan', 
+    'APP_PEPPER' => '8f4b2e1a9c3d5e7f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f', 
 ];
