@@ -69,6 +69,7 @@ function Medecine() {
 
       // On vérifie si data est un tableau, sinon on met un tableau vide
       setListMedecine(Array.isArray(data) ? data : []);
+      setLoading(false);
     } catch (err) {
       console.error("Erreur de récupération:", err.message);
       setListMedecine([]);
