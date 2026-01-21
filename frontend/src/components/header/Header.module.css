@@ -110,7 +110,7 @@ header .submenu_container a.active {
 
 @media (max-width: 768px) {
     header .submenu_container a:first-child {
-        width: 20%;
+        width: 30%;
     }
 }
 
