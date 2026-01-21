@@ -48,7 +48,7 @@ if ($user) {
         $mail->isHTML(true);
         $mail->Subject = 'Reinitialisation de votre mot de passe';
         
-        $link = "http://localhost:5173/reset-password?token=" . $token;
+        $link = "https://sere-na.alwaysdata.net/reset-password?token=" . $token;
         
         $mail->Body    = "
             <h3>Bonjour,</h3>
