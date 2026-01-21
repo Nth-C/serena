@@ -2062,7 +2062,7 @@ progress.blue_bar::-moz-progress-bar {
   text-wrap: nowrap;
   text-align: left;
   font-size: 13px;
-  padding: 1rem 1.5rem;
+  padding: 1rem 1rem;
   border-bottom: 1px solid var(--gray);
 }
 
