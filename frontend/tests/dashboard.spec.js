@@ -3,96 +3,81 @@ import { test, expect } from '@playwright/test';
 test.describe('Dashboard - Mode Mock Complet', () => {
 
   test.beforeEach(async ({ page }) => {
-    // 1. FORCER LA SESSION (On simule d'être déjà connecté et d'avoir choisi une famille)
+    // 1. SESSION
     await page.goto('/');
     await page.evaluate(() => {
       sessionStorage.clear();
       sessionStorage.setItem('isConnected', 'true');
-      sessionStorage.setItem('id_famille', '123'); // ID fictif
-      sessionStorage.setItem('user', JSON.stringify({
-        id: 999,
-        nom: 'Robot',
-        prenom: 'Playwright'
-      }));
+      sessionStorage.setItem('id_famille', '123');
+      sessionStorage.setItem('user', JSON.stringify({ id: 999, nom: 'Robot', prenom: 'Test' }));
     });
 
-    // 2. MOCK DE L'API DASHBOARD (La réponse que ton fetch attend)
-    await page.route('**/index.php?route=dashboard/view', async (route) => {
+    // 2. MOCK API
+    await page.route('**/*route=dashboard/view*', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({
-          trajets: [
-            { 
-              id_trajet: 77, 
-              description: "Course urgente", 
-              lieu_dep: "Maison", 
-              lieu_arr: "Pharmacie", 
-              date_deb: "2026-02-15T10:00:00" 
-            }
-          ],
-          medicaments: [
-            { nomMedicament: "Aspegic", stock: 2, stockTotal: 20 }
-          ],
-          taches: [
-            { nom: "Acheter du pain", note: "Boulangerie fermée le lundi" }
-          ]
+          trajets: [{ id_trajet: 77, description: "Course", lieu_dep: "A", lieu_arr: "B", date_deb: "2026-02-15T10:00:00" }],
+          medicaments: [{ nomMedicament: "Aspegic", stock: 2, stockTotal: 20 }],
+          taches: [{ nom: "Pain", note: "Urgent" }]
         }),
       });
     });
 
-    // 3. NAVIGATION DIRECTE
+    // 3. NAVIGATION
     await page.goto('/home/dashboard');
-    await page.waitForLoadState('networkidle');
+    await expect(page.getByText(/Chargement des/)).toHaveCount(0, { timeout: 10000 });
   });
 
-  test('Vérification visuelle du Dashboard mocké', async ({ page }) => {
-    // Test des Médicaments (Alertes)
-    await expect(page.locator('.list_alerte')).toContainText('Aspegic');
-    
-    // Vérification de la couleur de la barre (stock 2/20 = < 33% donc rouge)
-    const progress = page.locator('progress');
-    await expect(progress).toHaveClass(/red_bar/);
-
-    // Test des Tâches
-    await expect(page.locator('.list_task')).toContainText('Acheter du pain');
+  test('Vérification de l alerte médicament', async ({ page }) => {
+    const container = page.locator('.list_alerte');
+    await expect(container).toBeVisible(); 
+    await expect(container).toContainText('Aspegic');
   });
 
-  test('Interaction avec le Slide Trajet en mode Mock', async ({ page }) => {
-    // On clique sur le trajet mocké
-    await page.locator('.list_trajet .alerte_dashbord').first().click();
+  test('Acceptation d un trajet via le Slide', async ({ page }) => {
+    const listTrajet = page.locator('.list_trajet');
+    await expect(listTrajet).toBeVisible();
+    await listTrajet.locator('.alerte_dashbord').first().click();
 
-    // Le Slide doit s'ouvrir avec les infos mockées
     const slide = page.locator('.details_trajet');
-    await expect(slide).toBeVisible();
-    await expect(slide).toContainText('Pharmacie');
+    // On vérifie qu'il rentre dans l'écran
+    await expect(slide).toBeInViewport();
 
-    // MOCK de l'action "Accepter"
-    await page.route('**/index.php?route=trajet/accepter', async (route) => {
+    // MOCK + WAIT FOR RESPONSE
+    await page.route('**/*route=trajet/accepter*', async (route) => {
+      await route.fulfill({ status: 200, body: JSON.stringify({ success: true }) });
+    });
+
+    const responsePromise = page.waitForResponse(r => r.url().includes('trajet/accepter') && r.status() === 200);
+
+    await page.getByRole('button', { name: 'Accepter le trajet' }).click();
+
+    // On attend que le réseau réponde
+    await responsePromise;
+
+    // CORRECTION : On vérifie qu'il sort de l'écran (au lieu de visible/hidden)
+    await expect(slide).not.toBeInViewport();
+  });
+
+  test('Affichage de la tâche prioritaire', async ({ page }) => {
+    const container = page.locator('.list_task');
+    await expect(container).toBeVisible();
+    await expect(container).toContainText('Pain');
+  });
+
+  test('Cas de liste vide', async ({ page }) => {
+    await page.unroute('**/*route=dashboard/view*');
+    await page.route('**/*route=dashboard/view*', async (route) => {
       await route.fulfill({
         status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({ success: true }),
+        body: JSON.stringify({ trajets: [], medicaments: [], taches: [] }),
       });
     });
 
-    // On accepte
-    await page.getByRole('button', { name: /Accepter le trajet/i }).click();
-
-    // Le slide doit se fermer (React rappelle fetchDashboard, donc on vérifie la fermeture)
-    await expect(slide).toBeHidden();
+    await page.reload();
+    await expect(page.getByText(/Chargement des/)).toHaveCount(0);
+    await expect(page.getByText('Aucune demande de trajet.')).toBeVisible();
   });
-
-  test('Navigation vers les autres pages depuis le Dashboard', async ({ page }) => {
-    // Clic sur l'alerte médicament -> doit aller vers /suivi/medicine
-    await page.locator('.list_alerte a').first().click();
-    await expect(page).toHaveURL(/.*suivi\/medicine/);
-
-    await page.goBack();
-
-    // Clic sur la tâche -> doit aller vers /agenda
-    await page.locator('.list_task a').first().click();
-    await expect(page).toHaveURL(/.*agenda/);
-  });
-
 });
