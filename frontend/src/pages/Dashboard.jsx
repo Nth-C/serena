@@ -4,17 +4,21 @@ import { getFormatDate, getFormatTime } from '../utils/timeFormat';
 import Slide from '../components/slide/Slide';
 
 function Dashboard() {
+  // données
   const [medicaments, setMedicaments] = useState([])
   const [trajets, setTrajets] = useState([])
   const [taches, setTaches] = useState([])
 
+  // trajet
   const [isTrajetOpen, setIsTrajetOpen] = useState(false)
   const [selectedTrajet, setSelectedTrajet] = useState(null);
 
-  const [error, setError] = useState(null)
-
   const apiUrl = import.meta.env.VITE_API_URL;
 
+  /**
+   * recupère toutes les données du dashboard
+   * (demande de trajets / alertes / prochaine tâche)
+   */
   const fetchDashboard = async () => {
     try {
       const response = await fetch(`${apiUrl}/?route=dashboard/view`, {
@@ -32,19 +36,17 @@ function Dashboard() {
       setTrajets(data.trajets || []);
       setTaches(data.taches || []);
 
-      setError(null);
     } catch (err) {
       console.error("Erreur de récupération dashboard:", err.message);
-      setError(err.message || "Impossible de contacter le serveur");
     }
   };
 
-
-
+  /**
+   * une personne est accossier a un trajet
+   * @param {*} id id du trajet
+   */
   const accepterDemandeTrajet = async (id) => {
     try {
-
-
       const payload = {
           id_trajet: id 
       };
@@ -56,7 +58,6 @@ function Dashboard() {
         headers: {
           'Content-Type': 'application/json'
         }
-      
       });
 
       const data = await response.json();
@@ -68,22 +69,22 @@ function Dashboard() {
         fetchDashboard();
         setIsTrajetOpen(false);
       }
-      // On met à jour les différents états avec les données du PHP
       
-
-      setError(null);
     } catch (err) {
       console.error("Erreur de récupération dashboard:", err.message);
-      setError(err.message || "Impossible de contacter le serveur");
     }
   };
 
-
-
   useEffect(() => {
     fetchDashboard();
-  }, []);
+  }, [apiUrl]);
 
+  /**
+   * calcule le pourcentage dans un stock
+   * @param {int} totalStock 
+   * @param {int} currentStock 
+   * @returns le poucentage restant
+   */
   const calcProgressBar = (totalStock, currentStock) => {
     if (totalStock > 0) {
       return ((currentStock / totalStock) * 100).toFixed(0)
@@ -91,9 +92,12 @@ function Dashboard() {
     return 0
   }
 
+  /**
+   * Retourne la première tâche
+   * @returns 
+   */
   const getProchaineTache = () => {
     if (!taches || taches.length === 0) return null;
-    // Retourne la première tâche (supposée être déjà triée par date)
     return taches[0];
   }
 

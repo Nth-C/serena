@@ -24,8 +24,8 @@ function Layout({submenu}) {
         { path : "/suivi/visit_report", breadcrumb: "Santé > Notes de Visites" },
         { path : "/suivi/medicine", breadcrumb: "Santé > Médicament" },
         // document
-        { path : "/document/explorateur", breadcrumb: "Classeur > Documents" },
-        { path : "/document/aides", breadcrumb: "Classeur > Trouver des aides" }
+        { path : "/document/explorateur", breadcrumb: "Espace Aidant > Documents" },
+        { path : "/document/aides", breadcrumb: "Espace Aidant > Trouver des aides" }
     ]
 
     // recupere le bon file d'ariane en fonction le l'url

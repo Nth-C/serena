@@ -169,13 +169,13 @@ class TrajetDAO {
         }
     }
 
-    public function updateTrajet($id_event, $date_deb, $lieu_dep, $lieu_arr, $nom_societe) {
+    public function updateTrajet($id_event, $date_deb, $lieu_dep, $lieu_arr, $nom_societe, $aidant_id) {
         try {
             $this->dal->beginTransaction();
 
-            // 1. Mise à jour des informations de base du trajet lié à l'événement
+            // 1. Mise à jour des infos de base (Correction de la virgule après :date_deb)
             $query = "UPDATE TRAJET 
-                    SET date_deb = :date_deb lieu_dep = :lieu_dep, lieu_arr = :lieu_arr
+                    SET date_deb = :date_deb, lieu_dep = :lieu_dep, lieu_arr = :lieu_arr
                     WHERE id_event = :id_event 
                     RETURNING id_trajet";
             
@@ -189,41 +189,65 @@ class TrajetDAO {
 
             $result = $stmt->fetch();
             
-            // Si un trajet existe et qu'une société est mentionnée, on met à jour la liaison
-            if ($result && !empty($nom_societe)) {
+            if ($result) {
                 $id_trajet = $result['id_trajet'];
 
-                // Vérifier/Créer la société (logique identique à addTrajet)
-                $qSocCheck = "SELECT id_societe FROM SOCIETES WHERE nom = :nom";
-                $stmtCheck = $this->dal->prepare($qSocCheck);
-                $stmtCheck->execute([':nom' => $nom_societe]);
-                $socRes = $stmtCheck->fetch();
+                // 2. Nettoyage des anciennes liaisons pour éviter les doublons
+                $this->dal->prepare("DELETE FROM CHARGE WHERE id_trajet = :id")->execute([':id' => $id_trajet]);
+                $this->dal->prepare("DELETE FROM EFFECTUE WHERE id_trajet = :id")->execute([':id' => $id_trajet]);
 
-                $id_societe = $socRes ? $socRes['id_societe'] : null;
+                // 3. Nouvelle affectation
+                if (!empty($nom_societe)) {
+                    // Logique Société (identique à addTrajet)
+                    $qSocCheck = "SELECT id_societe FROM SOCIETES WHERE nom = :nom";
+                    $stmtCheck = $this->dal->prepare($qSocCheck);
+                    $stmtCheck->execute([':nom' => $nom_societe]);
+                    $socRes = $stmtCheck->fetch();
+                    $id_societe = $socRes ? $socRes['id_societe'] : null;
 
-                if (!$id_societe) {
-                    $qSocCreate = "INSERT INTO SOCIETES (nom, adresse) VALUES (:nom, 'Non spécifiée') RETURNING id_societe";
-                    $stmtCreate = $this->dal->prepare($qSocCreate);
-                    $stmtCreate->execute([':nom' => $nom_societe]);
-                    $socNew = $stmtCreate->fetch();
-                    $id_societe = $socNew['id_societe'];
+                    if (!$id_societe) {
+                        $qSocCreate = "INSERT INTO SOCIETES (nom, adresse) VALUES (:nom, 'Non spécifiée') RETURNING id_societe";
+                        $stmtCreate = $this->dal->prepare($qSocCreate);
+                        $stmtCreate->execute([':nom' => $nom_societe]);
+                        $socNew = $stmtCreate->fetch();
+                        $id_societe = $socNew['id_societe'];
+                    }
+
+                    $this->dal->prepare("INSERT INTO CHARGE (id_trajet, id_societe) VALUES (:id, :idsoc)")
+                            ->execute([':id' => $id_trajet, ':idsoc' => $id_societe]);
+                } 
+                elseif (!empty($aidant_id) && $aidant_id !== 'demande') {
+                    // Logique Aidant spécifique
+                    $this->dal->prepare("INSERT INTO EFFECTUE (id_trajet, id_personne) VALUES (:id, :idp)")
+                            ->execute([':id' => $id_trajet, ':idp' => $aidant_id]);
                 }
-
-                // Mise à jour ou insertion dans la table CHARGE
-                $qCharge = "INSERT INTO CHARGE (id_trajet, id_societe) 
-                            VALUES (:id_trajet, :id_societe) 
-                            ON CONFLICT (id_trajet) DO UPDATE SET id_societe = EXCLUDED.id_societe";
-                $stmtCharge = $this->dal->prepare($qCharge);
-                $stmtCharge->execute([
-                    ':id_trajet' => $id_trajet,
-                    ':id_societe' => $id_societe
-                ]);
             }
 
             return $this->dal->commit();
         } catch (Exception $e) {
             $this->dal->rollBack();
             throw $e; 
+        }
+    }
+
+    public function getTrajetsParEvent(string $id_event): array
+    {
+        try {
+            $query = "SELECT t.id_trajet, t.date_deb, t.lieu_dep, t.lieu_arr, t.id_event,
+                             e.id_personne as aidant_id,
+                             s.nom as societe
+                      FROM TRAJET t
+                      LEFT JOIN EFFECTUE e ON t.id_trajet = e.id_trajet
+                      LEFT JOIN CHARGE c ON t.id_trajet = c.id_trajet
+                      LEFT JOIN SOCIETES s ON c.id_societe = s.id_societe
+                      WHERE t.id_event = :id_event";
+            
+            $stmt = $this->dal->prepare($query);
+            $stmt->execute([':id_event' => $id_event]);
+            
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            return [];
         }
     }
     
