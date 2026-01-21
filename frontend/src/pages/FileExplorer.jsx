@@ -259,6 +259,7 @@ function FileExplorer() {
   const [searchText, setSearchText] = useState('');
 
   return (
+    <>
     <div className="file_explorer">
       <div className='new_categories'>
         <h1>Documents</h1>
@@ -333,114 +334,112 @@ function FileExplorer() {
           </div>
         ))}
       </div>
+    </div>
 
-      <Slide title={"Ajouter un document"} isOpen={isNewDocumentOpen} toggleOpen={toggleNewDocument}>
-        <form className="new_document" onSubmit={handleAddDocument}>
-          <div className="file_input_case">
-            {!isUploaded ? (
-              <label className="drop_zone">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M260-160q-91 0-155.5-63T40-377q0-78 47-139t123-78q25-92 100-149t170-57q117 0 198.5 81.5T760-520q69 8 114.5 59.5T920-340q0 75-52.5 127.5T740-160H520q-33 0-56.5-23.5T440-240v-206l-64 62-56-56 160-160 160 160-56 56-64-62v206h220q42 0 71-29t29-71q0-42-29-71t-71-29h-60v-80q0-83-58.5-141.5T480-720q-83 0-141.5 58.5T280-520h-20q-58 0-99 41t-41 99q0 58 41 99t99 41h100v80H260Zm220-280Z" /></svg>
-                <div><p>Glisser le document ou </p><p>rechercher</p></div>
-                <input type="file" onChange={handleFileChange} />
-              </label>
-            ) : (
-              <div className="upload_success">
-                {!isFileError ? (
-                  <>
-                    <div className="doc_warning">
-                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M280-280h280v-80H280v80Zm0-160h400v-80H280v80Zm0-160h400v-80H280v80Zm-80 480q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z" /></svg>
-                      <p>Le document : {selectedFile?.name} à bien été chargé</p>
-                    </div>
-                    <button type="button" onClick={() => setIsUploaded(false)} className="btn_blue">Changer de fichier</button>
-                  </>
+    <Slide title={"Ajouter un document"} isOpen={isNewDocumentOpen} toggleOpen={toggleNewDocument}>
+      <form className="new_document" onSubmit={handleAddDocument}>
+        <div className="file_input_case">
+          {!isUploaded ? (
+            <label className="drop_zone">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M260-160q-91 0-155.5-63T40-377q0-78 47-139t123-78q25-92 100-149t170-57q117 0 198.5 81.5T760-520q69 8 114.5 59.5T920-340q0 75-52.5 127.5T740-160H520q-33 0-56.5-23.5T440-240v-206l-64 62-56-56 160-160 160 160-56 56-64-62v206h220q42 0 71-29t29-71q0-42-29-71t-71-29h-60v-80q0-83-58.5-141.5T480-720q-83 0-141.5 58.5T280-520h-20q-58 0-99 41t-41 99q0 58 41 99t99 41h100v80H260Zm220-280Z" /></svg>
+              <div><p>Glisser le document ou </p><p>rechercher</p></div>
+              <input type="file" onChange={handleFileChange} />
+            </label>
+          ) : (
+            <div className="upload_success">
+              {!isFileError ? (
+                <>
+                  <div className="doc_warning">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M280-280h280v-80H280v80Zm0-160h400v-80H280v80Zm0-160h400v-80H280v80Zm-80 480q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z" /></svg>
+                    <p>Le document : {selectedFile?.name} à bien été chargé</p>
+                  </div>
+                  <button type="button" onClick={() => setIsUploaded(false)} className="btn_blue">Changer de fichier</button>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z" /></svg>
+                    <p className="doc_type_erreur">Les document en .{typeDocument} ne sont pas pris en compte seule les images et les PDF sont autorisés</p>
+                  </div>
+                  <button type="button" onClick={() =>  handleResetUploadFile()} className="btn_blue">Changer de fichier</button>
+                </>
+              )}
+            </div>
+          )}
+        </div>
 
-                ) : (
-                  <>
-                    <div>
-                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z" /></svg>
-                      <p className="doc_type_erreur">Les document en .{typeDocument} ne sont pas pris en compte seule les document en .png, .jpg, .JPEG et .pdf sont autorisés</p>
-                    </div>
-                    <button type="button" onClick={() => handleResetUploadFile()} className="btn_blue">Changer de fichier</button>
-                  </>
+        <div>
+          <label>Choisir la catégorie : </label>
+          <select value={emplacementDocument} onChange={(e) => setEmplacementDocument(e.target.value)} required>
+            <option value=""></option>
+            {listDocument.map((cat) => (
+              <option key={cat.id_cat} value={cat.id_cat}>{cat.nom}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label>Nom du document :</label>
+          <input type="text" value={nameDocument} onChange={(e) => setNameDocument(e.target.value)} required />
+        </div>
+        <div>
+          <button type="button" className="btn_border" onClick={handleResetForm}>Réinitialiser</button>
+          <button type="submit" className="btn_blue">Ajouter</button>
+        </div>
+      </form>
+    </Slide>
 
-                )}
-              </div>
-            )}
-          </div>
-          <div>
-            <label>Choisir la catégorie : </label>
-            <select value={emplacementDocument} onChange={(e) => setEmplacementDocument(e.target.value)} required>
-              <option value=""></option>
-              {listDocument.map((cat) => (
-                <option key={cat.id_cat} value={cat.id_cat}>{cat.nom}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label>Nom du document :</label>
-            <input type="text" value={nameDocument} onChange={(e) => setNameDocument(e.target.value)} required />
-          </div>
-          <div>
-            <button type="button" className="btn_border" onClick={handleResetForm}>Réinitialiser</button>
-            <button type="submit" className="btn_blue">Ajouter</button>
-          </div>
-        </form>
-      </Slide>
-
-      <Slide title={isEditing ? "Modifier une catégorie" : "Créer une catégorie"} isOpen={isNewCategorieOpen} toggleOpen={toggleNewCategorie}>
-        <form className="new_categorie" onSubmit={handleAddCategorie}>
-          <div>
-            <label>Nom de la catégorie : </label>
-            <input type="text" value={nameCategorie} onChange={(e) => setNameCategorie(e.target.value)} required />
-          </div>
-          <div>
-            <label>Role :</label>
+    <Slide title={isEditing ? "Modifier une catégorie" : "Créer une catégorie"} isOpen={isNewCategorieOpen} toggleOpen={toggleNewCategorie}>
+      <form className="new_categorie" onSubmit={handleAddCategorie}>
+        <div>
+          <label>Nom de la catégorie : </label>
+          <input type="text" value={nameCategorie} onChange={(e) => setNameCategorie(e.target.value)} required />
+        </div>
+        <div>
+          <label>Role :</label>
             <select
               name="role"
               value={roleCategorie}
               onChange={(e) => setRoleCategorie(e.target.value)} // selectionne directement le bon role
             >
-              <option value="Famille">Famille</option>
-              <option value="Proche">Proche</option>
-              <option value="Professionelle">Professionelle</option>
+            <option value="Famille">Famille</option>
+            <option value="Proche">Proche</option>
+            <option value="Professionelle">Professionelle</option>
             </select>
-          </div>
-          <div>
-            <button type='button' className="btn_red" onClick={() => {
-              //handleDeleteCategorie(idCurrentCategorie);
-              setInfosCategorieDelete({
-                id: idCurrentCategorie,
-                name: nameCategorie
-              })
-              setIsPopUpDeleteCatOpen(true)
-              toggleNewCategorie()
-            }}>Supprimer
-            </button>
-            <button type="submit" className="btn_blue">{isEditing ? "Modifier" : "Ajouter"}</button>
-          </div>
-        </form>
-      </Slide>
+        </div>
+        <div>
+        <button type='button' className="btn_red" onClick={() => {
+          //handleDeleteCategorie(idCurrentCategorie);
+          setInfosCategorieDelete({
+            id: idCurrentCategorie,
+            name: nameCategorie
+          })
+          setIsPopUpDeleteCatOpen(true)
+          toggleNewCategorie()
+        }}>Supprimer
+        </button>
+        <button type="submit" className="btn_blue">{isEditing ? "Modifier" : "Ajouter"}</button>
+        </div>
+      </form>
+    </Slide>
 
-      {/* --- POPUPS DOC --- */}
-      <PopUpDelete
-        toDelete={nameToDelete}
-        handleDelete={handleDeleteConfirm}
-        isOpen={isPopUpDeleteOpen}
-        onClose={togglePopUpDelete}
-      />
+    {/* --- POPUPS DOC --- */}
+    <PopUpDelete
+      toDelete={nameToDelete}
+      handleDelete={handleDeleteConfirm}
+      isOpen={isPopUpDeleteOpen}
+      onClose={togglePopUpDelete}
+    />
 
-      {/* --- POPUPS DOSSIER --- */}
-      <PopUpDelete
-        toDelete={infosCategorieDelete.name}
-        handleDelete={() => handleDeleteCategorie(infosCategorieDelete.id)}
-        isOpen={isPopUpDeleteCatOpen}
-        onClose={() => setIsPopUpDeleteCatOpen(false)}
-      />
-
-
-      <PopUpConfirmation sentence={msgConfirmation} show={showConfirmation} setShow={setShowConfirmation} />
-
-    </div>
+    {/* --- POPUPS DOSSIER --- */}
+    <PopUpDelete
+      toDelete={infosCategorieDelete.name}
+      handleDelete={() => handleDeleteCategorie(infosCategorieDelete.id)}
+      isOpen={isPopUpDeleteCatOpen}
+      onClose={() => setIsPopUpDeleteCatOpen(false)}
+    />
+    
+    <PopUpConfirmation sentence={msgConfirmation} show={showConfirmation} setShow={setShowConfirmation} />
+  </>
   )
 }
 

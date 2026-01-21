@@ -448,26 +448,22 @@ function LastVisitReport() {
         </div>
 
 
-        {/* popup médicaments */}
-        {mounted && isNewPopupOpen && createPortal(
-          <div>
-            <div className={`popup_report_add_medicament ${isNewPopupOpen ? 'popu-medi-active' : ''}`}>
-              <div className="search_report">
-                <div>
-                  <img src="/icons/arrow_back.svg" alt="" onClick={() => setIsPopupOpen(false)} />
-                  <input type="search" placeholder="Rechercher un médicament" />
-                </div>
-                {/* <div>
-                <img src="/icons/sort.svg" alt="" />
-                <p>Trier par</p>
-              </div>*/}
+      {/* popup médicaments */}
+      {mounted && isNewPopupOpen && createPortal(
+        <div>
+          <div className={`popup_report_add_medicament ${isNewPopupOpen ? 'popu-medi-active' : ''}`}>
+            <div className="search_report">
+              <div>
+                <img src="/icons/arrow_back.svg" alt="" onClick={() => setIsPopupOpen(false)} />
+                <input type="search" placeholder="Rechercher un médicament" />
               </div>
-              {hasPermission("Famille") && (
-                <div className="add_medi">
-                  <button onClick={toggleNewMedicine} className="btn_blue">Ajouter un nouveau médicament</button>
-                </div>
-              )}
-              <div className="list">
+            </div>
+            {hasPermission("Famille") && (
+            <div className="add_medi">
+              <button onClick={toggleNewMedicine} className="btn_blue">Ajouter un nouveau médicament</button>
+            </div>
+            )}
+            <div className="list">
 
                 {listMedecine.map((med) => (
                   <MedicItem

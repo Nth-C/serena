@@ -160,6 +160,7 @@ function Agenda() {
         setListeEvenements(data.evenements)
 
         //console.log('event : ', data.evenements)
+        //console.log('premier event complet : ', data.evenements[0])
       }
     } catch (error) {
       console.error("Erreur chargement événements", error)
@@ -230,6 +231,9 @@ function Agenda() {
   };
 
   const toLocalISO = (date) => {
+    if (!date || isNaN(date.getTime())) {
+      return '';
+    }
     const offset = date.getTimezoneOffset() * 60000; // Décalage en millisecondes
     const localISOTime = (new Date(date - offset)).toISOString().slice(0, 16);
     return localISOTime;
@@ -273,6 +277,7 @@ function Agenda() {
       if (result.success) {
         handleSuccess('Événement modifié avec succès !');
         setIsEditMode(false);
+        setEventOpen(false)
       } else {
         console.error('Erreur lors de la modification de l\'événement', result.error);
       }
@@ -341,16 +346,15 @@ function Agenda() {
   const handleAddTrajet = async (e) => {
     if (e) e.preventDefault();
 
-    // Préparation du payload spécifique au trajet (mapping avec tes noms de colonnes SQL)
-    const payload = {
-      date_deb: formData.debut,
-      date_fin: formData.debut,
-      lieu_dep: formData.lieuDepart,
-      lieu_arr: formData.lieuArrivee,
-      id_event: formData.id_event,
-      aidant_id: formData.effectue === 'aidant' ? formData.aidantAffecte : null,
-      societe: formData.effectue === 'externe' ? formData.societe : null
-    };
+      // Préparation du payload spécifique au trajet (mapping avec tes noms de colonnes SQL)
+      const payload = {
+          date_deb: formData.debut,
+          lieu_dep: formData.lieuDepart,
+          lieu_arr: formData.lieuArrivee,
+          id_event: formData.id_event,
+          aidant_id: formData.effectue === 'aidant' ? formData.aidantAffecte : null,
+          societe: formData.effectue === 'externe' ? formData.societe : null
+      };
 
     Object.keys(payload).forEach(key => {
       if (payload[key] === '') payload[key] = null;
@@ -366,13 +370,45 @@ function Agenda() {
 
       const result = await response.json();
 
+          if (result.success) {
+              handleSuccess('Trajet ajouté avec succès !');
+          } else {
+              console.error('Erreur lors de l\'ajout du trajet', result.error);
+          }
+      } catch (error) {
+          console.error("Erreur réseau Trajet:", error);
+      }
+  };
+
+  const handleUpdateTrajet = async (e) => {
+    if (e) e.preventDefault();
+
+    const payload = {
+      id_event: formData.id_event,
+      date_deb: formData.debut,
+      lieu_dep: formData.lieuDepart,
+      lieu_arr: formData.lieuArrivee,
+      societe: formData.effectue === 'externe' ? formData.societe : null,
+      aidant_id: formData.effectue === 'aidant' ? formData.aidantAffecte : null
+    };
+
+    try {
+      const response = await fetch(`${apiUrl}/?route=trajet/update`, { // Assurez-vous que cette route existe dans votre API
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: 'include',
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
       if (result.success) {
-        handleSuccess('Trajet ajouté avec succès !');
+        handleSuccess('Trajet mis à jour avec succès !');
+        setIsEditMode(false);
       } else {
-        console.error('Erreur lors de l\'ajout du trajet', result.error);
+        console.error('Erreur update trajet:', result.error);
       }
     } catch (error) {
-      console.error("Erreur réseau Trajet:", error);
+      console.error("Erreur réseau Trajet Update:", error);
     }
   };
 
@@ -435,8 +471,8 @@ function Agenda() {
     const filtered = listeEvenements
       .map(ev => {
         const realStart = new Date(ev.date_deb.replace(" ", "T"));
-        const realEnd = new Date(ev.date_fin.replace(" ", "T"));
-
+        const realEnd = ev.date_fin ? new Date(ev.date_fin.replace(" ", "T")) : new Date(realStart);
+        
         return { ...ev, realStart, realEnd };
       })
       .filter(({ realStart, realEnd }) => {
@@ -462,6 +498,7 @@ function Agenda() {
           accompagnantId: accompagnantId,
           dateStart: startDate,
           dateEnd: endDate,
+          trajets: ev.trajets
         };
       });
 
@@ -727,7 +764,7 @@ function Agenda() {
             )}
 
             <div className='actions'>
-              <button className="btn_blue" onClick={() => {
+                <button className="btn_blue" onClick={() => {
                 setFormData({
                   ...formData,
                   titre: currentEvent.titre,
@@ -742,32 +779,56 @@ function Agenda() {
                   societe: currentEvent.trajet?.societe || '',
                   effectue: currentEvent.trajet?.societe ? 'externe' : 'aidant'
                 });
-                setIsEditMode(true)
-              }}>Modifier</button>
-              {currentEvent.id_recurrence !== null && (
+                  setIsEditMode(true);
+                  setIsTrajet(false);
+                }}>Modifier</button>
+                {currentEvent.id_recurrence !== null && (
                 <button className="btn_red" onClick={() => {
                   setPopUpDeleteRecuOpen(true)
-                  setEventToDelete({ id: currentEvent.id_event, title: currentEvent.titre, id_recurrence: currentEvent.id_recurrence })
+                  setEventToDelete({id: currentEvent.id_event, title: currentEvent.titre, id_recurrence: currentEvent.id_recurrence})
                   setEventOpen(false)
                 }}>Supprimer les évènements de la récurrence</button>
               )}
-              <button className="btn_red" onClick={() => {
-                setPopUpDeleteOpen(true)
-                setEventToDelete({ id: currentEvent.id_event, title: currentEvent.titre })
-                setEventOpen(false)
-              }}>Supprimer</button>
+                <button className="btn_red" onClick={() => {
+                  setPopUpDeleteOpen(true)
+                  setEventToDelete({id: currentEvent.id_event, title: currentEvent.titre})
+                  setEventOpen(false)
+                }}>Supprimer</button>
             </div>
-          </div>
+        </div>
         ) : (currentEvent && isEditMode) && (
           <>
             {/* 
               Switcher Event / Trajet 
-              rajouter une condition pour verifier si un un trajet est bien lié a l'evenement
+              s'affiche uniquement si l'evenement est liée a un trajet
             */}
+            {(currentEvent.trajets && currentEvent.trajets.length > 0) && (
             <div className='switch_event'>
               <button type="button" className={!isTrajet ? 'active' : ''} onClick={() => setIsTrajet(false)} >Événement</button>
-              <button type="button" className={isTrajet ? 'active' : ''} onClick={() => setIsTrajet(true)} >Trajet</button>
+              <button 
+                  type="button"
+                  className={isTrajet ? 'active' : ''}
+                  onClick={() => {
+                      const trajet = currentEvent.trajets[0];
+                      setCurrentTrajet(trajet); 
+                      const dateStr = trajet.date_deb ? trajet.date_deb.replace(" ", "T").replace(/\+\d{2}$/, '') : '';
+                      const dateTrajet = dateStr ? toLocalISO(new Date(dateStr)) : '';
+                      setFormData(prev => ({
+                          ...prev,
+                          id_event: currentEvent.id_event,
+                          debut: dateTrajet,
+                          lieuDepart: trajet.lieu_dep || '',
+                          lieuArrivee: trajet.lieu_arr || '',
+                          societe: trajet.societe || '',
+                          effectue: trajet.societe ? 'externe' : 'aidant',
+                          aidantAffecte: trajet.aidant_id || 'demande'
+                      }));
+                      setIsTrajet(true);
+                  }}>
+                  Trajet
+              </button>            
             </div>
+            )}
 
             {!isTrajet ? (
               <form className='edit_event' onSubmit={handleUpdateEvent}>
@@ -830,7 +891,7 @@ function Agenda() {
                 </div>
               </form>
             ) : (
-              <form className='add_trajet' /*onSubmit={handleAddTrajet}*/>
+              <form className='add_trajet' onSubmit={handleUpdateTrajet}>  
                 <div>
                   <label>Lier à l'événement :</label>
                   <select
@@ -920,7 +981,6 @@ function Agenda() {
                   <button type='submit' className='btn_blue'>Valider</button>
                 </div>
               </form>
-
             )}
           </>
         )}

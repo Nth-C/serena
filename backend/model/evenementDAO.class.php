@@ -26,22 +26,22 @@ public function __construct(?DAL $dal = null) {
     }
 
     public function getFutureEvenements($id_famille): array {
-        // On récupère les événements d'aujourd'hui et du futur
-        $query = 'SELECT * FROM EVENEMENTS 
-                WHERE id_famille = :id_famille 
-                AND date_deb >= CURRENT_DATE
-                ORDER BY date_deb ASC';
+        // On ajoute LEFT JOIN pour inclure les colonnes du trajet si elles existent
+        $query = 'SELECT e.*, t.id_trajet, t.lieu_dep, t.lieu_arr, t.date_deb as trajet_date 
+                FROM EVENEMENTS e
+                LEFT JOIN TRAJET t ON e.id_event = t.id_event
+                WHERE e.id_famille = :id_famille 
+                AND e.date_deb >= CURRENT_DATE
+                ORDER BY e.date_deb ASC';
         
         $stmt = $this->dal->prepare($query);
         $stmt->execute(['id_famille' => $id_famille]);
-
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $evenements = [];
 
+        $evenements = [];
         foreach($data as $row) {
             $evenements[] = new Evenement($row); 
         }
-
         return $evenements;
     }
 

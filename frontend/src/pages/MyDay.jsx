@@ -78,7 +78,7 @@ function MyDay() {
   // quand la page se lance on recupere les données
   useEffect(() => {
     fetchEvents()
-  }, []);
+  }, [apiUrl]);
 
   /* permet de faire passer les evenement sur plusieurs jours */
   useEffect(() => {
