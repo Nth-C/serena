@@ -3,6 +3,38 @@ import Tesseract from 'tesseract.js';
 import './OCR.css'; // Fichier CSS pour le style (à créer)
 import Slide from '../components/slide/Slide';
 
+const MEDICAMENT_TYPES = [
+  "capsule",
+  "collyre",
+  "comprimé",
+  "comprimé blanc",
+  "comprimé bleu",
+  "comprimé jour",
+  "comprimé nuit",
+  "crème",
+  "dispositif",
+  "gaz",
+  "gel",
+  "granules",
+  "granulés",
+  "gélule",
+  "liquide",
+  "lyophilisat",
+  "mélange de plantes",
+  "mousse",
+  "pastille",
+  "pommade",
+  "poudre",
+  "poudre orale",
+  "pâte",
+  "sirop",
+  "solution",
+  "solution buvable en ampoules",
+  "solution buvable en gouttes",
+  "suppositoire",
+  "suspension"
+];
+
 function OCR() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -118,6 +150,7 @@ function OCR() {
         // Pré-sélectionne le premier type si disponible
         if (result.types && result.types.length > 0) {
              setFormIdCatalogue(result.types[0].id_medics);
+             setFormIdCatalogue(result.types[0].designation_elem_pharma);
         }
       } else {
         setListTypeMedecine([]);
@@ -261,9 +294,9 @@ function OCR() {
               required
             >
               <option value=""></option>
-              {listTypeMedecine.map((type) => (
-                <option key={type.id_medics} value={type.id_medics}>
-                  {type.designation_elem_pharma}
+              {MEDICAMENT_TYPES.map((type, index) => (
+                <option key={index} value={type}>
+                  {type}
                 </option>
               ))}
             </select>
