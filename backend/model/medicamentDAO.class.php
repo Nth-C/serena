@@ -10,7 +10,7 @@ public function __construct(?DAL $dal = null) {
 }
 
      public function getNbMedicament($id_famille,$nomMedicament): array {
-        $query = 'SELECT quantite FROM STOCK_MEDICS WHERE designation_medicament LIKE :nomMedicament AND id_famille = :id_famille';
+        $query = 'SELECT quantite FROM STOCK_MEDICS WHERE designation_med LIKE :nomMedicament AND id_famille = :id_famille';
         $stmt = $this->dal->prepare($query);
 
         $stmt->execute(['nomMedicament' => $nomMedicament,'id_famille' => $id_famille]);
@@ -24,7 +24,11 @@ public function __construct(?DAL $dal = null) {
     }
 
     public function getAllMedicaments($id_famille): array {
-        $query = 'SELECT * FROM STOCK_MEDICS,CAT_MEDICS WHERE id_famille = :id_famille AND CAT_MEDICS.id_medics = STOCK_MEDICS.id_cat_medicament';
+        $query = 'SELECT sm.*, cm.* 
+                  FROM STOCK_MEDICS sm
+                  LEFT JOIN CAT_MEDICS cm ON sm.id_cat_medicament = cm.id_medics
+                  WHERE sm.id_famille = :id_famille
+                  ORDER BY COALESCE(cm.denomination_substance, sm.designation_med) ASC';
         $stmt = $this->dal->prepare($query);
 
         $stmt->execute(['id_famille' => $id_famille]);
@@ -39,13 +43,13 @@ public function __construct(?DAL $dal = null) {
 
     public function getAllMedicamentsUrgent($id_famille): array {
     // On utilise une clause WHERE avec une condition logique (OR)
-    $query = 'SELECT * FROM STOCK_MEDICS 
-              INNER JOIN CAT_MEDICS ON CAT_MEDICS.id_medics = STOCK_MEDICS.id_cat_medicament
-              WHERE id_famille = :id_famille 
+    $query = 'SELECT sm.*, cm.* FROM STOCK_MEDICS sm
+              LEFT JOIN CAT_MEDICS cm ON sm.id_cat_medicament = cm.id_medics
+              WHERE sm.id_famille = :id_famille 
               AND (
-                  (total >= 10 AND quantite <= (total * 0.1)) -- Règle des 10%
+                  (sm.total >= 10 AND sm.quantite <= (sm.total * 0.1)) -- Règle des 10%
                   OR 
-                  (total < 10 AND quantite <= 1) -- Règle du 1 restant
+                  (sm.total < 10 AND sm.quantite <= 1) -- Règle du 1 restant
               )';
               
     $stmt = $this->dal->prepare($query);
@@ -112,6 +116,18 @@ public function getTypesByNomExact($nomExact): array {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+/**
+ * Récupère tous les noms de médicaments uniques depuis le catalogue.
+ * @return array La liste des noms de médicaments.
+ */
+public function getAllMedicamentNamesFromCatalogue(): array {
+    $query = 'SELECT DISTINCT denomination_substance FROM CAT_MEDICS WHERE denomination_substance IS NOT NULL';
+    $stmt = $this->dal->prepare($query);
+    $stmt->execute();
+    // PDO::FETCH_COLUMN fetches only a single column from the next row.
+    return $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+}
+
     public function updateMedecine($id_famille, $nouveauStock, $id_medicament): bool {
     // La requête cible le médicament précis au sein d'une famille précise
     $query = 'UPDATE STOCK_MEDICS 
@@ -172,18 +188,23 @@ public function getTypesByNomExact($nomExact): array {
         $stockTotal = $stock;
     }
 
-    $query = 'INSERT INTO STOCK_MEDICS (designation_med, quantite, id_famille, total, id_cat_medicament) 
-              VALUES (:name, :stock, :id_famille, :stockTotal, :id_cat_medicament)';
-    
-    $stmt = $this->dal->prepare($query);
+    try {
+        $query = 'INSERT INTO STOCK_MEDICS (designation_med, quantite, id_famille, total, id_cat_medicament) 
+                  VALUES (:name, :stock, :id_famille, :stockTotal, :id_cat_medicament)';
+        
+        $stmt = $this->dal->prepare($query);
 
-    return $stmt->execute([
-        'name'       => $name,
-        'stock'      => (int)$stock,      // On force le type entier
-        'id_famille' => $id_famille,
-        'stockTotal' => (int)$stockTotal,
-        'id_cat_medicament'       => $id_cat_medicament     // On force le type string
-    ]);    
+        return $stmt->execute([
+            'name'              => $name,
+            'stock'             => (int)$stock,
+            'id_famille'        => $id_famille,
+            'stockTotal'        => (int)$stockTotal,
+            'id_cat_medicament' => $id_cat_medicament
+        ]);
+    } catch (PDOException $e) {
+        error_log("DAO Error in addMedecine: " . $e->getMessage());
+        throw $e;
+    }
     }
 
 
@@ -194,6 +215,5 @@ public function getTypesByNomExact($nomExact): array {
     $res = $stmt->fetch();
     return $res ? (int)$res['quantite'] : 0;
 }
-
 
 }

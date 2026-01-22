@@ -43,6 +43,7 @@ function FileExplorer() {
   const [ocrFile, setOcrFile] = useState(null);
   const [ocrPreview, setOcrPreview] = useState(null);
   const [ocrLoading, setOcrLoading] = useState(false);
+  const [ocrProgress, setOcrProgress] = useState({ status: 'idle', progress: 0 });
   const [ocrResult, setOcrResult] = useState({ raw_text: '', medicaments: [] });
   const [ocrError, setOcrError] = useState('');
 
@@ -86,6 +87,7 @@ function FileExplorer() {
       setOcrFile(null);
       setOcrPreview(null);
       setOcrResult({ raw_text: '', medicaments: [] });
+      setOcrProgress({ status: 'idle', progress: 0 });
       setOcrError('');
     }
     setIsOcrOpen(!isOcrOpen);
@@ -311,14 +313,35 @@ function FileExplorer() {
     }
     setOcrLoading(true);
     setOcrError('');
-    
+    setOcrProgress({ status: 'starting', progress: 0 });
+
     try {
       // 1. Tesseract extrait le texte côté client
       console.log("Début de l'extraction OCR...");
-      const { data: { text } } = await Tesseract.recognize(ocrFile, 'fra');
+      
+      // Utilisation de l'API de haut niveau `recognize` qui gère le worker pour nous.
+      // Cela évite l'erreur "DataCloneError" en passant la fonction logger.
+      const { data: { text } } = await Tesseract.recognize(
+        ocrFile,
+        'fra', // Langue française
+        {
+          logger: m => {
+            if (m.status === 'recognizing text') {
+              setOcrProgress({ status: 'Reconnaissance du texte', progress: m.progress });
+            } else if (m.status === 'loading language model') {
+              setOcrProgress({ status: 'Chargement du modèle de langue...', progress: m.progress });
+            } else if (m.status.startsWith('downloading')) {
+              setOcrProgress({ status: 'Téléchargement des fichiers de langue...', progress: 0 });
+            } else {
+              setOcrProgress({ status: 'Initialisation...', progress: 0 });
+            }
+          }
+        }
+      );
       console.log("Texte extrait:", text);
       
       // 2. Envoie le texte au backend pour extraction des médicaments
+      setOcrProgress({ status: 'Extraction des médicaments...', progress: 0 });
       const response = await fetch(`${apiUrl}/?route=ocr/extract`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -326,32 +349,31 @@ function FileExplorer() {
         body: JSON.stringify({ ocrText: text }),
       });
       
-      const responseText = await response.text();
-      console.log("Réponse du serveur:", responseText);
-      
       if (!response.ok) {
-        throw new Error(responseText || `Erreur HTTP ${response.status}`);
+        const errorText = await response.text();
+        throw new Error(errorText || `Erreur HTTP ${response.status}`);
       }
       
-      try {
-        const data = JSON.parse(responseText);
-        if (data.error) throw new Error(data.error);
-        
-        console.log("Médicaments trouvés:", data.medicaments);
-        
-        setOcrResult({
-          raw_text: data.raw_text || text,
-          medicaments: Array.isArray(data.medicaments) ? data.medicaments : []
-        });
-      } catch (jsonError) {
-        throw new Error("Réponse invalide du serveur: " + responseText);
+      const data = await response.json();
+      if (!data.success) {
+        // On cherche un message d'erreur dans la réponse, avec un message par défaut.
+        throw new Error(data.error || data.message || "L'analyse du document a échoué.");
       }
+      
+      console.log("Médicaments trouvés:", data.medicaments);
+      
+      setOcrResult({
+        raw_text: data.raw_text || text,
+        medicaments: Array.isArray(data.medicaments) ? data.medicaments : []
+      });
+
     } catch (err) {
       console.error("Erreur OCR:", err);
       setOcrError(err.message);
       setOcrResult({ raw_text: '', medicaments: [] });
     } finally {
       setOcrLoading(false);
+      setOcrProgress({ status: 'idle', progress: 0 });
     }
   };
 
@@ -608,11 +630,21 @@ function FileExplorer() {
         <p style={{ marginBottom: '1rem', textAlign: 'center', color: '#666' }}>Téléchargez l'image d'une ordonnance pour en extraire les médicaments.</p>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center', marginBottom: '1.5rem' }}>
-          <input type="file" onChange={handleOcrFileChange} accept="image/png, image/jpeg" style={{ width: '100%' }} />
+          <input type="file" onChange={handleOcrFileChange} accept="image/png, image/jpeg, image/bmp, image/tiff, image/webp" style={{ width: '100%' }} />
           <button onClick={handleOcrAnalysis} className="btn_blue" disabled={ocrLoading || !ocrFile} style={{ width: '100%' }}>
             {ocrLoading ? "Analyse en cours..." : "Lancer l'analyse"}
           </button>
         </div>
+
+        {/* --- NOUVEL INDICATEUR DE PROGRÈS --- */}
+        {ocrLoading && (
+          <div style={{ marginBottom: '1rem' }}>
+            <p style={{ textAlign: 'center', fontStyle: 'italic', color: '#555' }}>{ocrProgress.status}</p>
+            {ocrProgress.progress > 0 && (
+              <progress value={ocrProgress.progress} max="1" style={{ width: '100%' }}></progress>
+            )}
+          </div>
+        )}
 
         {ocrError && <p className="error_message" style={{ color: 'red', textAlign: 'center' }}>{ocrError}</p>}
 
