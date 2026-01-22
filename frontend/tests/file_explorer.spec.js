@@ -40,11 +40,9 @@ test.describe('Page Documents - Mode Mock Complet', () => {
     const categories = page.locator('.container_categorie');
     await expect(categories).toHaveCount(2, { timeout: 10000 });
     
-    // On cible le titre exact dans la case catégorie
     const santeTitle = page.locator('.case_categorie p strong').filter({ hasText: /^Santé$/ });
     await expect(santeTitle).toBeVisible();
     
-    // On vérifie que le document est visible dans la liste
     await expect(page.locator('.container_document').getByText('Ordonnance.pdf')).toBeVisible();
   });
 
@@ -55,17 +53,14 @@ test.describe('Page Documents - Mode Mock Complet', () => {
 
     await page.locator('.new_categories div').click();
     
-    // On cible le formulaire spécifique
     const slideForm = page.locator('form.new_categorie');
     await expect(slideForm).toBeVisible();
 
     await slideForm.locator('input[type="text"]').fill('Factures');
     await slideForm.locator('select').selectOption('Professionelle');
     
-    // On clique sur le bouton "Ajouter" APPARTENANT à ce formulaire précis
     await slideForm.getByRole('button', { name: 'Ajouter' }).click();
 
-    // Correction : On attend le message texte directement plutôt que la classe .popup_confirmation
     await expect(page.getByText(/La catégorie Factures a bien été ajouté/)).toBeVisible();
   });
 
@@ -90,7 +85,8 @@ test.describe('Page Documents - Mode Mock Complet', () => {
       await route.fulfill({ status: 200, body: JSON.stringify({ success: true }) });
     });
 
-    await page.locator('.btn_add_container').click();
+    // CORRECTION ICI : On cible spécifiquement le bouton "Ajouter un document"
+    await page.locator('.btn_add_container').filter({ hasText: 'Ajouter un document' }).click();
     
     const slideForm = page.locator('form.new_document');
     await expect(slideForm).toBeVisible();
@@ -106,11 +102,9 @@ test.describe('Page Documents - Mode Mock Complet', () => {
 
     await expect(page.locator('.doc_warning')).toBeVisible();
 
-    // On utilise l'index pour le select car les values sont dynamiques (id_cat)
     await slideForm.locator('select').selectOption({ index: 1 });
     await slideForm.locator('input[type="text"]').fill('Mon Document Test');
 
-    // On clique sur le bouton "Ajouter" APPARTENANT à ce formulaire précis
     await slideForm.getByRole('button', { name: 'Ajouter' }).click();
 
     await expect(page.getByText(/Le document Mon Document Test a bien été ajouté/)).toBeVisible();
@@ -123,17 +117,13 @@ test.describe('Page Documents - Mode Mock Complet', () => {
 
     await page.locator('.container_document img[alt="bin"]').first().click();
     
-    // Correction : On cherche le texte spécifique de la popup "Êtes-vous sûr de vouloir supprimer Ordonnance.pdf ?"
-    // Cela permet d'éviter de confondre avec la popup de catégorie
     const popupText = page.getByText(/supprimer Ordonnance.pdf/);
     await expect(popupText).toBeVisible();
 
-    // On clique sur le bouton Supprimer qui se trouve dans la même boite de dialogue (div parente)
-    // On remonte au parent commun ou on utilise un filtre pour être sûr de cliquer sur le bon bouton
     await page.locator('div')
-      .filter({ has: popupText }) // On cherche la div qui contient le texte
+      .filter({ has: popupText })
       .getByRole('button', { name: 'Supprimer' })
-      .last() // Par sécurité si plusieurs matchs, le bouton d'action est souvent le dernier
+      .last()
       .click();
 
     await expect(page.getByText(/Le document "Ordonnance.pdf" a bien été supprimé/)).toBeVisible();
@@ -144,17 +134,13 @@ test.describe('Page Documents - Mode Mock Complet', () => {
       await route.fulfill({ status: 200, body: JSON.stringify({ success: true }) });
     });
 
-    // Ouverture du menu modifier pour accéder au bouton supprimer
     await page.locator('.container_categorie').first().locator('button').click();
     
-    // Clic sur le bouton rouge "Supprimer" dans le slide
     await page.getByRole('button', { name: 'Supprimer' }).click();
 
-    // Correction : On cherche le texte spécifique "Êtes-vous sûr de vouloir supprimer Santé ?"
     const popupText = page.getByText(/supprimer Santé/);
     await expect(popupText).toBeVisible();
     
-    // On clique sur le bouton Supprimer correspondant
     await page.locator('div')
       .filter({ has: popupText })
       .getByRole('button', { name: 'Supprimer' })
