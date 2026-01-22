@@ -28,8 +28,13 @@ try {
     $trajetDAO = new TrajetDAO();
     $evenementDAO = new EvenementDAO();
 
+    // affiche les demandes de trajets 
     $trajets = $trajetDAO->getAllDemandeDeTrajet($id_famille);
+
+    // affiche les médicaments qui ont un stock actuelle inférieur à 10 % du stock total
     $medicaments = $medicamentDAO->getAllMedicamentsUrgent($id_famille);
+
+    // affiche le prochain événement
     $taches = $evenementDAO->getFutureEvenements($id_famille);
     
     echo json_encode([

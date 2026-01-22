@@ -25,7 +25,7 @@ if (!$app->checkRole('Proche')) {
 try {
     $model = new EvenementDAO();
     
-    // Récupération des événements de la famille pour le jour actuel
+    // récupération des événements de la famille pour le jour actuel
     $evenements = $model->getAllEvenementsJour($app->id_famille, date('Y-m-d'));
     
     echo json_encode($evenements ?: []);

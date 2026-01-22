@@ -25,6 +25,7 @@ try {
         throw new Exception("Données manquantes");
     }
 
+    // vérifie la validité des informations 
     $nom      = filter_var($data['nom'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
     $prenom   = filter_var($data['prenom'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
     $mail     = filter_var($data['mail'] ?? '', FILTER_VALIDATE_EMAIL);
@@ -36,6 +37,8 @@ try {
     }
 
     $model = new PersonneDAO();
+
+    // met à jour l'utilisateur 
     $success = $model->updateUser(
         $app->personne->id,
         $mail,

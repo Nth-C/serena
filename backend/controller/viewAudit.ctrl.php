@@ -30,6 +30,8 @@ if (!$app->checkRole('Famille')) {
 
 try {
     $auditDAO = new AuditDAO();
+
+    // revoie toutes les logs de la famille 
     $historique = $auditDAO->getAllAudit($app->id_famille);
     
     echo json_encode($historique ?: []);

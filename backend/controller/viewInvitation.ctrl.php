@@ -18,6 +18,8 @@ if (!$app->connected || !$app->personne) {
 
 try {
     $model = new FamilleDAO();
+
+    // affiche les invatations des différentes familles
     $invitations = $model->getInvitationDetails($app->personne->id);
 
     echo json_encode($invitations ?: []);

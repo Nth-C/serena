@@ -19,10 +19,10 @@ if (!$app->connected || !$app->id_famille) {
 try {
     $model = new RapportDAO();
     
-    // Récupération de l'historique complet des rapports pour la famille
+    // récupération des rapports de visite de la famille
     $rapports = $model->getAllRapports($app->id_famille);
 
-    // Hydratation : On ajoute le détail des médicaments consommés pour chaque rapport
+    // on ajoute les médicaments consommés pour chaque rapport
     foreach ($rapports as &$row) {
         $row['medics_details'] = $model->getMedicsByRapport($row['id_rapport']) ?: [];
     }
