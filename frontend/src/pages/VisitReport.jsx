@@ -28,12 +28,10 @@ function MedicItem({ medicament, isOpen, onToggle, onAdd }) {
 function LastVisitReport() {
   const [rapports, setRapports] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [mounted, setMounted] = useState(false);
 
   const [listMedecine, setListMedecine] = useState([])
 
   const [message, setMessage] = useState('');
-  const [error, setError] = useState(null)
 
   const [isNewRapportOpen, setIsNewRapportOpen] = useState(false);
   const [isNewMedicineOpen, setIsMedicineOpen] = useState(false);
@@ -47,7 +45,6 @@ function LastVisitReport() {
 
   const [selectedMedicsForReport, setSelectedMedicsForReport] = useState([]);
 
-  const [nameMedecineToDisplay, setNameMedecineToDisplay] = useState('')
 
   const [selectedRapport, setSelectedRapport] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -62,13 +59,10 @@ function LastVisitReport() {
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [msgConfirmation, setMsgConfirmation] = useState('')
 
-
   const [nameMedecine, setNameMedecine] = useState("");
-  const [typeMedecine, setTypeMedecine] = useState("");
   const [initialStock, setInitialStock] = useState("");
   const [currentStock, setCurrentStock] = useState("");
   const [openMedicId, setOpenMedicId] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
 
   // trie
   const [sortOpen, setSortOpen] = useState(false);
@@ -105,8 +99,7 @@ function LastVisitReport() {
 
   useEffect(() => {
     fetchRapports()
-    setMounted(true);
-  }, []);
+  }, [apiUrl]);
 
   const handleResetForm = () => {
     setNameMedecine("")
@@ -153,10 +146,9 @@ function LastVisitReport() {
       }
 
       setListMedecine(Array.isArray(data) ? data : []);
-      setError(null);
     } catch (err) {
       console.error("Erreur de récupération:", err.message);
-      setError(err.message || "Impossible de contacter le serveur");
+      console.error(err.message || "Impossible de contacter le serveur");
       setListMedecine([]);
     } finally {
       setLoading(false);
@@ -191,12 +183,11 @@ function LastVisitReport() {
         setIsMedicineOpen(false)
 
         if (!isEditing) {
-          setMsgConfirmation(`Le rapport ${nouveauMedoc.name} a bien été ajouté.`)
+          setMsgConfirmation(`La note ${nouveauMedoc.name} a bien été ajouté.`)
         } else {
-          setMsgConfirmation(`Le rapport ${nouveauMedoc.name} a bien été modifié.`)
+          setMsgConfirmation(`La note ${nouveauMedoc.name} a bien été modifié.`)
         }
         setShowConfirmation(true)
-        setNameMedecineToDisplay(nameMedecine)
       } else {
         setMessage("Erreur: " + result.error);
       }
@@ -327,11 +318,9 @@ function LastVisitReport() {
       if (result.success) {
         setIsNewRapportOpen(false);
 
-        // Ajout : Utiliser le nom sauvegardé
-        setMsgConfirmation(`Le rapport ${nomPourNotification} a bien été ajouté.`)
+        setMsgConfirmation(`La note ${nomPourNotification} a bien été ajouté.`)
         setShowConfirmation(true)
 
-        //isEditing ? setIsShowModify(true) : setIsShowAdd(true);
         handleResetRapport();
         setSelectedMedicsForReport([]);
         setIsEditing(false);
@@ -372,7 +361,7 @@ function LastVisitReport() {
   const toggleNewMedicine = () => setIsMedicineOpen(!isNewMedicineOpen);
   const togglePopup = (e) => { if (e) e.preventDefault(); setIsPopupOpen(!isNewPopupOpen); }
   const handleResetRapport = () => { setNomRapport(""); setDescRapport(""); };
-  const handleResetMedecine = () => { setNameMedecine(""); setTypeMedecine(""); setInitialStock(""); setCurrentStock(""); };
+  const handleResetMedecine = () => { setNameMedecine(""); setInitialStock(""); setCurrentStock(""); };
   const toggleMedic = (id) => {
     setOpenMedicId(openMedicId === id ? null : id);
   };
@@ -449,7 +438,7 @@ function LastVisitReport() {
 
 
       {/* popup médicaments */}
-      {mounted && isNewPopupOpen && createPortal(
+      {isNewPopupOpen && createPortal(
         <div>
           <div className={`popup_report_add_medicament ${isNewPopupOpen ? 'popu-medi-active' : ''}`}>
             <div className="search_report">
@@ -553,11 +542,11 @@ function LastVisitReport() {
       </Slide>
 
       {/* Slide Nouveau/Modif Rapport */}
-      <Slide title={isEditing ? "Modifier le rapport" : "Créer un rapport de visite"} isOpen={isNewRapportOpen} toggleOpen={toggleNewRapport} zIndex={500}>
+      <Slide title={isEditing ? "Modifier la note" : "Créer une note"} isOpen={isNewRapportOpen} toggleOpen={toggleNewRapport} zIndex={500}>
         {message && <p className="error_message" style={{ color: 'red' }}>{message}</p>}
         <form className="add_report" onSubmit={handleSubmitRapport}>
           <div>
-            <label>Nom du rapport : </label>
+            <label>Nom de la note : </label>
             <input type="text" value={nomRapport} onChange={(e) => setNomRapport(e.target.value)} required />
           </div>
           <div>
@@ -590,7 +579,7 @@ function LastVisitReport() {
           </div>
           <div>
             <label>Information supplémentaire : </label>
-            <textarea value={descRapport} onChange={(e) => setDescRapport(e.target.value)} required></textarea>
+            <textarea value={descRapport} onChange={(e) => setDescRapport(e.target.value)}></textarea>
           </div>
           <div>
             <button type="button" className="btn_border" onClick={handleResetRapport}>Réinitialiser</button>
@@ -622,16 +611,18 @@ function LastVisitReport() {
                 )}
               </ul>
             </div>
-            <div>
-              <h2>Informations supplémentaires :</h2>
-              <p>{selectedRapport.description}</p>
-            </div>
+            {selectedRapport.description && (
+              <div>
+                <h2>Informations supplémentaires :</h2>
+                <p>{selectedRapport.description}</p>
+              </div>
+            )}
             <div className="actions">
               <button className="btn_red" onClick={() => {
                 setIdCurrentRapport(selectedRapport.id_rapport);
                 setNameToDelete(selectedRapport.nom);
                 togglePopUpDelete();
-                setMsgConfirmation(`Le rapport ${selectedRapport.nom} a bien été suprimmé.`)
+                setMsgConfirmation(`La note ${selectedRapport.nom} a bien été suprimmé.`)
               }}>Supprimer</button>
               <button className="btn_blue" onClick={handleEditClick}>Modifier</button>
             </div>

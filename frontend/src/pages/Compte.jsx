@@ -47,7 +47,7 @@ const Compte = () => {
 
     // remet les données initial
     const handleCancel = () => {
-
+        setFormData(initialData);
     };
 
     const handleSubmit = async (e) => {

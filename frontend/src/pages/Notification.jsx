@@ -75,11 +75,9 @@ const Notification = () => {
     
     const [invitations, setInvitations] = useState([]);
     const [trajets, setTrajets] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [message, setMessage] = useState(""); // Pour les succès d'action
+    const [message, setMessage] = useState("");
 
-    // --- 1. Charger les Invitations ---
+    // --- Charger les Invitations ---
     const fetchInvites = async () => {
         try {
             const response = await fetch(`${apiUrl}/?route=invitation/view`, {
@@ -92,7 +90,7 @@ const Notification = () => {
         }
     };
 
-    // --- 2. Charger les Trajets (via Dashboard endpoint) ---
+    // --- Charger les Trajets (via Dashboard endpoint) ---
     const fetchTrajets = async () => {
         try {
             const response = await fetch(`${apiUrl}/?route=dashboard/view`, {
@@ -107,16 +105,13 @@ const Notification = () => {
             }
         } catch (error) {
             console.error("Erreur chargement trajets:", error);
-            setError("Impossible de charger les trajets");
         }
     };
 
     // Charger tout au démarrage
     useEffect(() => {
         const loadAll = async () => {
-            setLoading(true);
             await Promise.all([fetchInvites(), fetchTrajets()]);
-            setLoading(false);
         };
         loadAll();
     }, []);

@@ -1,4 +1,3 @@
-import styles from '../components/role_membre/RoleMembre.module.css';
 import { useState, useEffect } from 'react'
 import LayoutMenu from '../LayoutMenu'
 import Slide from '../components/slide/Slide'

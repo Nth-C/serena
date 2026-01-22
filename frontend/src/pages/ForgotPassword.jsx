@@ -1,16 +1,14 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-// import { useNavigate } from 'react-router-dom'; // Pas forcément utile ici si on veut juste afficher un message
 
 function ForgotPassword() {
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
-    // const navigate = useNavigate(); // Optionnel
     const apiUrl = import.meta.env.VITE_API_URL;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setMessage("Envoi en cours..."); // Feedback immédiat pour l'utilisateur
+        setMessage("Envoi en cours...");
 
         try {
             const response = await fetch(`${apiUrl}/?route=forgot_password`, {
@@ -23,10 +21,8 @@ function ForgotPassword() {
             if (data.success) {
                 // Succès : On prévient l'utilisateur
                 setMessage("Succès ! " + data.message + " Vérifiez vos spams.");
-                // Optionnel : Vider le champ
                 setEmail('');
             } else {
-                // Erreur (Email inconnu ou erreur SMTP)
                 setMessage(data.message || "Une erreur est survenue.");
             }
         } catch (error) {

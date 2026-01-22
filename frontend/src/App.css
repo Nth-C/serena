@@ -1623,6 +1623,21 @@ progress.blue_bar::-moz-progress-bar {
   align-items: center;
 }
 
+.ocr_content > p:first-child {
+  text-align: center;
+}
+
+.ocr_content .upload_success hr {
+  border: 0;
+  height: 1px;
+  width: 100%;
+  background: var(--gray);
+}
+
+.ocr_content .upload_success > button:last-child {
+  width: 100%;
+}
+
 /* ----------------------------- */
 /* --------- FORM AIDES -------- */
 /* ----------------------------- */
@@ -2073,7 +2088,6 @@ progress.blue_bar::-moz-progress-bar {
 }
 
 
-
 .audit_log .filter_bar .filter_group:first-child >div:last-child {
   display: none;
   position: absolute;
@@ -2096,11 +2110,14 @@ progress.blue_bar::-moz-progress-bar {
 }
 
 .filter_group >div:last-child.active {
+  position: absolute;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border: 1px solid var(--black);
+  border: 1px solid var(--gray);
   border-radius: 10px;
+  background: var(--white);
+  overflow: hidden;
 }
 
 /* si checkbox */
@@ -2127,6 +2144,11 @@ progress.blue_bar::-moz-progress-bar {
   background: var(--blue);
   border: 1px solid var(--blue);
   color: var(--white);
+}
+
+.filter_group > .sort {
+  display: flex;
+  align-items: center;
 }
 
 /**/

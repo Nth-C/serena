@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useState, useRef } from 'react'
+import { NavLink } from 'react-router-dom';
 
 function CGUStart() {
 

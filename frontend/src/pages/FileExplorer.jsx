@@ -26,38 +26,33 @@ function FileExplorer() {
 
   const [idCurrentCategorie, setIdCurrentCategorie] = useState(null)
   const [isUploaded, setIsUploaded] = useState(false);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState(null)
 
   const [isPopUpDeleteOpen, setIsPopUpDeleteOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
   const [nameToDelete, setNameToDelete] = useState("");
 
-  const [isShowRemove, setIsShowRemove] = useState(false);
-  const [isShowAdd, setIsShowAdd] = useState(false);
   const [isFileError, setIsFileError] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   /* --- OCR STATES --- */
   const [isOcrOpen, setIsOcrOpen] = useState(false);
   const [ocrFile, setOcrFile] = useState(null);
-  const [ocrPreview, setOcrPreview] = useState(null);
   const [ocrLoading, setOcrLoading] = useState(false);
   const [ocrProgress, setOcrProgress] = useState({ status: 'idle', progress: 0 });
   const [ocrResult, setOcrResult] = useState({ raw_text: '', medicaments: [] });
   const [ocrError, setOcrError] = useState('');
+  const [isUploadedOcr, setIsUploadedOcr] = useState(false);
 
   /* --- ADD MEDICINE FROM OCR STATES --- */
   const [isAddMedicOpen, setIsAddMedicOpen] = useState(false);
   const [medicName, setMedicName] = useState("");
-  const [medicIdCatalogue, setMedicIdCatalogue] = useState("");
   const [medicStock, setMedicStock] = useState("");
   const [medicStockTotal, setMedicStockTotal] = useState("");
   const [listNomMedecine, setListNomMedecine] = useState([]);
   const [listTypeMedecine, setListTypeMedecine] = useState([]);
   const [isMedicNameGood, setIsMedicNameGood] = useState(false);
   const [addMedicError, setAddMedicError] = useState('');
-  const [medicType, setMedicType] = useState(""); // Remplace tous les states complexes
+  const [medicType, setMedicType] = useState("");
   const typesMedicaments = [
     "Comprimé",
     "Gélule", 
@@ -85,7 +80,6 @@ function FileExplorer() {
   const toggleOcr = () => {
     if (!isOcrOpen) {
       setOcrFile(null);
-      setOcrPreview(null);
       setOcrResult({ raw_text: '', medicaments: [] });
       setOcrProgress({ status: 'idle', progress: 0 });
       setOcrError('');
@@ -138,10 +132,8 @@ function FileExplorer() {
       const data = await response.json();
       if (data.error) throw new Error(data.error);
       setListDocument(Array.isArray(data) ? data : []);
-      setError(null);
     } catch (err) {
       console.error("Erreur de récupération:", err.message);
-      setError(err.message || "Impossible de contacter le serveur");
       setListDocument([]);
     }
   };
@@ -153,7 +145,7 @@ function FileExplorer() {
   const handleAddDocument = async (e) => {
     e.preventDefault();
     if (!selectedFile) {
-      setMessage("Veuillez sélectionner un fichier.");
+      console.error("Veuillez sélectionner un fichier.");
       return;
     }
 
@@ -176,10 +168,10 @@ function FileExplorer() {
         setMsgConfirmation(`Le document ${nameDocument} a bien été ajouté.`)
         setShowConfirmation(true)
       } else {
-        setMessage("Erreur: " + result.error);
+        console.error("Erreur: " + result.error);
       }
     } catch (error) {
-      setMessage("Erreur technique lors de l'envoi");
+      console.error("Erreur technique lors de l'envoi", error);
     }
   };
 
@@ -210,7 +202,7 @@ function FileExplorer() {
 
         setShowConfirmation(true)
       } else {
-        setMessage("Erreur: " + result.error);
+        console.error("Erreur: " + result.error);
       }
     } catch (error) {
       console.error(error);
@@ -232,7 +224,7 @@ function FileExplorer() {
         setMsgConfirmation(`La catégorie ${infosCategorieDelete.name} a bien été supprimé.`)
         setShowConfirmation(true)
       } else {
-        setMessage("Erreur: " + result.error);
+        console.error("Erreur: " + result.error);
       }
     } catch (error) {
       console.error(error);
@@ -301,7 +293,6 @@ function FileExplorer() {
       setOcrError('');
       setOcrResult({ raw_text: '', medicaments: [] });
       const reader = new FileReader();
-      reader.onloadend = () => setOcrPreview(reader.result);
       reader.readAsDataURL(file);
     }
   };
@@ -316,9 +307,6 @@ function FileExplorer() {
     setOcrProgress({ status: 'starting', progress: 0 });
 
     try {
-      // 1. Tesseract extrait le texte côté client
-      console.log("Début de l'extraction OCR...");
-      
       // Utilisation de l'API de haut niveau `recognize` qui gère le worker pour nous.
       // Cela évite l'erreur "DataCloneError" en passant la fonction logger.
       const { data: { text } } = await Tesseract.recognize(
@@ -338,9 +326,8 @@ function FileExplorer() {
           }
         }
       );
-      console.log("Texte extrait:", text);
       
-      // 2. Envoie le texte au backend pour extraction des médicaments
+      // Envoie le texte au backend pour extraction des médicaments
       setOcrProgress({ status: 'Extraction des médicaments...', progress: 0 });
       const response = await fetch(`${apiUrl}/?route=ocr/extract`, {
         method: 'POST',
@@ -359,8 +346,6 @@ function FileExplorer() {
         // On cherche un message d'erreur dans la réponse, avec un message par défaut.
         throw new Error(data.error || data.message || "L'analyse du document a échoué.");
       }
-      
-      console.log("Médicaments trouvés:", data.medicaments);
       
       setOcrResult({
         raw_text: data.raw_text || text,
@@ -395,7 +380,6 @@ function FileExplorer() {
         setIsMedicNameGood(true);
       } else {
         setListTypeMedecine([]);
-        setMedicIdCatalogue("");
         setIsMedicNameGood(false);
       }
     } catch (error) {
@@ -408,7 +392,6 @@ function FileExplorer() {
     setMedicName(name);
     setMedicStock("");
     setMedicStockTotal("");
-    setMedicIdCatalogue("");
     setMedicType("");
     setIsMedicNameGood(false);
     setListTypeMedecine([]);
@@ -423,7 +406,7 @@ function FileExplorer() {
 
     const nouveauMedoc = {
       name: medicName,
-      type: medicType, // Envoi du type simple au lieu de idCatalogueMedecine
+      type: medicType,
       stock: parseInt(medicStock, 10),
       stockTotal: parseInt(medicStockTotal, 10)
     };
@@ -446,7 +429,6 @@ function FileExplorer() {
         setMedicName("");
         setMedicStock("");
         setMedicStockTotal("");
-        setMedicIdCatalogue("");
         setMedicType("");
         setIsMedicNameGood(false);
         setListTypeMedecine([]);
@@ -628,17 +610,33 @@ function FileExplorer() {
       <div className="ocr_content">
         <p>Téléchargez l'image d'une ordonnance pour en extraire les médicaments.</p>
         
-        <div>
+        {!isUploadedOcr ? (
+          <div>
             <label className="drop_zone" accept="image/png, image/jpeg, image/bmp, image/tiff, image/webp">
               <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M260-160q-91 0-155.5-63T40-377q0-78 47-139t123-78q25-92 100-149t170-57q117 0 198.5 81.5T760-520q69 8 114.5 59.5T920-340q0 75-52.5 127.5T740-160H520q-33 0-56.5-23.5T440-240v-206l-64 62-56-56 160-160 160 160-56 56-64-62v206h220q42 0 71-29t29-71q0-42-29-71t-71-29h-60v-80q0-83-58.5-141.5T480-720q-83 0-141.5 58.5T280-520h-20q-58 0-99 41t-41 99q0 58 41 99t99 41h100v80H260Zm220-280Z" /></svg>
               <div><p>Glisser le document ou </p><p>rechercher</p></div>
-              <input type="file" onChange={handleOcrFileChange} />
+              <input type="file" onChange={(e) => {
+                handleOcrFileChange(e); 
+                setIsUploadedOcr(true);
+              }} />
             </label>
 
-          <button onClick={handleOcrAnalysis} className="btn_blue" disabled={ocrLoading || !ocrFile}>
-            {ocrLoading ? "Analyse en cours..." : "Lancer l'analyse"}
-          </button>
         </div>
+        ) : (
+          <div className="upload_success">
+            <div className="doc_warning">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M280-280h280v-80H280v80Zm0-160h400v-80H280v80Zm0-160h400v-80H280v80Zm-80 480q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z" /></svg>
+              <p>Le document : {selectedFile?.name} à bien été chargé</p>
+            </div>
+            <button type="button" onClick={() => setIsUploadedOcr(false)} className="btn_border">Changer de fichier</button>
+            
+            <hr />
+
+            <button onClick={handleOcrAnalysis} className="btn_blue" disabled={ocrLoading || !ocrFile}>
+              {ocrLoading ? "Analyse en cours..." : "Lancer l'analyse"}
+            </button>
+          </div>
+        )}
 
         {ocrLoading && (
           <div>
@@ -692,7 +690,6 @@ function FileExplorer() {
             onChange={(e) => {
               setMedicStock("");
               setMedicStockTotal("");
-              setMedicIdCatalogue("");
               setMedicName(e.target.value);
               if (e.target.value !== "") handleSearchMedecine(e.target.value);
             }}
