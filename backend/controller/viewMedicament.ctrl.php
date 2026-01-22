@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 $app = new App();
 
-// Sécurité : Vérification du rôle minimum (Professionnelle)
+// vérification du rôle (Professionnelle)
 if (!$app->checkRole('Professionelle')) {
     http_response_code(403);
     echo json_encode([
@@ -23,7 +23,7 @@ if (!$app->checkRole('Professionelle')) {
 try {
     $id_famille = $app->id_famille; 
 
-    // Vérification de la validité de la famille active
+    // vérification de la connexion à une famille
     if (!$id_famille || $id_famille === 0) {
         echo json_encode([]);
         exit;
@@ -32,7 +32,7 @@ try {
     $model = new MedicamentDAO();
     $medicaments = $model->getAllMedicaments($id_famille);
     
-    // On s'assure de renvoyer un tableau vide si aucun résultat n'est trouvé
+    // renvoie un tableau vide si pas de médicament
     echo json_encode($medicaments ?: []);
 
 } catch (Exception $e) {

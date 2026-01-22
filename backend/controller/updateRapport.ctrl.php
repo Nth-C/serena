@@ -17,6 +17,7 @@ if (!$app->connected || !$app->id_famille) {
 }
 
 try {
+    // récupère les informations et filtre les données 
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
 
@@ -28,14 +29,17 @@ try {
     }
 
     $model = new RapportDAO();
-    
+    // récupère les medicaments d'un rapport 
     $anciensMedics = $model->getMedicsByRapport($id_rapport);
     foreach ($anciensMedics as $old) {
+        // change les medicaments qui sont pris par rappport a l'update
         $model->restockMedic($old['id_medicament'], $old['quantite']);
     }
 
+    // change la consommation dans la table pour savoir combien de medicament est consommé dans le rapport
     $model->clearConso($id_rapport);
 
+    // met a jour info rapport
     $model->updateRapportInfos(
         $id_rapport, 
         filter_var($data['nom'], FILTER_SANITIZE_SPECIAL_CHARS), 
@@ -44,6 +48,7 @@ try {
 
     if (!empty($data['medicaments'])) {
         foreach ($data['medicaments'] as $med) {
+            // ajoute les nouveau possibles medicaments
             $model->addMedicToConso($med['id_med'], $id_rapport, $med['quantite']);
             $model->updateMedicStock($med['id_med'], (int)$med['quantite']);
         }

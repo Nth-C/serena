@@ -18,6 +18,16 @@ try {
     $ocrText = $data['ocrText'] ?? '';
     
     $foundMeds = [];
+    $tousLesMedicaments = [];
+
+    //mot commun d'une ordonnance
+    $commonMeds = [
+        'doliprane', 'dafalgan', 'efferalgan', 'spasfon', 'advil', 'nurofen', 
+        'smecta', 'fervex', 'amoxicilline', 'augmentin', 'voltarene', 'imodium', 
+        'gaviscon', 'ventoline', 'aerius', 'zyrtec', 'xanax', 'lexomil', 
+        'valium', 'stilnox', 'imovane', 'paracetamol', 'ibuprofene', 'aspirine',
+        'kardegic', 'plavix', 'tahor', 'elisor', 'levothyrox', 'glucophage'
+    ];
 
     if (!empty($ocrText)) {
         // 1. Recherche basée sur le catalogue de médicaments

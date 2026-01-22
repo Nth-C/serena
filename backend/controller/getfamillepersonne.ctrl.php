@@ -25,6 +25,7 @@ try {
     }
 
     $dao = new FamilleDAO();
+    // récupère les personnes de la famille
     $membres = $dao->getPersFam($app->id_famille);
 
     echo json_encode([

@@ -19,6 +19,7 @@ if (!$app->checkRole('Proche')) {
     exit; 
 }
 
+//récupère les données et filtre les données
 $json = file_get_contents('php://input');
 $data = json_decode($json, true);
 
@@ -34,6 +35,7 @@ if (!empty($lieu_dep) && !empty($lieu_arr) && !empty($id_event) && !empty($date_
     $model = new TrajetDAO();
     
     try {
+        // ajoute le trajet
         $success = $model->addTrajet(
             $date_deb,
             $lieu_dep,

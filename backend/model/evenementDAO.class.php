@@ -7,10 +7,9 @@ class EvenementDAO{
     private DAL $dal;
 
 public function __construct(?DAL $dal = null) {
-    // Si on passe une $dal (test), on l'utilise. Sinon, on prend la vraie (prod).
     $this->dal = $dal ?? DAL::get();
 }
-
+    // récupère l'évènement avec son id
     public function findById(string $id): ?Evenement
     {
         $query = 'SELECT * from evenement where id_event = :id_event';
@@ -25,8 +24,8 @@ public function __construct(?DAL $dal = null) {
         return new Evenement($result);
     }
 
+    // récupère les futures évènements et leur trajet avec l'id de la famille 
     public function getFutureEvenements($id_famille): array {
-        // On ajoute LEFT JOIN pour inclure les colonnes du trajet si elles existent
         $query = 'SELECT e.*, t.id_trajet, t.lieu_dep, t.lieu_arr, t.date_deb as trajet_date 
                 FROM EVENEMENTS e
                 LEFT JOIN TRAJET t ON e.id_event = t.id_event
@@ -45,7 +44,7 @@ public function __construct(?DAL $dal = null) {
         return $evenements;
     }
 
-    
+    // ajoute un évènement pour la famille avec des informations de l'évènement
     public function addEvenement($id_famille, $nom, $debut, $fin, $lieu, $description, $id_recurrence = null) {
         $query = 'INSERT INTO EVENEMENTS (id_famille, nom, date_deb, date_fin, lieu, note, id_recurrence) 
                 VALUES (:id_f, :nom, :deb, :fin, :lieu, :note, :id_recurrence) 
@@ -67,6 +66,7 @@ public function __construct(?DAL $dal = null) {
         return $result ? $result['id_event'] : false;
     }
 
+    // supprime un évènement avec son id et l'id de la famille
     public function deleteEvenement($id_famille, $id_evenement): bool {
     try {
         $this->dal->beginTransaction();
@@ -93,13 +93,11 @@ public function __construct(?DAL $dal = null) {
         throw $e; 
     }
 }
-
+   // supprime tout les évènements d"une meme récurrence
    public function deleteEvenementRecurrence($id_famille, $id_recurrence): bool {
     try {
-        // On démarre la transaction via ton objet DAL
         $this->dal->beginTransaction();
 
-        // 1. Supprimer les charges liées aux trajets de TOUS les événements de la série
         $q0 = 'DELETE FROM CHARGE 
                WHERE id_trajet IN (
                    SELECT id_trajet FROM TRAJET 
@@ -107,7 +105,6 @@ public function __construct(?DAL $dal = null) {
                )';
         $this->dal->prepare($q0)->execute(['id_rec' => $id_recurrence, 'id_f' => $id_famille]);
 
-        // 2. Supprimer les affectations (EFFECTUE) liées aux trajets de la série
         $q1 = 'DELETE FROM EFFECTUE 
                WHERE id_trajet IN (
                    SELECT id_trajet FROM TRAJET 
@@ -115,12 +112,10 @@ public function __construct(?DAL $dal = null) {
                )';
         $this->dal->prepare($q1)->execute(['id_rec' => $id_recurrence, 'id_f' => $id_famille]);
 
-        // 3. Supprimer les trajets liés à la série d'événements
         $q2 = 'DELETE FROM TRAJET 
                WHERE id_event IN (SELECT id_event FROM EVENEMENTS WHERE id_recurrence = :id_rec AND id_famille = :id_f)';
         $this->dal->prepare($q2)->execute(['id_rec' => $id_recurrence, 'id_f' => $id_famille]);
 
-        // 4. Supprimer tous les événements de la série
         $q3 = 'DELETE FROM EVENEMENTS WHERE id_famille = :id_f AND id_recurrence = :id_rec';
         $stmt = $this->dal->prepare($q3);
         $res = $stmt->execute([
@@ -128,16 +123,13 @@ public function __construct(?DAL $dal = null) {
             'id_rec' => $id_recurrence
         ]);
 
-        // On valide
         return $this->dal->commit();
 
     } catch (Exception $e) {
-        // Correction ici : on tente le rollback sans la condition inTransaction()
-        // La plupart des drivers PDO gèrent le fait de rollback même si c'est déjà fait
         try {
             $this->dal->rollBack();
         } catch (Exception $rollbackEx) {
-            // On ignore l'erreur de rollback si la transaction n'existe pas
+
         }
         throw $e; 
     }
@@ -146,7 +138,7 @@ public function __construct(?DAL $dal = null) {
 
 
 
-
+    // récupère tout les évènements de la semaine d'une famille
     public function getAllEvenementsSemaine($id_famille, $date_debut, $date_fin): array {
         $query = 'SELECT * FROM EVENEMENTS 
                 WHERE id_famille = :id_famille 
@@ -172,6 +164,7 @@ public function __construct(?DAL $dal = null) {
         return $evenements;
     }
 
+    // met a jour l'évènement avec son id et ses nouvelles informations
     public function updateEvenement($id_event, $nom, $debut, $fin, $lieu, $description): bool {
         $query = 'UPDATE EVENEMENTS 
                 SET nom = :nom, date_deb = :date_deb, date_fin = :date_fin, lieu = :lieu, note = :note 
@@ -188,6 +181,7 @@ public function __construct(?DAL $dal = null) {
         ]);
     }
 
+    //ajoute un accompagnant a l'évènement avec l'id de la personne 
     public function addAccompagnant($id_event, $id_personne){
         $query = 'INSERT INTO accompagne(id_personne, id_event) VALUES (:id_personne, :id_event)';
         $stmt = $this->dal->prepare($query);
@@ -197,6 +191,7 @@ public function __construct(?DAL $dal = null) {
         ]);
     }
 
+    //récupère l'accompagnant d'un évènement
     public function getAccompagnants($id_event): array {
         $query = 'SELECT a.id_personne, p.prenom, p.nom 
                 FROM accompagne a 

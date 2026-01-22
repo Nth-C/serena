@@ -7,10 +7,10 @@ class CategorieDAO {
     public function __construct(?DAL $dal = null) {
     $this->dal = $dal ?? DAL::get();
 }
-
+    // récupère toute les categories d'une famille et seulement si il a le bon role
     public function getAllCategories($id_famille, $role): array
 {
-    // 1. Définition de la hiérarchie
+    // Définition de la hiérarchie
     $rolesAccessibles = match ($role) {
         'Createur'       => ['Createur', 'Famille', 'Proche', 'Professionelle'],
         'Famille'        => ['Famille', 'Proche', 'Professionelle'],
@@ -19,7 +19,6 @@ class CategorieDAO {
         default          => ['Professionelle'],
     };
 
-    // 2. Préparation dynamique des marqueurs (ex: :r0, :r1, :r2)
     $placeholders = [];
     $params = [':id_famille' => $id_famille];
 
@@ -31,11 +30,10 @@ class CategorieDAO {
 
     $inClause = implode(',', $placeholders);
 
-    // 3. Requête sécurisée
     $query = "SELECT * FROM CAT 
               WHERE id_famille = :id_famille 
               AND role IN ($inClause)
-              ORDER BY role DESC"; // Permet de trier par importance
+              ORDER BY role DESC";
 
     $stmt = $this->dal->prepare($query);
     $stmt->execute($params);
@@ -51,13 +49,14 @@ class CategorieDAO {
     }
     return $categories;
 }
-
+    // ajoute une nouvelle catégorie pour famille avec un nom et un role nécessaire
     public function addCategorie($id_famille, $nom, $role){
         $query = 'INSERT INTO CAT (nom, id_famille,role) VALUES (:nom, :id_famille,:role)';
         $stmt = $this->dal->prepare($query);
         return $stmt->execute(['nom' => $nom,'id_famille' => $id_famille,'role' => $role]);
     }
 
+    // met a jour la categorie avec les informations : role et nom 
     public function updateCategorie($id_cat, $nouveauNom, $role) {
     // On met à jour le nom de la catégorie pour l'ID spécifique
     $query = 'UPDATE CAT 
@@ -74,7 +73,7 @@ class CategorieDAO {
 }
 
     
-
+    // supprime la catégorie de la famille 
     public function deleteCategorie($id_famille,$id_categorie) : bool {
         $query = 'DELETE FROM CAT WHERE id_famille = :id_famille AND id_cat = :id_categorie';
         $stmt = $this->dal->prepare($query);

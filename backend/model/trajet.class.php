@@ -11,12 +11,9 @@ class Trajet {
 
 
     public function __construct(array $data = array()) {
-        //attention : dans $data accompagnants est un array de personnes
         $this->id_trajet = $data['id_trajet'] ?? -1;
         $this->lieuDepart = $data['lieuDepart'] ?? "";
         $this->lieuArrive = $data['lieuArrive'] ?? "";
-        // --- GESTION DES DATES ---
-        // On vérifie si on a une date (string) et on la convertit en Objet
         if (!empty($data['heureDepart'])) {
             $this->heureDepart = new DateTimeImmutable($data['heureDepart']);
         } else {
@@ -30,20 +27,13 @@ class Trajet {
         }
         $this->demandeTrajet = $data['demandeTrajet'] ?? false;
         $this->societeTrajet = $data['societeTrajet'] ?? null;
-         // pour chaque accompagnants de "accompagnants" on l'ajoute à l'attribut
         $listeAccompagnants = $data['accompagnants'] ?? [];
         
         foreach ($listeAccompagnants as $accompagnant){
-            // Optionnel : vérifiez ici si $accompagnant est bien un objet Personne ou un array à convertir
             $this->accompagnants[] = $accompagnant;
         }
     }
     
-    // public function getNbAccompagnants() {
-    //     $i = 0;
-    //    foreach($accompagnants as $accompagnant){
-    //       $i = $i + 1; 
-    //    }
-    //}
+
     }
 ?>

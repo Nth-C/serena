@@ -19,7 +19,7 @@ function Layout({submenu}) {
         { path : "/home/my_day", breadcrumb: "Fil d'actu > Programme du jour" },
         { path : "/home/last_visit_report", breadcrumb: "Fil d'actu > Dernier nouvelles" },
         // agenda
-        { path : "/agenda", breadcrumb: "Agenda" },
+        { path : "/agenda", breadcrumb: "Calendrier" },
         // suivi
         { path : "/suivi/visit_report", breadcrumb: "Santé > Notes de Visites" },
         { path : "/suivi/medicine", breadcrumb: "Santé > Médicament" },

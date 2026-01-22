@@ -29,6 +29,7 @@ if (!empty($id_medicament) && $stock !== false && $app->id_famille) {
     $model = new MedicamentDAO();
     
     try {
+        // ajoute le médicament pour la famille
         $success = $model->addSameMedecine($app->id_famille, $id_medicament, $stock);
         
         echo json_encode([

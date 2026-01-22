@@ -19,15 +19,15 @@ if (!$app->connected || !$app->id_famille) {
 try {
     $model = new RapportDAO();
     
-    // Récupère les rapports d'aujourd'hui
+    // récupère les rapports du jour
     $rapports = $model->getRapportsDuJour($app->id_famille);
     
-    // Si aucun aujourd'hui, on récupère le dernier en date pour ne pas laisser la vue vide
+    // si pas de rapport aujourd'hui on récupere le dernier pour pas laisser la page vide
     if (empty($rapports)) {
         $rapports = $model->getDernierRapport($app->id_famille);
     }
 
-    // Pour chaque rapport, on injecte le détail des médicaments consommés
+    // on ajoute les médicaments consommés pour chaque rapport
     foreach ($rapports as &$row) {
         $row['medics_details'] = $model->getMedicsByRapport($row['id_rapport']) ?: [];
     }

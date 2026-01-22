@@ -22,9 +22,11 @@ if (!$app->checkRole('Famille')) {
 $json = file_get_contents('php://input');
 $data = json_decode($json, true);
 
+// filtre les variables
 $name = filter_var($data['name'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
 $role = filter_var($data['role'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
 
+// vérifie si les variables sont la 
 if (!empty($name) && !empty($role) && $app->id_famille) {
     $model = new CategorieDAO();
     

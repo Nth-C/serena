@@ -27,6 +27,7 @@ try {
 
     $model = new PersonneDAO();
     
+    // renvoie la liste de tout les comptes creer pour les inviter dans invite des contacts 
     $resultats = $model->getAllPersonneWithTexte(
         $texteRecherche,
         $app->personne->id,

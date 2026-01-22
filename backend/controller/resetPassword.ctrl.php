@@ -21,9 +21,11 @@ try {
         throw new Exception("Champs manquants ou email invalide");
     }
 
+    // hash du password
     $hashedMdp = password_hash($newMdp . $pepper, PASSWORD_BCRYPT);
 
     $dao = new PersonneDAO();
+    // change le mdp de la personne
     $result = $dao->updatePasswordByEmail($email, $hashedMdp);
 
     if ($result) {

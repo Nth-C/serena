@@ -37,9 +37,11 @@ try {
     $pch    = filter_var($existingData['aide_pch'] ?? false, FILTER_VALIDATE_BOOLEAN);
     $aucune = filter_var($existingData['aide_aucune'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
+    // renvoie toutes les aides 
     $allAides = $dao->getAllAides();
     $aidesValides = [];
 
+    // liste des conditions pour les differentes aides 
     foreach ($allAides as $aide) {
         $show = false;
         $id = $aide['id_aide_fin']; 
@@ -98,6 +100,7 @@ try {
                 break;
         }
 
+        // renvoie les aides valide
         if ($show) {
             $aidesValides[] = $aide;
         }

@@ -18,17 +18,18 @@ if (!$app->connected || !$app->id_famille) {
 }
 
 try {
+
     $categorieDao = new CategorieDAO();
     $documentDao = new DocumentDAO();
 
+    // affiche toutes les catégories que la famille à creer dans explorateur
     $categories = $categorieDao->getAllCategories($app->id_famille, $app->getRole());
     
     foreach ($categories as $categorie) {
+
+        // affiche tout les documents des differentes catégories de la famille
         $documents = $documentDao->getDocumentsDeIdCategorie($app->id_famille, $categorie->id_cat);
         
-        foreach ($documents as $document) {
-            $categorie->ajouterDocument($document);
-        }
     }
 
     echo json_encode($categories);

@@ -21,7 +21,7 @@ try {
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
 
-    // Récupération de l'id_recurrence envoyé par React
+    // Récupération de l'id_recurrence
     $id_recurrence = $data['id_recurrence'] ?? null;
 
     if (!$id_recurrence) {
@@ -30,13 +30,12 @@ try {
 
     $modelEv = new EvenementDAO();
     
-    // Appel de la méthode que nous avons écrite précédemment
+    //supprime les évènements d'une même récurrence
     $success = $modelEv->deleteEvenementRecurrence($app->id_famille, $id_recurrence);
 
     echo json_encode(["success" => $success]);
 
 } catch (Exception $e) {
-    // En cas d'erreur, on renvoie un JSON propre, pas du HTML
     http_response_code(500);
     echo json_encode([
         "success" => false,

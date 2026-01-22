@@ -11,14 +11,11 @@ class TrajetDAO {
         $this->dal = DAL::get();
     }
 
+    // ajout d'un trajet
     public function addTrajet($date_deb, $lieu_dep, $lieu_arr, $id_event, $aidant_id, $nom_societe, $id_famille)
     {
         try {
-            // Démarrage de la transaction (sécurité)
             $this->dal->beginTransaction();
-
-            // 1. Insertion dans TRAJET
-            // J'ai retiré 'demande_trajet' et 'TRUE' de la requête
             $query = "INSERT INTO TRAJET (date_deb, lieu_dep, lieu_arr, id_event) 
                       VALUES (:date_deb, :lieu_dep, :lieu_arr, :id_event) 
                       RETURNING id_trajet";
@@ -31,7 +28,6 @@ class TrajetDAO {
                 ':id_event' => $id_event
             ]);
 
-            // Récupération de l'UUID créé
             $result = $stmt->fetch();
             
             if (!$result) {
@@ -39,12 +35,7 @@ class TrajetDAO {
             }
             $id_trajet = $result['id_trajet'];
 
-            // 2. Gestion des liaisons (Aidant OU Société)
-
-            if (!empty($nom_societe)) {
-                // Cas B : C'est une Société -> Tables SOCIETES et CHARGE
-                
-                // Vérifier si la société existe déjà
+            if (!empty($nom_societe)) {                
                 $qSocCheck = "SELECT id_societe FROM SOCIETES WHERE nom = :nom";
                 $stmtCheck = $this->dal->prepare($qSocCheck);
                 $stmtCheck->execute([':nom' => $nom_societe]);
@@ -53,7 +44,6 @@ class TrajetDAO {
                 if ($socRes) {
                     $id_societe = $socRes['id_societe'];
                 } else {
-                    // Création de la société
                     $qSocCreate = "INSERT INTO SOCIETES (nom, adresse) VALUES (:nom, 'Non spécifiée') RETURNING id_societe";
                     $stmtCreate = $this->dal->prepare($qSocCreate);
                     $stmtCreate->execute([':nom' => $nom_societe]);
@@ -61,7 +51,6 @@ class TrajetDAO {
                     $id_societe = $socNew['id_societe'];
                 }
 
-                // Liaison Table CHARGE
                 $qCharge = "INSERT INTO CHARGE (id_trajet, id_societe) VALUES (:id_trajet, :id_societe)";
                 $stmtCharge = $this->dal->prepare($qCharge);
                 $stmtCharge->execute([
@@ -70,9 +59,6 @@ class TrajetDAO {
                 ]);
             }
             elseif (!empty($aidant_id)) {
-            // CAS B : Aidant Interne (Ajout de la logique manquante)
-            // On suppose ici une table de liaison nommée 'EFFECTUE' ou 'ACCOMPAGNE' 
-            // Ajustez le nom de la table selon votre schéma (ex: EFFECTUE)
 
             if($aidant_id != "demande"){
             $qAidant = "INSERT INTO EFFECTUE (id_trajet, id_personne) VALUES (:id_trajet, :id_personne)";
@@ -86,55 +72,22 @@ class TrajetDAO {
                      VALUES (:id_famille, :id_trajet)";
                 $stmtFam = $this->dal->prepare($qFamille);
                 $stmtFam->execute([
-                    ':id_famille' => $id_famille, // Variable récupérée via la session ou paramètre
+                    ':id_famille' => $id_famille, 
                     ':id_trajet'  => $id_trajet
                 ]);
             }
         }
 
-            // Validation finale
             $this->dal->commit();
             return true;
 
         } catch (Exception $e) {
-            // Annulation en cas d'erreur
             $this->dal->rollBack();
-            // Permet de voir l'erreur dans le contrôleur
             throw $e; 
         }
     }
 
-    // ... Le reste de tes méthodes (findById, demandeDeTrajet) reste inchangé
-    public function findById(string $id): ?Trajet
-    {
-        $query = 'SELECT * from trajet where id_trajet = :id'; // Attention : id_trajet dans ton CREATE TABLE, pas id
-        $stmt = $this->dal->prepare($query);
-        $stmt->execute([':id' => $id]);   
-        $result = $stmt->fetch();
-
-        if ($result === false) {
-            return null;
-        }
-    
-        return new Trajet($result);
-    }
-
-    public function demandeDeTrajet(string $id_famille): array
-    {
-        $query = 'SELECT TRAJET.* FROM TRAJET,EVENEMENTS WHERE TRAJET.demande_trajet = TRUE AND TRAJET.id_event = EVENEMENTS.id_event AND EVENEMENTS.id_famille = :id_famille';
-        $stmt = $this->dal->prepare($query);
-
-        $stmt->execute([':id_famille' => $id_famille]);
-        $data = $stmt->fetchAll();
-        
-         $trajets = [];
-        foreach($data as $trajet){
-             $trajets[] = new Trajet($trajet);
-        }
-
-        return $trajets;
-    }
-
+    // ajoute la personne résponsable du trajet
     public function AjouterPersonneAuTrajet(string $id_trajet,string $id_personne): bool
     {
         $this->dal->beginTransaction();
@@ -150,6 +103,7 @@ class TrajetDAO {
     }
 
 
+    // renvoie toutes les demandes de trajet de la famille 
     public function getAllDemandeDeTrajet(string $id_famille): array
 {
     $query = "SELECT t.* FROM TRAJET t
@@ -161,19 +115,17 @@ class TrajetDAO {
             $stmt = $this->dal->prepare($query);
             $stmt->execute([':id_famille' => $id_famille]);
             
-            // On récupère toutes les lignes
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            // En cas d'erreur, on retourne un tableau vide
             return [];
         }
     }
 
+    // met à jour un trajet 
     public function updateTrajet($id_event, $date_deb, $lieu_dep, $lieu_arr, $nom_societe, $aidant_id) {
         try {
             $this->dal->beginTransaction();
 
-            // 1. Mise à jour des infos de base (Correction de la virgule après :date_deb)
             $query = "UPDATE TRAJET 
                     SET date_deb = :date_deb, lieu_dep = :lieu_dep, lieu_arr = :lieu_arr
                     WHERE id_event = :id_event 
@@ -192,13 +144,10 @@ class TrajetDAO {
             if ($result) {
                 $id_trajet = $result['id_trajet'];
 
-                // 2. Nettoyage des anciennes liaisons pour éviter les doublons
                 $this->dal->prepare("DELETE FROM CHARGE WHERE id_trajet = :id")->execute([':id' => $id_trajet]);
                 $this->dal->prepare("DELETE FROM EFFECTUE WHERE id_trajet = :id")->execute([':id' => $id_trajet]);
 
-                // 3. Nouvelle affectation
                 if (!empty($nom_societe)) {
-                    // Logique Société (identique à addTrajet)
                     $qSocCheck = "SELECT id_societe FROM SOCIETES WHERE nom = :nom";
                     $stmtCheck = $this->dal->prepare($qSocCheck);
                     $stmtCheck->execute([':nom' => $nom_societe]);
@@ -217,7 +166,6 @@ class TrajetDAO {
                             ->execute([':id' => $id_trajet, ':idsoc' => $id_societe]);
                 } 
                 elseif (!empty($aidant_id) && $aidant_id !== 'demande') {
-                    // Logique Aidant spécifique
                     $this->dal->prepare("INSERT INTO EFFECTUE (id_trajet, id_personne) VALUES (:id, :idp)")
                             ->execute([':id' => $id_trajet, ':idp' => $aidant_id]);
                 }
@@ -230,6 +178,7 @@ class TrajetDAO {
         }
     }
 
+    // renvoie le trajet de l'événement 
     public function getTrajetsParEvent(string $id_event): array
     {
         try {

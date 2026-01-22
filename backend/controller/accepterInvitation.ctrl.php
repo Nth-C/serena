@@ -20,10 +20,12 @@ $data = json_decode($json, true);
 
 $id_famille = filter_var($data['id_famille'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
 
+// vérifie si il y a bien un id_famille
 if (!empty($id_famille)) {
     $daoFamille = new FamilleDAO();
     
     try {
+        // accepte l'invitation
         $reussi = $daoFamille->AccepterInvitation($app->personne->id, $id_famille);
 
         if ($reussi) {

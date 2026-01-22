@@ -18,6 +18,8 @@ if (!$app->connected || !$app->id_famille) {
 
 try {
     $model = new FamilleDAO();
+
+    // affiche tout les membres de la famille
     $membres = $model->getPersFam($app->id_famille);
 
     echo json_encode($membres ?: []);

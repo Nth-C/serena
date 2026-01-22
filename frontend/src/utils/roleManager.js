@@ -18,7 +18,6 @@ const ROLE_LEVELS = {
  * @returns {boolean}
  */
 export const hasPermission = (requiredRole) => {
-    // On récupère le rôle directement ici
     const currentRole = sessionStorage.getItem('role');
     
     const currentLevel = ROLE_LEVELS[currentRole] || 0;

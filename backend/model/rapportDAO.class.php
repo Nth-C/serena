@@ -9,7 +9,7 @@ class RapportDAO {
         $this->dal = DAL::get();
     }
 
-
+    // renvoie les rapports du jour d'une famille  
     public function getRapportsDuJour($id_famille) {
         $query = "SELECT r.*, p.prenom as auteur 
                   FROM RAPPORTS r 
@@ -21,6 +21,7 @@ class RapportDAO {
         return $stmt->fetchAll();
     }
 
+    // renvoie touts les rapports d'une famille 
     public function getAllRapports($id_famille) {
         $query = "SELECT r.*, p.prenom as auteur 
                   FROM RAPPORTS r 
@@ -32,6 +33,7 @@ class RapportDAO {
         return $stmt->fetchAll();
     }
 
+    // renvoie le dernier rapport creer de la famile 
     public function getDernierRapport($id_famille) {
         $query = "SELECT r.*, p.prenom as auteur 
                   FROM RAPPORTS r 
@@ -44,6 +46,7 @@ class RapportDAO {
         return $stmt->fetchAll();
     }
 
+    // renvoie les médicaments liés au rapport
     public function getMedicsByRapport($id_rapport) {
         $query = 'SELECT s.designation_med as nom, c.nombre_medic_conso as quantite, s.id_medicament
                   FROM CONSO c 
@@ -54,32 +57,23 @@ class RapportDAO {
         return $stmt->fetchAll();
     }
 
-
-    public function addRapport($id_famille, $id_personne, $description, $nom) {
-        $query = 'INSERT INTO RAPPORTS (nom, description, date, heure, id_famille, id_personne) 
-                  VALUES (:nom, :description, CURRENT_DATE, CURRENT_TIME, :id_famille, :id_personne)
-                  RETURNING id_rapport';
-        $stmt = $this->dal->prepare($query);
-        $stmt->execute(['nom'=>$nom, 'description'=>$description, 'id_famille'=>$id_famille, 'id_personne'=>$id_personne]);
-        $res = $stmt->fetch();
-        return $res ? $res['id_rapport'] : false;
-    }
-
+    // ajoute les médicament au rapport
     public function addMedicToConso($id_medicament, $id_rapport, $nombre) {
         $query = 'INSERT INTO CONSO (id_medicament, id_rapport, nombre_medic_conso) VALUES (:id_m, :id_r, :n)';
         $stmt = $this->dal->prepare($query);
         return $stmt->execute(['id_m'=>$id_medicament, 'id_r'=>$id_rapport, 'n'=>$nombre]);
     }
 
+    // modif le stock médicament 
     public function updateMedicStock($id_m, $qte) {
         $query = 'UPDATE STOCK_MEDICS SET quantite = quantite - :q WHERE id_medicament = :id AND quantite >= :q';
         $stmt = $this->dal->prepare($query);
         return $stmt->execute(['q'=>(int)$qte, 'id'=>$id_m]);
     }
 
+    // modifie le stock en fonction de la modification du rapport
     public function restockMedic($id_m, $qte) {
     try {
-        // 1. Récupérer la quantité actuelle pour vérifier le seuil
         $querySelect = 'SELECT quantite FROM STOCK_MEDICS WHERE id_medicament = :id';
         $stmtSelect = $this->dal->prepare($querySelect);
         $stmtSelect->execute(['id' => $id_m]);
@@ -92,12 +86,10 @@ class RapportDAO {
         $stockActuel = (int)$result['quantite'];
         $nouveauStock = $stockActuel + (int)$qte;
 
-        // 2. Vérification : Interdire un stock négatif
         if ($nouveauStock < 0) {
             throw new Exception("Opération impossible : stock insuffisant (actuel : $stockActuel).");
         }
 
-        // 3. Mise à jour si tout est bon
         $queryUpdate = 'UPDATE STOCK_MEDICS SET quantite = :q_new WHERE id_medicament = :id';
         $stmtUpdate = $this->dal->prepare($queryUpdate);
         
@@ -106,32 +98,30 @@ class RapportDAO {
             'id'    => $id_m
         ]);
 
-    } catch (Exception $e) {
-        // On propage l'erreur pour qu'elle soit attrapée par le contrôleur
-        throw $e;
+        } catch (Exception $e) {
+            throw $e;
+        }
     }
-}
 
+    // supprime la ligne qui relie le médicament au rapport
     public function clearConso($id_rapport) {
         $query = 'DELETE FROM CONSO WHERE id_rapport = :id';
         $stmt = $this->dal->prepare($query);
         return $stmt->execute(['id' => $id_rapport]);
     }
 
+    // met à jour le rapport 
     public function updateRapportInfos($id, $nom, $desc) {
         $query = 'UPDATE RAPPORTS SET nom = :nom, description = :desc WHERE id_rapport = :id';
         $stmt = $this->dal->prepare($query);
         return $stmt->execute(['nom'=>$nom, 'desc'=>$desc, 'id'=>$id]);
     }
 
-
+    // supprime un rapport 
     public function deleteRapport($id_rapport, $id_famille) {
     try {
         $this->dal->beginTransaction();
 
-        
-
-        // 4. Supprimer le rapport final
         $queryDelRapport = 'DELETE FROM RAPPORTS WHERE id_rapport = :id AND id_famille = :id_f';
         $stmt = $this->dal->prepare($queryDelRapport);
         $stmt->execute([
@@ -141,20 +131,17 @@ class RapportDAO {
 
         return $this->dal->commit();
 
-    } catch (Exception $e) {
-        $this->dal->rollBack();
-        throw $e;
+        } catch (Exception $e) {
+            $this->dal->rollBack();
+            throw $e;
+        }
     }
-}
 
-
-
-
+    // creer un rapport
     public function createFullRapport($id_famille, $id_personne, $nom, $description, $medicaments) {
     try {
         $this->dal->beginTransaction();
 
-        // 1. Création du rapport
         $sql = "INSERT INTO RAPPORTS (id_famille, id_personne, nom, description) 
                 VALUES (?, ?, ?, ?) RETURNING id_rapport";
         
@@ -167,8 +154,6 @@ class RapportDAO {
         }
         $id_rapport = $row['id_rapport'];
 
-        
-        // 2. Gestion des médicaments
         if (!empty($medicaments) && is_array($medicaments)) {
             foreach ($medicaments as $med) {
                 $id_med = $med['id_med'];
@@ -176,7 +161,6 @@ class RapportDAO {
 
                 if ($qte_demandee <= 0) continue;
 
-                // CORRECTION : Utilisation de "designation_med" au lieu de "nom"
                 $sqlStock = "SELECT quantite, designation_med FROM STOCK_MEDICS WHERE id_medicament = ?";
                 $stmtStock = $this->dal->prepare($sqlStock);
                 $stmtStock->execute([$id_med]);
@@ -191,7 +175,6 @@ class RapportDAO {
                     throw new Exception("Stock insuffisant pour : $nomMed (Restant : " . $stockData['quantite'] . ")");
                 }
 
-                // Note : Vérifie si ta table s'appelle CONSO ou CONSOMMER (tu as utilisé les deux dans ton code)
                 $sqlConso = "INSERT INTO CONSO (id_medicament, id_rapport, nombre_medic_conso) VALUES (?, ?, ?)";
                 $this->dal->prepare($sqlConso)->execute([$id_med, $id_rapport, $qte_demandee]);
 
@@ -203,9 +186,9 @@ class RapportDAO {
         $this->dal->commit();
         return true;
 
-    } catch (Exception $e) {
-        $this->dal->rollBack();
-        throw $e; 
+        } catch (Exception $e) {
+            $this->dal->rollBack();
+            throw $e; 
+        }
     }
-}
 }

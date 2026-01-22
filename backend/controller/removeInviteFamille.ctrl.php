@@ -24,6 +24,8 @@ if (!$app->checkRole('Famille')) {
 }
 
 try {
+
+    //recupère les informations
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
 
@@ -32,6 +34,7 @@ try {
     if ($id_personne) {
         $daoFamille = new FamilleDAO();  
         
+        // supprime l'inviation dans la famille de la personne
         $reussi = $daoFamille->deleteInviterPersonneDansFamille(
             $app->id_famille,
             $id_personne,

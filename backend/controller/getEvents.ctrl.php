@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 $app = new App();
 
+// vérifie le role
 if (!$app->checkRole('Proche')) {
     http_response_code(403);
     echo json_encode([
@@ -28,15 +29,16 @@ try {
 
     $daoEvent = new EvenementDAO();
     $daoTrajet = new TrajetDAO();
+    //récupère les prochains évènements
     $events = $daoEvent->getFutureEvenements($app->id_famille);
 
     $dataExport = [];
     foreach ($events as $ev) {
-        // Récupérer l'accompagnant de cet événement (un seul)
+        // Récupérer l'accompagnant de cet événement
         $accompantsData = $daoEvent->getAccompagnants($ev->id_event);
         $accompagnant = null;
         if (!empty($accompantsData)) {
-            $accompagnant = $accompantsData[0]; // Il n'y en a qu'un
+            $accompagnant = $accompantsData[0]; 
         }
 
         // Récupérer les trajets liés à cet événement

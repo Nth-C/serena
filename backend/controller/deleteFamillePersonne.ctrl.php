@@ -23,6 +23,7 @@ try {
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
 
+    //filtre les données
     $id_personne = filter_var($data['id_personne'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
 
     if (empty($id_personne)) {
@@ -31,6 +32,7 @@ try {
     }
 
     $model = new FamilleDAO();
+    // supprime la personne de la famille
     $success = $model->deletePersonneDeFamille($app->id_famille, $id_personne);
 
     echo json_encode([

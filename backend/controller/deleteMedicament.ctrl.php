@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 $app = new App();
 
+// vérifie le role
 if (!$app->checkRole('Famille')) {
     http_response_code(403);
     echo json_encode([
@@ -31,6 +32,7 @@ try {
     }
 
     $model = new MedicamentDAO();
+    // supprime le mécidament de la famille 
     $success = $model->deleteMedecine($app->id_famille, $id);
 
     echo json_encode([

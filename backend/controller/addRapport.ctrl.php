@@ -23,7 +23,7 @@ try {
 
     $model = new RapportDAO();
     
-    // On appelle la méthode unique qui gère TOUT
+    // On appelle la méthode qui créer un rapport avec la gestion des medicaments qui sont pris
     $model->createFullRapport(
         $app->id_famille, 
         $app->personne->id,
@@ -35,7 +35,6 @@ try {
     echo json_encode(["success" => true]);
 
 } catch (Exception $e) {
-    // On renvoie l'erreur (ex: "Stock insuffisant") proprement à React
     http_response_code(400); 
     echo json_encode(["success" => false, "error" => $e->getMessage()]);
 }

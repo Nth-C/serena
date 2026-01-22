@@ -37,26 +37,24 @@ try {
     $categorieDao = new CategorieDAO();
     $documentDao = new DocumentDAO();
 
-    // 1. Récupérer tous les documents de la catégorie pour supprimer les fichiers physiques
+    // Récupérer tous les documents de la catégorie pour supprimer les fichiers physiques
     $documents = $documentDao->getDocumentsDeIdCategorie($app->id_famille, $id_cat);
 
     foreach ($documents as $doc) {
         // Suppression du fichier sur le disque
-        // On suppose que l'URL stockée est relative (ex: uploads/famille_X/doc.pdf)
         $filePath = __DIR__ . '/../' . $doc->url; 
         if (file_exists($filePath) && is_file($filePath)) {
             unlink($filePath);
         }
 
-        // Suppression de l'entrée en BDD
-        // Note : Vérifie si ta propriété est id_document ou id_doc
+        // Suppression du doc sur la base de donnée
         $idDoc = $doc->id_document ?? $doc->id_doc ?? null;
         if ($idDoc) {
             $documentDao->deleteDocument($idDoc);
         }
     }
 
-    // 2. Supprimer la catégorie elle-même
+    // Supprimer la catégorie
     $success = $categorieDao->deleteCategorie($app->id_famille, $id_cat);
 
     echo json_encode(["success" => $success]);

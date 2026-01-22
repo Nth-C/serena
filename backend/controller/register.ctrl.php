@@ -1,7 +1,6 @@
 <?php
 require_once(__DIR__ . '/../model/personneDAO.class.php');
 require_once(__DIR__ . '/../app.php');
-// CHARGEMENT CONFIG (Mail + Pepper)
 $config = require __DIR__ . '/../config.php';
 require_once __DIR__ . '/../vendor/autoload.php'; 
 
@@ -44,7 +43,7 @@ if ($nom && $prenom && $mail && $username && $mdp && $date_naissance) {
         echo json_encode(['success' => false, 'error' => 'Cette adresse email est déjà utilisée.']);
         exit();
     }
-    
+    // hash le password avec le $pepper 
     $hashedPassword = password_hash($mdp . $pepper, PASSWORD_DEFAULT);    
 
     $personne = new Personne([
@@ -56,13 +55,13 @@ if ($nom && $prenom && $mail && $username && $mdp && $date_naissance) {
         'date_naissance' => $date_naissance
     ]);
 
-    // 1. Génération du Token d'activation
+    // Génération du Token d'activation
     $tokenActivation = bin2hex(random_bytes(32));
 
-    // 2. Insert avec le token
+    // Insert avec le token pour la personne
     if ($dao->insert($personne, $tokenActivation)) {
         
-        // 3. Envoi du mail
+        // Envoi du mail
         try {
             $mailObj = new PHPMailer(true);
             $mailObj->isSMTP();
@@ -79,7 +78,7 @@ if ($nom && $prenom && $mail && $username && $mdp && $date_naissance) {
             $mailObj->isHTML(true);
             $mailObj->Subject = 'Activez votre compte Sere-na';
             
-            // Lien vers le Frontend React
+            // Lien vers vérifier le content
             $link = "https://sere-na.alwaysdata.net/verify-account?token=" . $tokenActivation;
             
             $mailObj->Body = "Bonjour $prenom,<br><br>Votre compte a été créé. Merci de l'activer en cliquant ici : <br><a href='$link'>Activer mon compte</a>";
@@ -90,7 +89,7 @@ if ($nom && $prenom && $mail && $username && $mdp && $date_naissance) {
             echo json_encode(['success' => true, 'message' => 'Compte créé. Vérifiez vos emails pour l\'activer.']);
 
         } catch (Exception $e) {
-            // Le compte est créé mais le mail a planté
+            // Le compte est créé mais le mail n'a pas été envoyer
             echo json_encode(['success' => true, 'warning' => 'Compte créé mais erreur d\'envoi email : ' . $mailObj->ErrorInfo]);
         }
 
@@ -98,8 +97,8 @@ if ($nom && $prenom && $mail && $username && $mdp && $date_naissance) {
         echo json_encode(['success' => false, 'error' => 'Erreur lors de l\'enregistrement en base de données.']);
     }
 } else {
+    //erreur des champs
     $error = 'Veuillez remplir tous les champs.';
-    // filter_input returns false for a value that fails validation.
     if ($mail === false) {
         $error = 'Adresse email invalide.';
     }
