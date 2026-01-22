@@ -486,8 +486,8 @@ function FileExplorer() {
             </button>
             <p>Ajouter un document</p>
           </div>
-          <div className='btn_add_container' onClick={toggleOcr} style={{ right: '10rem' }}>
-            <button className="btn_add" style={{ backgroundColor: '#777BB4' }}>
+          <div className='btn_add_container btn_upload' onClick={toggleOcr}>
+            <button className="btn_add">
               <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M120-120v-80h80v80h-80Zm0-160v-80h80v80h-80Zm0-160v-80h80v80h-80Zm0-160v-80h80v80h-80Zm160 480v-80h80v80h-80Zm0-160v-80h80v80h-80Zm0-160v-80h80v80h-80Zm0-160v-80h80v80h-80Zm160 480v-80h80v80h-80Zm0-160v-80h80v80h-80Zm0-160v-80h80v80h-80Zm0-160v-80h80v80h-80Z"/></svg>
             </button>
             <p>Analyser Ordonnance</p>
@@ -520,16 +520,15 @@ function FileExplorer() {
                         <p>{doc.nom_doc}</p>
                         <p>{doc.type}</p>
                       </div>
-                      <div style={{ display: 'flex', gap: '10px' }}>
-                        <div onClick={() => handleDownload(doc.url)} style={{ cursor: 'pointer' }}>
+                      <div>
+                        <div onClick={() => handleDownload(doc.url)}>
                           <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#0000FF"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z" /></svg>
                         </div>
 
                         {hasPermission("Famille") && (
                           <img
                             src="/icons/bin.svg"
-                            alt="bin"
-                            style={{ cursor: 'pointer' }}
+                            alt="bin"    
                             onClick={() => { openDeleteModal(doc); setMsgConfirmation(`Le document "${doc.nom_doc}" a bien été supprimé.`) }}
                           />
                         )}
@@ -626,40 +625,45 @@ function FileExplorer() {
 
     {/* --- SLIDE OCR --- */}
     <Slide title="Analyse d'Ordonnance" isOpen={isOcrOpen} toggleOpen={toggleOcr} zIndex={500}>
-      <div className="ocr_content" style={{ padding: '1rem' }}>
-        <p style={{ marginBottom: '1rem', textAlign: 'center', color: '#666' }}>Téléchargez l'image d'une ordonnance pour en extraire les médicaments.</p>
+      <div className="ocr_content">
+        <p>Téléchargez l'image d'une ordonnance pour en extraire les médicaments.</p>
         
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center', marginBottom: '1.5rem' }}>
-          <input type="file" onChange={handleOcrFileChange} accept="image/png, image/jpeg, image/bmp, image/tiff, image/webp" style={{ width: '100%' }} />
-          <button onClick={handleOcrAnalysis} className="btn_blue" disabled={ocrLoading || !ocrFile} style={{ width: '100%' }}>
+        <div>
+            <label className="drop_zone" accept="image/png, image/jpeg, image/bmp, image/tiff, image/webp">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M260-160q-91 0-155.5-63T40-377q0-78 47-139t123-78q25-92 100-149t170-57q117 0 198.5 81.5T760-520q69 8 114.5 59.5T920-340q0 75-52.5 127.5T740-160H520q-33 0-56.5-23.5T440-240v-206l-64 62-56-56 160-160 160 160-56 56-64-62v206h220q42 0 71-29t29-71q0-42-29-71t-71-29h-60v-80q0-83-58.5-141.5T480-720q-83 0-141.5 58.5T280-520h-20q-58 0-99 41t-41 99q0 58 41 99t99 41h100v80H260Zm220-280Z" /></svg>
+              <div><p>Glisser le document ou </p><p>rechercher</p></div>
+              <input type="file" onChange={handleOcrFileChange} />
+            </label>
+
+          <button onClick={handleOcrAnalysis} className="btn_blue" disabled={ocrLoading || !ocrFile}>
             {ocrLoading ? "Analyse en cours..." : "Lancer l'analyse"}
           </button>
         </div>
 
-        {/* --- NOUVEL INDICATEUR DE PROGRÈS --- */}
         {ocrLoading && (
-          <div style={{ marginBottom: '1rem' }}>
-            <p style={{ textAlign: 'center', fontStyle: 'italic', color: '#555' }}>{ocrProgress.status}</p>
+          <div>
+            <p>{ocrProgress.status}</p>
             {ocrProgress.progress > 0 && (
-              <progress value={ocrProgress.progress} max="1" style={{ width: '100%' }}></progress>
+              <progress value={ocrProgress.progress} max="1"></progress>
             )}
           </div>
         )}
 
-        {ocrError && <p className="error_message" style={{ color: 'red', textAlign: 'center' }}>{ocrError}</p>}
+        {ocrError && <p className="error_message">{ocrError}</p>}
 
+        <div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <div>
-            <h3 style={{ marginBottom: '0.5rem' }}>Résultats</h3>
+            <h3>Résultats</h3>
             {ocrLoading && <p>Chargement...</p>}
             {!ocrLoading && ocrResult.medicaments.length > 0 ? (
-              <ul style={{ listStyle: 'none', padding: 0 }}>
+              <ul>
                 {ocrResult.medicaments.map((med, index) => {
                   const name = typeof med === 'string' ? med : med.nom;
                   return (
-                    <li key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.5rem', borderBottom: '1px solid #eee' }}>
-                      <span style={{ fontWeight: 'bold' }}>{name}</span>
-                      <button className="btn_blue" onClick={() => openAddMedicForm(name)} style={{ padding: '0.3rem 0.8rem', fontSize: '0.9rem' }}>
+                    <li key={index}>
+                      <span>{name}</span>
+                      <button className="btn_blue" onClick={() => openAddMedicForm(name)}>
                         Ajouter
                       </button>
                     </li>
@@ -676,7 +680,7 @@ function FileExplorer() {
 
     {/* --- SLIDE AJOUT MEDICAMENT (OCR) --- */}
     <Slide title="Ajouter au stock" isOpen={isAddMedicOpen} toggleOpen={() => setIsAddMedicOpen(false)} zIndex={700}>
-      {addMedicError && <p className="error_message" style={{ color: 'red', marginBottom: '1rem' }}>{addMedicError}</p>}
+      {addMedicError && <p className="error_message">{addMedicError}</p>}
       <form className="new_medecine" onSubmit={handleAddMedicSubmit}>
         <div>
           <label>Nom du médicament : </label>
