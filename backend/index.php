@@ -40,7 +40,6 @@ const _ROUTES = array(
   'deletefamillepersonne' => 'deleteFamillePersonne',
   'invitepersonnefamille/add' => 'addInviteFamille',
   'invitepersonnefamille/delete' => 'removeInviteFamille',
-  'invitefamille/view' => 'viewInviteFamille',
   'invitation/view' => 'viewInvitation',
   'invitation/accepter' => 'accepterInvitation',
   'invitation/refuser' => 'refuserInvitation',
