@@ -352,7 +352,7 @@ input::placeholder {
 }
 
 .agenda .btn_add_trajet {
-  transform: translateY(-100%);
+  transform: translateY(-150%);
 }
 
 /* ----------------------------------- */
@@ -1475,6 +1475,7 @@ progress.blue_bar::-moz-progress-bar {
 
 .file_explorer .case_categorie div:first-child p {
   font-weight: 700;
+  overflow-wrap: anywhere;
 }
 
 .file_explorer .case_categorie div:last-child {
