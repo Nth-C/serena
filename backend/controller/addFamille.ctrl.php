@@ -25,7 +25,7 @@ $desc = filter_var($data['description'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
 $nom_aide = filter_var($data['nom_aide'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
 
 //vérifie les informations envoyés
-if ($nom && $desc && $nom_aide) {
+if ($nom && $nom_aide) {
     $dao = new FamilleDAO();
 
     $famille = new Famille([
