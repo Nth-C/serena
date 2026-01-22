@@ -1,5 +1,3 @@
-import React from 'react';
-
 function AssistanceDisponnible({ aides, resetForm }) {
     // Fonction utilitaire pour transformer le texte en liste à puces si des virgules existent
     const renderList = (text) => {

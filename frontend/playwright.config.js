@@ -7,7 +7,7 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:5173',
     // Charge automatiquement les COOKIES
-    storageState: 'playwright/.auth/user.json',
+    
     screenshot: 'only-on-failure',
   },
   

@@ -41,7 +41,6 @@ const AuditLog = () => {
         } catch (err) {
             console.error("Erreur Audit:", err);
             setError(err.message || "Impossible de récupérer l'historique");
-            if (listhistorique.length === 0) setListhistorique([]);
         } finally {
             setLoading(false);
         }
@@ -72,14 +71,6 @@ const AuditLog = () => {
         setSortOrder(prev => prev === 'ASC' ? 'DESC' : 'ASC');
     };
 
-    const formatDate = (dateString) => {
-        if (!dateString) return '';
-        return new Date(dateString).toLocaleString('fr-FR', {
-            day: '2-digit', month: '2-digit', year: 'numeric',
-            hour: '2-digit', minute: '2-digit'
-        });
-    };
-
     const formatOperation = (op) => {
         switch (op) {
             case 'INSERT': return <span className='tag_add'>Ajout</span>;
@@ -100,63 +91,6 @@ const AuditLog = () => {
             'rapports': 'Rapport'
         };
         return mapNames[table] || table;
-    };
-
-
-    const formatLogDetails = (log) => {
-        try {
-            const oldData = log.old_values ? JSON.parse(log.old_values) : {};
-            const newData = log.new_values ? JSON.parse(log.new_values) : {};
-
-            let nomItem = "Inconnu";
-            const dataToRead = log.operation === 'DELETE' ? oldData : newData;
-
-            switch (log.table_name) {
-                case 'stock_medics':
-                    nomItem = dataToRead.designation_med || dataToRead.nom || 'Médicament';
-                    break;
-                case 'documents':
-                    nomItem = dataToRead.nom_doc || 'Fichier';
-                    break;
-                case 'personnes':
-                    nomItem = (dataToRead.prenom && dataToRead.nom)
-                        ? `${dataToRead.prenom} ${dataToRead.nom}`
-                        : (dataToRead.username || 'Utilisateur');
-                    break;
-                case 'evenements':
-                    nomItem = dataToRead.titre || dataToRead.nom || 'Événement';
-                    break;
-                case 'rapports':
-                    nomItem = dataToRead.nom || 'Rapport';
-                    break;
-                default:
-                    nomItem = dataToRead.nom || dataToRead.titre || 'Élément';
-            }
-
-            if (log.operation === 'DELETE') {
-                return <span style={{ color: 'var(--red)' }}>A supprimé : <strong>{nomItem}</strong></span>;
-            } else if (log.operation === 'INSERT') {
-                return <span style={{ color: 'var(--blue)' }}>A ajouté : <strong>{nomItem}</strong></span>;
-            } else if (log.operation === 'UPDATE') {
-
-                return (
-                    <span>
-                        A modifié : <strong>{nomItem}</strong>
-                        <div>
-                            {Object.keys(newData).map(key => {
-                                if (key.startsWith('id_') || key.includes('date') || key.includes('password') || key.includes('mdp')) return null;
-                                if (oldData[key] !== newData[key]) {
-                                    return <div key={key}>Change {key}: {oldData[key]} → {newData[key]}</div>
-                                }
-                                return null;
-                            })}
-                        </div>
-                    </span>
-                );
-            }
-        } catch (e) {
-            return <span>Détails techniques non disponibles</span>;
-        }
     };
 
     return (
@@ -231,7 +165,7 @@ const AuditLog = () => {
                             <tbody>
                                 {filteredAndSortedhistorique.map((log) => (
                                     <tr key={log.id_audit || Math.random()}>
-                                        <td style={{}}>{getFormatDate(new Date(log.action_tstamp), true)} <br />{getFormatTime(new Date(log.action_tstamp))}</td>
+                                        <td>{getFormatDate(new Date(log.action_tstamp), true)} <br />{getFormatTime(new Date(log.action_tstamp))}</td>
                                         <td>{log.user_name}</td>
                                         <td>
                                             <div>

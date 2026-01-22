@@ -20,7 +20,7 @@ const Signalement = () => {
 
     const apiUrl = import.meta.env.VITE_API_URL;
 
-    // --- 1. CHARGEMENT DES DONNÉES ---
+    // --- CHARGEMENT DES DONNÉES ---
     const fetchSignalements = async () => {
         setLoading(true);
         try {
@@ -95,7 +95,7 @@ const Signalement = () => {
         }
     };
 
-    // --- 3. MODIFIER LE STATUT ---
+    // --- MODIFIER LE STATUT ---
     const handleStatusChange = async (id, newStatus) => {
         try {
             const response = await fetch(`${apiUrl}/?route=signalement/update`, {
@@ -118,7 +118,7 @@ const Signalement = () => {
         }
     };
 
-    // --- 4. SUPPRIMER ---
+    // --- SUPPRIMER ---
     const handleDelete = async (id) => {
         try {
             const response = await fetch(`${apiUrl}/?route=signalement/delete`, {

@@ -29,6 +29,9 @@ try {
 
         // affiche tout les documents des differentes catégories de la famille
         $documents = $documentDao->getDocumentsDeIdCategorie($app->id_famille, $categorie->id_cat);
+        foreach ($documents as $document) {
+            $categorie->ajouterDocument($document);
+        }
         
     }
 

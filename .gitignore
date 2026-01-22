@@ -33,5 +33,4 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
-frontend/playwright/.auth/user.json
-frontend/playwright/.auth/session.json
+

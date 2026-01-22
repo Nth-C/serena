@@ -530,20 +530,28 @@ function Agenda() {
         />
 
         {/* ajouter un evenement */}
-          <button className="btn_add_agenda" onClick={() => {
-            handleReset() // mettre un handler uniquement pour l'event
-            setNewEventOpen(true)
-          }}>
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFBF2"><path d="M680-80v-120H560v-80h120v-120h80v120h120v80H760v120h-80Zm-480-80q-33 0-56.5-23.5T120-240v-480q0-33 23.5-56.5T200-800h40v-80h80v80h240v-80h80v80h40q33 0 56.5 23.5T760-720v244q-20-3-40-3t-40 3v-84H200v320h280q0 20 3 40t11 40H200Zm0-480h480v-80H200v80Zm0 0v-80 80Z" /></svg>
-          </button>
-        {/* ajouter un trajet */}
-          <button className="btn_add_trajet btn_add_agenda" onClick={() => {
-            handleReset() // mettre un handler uniquement pour le trajet
-            setTrajetOpen(true)
-          }}>
+        <div className='btn_add_container btn_add_trajet'  onClick={() => {
+          handleReset()
+          setTrajetOpen(true)
+        }}>
+          <button className="btn_add">
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFBF2"><path d="M240-200v40q0 17-11.5 28.5T200-120h-40q-17 0-28.5-11.5T120-160v-320l84-240q6-18 21.5-29t34.5-11h440q19 0 34.5 11t21.5 29l84 240v320q0 17-11.5 28.5T800-120h-40q-17 0-28.5-11.5T720-160v-40H240Zm-8-360h496l-42-120H274l-42 120Zm-32 80v200-200Zm100 160q25 0 42.5-17.5T360-380q0-25-17.5-42.5T300-440q-25 0-42.5 17.5T240-380q0 25 17.5 42.5T300-320Zm360 0q25 0 42.5-17.5T720-380q0-25-17.5-42.5T660-440q-25 0-42.5 17.5T600-380q0 25 17.5 42.5T660-320Zm-460 40h560v-200H200v200Z" /></svg>
           </button>
+          <p>Ajouter un trajet</p>
+        </div>
+        
+        {/* ajouter un trajet */}
+        <div className='btn_add_container' onClick={() => {
+          handleReset()
+          setNewEventOpen(true)
+        }}>
+          <button className="btn_add">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFBF2"><path d="M680-80v-120H560v-80h120v-120h80v120h120v80H760v120h-80Zm-480-80q-33 0-56.5-23.5T120-240v-480q0-33 23.5-56.5T200-800h40v-80h80v80h240v-80h80v80h40q33 0 56.5 23.5T760-720v244q-20-3-40-3t-40 3v-84H200v320h280q0 20 3 40t11 40H200Zm0-480h480v-80H200v80Zm0 0v-80 80Z" /></svg>
+          </button>
+          <p>Ajouter un rendez-vous</p>
+        </div>
       </div>
+      
 
       <PopUpSelectDate
         isOpen={popUpDateOpen}

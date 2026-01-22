@@ -324,8 +324,8 @@ function Medecine() {
             />
             <datalist id="medication-suggestions">
               {/* On boucle sur les résultats de votre recherche PHP */}
-              {listNomMedecine?.map((suggestion) => (
-                <option value={suggestion.denomination_substance} />
+              {listNomMedecine?.map((suggestion, i) => (
+                <option key={i} value={suggestion.denomination_substance} />
               ))}
             </datalist>
           </div>

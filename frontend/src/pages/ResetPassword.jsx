@@ -8,6 +8,7 @@ function ResetPassword() {
     const [showSuccessPopup, setShowSuccessPopup] = useState(false);
     
     const [searchParams] = useSearchParams(); 
+    
     const navigate = useNavigate();
     const apiUrl = import.meta.env.VITE_API_URL;
 

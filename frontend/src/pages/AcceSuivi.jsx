@@ -76,11 +76,12 @@ function InvitationItem({ invitation, onModifier, onAcceder, isOpen, onToggle })
 
 function AcceSuivi() {
     const [message, setMessage] = useState("");
-    const apiUrl = import.meta.env.VITE_API_URL;
     const [familles, setFamilles] = useState([]);
     const [invitations, setInvitations] = useState([]);
     const [openFamilleId, setOpenFamilleId] = useState(null);
     const [openInvitationId, setOpenInvitationId] = useState(null);
+    
+    const apiUrl = import.meta.env.VITE_API_URL;
     
     // État pour le nom affiché
     const [nomComplet, setNomComplet] = useState(""); 
@@ -123,30 +124,30 @@ function AcceSuivi() {
         fetchFamilles();
         fetchInvites();
 
-        // --- LOGIQUE DE NOM MODIFIEE ---
+        // --- LOGIQUE DE NOM ---
         const userStored = sessionStorage.getItem('user');
         if (userStored) {
             try {
                 const user = JSON.parse(userStored);
                 
-                // Priorité 1 : Si on a le vrai nom et prénom dans la base
+                // Si on a le vrai nom et prénom dans la base
                 if (user.nom && user.prenom) {
                     setNomComplet(`${user.nom} ${user.prenom}`);
                 } 
-                // Priorité 2 : Si on a juste le nom
+                // Si on a juste le nom
                 else if (user.nom) {
                     setNomComplet(user.nom);
                 } 
-                // Priorité 3 : On bricole le username (ex: "scapinb" -> "Scapin")
+                // On bricole le username (ex: "scapinb" -> "Scapin")
                 else if (user.username) {
                     let text = user.username;
                     
                     // Si le texte est assez long, on applique la transformation
                     if (text.length > 1) {
-                        // 1. On enlève le dernier caractère
+                        // enlève le dernier caractère
                         text = text.slice(0, -1);
                         
-                        // 2. On met la première lettre en majuscule + le reste en minuscule
+                        // On met la première lettre en majuscule + le reste en minuscule
                         text = text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
                     }
                     
@@ -156,7 +157,6 @@ function AcceSuivi() {
                 console.error("Erreur lecture user", e);
             }
         }
-        // ----------------------------------
     }, []);
 
     const handleChange = (e) => {

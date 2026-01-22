@@ -81,8 +81,8 @@ function MyDay() {
   /* permet de faire passer les evenement sur plusieurs jours */
   useEffect(() => {
     // Définition de la range (affichage des date)
-    const rangeStart = new Date(date);
-    const rangeEnd = new Date(date);
+    const rangeStart = date;
+    const rangeEnd = date;
 
     rangeStart.setHours(0, 0, 0, 0);
     rangeEnd.setHours(23, 59, 59, 999);

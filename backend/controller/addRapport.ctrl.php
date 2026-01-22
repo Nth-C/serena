@@ -17,7 +17,7 @@ if (!$app->connected || !$app->personne) {
 $data = json_decode(file_get_contents('php://input'), true);
 
 try {
-    if (empty($data['nom']) || empty($data['description'])) {
+    if (empty($data['nom'])) {
         throw new Exception("Champs obligatoires manquants.");
     }
 
