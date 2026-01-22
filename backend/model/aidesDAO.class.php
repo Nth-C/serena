@@ -8,6 +8,7 @@ class AidesDAO {
         $this->dal = DAL::get();
     }
 
+    // récupère toute les aide financière disponibles
     public function getAllAides(): array {
         $query = "SELECT * FROM aide_finance"; 
         $stmt = $this->dal->prepare($query);
@@ -16,7 +17,7 @@ class AidesDAO {
     }
 
 
-    // Ajoutez $id_famille dans les arguments de la fonction
+// ajoute pour les informations du formulaire remplie ou les met a jours si déja remplie pour une famille
 public function setAide($id_famille, $nom, $description, $statuspro, $depense, $fiscalite, $role, $age_aide, $gir, $medical, $apa, $pch, $aucune, $objectif)
 {
     $query = "INSERT INTO aide (
@@ -59,13 +60,13 @@ public function setAide($id_famille, $nom, $description, $statuspro, $depense, $
     ]);
 }
 
-
+// récupère les aide d'une famille
 public function getAideByFamille($id_famille)
 {
     $query = "SELECT * FROM aide WHERE id_famille = :id_famille";
     $stmt = $this->dal->prepare($query);
     $stmt->execute([':id_famille' => $id_famille]);
-    return $stmt->fetch(PDO::FETCH_ASSOC); // Retourne les données ou false si rien n'est trouvé
+    return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
 }

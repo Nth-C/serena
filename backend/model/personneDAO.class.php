@@ -9,36 +9,38 @@ class PersonneDAO {
     $this->dal = $dal ?: DAL::get();
 }
 
+    // renvoie toutes les comptes
     public function getAllPersonneWithTexte($texte, $monId, $idFamille): array {
-    $query = 'SELECT id_personne, nom, prenom, username,
-              (EXISTS (
-                  SELECT 1 
-                  FROM INVITATION
-                  WHERE id_pers_invitee = PERSONNES.id_personne 
-                  AND id_pers_qui_invite = :me
-              )) AS invite
-              FROM PERSONNES 
-              WHERE (username ILIKE :search 
-              OR nom ILIKE :search 
-              OR prenom ILIKE :search)
-              AND id_personne != :me
-              AND id_personne NOT IN (
-                  SELECT id_personne 
-                  FROM APPARTIENT_A 
-                  WHERE id_famille = :idFamille
-              )
-              LIMIT 16';
-    
-    $stmt = $this->dal->prepare($query);
-    $stmt->execute([
-        'search' => '%' . $texte . '%',
-        'me' => $monId,
-        'idFamille' => $idFamille
-    ]);
-    
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+        $query = 'SELECT id_personne, nom, prenom, username,
+                (EXISTS (
+                    SELECT 1 
+                    FROM INVITATION
+                    WHERE id_pers_invitee = PERSONNES.id_personne 
+                    AND id_pers_qui_invite = :me
+                )) AS invite
+                FROM PERSONNES 
+                WHERE (username ILIKE :search 
+                OR nom ILIKE :search 
+                OR prenom ILIKE :search)
+                AND id_personne != :me
+                AND id_personne NOT IN (
+                    SELECT id_personne 
+                    FROM APPARTIENT_A 
+                    WHERE id_famille = :idFamille
+                )
+                LIMIT 16';
+        
+        $stmt = $this->dal->prepare($query);
+        $stmt->execute([
+            'search' => '%' . $texte . '%',
+            'me' => $monId,
+            'idFamille' => $idFamille
+        ]);
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
+    // renvoie si le nom d'utilisateur existe ou non 
     public function findByUsername(string $username): ?Personne {
         $query = 'SELECT * FROM personnes WHERE username = :username';
         $stmt = $this->dal->prepare($query);
@@ -48,10 +50,10 @@ class PersonneDAO {
         if ($result === false) {
             return null;
         }
-    
         return new Personne($result);
     }
 
+    // renvoie si l'email est deja utilisé
     public function findByEmail($email) {
         $sql = "SELECT * FROM PERSONNES WHERE mail = :email"; 
         $stmt = $this->dal->prepare($sql);
@@ -63,6 +65,8 @@ class PersonneDAO {
         }
         return null;
     }
+
+    // remet le token à null
     public function updateResetToken($email, $token, $expiration) {
         $sql = "UPDATE PERSONNES 
                 SET reset_token = :token, 
@@ -78,51 +82,48 @@ class PersonneDAO {
         $stmt->execute();
     }
 
-public function updatePasswordByEmail($email, $hashedPassword) {
-    $sql = "UPDATE PERSONNES SET mdp = :mdp WHERE mail = :email";
-    $stmt = $this->dal->prepare($sql);
-    $stmt->bindValue(':mdp', $hashedPassword);
-    $stmt->bindValue(':email', $email);
-    return $stmt->execute();
-}
-
-    // Dans model/PersonneDAO.class.php
-
-// 1. Modifier INSERT pour inclure le token_activation
-public function insert(Personne $personne, $tokenActivation): bool {
-    // Note : On force 'est_actif' à FALSE par défaut dans la requête ou via la BDD
-    $query = 'INSERT INTO personnes (nom, prenom, mail, username, mdp, date_naissance, token_activation, est_actif) 
-              VALUES (:nom, :prenom, :mail, :username, :mdp, :date_naissance, :token, FALSE)';
-    
-    $stmt = $this->dal->prepare($query);
-
-    return $stmt->execute([
-        ':nom'            => $personne->nom,
-        ':prenom'         => $personne->prenom,
-        ':mail'           => $personne->mail,
-        ':username'       => $personne->username,
-        ':mdp'            => $personne->mdp,
-        ':date_naissance' => $personne->date_naissance,
-        ':token'          => $tokenActivation // On passe le token ici
-    ]);
-}
-
-// 2. Nouvelle méthode pour activer le compte
-public function activateAccount($token) {
-    // On cherche si ce token existe
-    $sql = "SELECT id_personne FROM PERSONNES WHERE token_activation = :token";
-    $stmt = $this->dal->prepare($sql);
-    $stmt->execute([':token' => $token]);
-    
-    if ($stmt->fetch()) {
-        // Si oui, on active le compte et on supprime le token
-        $update = "UPDATE PERSONNES SET est_actif = TRUE, token_activation = NULL WHERE token_activation = :token";
-        $stmtUp = $this->dal->prepare($update);
-        return $stmtUp->execute([':token' => $token]);
+    // modifie le mot de passe avec l'envoie d'un email
+    public function updatePasswordByEmail($email, $hashedPassword) {
+        $sql = "UPDATE PERSONNES SET mdp = :mdp WHERE mail = :email";
+        $stmt = $this->dal->prepare($sql);
+        $stmt->bindValue(':mdp', $hashedPassword);
+        $stmt->bindValue(':email', $email);
+        return $stmt->execute();
     }
-    return false;
-}
 
+    // ajoute une personne 
+    public function insert(Personne $personne, $tokenActivation): bool {
+        $query = 'INSERT INTO personnes (nom, prenom, mail, username, mdp, date_naissance, token_activation, est_actif) 
+                VALUES (:nom, :prenom, :mail, :username, :mdp, :date_naissance, :token, FALSE)';
+        
+        $stmt = $this->dal->prepare($query);
+
+        return $stmt->execute([
+            ':nom'            => $personne->nom,
+            ':prenom'         => $personne->prenom,
+            ':mail'           => $personne->mail,
+            ':username'       => $personne->username,
+            ':mdp'            => $personne->mdp,
+            ':date_naissance' => $personne->date_naissance,
+            ':token'          => $tokenActivation 
+        ]);
+    }
+
+    // active le compte 
+    public function activateAccount($token) {
+        $sql = "SELECT id_personne FROM PERSONNES WHERE token_activation = :token";
+        $stmt = $this->dal->prepare($sql);
+        $stmt->execute([':token' => $token]);
+        
+        if ($stmt->fetch()) {
+            $update = "UPDATE PERSONNES SET est_actif = TRUE, token_activation = NULL WHERE token_activation = :token";
+            $stmtUp = $this->dal->prepare($update);
+            return $stmtUp->execute([':token' => $token]);
+        }
+        return false;
+    }
+
+    // renvoie la personne en fonction de. l'id 
     public function findPersonneById(string $id_personne): ?Personne {
         $query = 'SELECT * FROM personnes WHERE id_personne = :id_personne';
         $stmt = $this->dal->prepare($query);
@@ -136,6 +137,7 @@ public function activateAccount($token) {
         return new Personne($result);
     }
 
+    // modifie les informations du compte 
     public function updateUser($id_personne, $mail, $nom, $prenom, $username, $date_naissance){
         $query = 'UPDATE PERSONNES SET
                 nom = :nom,
@@ -155,6 +157,7 @@ public function activateAccount($token) {
         ]);
     }
 
+    // supprime un compte 
     public function deleteUser($id_personne) {
         $query = "DELETE FROM PERSONNES WHERE id_personne = :id";
         $stmt = $this->dal->prepare($query);
