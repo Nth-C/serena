@@ -1,6 +1,7 @@
 <?php
 require_once(__DIR__ . '/../model/famille.class.php'); 
 require_once(__DIR__ . '/../model/familleDAO.class.php');
+require_once(__DIR__ . '/../model/categorieDAO.class.php');
 require_once(__DIR__ . '/../app.php');
 
 header('Content-Type: application/json');
@@ -27,6 +28,7 @@ $nom_aide = filter_var($data['nom_aide'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
 //vérifie les informations envoyés
 if ($nom && $nom_aide) {
     $dao = new FamilleDAO();
+    $categorieDAO = new CategorieDAO();
 
     $famille = new Famille([
         'nom' => $nom,
@@ -36,10 +38,13 @@ if ($nom && $nom_aide) {
 
     try {
         //créer la famille
-        $id_famille = $dao->insert($famille);
+        $id_famille = $dao->insert($famille); 
 
         if ($id_famille) { 
             $id_personne = $app->personne->id;
+
+            $categorieDAO->addCategorie($id_famille, "Ordonnances", "Professionelle");
+            $categorieDAO->addCategorie($id_famille, "Documents", "Professionelle");
             
             //ajout de la personne dans la famille avec le role de Createur
             if ($dao->AddPersFam($id_famille, $id_personne, 'Createur')) {
