@@ -88,7 +88,7 @@ const AddMembre = () => {
     }, [apiUrl]);
 
     return (
-        <LayoutMenu title={"Inviter des contact"}>
+        <LayoutMenu title={"Inviter des contacts"}>
             <div className='add_membre'>
                 <div className='container_search'>
                     <input type="search" placeholder="Rechercher"
