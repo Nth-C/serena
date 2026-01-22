@@ -10,14 +10,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 $app = new App();
-
+// vérifie si on est connecter 
 if (!$app->connected) {
     http_response_code(401);
     echo json_encode(['success' => false, 'error' => 'Non connecté']);
     exit;
 }
+//vérifie le role
+if (!$app->checkRole('Famille')) {
+    http_response_code(403);
+    echo json_encode([
+        'success' => false, 
+        'error' => 'Accès refusé'
+    ]);
+    exit; 
+}
 
 try {
+
+// récupère les données et filtre les données
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
 
@@ -28,7 +39,7 @@ try {
 
     if ($id && $nom && $desc && $nom_aide) {
         $dao = new FamilleDAO();
-        
+        // créer une famille
         $famille = new Famille([
             'id_famille' => $id,
             'nom'        => $nom,
@@ -36,6 +47,7 @@ try {
             'nom_aide'   => $nom_aide
         ]);
 
+        //met a jour la famille avec les nouvelles informations
         if ($dao->update($famille)) {
             echo json_encode(['success' => true]);
         } else {

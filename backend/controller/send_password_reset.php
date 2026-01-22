@@ -37,6 +37,7 @@ try {
     $mail->isHTML(true);
     $mail->Subject = 'Reinitialisation de votre mot de passe';
     
+    // lien du reset password 
     $link = "http://localhost:5173/reset-password?email=" . urlencode($email);
     
     $mail->Body    = "Bonjour,<br>Voici votre lien de réinitialisation : <a href='$link'>Cliquez ici</a>";

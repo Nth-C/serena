@@ -15,7 +15,7 @@ if (!$app->connected || !$app->personne) {
     echo json_encode(['success' => false, 'error' => 'Non connecté']);
     exit;
 }
-
+// il faut avoir le role de famille pour modifier des roles
 if (!$app->checkRole('Famille')) {
     http_response_code(403);
     echo json_encode(['success' => false, 'error' => 'Droits insuffisants']);
@@ -23,6 +23,7 @@ if (!$app->checkRole('Famille')) {
 }
 
 try {
+    // récupère les info et filtre les données 
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
 
@@ -30,6 +31,7 @@ try {
     $nouveau_role = $data['nouveauRole'] ?? null;
     $id_famille_actuelle = $app->id_famille;
 
+    // seul le createur peux mettre le role de famille a quelqu'un
     if ($nouveau_role === "Famille" && !$app->checkRole('Createur')) {
         http_response_code(403);
         throw new Exception("Seul le créateur peut attribuer le rôle Famille");
@@ -42,6 +44,7 @@ try {
 
     if ($id_personne_a_modifier && $nouveau_role && $id_famille_actuelle) {
         $dao = new FamilleDAO();
+        // change le role de la personne pour la famille 
         $success = $dao->UpdateRolePersFam($id_famille_actuelle, $id_personne_a_modifier, $nouveau_role);
 
         echo json_encode(['success' => $success]);

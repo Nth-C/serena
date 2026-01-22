@@ -57,7 +57,7 @@ try {
 
     $allAides = $dao->getAllAides();
     $aidesValides = [];
-
+    //vérifie les aides disponible
     foreach ($allAides as $aide) {
         $show = false;
         $id = $aide['id_aide_fin']; 

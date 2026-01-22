@@ -16,6 +16,7 @@ if (!$app->connected || !$app->id_famille) {
     exit;
 }
 
+// vérifie le role
 if (!$app->checkRole('Proche')) {
     http_response_code(403);
     echo json_encode([
@@ -37,6 +38,7 @@ try {
     }
 
     $dao = new EvenementDAO();
+    // supprime l'évènement
     $success = $dao->deleteEvenement($app->id_famille, $id_evenement);
 
     echo json_encode([

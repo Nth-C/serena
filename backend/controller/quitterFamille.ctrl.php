@@ -17,6 +17,7 @@ if (!$app->connected || !$app->personne) {
 }
 
 try {
+    //récupère les infos et filtres les données
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
     
@@ -24,8 +25,10 @@ try {
 
     if (!empty($id_famille)) {
         $dao = new FamilleDAO();
+        // quitte la famille
         $reussi = $dao->QuitterFamille($app->personne->id, $id_famille);
 
+        // enlève id_famille de la session si elle existe
         if ($reussi) {
             if (isset($_SESSION['id_famille']) && $_SESSION['id_famille'] == $id_famille) {
                 unset($_SESSION['id_famille']);

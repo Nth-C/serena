@@ -9,7 +9,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 $app = new App();
 
-// --- 2. VÉRIFICATION SÉCURITÉ (Rôle) ---
 if (!$app->checkRole('Famille')) {
     http_response_code(403);
     echo json_encode([
@@ -21,7 +20,7 @@ if (!$app->checkRole('Famille')) {
 
 $id_famille = $app->id_famille;
 
-// --- 3. RÉCUPÉRATION DES DONNÉES JSON ---
+//récupère les données et filtre
 $json = file_get_contents('php://input');
 $data = json_decode($json, true);
 
@@ -31,21 +30,23 @@ $stockTotal  = filter_var($data['stockTotal'] ?? null, FILTER_VALIDATE_INT);
 
 $idCatalogue = filter_var($data['idCatalogueMedecine'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
 
-// --- 4. VALIDATION ET INSERTION ---
 
-// Logique de valeurs par défaut, notamment pour l'OCR où ces champs peuvent manquer.
+
 if ($stock === null || $stock === false) {
     $stock = 1;
 }
 if ($stockTotal === null || $stockTotal === false) {
-    // Le stock total par défaut est au moins égal au stock actuel.
     $stockTotal = $stock;
+}
+if (empty($type)) {
+    $type = 'Comprimé';
 }
 
 if (empty($idCatalogue)) {
     $idCatalogue = null;
 }
 
+//vérifie les données et erreur si non disponible
 if (!empty($name) && $id_famille) {
     
     $model = new MedicamentDAO();
@@ -60,13 +61,13 @@ if (!empty($name) && $id_famille) {
         );
 
         if ($success) {
-            http_response_code(201); // Created
+            http_response_code(201); 
             echo json_encode([
                 "success" => true,
                 "message" => "Médicament ajouté."
             ]);
         } else {
-            http_response_code(400); // Bad Request
+            http_response_code(400); 
             echo json_encode([
                 "success" => false,
                 "error" => "Le médicament n'a pas pu être ajouté."
@@ -74,8 +75,8 @@ if (!empty($name) && $id_famille) {
         }
 
     } catch (Exception $e) {
-        http_response_code(500); // Internal Server Error
-        error_log($e->getMessage()); // Log for backend only
+        http_response_code(500);
+        error_log($e->getMessage());
         echo json_encode([
             "success" => false, 
             "error" => "Erreur interne du serveur."
@@ -83,7 +84,7 @@ if (!empty($name) && $id_famille) {
     }
 
 } else {
-    http_response_code(400); // Bad Request
+    http_response_code(400);
     $errorMsg = empty($name) ? 'Le nom du médicament est obligatoire.' : 'Aucune famille sélectionnée.';
     echo json_encode([
         'success' => false, 

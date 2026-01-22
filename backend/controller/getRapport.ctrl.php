@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 $app = new App();
 
+// vérifie si on est connecter
 if (!$app->connected || !$app->id_famille) {
     http_response_code(403);
     echo json_encode(['success' => false, 'error' => 'Accès refusé.']);
@@ -19,12 +20,14 @@ if (!$app->connected || !$app->id_famille) {
 try {
     $model = new RapportDAO();
     
+    // récupère les rapports du jour de la famille
     $rapports = $model->getRapportsDuJour($app->id_famille);
     
     if (empty($rapports)) {
         $rapports = $model->getDernierRapport($app->id_famille);
     }
 
+    // pour chaque rapport on récupère les medicaments du rapport
     foreach ($rapports as &$row) {
         $row['medics_details'] = $model->getMedicsByRapport($row['id_rapport']);
     }

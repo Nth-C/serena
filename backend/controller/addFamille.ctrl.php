@@ -24,6 +24,7 @@ $nom = filter_var($data['nom_groupe'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
 $desc = filter_var($data['description'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
 $nom_aide = filter_var($data['nom_aide'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
 
+//vérifie les informations envoyés
 if ($nom && $desc && $nom_aide) {
     $dao = new FamilleDAO();
 
@@ -34,11 +35,13 @@ if ($nom && $desc && $nom_aide) {
     ]);
 
     try {
+        //créer la famille
         $id_famille = $dao->insert($famille);
 
         if ($id_famille) { 
             $id_personne = $app->personne->id;
             
+            //ajout de la personne dans la famille avec le role de Createur
             if ($dao->AddPersFam($id_famille, $id_personne, 'Createur')) {
                 echo json_encode(['success' => true]);
             } else {

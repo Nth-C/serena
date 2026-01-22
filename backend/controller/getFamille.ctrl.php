@@ -20,6 +20,7 @@ if (!$app->connected || !$app->personne) {
 
 try {
     $dao = new FamilleDAO();
+    // récupère les famille de la personne
     $familles = $dao->findByPersonne($app->personne->id);
 
     echo json_encode($familles);

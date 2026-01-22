@@ -6,6 +6,7 @@ header("Content-Type: application/json");
 $app = new App();
 
 try {
+    //logout la personne
     $app->logout();
 
     echo json_encode([

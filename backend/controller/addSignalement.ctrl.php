@@ -20,11 +20,11 @@ try {
     $app = new App();
     error_log("DEBUG: App initialized");
     
-    // 1. Lire le JSON envoyé par React
+    
     $json = file_get_contents('php://input');
     
     error_log("DEBUG: Raw body received: " . (strlen($json) > 0 ? "YES (" . strlen($json) . " bytes)" : "NO"));
-    error_log("DEBUG: Raw JSON: " . substr($json, 0, 200)); // Les 200 premiers caractères
+    error_log("DEBUG: Raw JSON: " . substr($json, 0, 200)); 
     
     if (empty($json)) {
         throw new Exception("Corps de la requête vide.");

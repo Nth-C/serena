@@ -64,14 +64,14 @@ if (empty(trim($subject)) || empty(trim($message))) {
     echo json_encode(['error' => 'Sujet ou message manquant']);
     exit;
 }
-
+//information du mail
 $to = "admin@sere-na.alwaysdata.net";
 
 $headers = "From: no-reply@sere-na.alwaysdata.net\r\n";
 $headers .= "Reply-To: no-reply@sere-na.alwaysdata.net\r\n";
 $headers .= "X-Mailer: PHP/" . phpversion();
 
-// Ensure mail() exists and suppress warnings from it; log failures for diagnosis.
+// vérifie si la fonction mail existe
 if (!function_exists('mail')) {
     error_log('envoieSignalement: mail() is not available on this host');
     http_response_code(500);
@@ -79,6 +79,7 @@ if (!function_exists('mail')) {
     exit;
 }
 
+// envie le mail
 $success = @mail($to, $subject, $message, $headers);
 if ($success) {
     echo json_encode(['success' => true]);

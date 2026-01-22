@@ -5,6 +5,7 @@ require_once(__DIR__ . '/../app.php');
 header("Content-Type: application/json");
 $app = new App();
 
+//vérifie le role nécessaire
 if (!$app->checkRole('Famille')) {
     header('HTTP/1.1 403 Forbidden');
     echo json_encode([
@@ -31,8 +32,10 @@ try {
         throw new Exception("Erreur lors de la réception du fichier.");
     }
 
+    //récupère le document
     $file = $_FILES['document'];
 
+    //extension accepter
     $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
     $allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf'];
 
@@ -48,19 +51,23 @@ try {
         throw new Exception("Contenu du fichier invalide.");
     }
 
+    //dossier d'upload
     $uploadDir = __DIR__ . '/../uploads/famille_' . $app->id_famille . '/';
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0777, true);
     }
 
+    // créer un id unique d'url
     $safeFileName = uniqid('doc_', true) . '.' . $extension;
     $targetPath = $uploadDir . $safeFileName;
     $relativeUrl = 'uploads/famille_' . $app->id_famille . '/' . $safeFileName;
 
+    //met le fichier dans le dossier
     if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
         throw new Exception("Échec de l'enregistrement sur le serveur.");
     }
 
+    //ajout du document dans la bd
     $model = new DocumentDAO();
     $success = $model->addDocument(
         $app->id_famille, 

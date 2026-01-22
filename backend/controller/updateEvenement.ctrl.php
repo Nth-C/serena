@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 $app = new App();
 
+// vérifie le role 
 if (!$app->checkRole('Proche')) {
     http_response_code(403);
     echo json_encode(['success' => false, 'error' => 'Accès refusé']);
@@ -18,6 +19,7 @@ if (!$app->checkRole('Proche')) {
 }
 
 try {
+    // récupère les données et filtre les donnee
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
 
@@ -29,6 +31,7 @@ try {
     $evDAO = new EvenementDAO();
     $trDAO = new TrajetDAO();
 
+    // met a jour l'évènement avec les nouvelle information
     $successEv = $evDAO->updateEvenement(
         filter_var($data['id_event'], FILTER_SANITIZE_SPECIAL_CHARS),
         filter_var($data['titre'], FILTER_SANITIZE_SPECIAL_CHARS),
@@ -38,6 +41,7 @@ try {
         filter_var($data['description'], FILTER_SANITIZE_SPECIAL_CHARS)
     );
 
+    // met a jour le trajet si il y en a 1
     if ($successEv && isset($data['trajet'])) {
         $trDAO->updateTrajet(
             $data['id_event'],
