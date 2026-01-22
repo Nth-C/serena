@@ -8,6 +8,9 @@ COPY package*.json ./
 # On installe les dépendances proprement pour Linux
 RUN npm install
 
+
+RUN npx playwright install --with-deps
+
 # On copie le reste du code
 COPY . .
 

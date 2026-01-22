@@ -37,3 +37,4 @@ services:
     command: npx playwright test
     depends_on:
       - backend
+      - frontend
