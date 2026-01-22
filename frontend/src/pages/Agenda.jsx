@@ -368,6 +368,7 @@ function Agenda() {
 
           if (result.success) {
               handleSuccess('Trajet ajouté avec succès !');
+              setTrajetOpen(false)
           } else {
               console.error('Erreur lors de l\'ajout du trajet', result.error);
           }
