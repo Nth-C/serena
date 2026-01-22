@@ -43,6 +43,7 @@ if ($nom && $nom_aide) {
         if ($id_famille) { 
             $id_personne = $app->personne->id;
 
+            //categorie de base créer
             $categorieDAO->addCategorie($id_famille, "Ordonnances", "Professionelle");
             $categorieDAO->addCategorie($id_famille, "Documents", "Professionelle");
             
