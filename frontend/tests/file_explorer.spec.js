@@ -85,7 +85,6 @@ test.describe('Page Documents - Mode Mock Complet', () => {
       await route.fulfill({ status: 200, body: JSON.stringify({ success: true }) });
     });
 
-    // CORRECTION ICI : On cible spécifiquement le bouton "Ajouter un document"
     await page.locator('.btn_add_container').filter({ hasText: 'Ajouter un document' }).click();
     
     const slideForm = page.locator('form.new_document');

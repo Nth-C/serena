@@ -18,11 +18,9 @@ test.describe('Page Inviter des contacts - Mode Mock Complet', () => {
       sessionStorage.setItem('user', JSON.stringify({ id: 999, nom: 'Robot', prenom: 'Test' }));
     });
 
-    // 1. Définition du mock pour la liste
     await page.route('**/*route=allpersonne/view*', async (route) => {
       const postData = route.request().postDataJSON();
       
-      // Simulation du filtre de recherche backend
       let responseData = mockUsers;
       if (postData && postData.texte) {
         const search = postData.texte.toLowerCase();
@@ -39,26 +37,21 @@ test.describe('Page Inviter des contacts - Mode Mock Complet', () => {
       });
     });
 
-    // 2. Navigation + Attente explicite de la réponse réseau
-    // Cela empêche le test de commencer avant que les données soient chargées
+
     const responsePromise = page.waitForResponse(response => 
       response.url().includes('allpersonne/view') && response.status() === 200
     );
 
-    await page.goto('/add_contact'); // Assurez-vous que c'est la bonne URL
+    await page.goto('/add_contact'); 
     await responsePromise;
   });
 
   test('Affichage initial et recherche de membre', async ({ page }) => {
-    // On attend que le titre soit visible pour être sûr que la page est chargée
-    await expect(page.getByText('Inviter des contact')).toBeVisible(); // Titre du LayoutMenu
+    await expect(page.getByText('Inviter des contact')).toBeVisible();
     
-    // On attend que la liste soit rendue
     await expect(page.locator('.membre_list')).toBeVisible();
     await expect(page.getByText('Doe John')).toBeVisible();
 
-    // Test de la recherche
-    // On doit attendre la nouvelle réponse après la frappe
     const searchResponsePromise = page.waitForResponse(response => 
       response.url().includes('allpersonne/view') && response.status() === 200
     );
@@ -75,7 +68,6 @@ test.describe('Page Inviter des contacts - Mode Mock Complet', () => {
       await route.fulfill({ status: 200, body: JSON.stringify({ success: true }) });
     });
 
-    // On attend que la liste soit là
     await expect(page.locator('.membre_list')).toBeVisible();
 
     const userRow = page.locator('.membre_list > div').filter({ hasText: 'Doe John' });
@@ -85,7 +77,6 @@ test.describe('Page Inviter des contacts - Mode Mock Complet', () => {
     
     await actionButton.click();
 
-    // On attend que le bouton change d'état (loading puis success)
     await expect(actionButton).toHaveClass('btn-invited');
   });
 
@@ -99,7 +90,6 @@ test.describe('Page Inviter des contacts - Mode Mock Complet', () => {
     const userRow = page.locator('.membre_list > div').filter({ hasText: 'Smith Jane' });
     const actionButton = userRow.locator('button');
 
-    // Jane est déjà invitée dans le mock
     await expect(actionButton).toHaveClass('btn-invited');
 
     await actionButton.click();

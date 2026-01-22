@@ -4,8 +4,6 @@ test.describe('Page Login - Mode Mock', () => {
 
   test('Connexion réussie (Simulation API)', async ({ page }) => {
     
-    // CORRECTION : On utilise le pattern large *route=login* car c'est ce qu'il y a dans votre code React
-    // React code: fetch(`${apiUrl}/?route=login`, ...)
     await page.route('**/*route=login*', async (route) => {
       await route.fulfill({
         status: 200,
@@ -29,14 +27,13 @@ test.describe('Page Login - Mode Mock', () => {
 
   test('Échec de connexion (Simulation API)', async ({ page }) => {
     
-    // CORRECTION : Même chose ici, on intercepte route=login
     await page.route('**/*route=login*', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({ 
           success: false, 
-          message: "Identifiants incorrects" // Attention: votre code React utilise 'message', pas 'error'
+          message: "Identifiants incorrects" 
         })
       });
     });
