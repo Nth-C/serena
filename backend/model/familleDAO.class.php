@@ -8,7 +8,7 @@ class FamilleDAO {
     $this->dal = $dal ?: DAL::get();
 }
 
-
+    // créer une famille 
     public function insert(Famille $famille) {
     $query = "INSERT INTO fams (nom, description, nom_aide) 
               VALUES (:nom, :description, :nom_aide) 
@@ -29,7 +29,7 @@ class FamilleDAO {
     
     return false;
 }
-
+    // met a jour la famille avec les informations
     public function update(Famille $famille): bool {
         $query = 'UPDATE fams 
                 SET nom = :nom, description = :description, nom_aide = :nom_aide 
@@ -45,6 +45,7 @@ class FamilleDAO {
         ]);
     }
 
+    // cherche les familles qui appartient a une personne avec son id
     public function findByPersonne($id_personne): array {
         $query = 'SELECT f.* FROM FAMS f
                     JOIN APPARTIENT_A a ON f.id_famille = a.id_famille
@@ -62,6 +63,8 @@ class FamilleDAO {
 
         return $resultats;
     }
+
+    // cherche les familles avec le nom de la famille
     public function findByName(string $nom): ?Famille {
         $query = 'SELECT * FROM fams WHERE nom = :nom';
         $stmt = $this->dal->prepare($query);
@@ -75,6 +78,7 @@ class FamilleDAO {
         return new Famille($result);
     }
 
+    // cherche toute les familles
     public function findAll(): array {
         $query = 'SELECT * FROM fams';
         $stmt = $this->dal->prepare($query);
@@ -90,6 +94,7 @@ class FamilleDAO {
         return $resultats;
     }
 
+    // récupère les personnes d'une famille avec son id
     public function getPersFam($id_famille): array {
     $query = 'SELECT p.*,a.role  FROM PERSONNES p
               JOIN APPARTIENT_A a ON p.id_personne = a.id_personne
@@ -107,7 +112,7 @@ class FamilleDAO {
 
     return $resultats;
     }
-
+    // ajjoute une personne a une famille
     public function AddPersFam($id_famille, $id_personne, string $role = 'Createur'): bool {
         $query = 'INSERT INTO appartient_a (id_famille, id_personne, role) 
                 VALUES (:id_f, :id_p, :role)';
@@ -119,7 +124,7 @@ class FamilleDAO {
         ]);
     }
 
-
+    // met a jour le role d'une personne dans une famille
     public function UpdateRolePersFam($id_famille, $id_personne, $role): bool {
     $query = 'UPDATE appartient_a 
               SET role = :role 
@@ -135,6 +140,7 @@ class FamilleDAO {
     ]);
     }
 
+    // supprime une personne d'une famille
     public function deletePersonneDeFamille($id_famille, $id_personne): bool {
     $query = 'DELETE FROM appartient_a 
               WHERE id_famille = :id_f 
@@ -148,6 +154,7 @@ class FamilleDAO {
     ]);
     }
 
+    // créer une nouvelles invitations pour une personne dans une famille
     public function inviterPersonneDansFamille($id_famille_invitee, $id_pers_invitee, $id_pers_qui_invite): bool {
     $query = 'INSERT INTO invitation (id_famille_invitee, id_pers_invitee, id_pers_qui_invite) 
               VALUES (:id_f, :id_p_invitee, :id_p_qui_invite)';
@@ -160,9 +167,8 @@ class FamilleDAO {
         ':id_p_qui_invite' => $id_pers_qui_invite
     ]);
 }
-
+// supprime l'invitation envoyer a une personne
 public function deleteInviterPersonneDansFamille($id_famille_invitee, $id_pers_invitee, $id_pers_qui_invite): bool {
-    // On supprime la ligne où les trois IDs correspondent
     $query = 'DELETE FROM invitation 
               WHERE id_famille_invitee = :id_f 
               AND id_pers_invitee = :id_p_invitee 
@@ -177,8 +183,8 @@ public function deleteInviterPersonneDansFamille($id_famille_invitee, $id_pers_i
     ]);
 }
 
+    // récupère les details des invitations dans une famille pour une personnes
     public function getInvitationDetails($id_personne): array {
-    // Jointure triple pour avoir l'invitation, l'expéditeur et la famille
     $query = 'SELECT 
                 i.id_famille_invitee,
                 f.nom AS nom_famille,
@@ -196,17 +202,13 @@ public function deleteInviterPersonneDansFamille($id_famille_invitee, $id_pers_i
         ':id_p' => $id_personne
     ]);
 
-    // fetchAll est nécessaire pour retourner une liste à React
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+    //accepter l'invitation d'une personne dans la famille et l'ajoute dedans, supprime également l'invitation
     public function AccepterInvitation($id_personne, $id_famille, $role = "Professionelle"): bool {
     try {
-        // 1. On commence une transaction pour s'assurer que si une étape échoue, rien n'est modifié
         $this->dal->beginTransaction();
-
-        // 2. On ajoute la personne à la famille (Lien n-n)
-        // Note : Vérifiez le nom de votre table de liaison (ici 'appartient_a')
         $queryInsert = 'INSERT INTO appartient_a (id_famille, id_personne,role) 
                         VALUES (:id_f, :id_p, :role)';
         $stmtInsert = $this->dal->prepare($queryInsert);
@@ -216,7 +218,6 @@ public function deleteInviterPersonneDansFamille($id_famille_invitee, $id_pers_i
             ':role' => $role,
         ]);
 
-        // 3. On supprime l'invitation maintenant qu'elle est acceptée
         $queryDelete = 'DELETE FROM invitation 
                         WHERE id_famille_invitee = :id_f 
                         AND id_pers_invitee = :id_p';
@@ -226,63 +227,57 @@ public function deleteInviterPersonneDansFamille($id_famille_invitee, $id_pers_i
             ':id_p' => $id_personne
         ]);
 
-        // 4. On valide les changements
         return $this->dal->commit();
 
     } catch (Exception $e) {
     $this->dal->rollBack();
-    // Renvoie l'erreur réelle pour le debug (à enlever en production)
     throw new Exception("SQL Error: " . $e->getMessage());
-}
-}
-
-public function RefuserInvitation($id_personne, $id_famille): bool {
-    try {
-        $this->dal->beginTransaction();
-
-        // On supprime simplement l'invitation correspondante
-        $queryDelete = 'DELETE FROM invitation 
-                        WHERE id_famille_invitee = :id_f 
-                        AND id_pers_invitee = :id_p';
-        
-        $stmtDelete = $this->dal->prepare($queryDelete);
-        $stmtDelete->execute([
-            ':id_f' => $id_famille,
-            ':id_p' => $id_personne
-        ]);
-
-        return $this->dal->commit();
-
-    } catch (Exception $e) {
-        if ($this->dal) $this->dal->rollBack();
-        // Debug : à loguer ou envoyer selon tes besoins
-        throw new Exception("SQL Error (Refuser): " . $e->getMessage());
     }
-}
-
-public function QuitterFamille(string $id_personne, string $id_famille): bool {
-    try {
-        $this->dal->beginTransaction();
-
-        // On supprime la ligne qui lie cet utilisateur à cette famille
-        $query = 'DELETE FROM appartient_a 
-                  WHERE id_famille = :id_f 
-                  AND id_personne = :id_p';
-        
-        $stmt = $this->dal->prepare($query);
-        $res = $stmt->execute([
-            ':id_f' => $id_famille,
-            ':id_p' => $id_personne
-        ]);
-
-        // Si la suppression a fonctionné, on valide
-        return $this->dal->commit();
-
-    } catch (Exception $e) {
-        if ($this->dal) $this->dal->rollBack();
-        throw new Exception("Erreur SQL (Quitter): " . $e->getMessage());
     }
-}
+
+    // supprime l'invation de la base de donnée
+    public function RefuserInvitation($id_personne, $id_famille): bool {
+        try {
+            $this->dal->beginTransaction();
+            $queryDelete = 'DELETE FROM invitation 
+                            WHERE id_famille_invitee = :id_f 
+                            AND id_pers_invitee = :id_p';
+            $stmtDelete = $this->dal->prepare($queryDelete);
+            $stmtDelete->execute([
+                ':id_f' => $id_famille,
+                ':id_p' => $id_personne
+            ]);
+            return $this->dal->commit();
+
+        } catch (Exception $e) {
+            if ($this->dal) $this->dal->rollBack();
+            throw new Exception("SQL Error (Refuser): " . $e->getMessage());
+        }
+    }
+
+    //quitte la famille avec son id et l'id de la personne qui veux quitter 
+    public function QuitterFamille(string $id_personne, string $id_famille): bool {
+        try {
+            $this->dal->beginTransaction();
+
+            $query = 'DELETE FROM appartient_a 
+                    WHERE id_famille = :id_f 
+                    AND id_personne = :id_p';
+            
+            $stmt = $this->dal->prepare($query);
+            $res = $stmt->execute([
+                ':id_f' => $id_famille,
+                ':id_p' => $id_personne
+            ]);
+
+            // Si la suppression a fonctionné, on valide
+            return $this->dal->commit();
+
+        } catch (Exception $e) {
+            if ($this->dal) $this->dal->rollBack();
+            throw new Exception("Erreur SQL (Quitter): " . $e->getMessage());
+        }
+    }
 
 
 
@@ -291,32 +286,26 @@ public function QuitterFamille(string $id_personne, string $id_famille): bool {
     }
 
 
-    /**
- * Récupère le rôle d'un utilisateur au sein d'une famille spécifique
- */
-public function getRoleInFamily(string $userId, string $familleId): string 
-{
-    // La requête SQL qui va chercher la colonne 'role'
-    $sql = "SELECT role 
-            FROM appartient_a 
-            WHERE id_personne = :id_user 
-            AND id_famille = :id_famille";
+    // récupère le role qu'une personne à dans une famille
+    public function getRoleInFamily(string $userId, string $familleId): string 
+    {
+        $sql = "SELECT role 
+                FROM appartient_a 
+                WHERE id_personne = :id_user 
+                AND id_famille = :id_famille";
 
-    try {
-        $stmt = $this->dal->prepare($sql);
-        $stmt->execute([
-            'id_user'    => $userId,
-            'id_famille' => $familleId
-        ]);
+        try {
+            $stmt = $this->dal->prepare($sql);
+            $stmt->execute([
+                'id_user'    => $userId,
+                'id_famille' => $familleId
+            ]);
 
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result['role'] ?? 'Visiteur';
 
-        // Si on trouve une ligne, on renvoie le rôle, sinon 'guest' (invité/aucun droit)
-        return $result['role'] ?? 'Visiteur';
-
-    } catch (PDOException $e) {
-        // En cas d'erreur SQL, on renvoie 'guest' par sécurité
-        return 'Visiteur';
+        } catch (PDOException $e) {
+            return 'Visiteur';
+        }
     }
-}
 }
