@@ -80,7 +80,7 @@ const RoleMembre = ({ isOpen, onClose }) => {
     return (
         <>
             <LayoutMenu
-                title={"Gerer role"}
+                title={"Gérer les rôles"}
                 isOpen={isOpen}
                 onClose={onClose}
             >

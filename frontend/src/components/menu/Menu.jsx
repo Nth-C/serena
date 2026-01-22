@@ -58,7 +58,7 @@ function Menu({isOpen , onHamburgerClick}) {
                             <span></span>
                             <span></span>
                         </button>
-                        <strong>Paramètre</strong> 
+                        <strong>Paramètres</strong> 
                         <img src="/img/logo.svg" alt="" />
                     </div>
                     <span className={styles.border}></span>
@@ -79,7 +79,7 @@ function Menu({isOpen , onHamburgerClick}) {
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
                         <NavLink to={"/role_membre"} onClick={onHamburgerClick}>
-                            <p>Gérer les roles</p>
+                            <p>Gérer les rôles</p>
                             <img src="/icons/chevron_right.svg" alt=">" />
                         </NavLink>
                     </div >
