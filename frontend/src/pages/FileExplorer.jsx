@@ -676,6 +676,7 @@ function FileExplorer() {
           </div>
         </div>
       </div>
+      </div>
     </Slide>
 
     {/* --- SLIDE AJOUT MEDICAMENT (OCR) --- */}
