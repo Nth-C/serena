@@ -787,19 +787,20 @@ function Agenda() {
                   setIsEditMode(true);
                   setIsTrajet(false);
                 }}>Modifier</button>
-                {currentEvent.id_recurrence !== null && (
-                <button className="btn_red" onClick={() => {
-                  setPopUpDeleteRecuOpen(true)
-                  setEventToDelete({id: currentEvent.id_event, title: currentEvent.titre, id_recurrence: currentEvent.id_recurrence})
-                  setEventOpen(false)
-                }}>Supprimer les évènements de la récurrence</button>
-              )}
                 <button className="btn_red" onClick={() => {
                   setPopUpDeleteOpen(true)
                   setEventToDelete({id: currentEvent.id_event, title: currentEvent.titre})
                   setEventOpen(false)
                 }}>Supprimer</button>
             </div>
+            
+            {currentEvent.id_recurrence !== null && (
+                <button className="btn_red" onClick={() => {
+                  setPopUpDeleteRecuOpen(true)
+                  setEventToDelete({id: currentEvent.id_event, title: currentEvent.titre, id_recurrence: currentEvent.id_recurrence})
+                  setEventOpen(false)
+                }}>Supprimer les évènements de la récurrence</button>
+              )}
         </div>
         ) : (currentEvent && isEditMode) && (
           <>

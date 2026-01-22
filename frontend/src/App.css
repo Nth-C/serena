@@ -1384,11 +1384,11 @@ progress.blue_bar::-moz-progress-bar {
   gap: .5rem;
 }
 
-.event_details>div:last-child {
+.event_details .actions {
   flex-direction: row;
 }
 
-.event_details>div:last-child button {
+.event_details .actions button {
   width: 50%;
 }
 
