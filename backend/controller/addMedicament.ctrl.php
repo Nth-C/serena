@@ -35,6 +35,15 @@ $idCatalogue = filter_var($data['idCatalogueMedecine'] ?? '', FILTER_SANITIZE_SP
 if ($stock === null || $stock === false) {
     $stock = 1;
 }
+
+if ($stock < 0){
+    $stock = 0;
+}
+
+if ($stockTotal < 0){
+    $stockTotal = 0;
+}
+
 if ($stockTotal === null || $stockTotal === false) {
     $stockTotal = $stock;
 }
