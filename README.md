@@ -31,163 +31,147 @@
 ---
 
 <details>
-  <summary>Sommaire</summary>
+  <summary>Table des matières</summary>
   <ol>
     <li>
-      <a href="#-à-propos-du-projet">À propos du projet</a>
+      <a href="#à-propos-du-projet">À propos du projet</a>
       <ul>
-        <li><a href="#-technologies-utilisées">Technologies utilisées</a></li>
+        <li><a href="#technologies">Technologies</a></li>
       </ul>
     </li>
     <li>
-      <a href="#-pour-commencer">Pour commencer</a>
+      <a href="#mise-en-route">Mise en Route</a>
       <ul>
-        <li><a href="#-prérequis">Prérequis</a></li>
-        <li><a href="#-installation">Installation</a></li>
+        <li><a href="#prérequis">Prérequis</a></li>
+        <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#-utilisation">Utilisation</a></li>
-    <li><a href="#-roadmap">Roadmap</a></li>
-    <li><a href="#-contribuer">Contribuer</a></li>
-    <li><a href="#-licence">Licence</a></li>
-    <li><a href="#-contact">Contact</a></li>
+    <li><a href="#utilisation">Utilisation</a></li>
+    <li><a href="#feuille-de-route">Feuille de Route</a></li>
+    <li><a href="#contribuer">Contribuer</a></li>
+    <li><a href="#licence">Licence</a></li>
+    <li><a href="#contact">Contact</a></li>
   </ol>
 </details>
 
 ---
 
-## 📖 À propos du projet
+## À propos du projet
 
-En France, le « grand âge » est un enjeu social et sanitaire majeur. Avec le vieillissement de la population, la France compte de plus en plus de personnes en situation de dépendance. La volonté de faciliter leur maintien à domicile repose en grande partie sur la présence d'aidants.
+En France, le « grand âge » est un enjeu social et sanitaire majeur. Face au vieillissement de la population et à la volonté de faciliter le maintien à domicile, la coordination entre les aidants et les professionnels de santé devient primordiale.
 
-**Serena** est une plateforme développée pour les aidants familiaux et les professionnels de santé dans le cadre de l'accompagnement du grand âge. Notre application vise à faciliter le maintien à domicile en centralisant les informations utiles au suivi médical (gestion des rendez-vous, stocks de médicaments), administratif (suivi des demandes d'aides) et quotidien.
+**Serena** est une plateforme conçue pour les aidants familiaux et les intervenants professionnels. Elle centralise les informations essentielles au suivi médical (gestion de rendez-vous, stocks de médicaments), administratif (suivi des demandes d'aides) et quotidien, afin de garantir une meilleure qualité de vie pour les personnes dépendantes.
 
-<p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
-
-### 🛠️ Technologies utilisées
+## Technologies
 
 Ce projet est construit sur une architecture moderne et robuste, séparant clairement le frontend du backend.
 
 *   **Frontend :**
-    *   [React](https://reactjs.org/) (via Vite) pour une interface utilisateur réactive et dynamique.
-    *   HTML5 & CSS3 pour la structure et le style.
+    *   [React](https://reactjs.org/) (initialisé avec Vite) pour une interface utilisateur réactive et performante.
+    *   HTML5 & CSS3 pour la structure sémantique et le design.
 *   **Backend :**
     *   [PHP](https://www.php.net/) pour la logique serveur et l'API REST.
 *   **Base de données :**
-    *   [PostgreSQL](https://www.postgresql.org/) pour un stockage de données fiable et performant.
+    *   [PostgreSQL](https://www.postgresql.org/) pour un stockage de données fiable et transactionnel.
 *   **Infrastructure :**
-    *   [Docker](https://www.docker.com/) pour une conteneurisation complète de l'environnement, garantissant une installation et un déploiement cohérents.
+    *   [Docker](https://www.docker.com/) pour la conteneurisation de l'environnement de développement, garantissant une installation et un déploiement reproductibles.
 
-<p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
-
-## 🚀 Pour commencer
+## Mise en Route
 
 Pour obtenir une copie locale du projet et la faire fonctionner, suivez ces étapes.
 
-### ✅ Prérequis
+### Prérequis
 
-Assurez-vous d'avoir les outils suivants installés sur votre machine :
+Assurez-vous que les outils suivants sont installés et configurés sur votre système :
 
-*   **Docker** et **Docker Compose** : Pour faire tourner l'environnement conteneurisé. L'installation de PHP ou PostgreSQL n'est pas nécessaire sur votre machine locale, Docker s'en charge.
-*   **Git** : Pour cloner le projet.
-*   **Node.js** et **npm** : Pour gérer les dépendances du frontend.
-    *   ```sh
-      npm install npm@latest -g
-      ```
+*   **Docker et Docker Compose** : Indispensable pour exécuter l'environnement conteneurisé. L'installation de PHP ou de PostgreSQL directement sur votre machine n'est pas requise.
+*   **Git** : Pour cloner le dépôt et gérer les versions du code.
+*   **Node.js (version LTS)** : Requis pour la gestion des dépendances et l'exécution du serveur de développement frontend. Il est recommandé d'installer la version LTS (Long-Term Support) depuis le [site officiel de Node.js](https://nodejs.org/), qui inclut une version stable de `npm`.
 
-### ⚙️ Installation
+### Installation
 
-1.  **Clonez le projet**
+1.  **Cloner le dépôt**
     ```sh
     git clone https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena.git
     cd serena
     ```
 
-2.  **Configuration du Backend**
-    Le backend nécessite un fichier `.env` pour les secrets et la configuration de la base de données.
+2.  **Configurer l'environnement Backend**
+    Le backend requiert un fichier `.env` pour les variables d'environnement, notamment les accès à la base de données.
     ```sh
-    # Naviguez vers le dossier backend
+    # Naviguer vers le dossier backend
     cd backend
 
-    # Copiez le fichier d'exemple
+    # Copier le fichier d'exemple pour créer votre configuration locale
     cp .env.example .env
     ```
-    Ouvrez le nouveau fichier `.env` et remplissez les variables. Les valeurs par défaut correspondent à la configuration de `docker-compose.yml`.
-    ```ini
-    DB_HOST=serena_db
-    DB_PORT=5432
-    DB_NAME=serena
-    DB_USER=user
-    DB_PASSWORD=password
-    ```
+    Ouvrez le fichier `.env` et vérifiez que les variables correspondent à la configuration de `docker-compose.yml`. Les valeurs par défaut sont normalement correctes pour un environnement Docker standard.
 
-3.  **Installation des dépendances Frontend**
+3.  **Installer les dépendances Frontend**
     ```sh
-    # Revenez au dossier racine du projet, puis allez dans le frontend
+    # Naviguer vers le dossier frontend
     cd ../frontend
 
-    # Installez les packages npm
+    # Installer les packages via npm
     npm install
     ```
-    Le frontend est configuré pour communiquer avec l'API via la variable `VITE_API_URL` dans les fichiers `.env.development` et `.env.production`. La valeur par défaut `http://localhost:8000` est correcte pour l'environnement Docker.
+    Le frontend est pré-configuré pour communiquer avec l'API via la variable d'environnement `VITE_API_URL`, définie dans les fichiers `.env.*`.
 
-4.  **Lancez l'application avec Docker**
+4.  **Lancer l'application**
     ```sh
-    # Revenez à la racine du projet
+    # Retourner à la racine du projet
     cd ..
 
-    # Lancez les conteneurs
-    docker-compose up --build
+    # Démarrer les services avec Docker Compose
+    docker-compose up --build -d
     ```
+    L'option `-d` (detached) lance les conteneurs en arrière-plan.
 
-### ✨ Utilisation
+## Utilisation
 
-Une fois les conteneurs démarrés :
+Une fois les conteneurs démarrés, l'application est accessible aux adresses suivantes :
 
-*   Le **Frontend** est accessible à l'adresse 👉 **http://localhost:5173**
-*   Le **Backend** (API) est exposé sur 👉 **http://localhost:8000**
-*   **PhpPgAdmin** (interface de gestion de la BDD) est accessible sur 👉 **http://localhost:5050**
+*   **Application Frontend** : `http://localhost:5173`
+*   **API Backend** : `http://localhost:8000`
+*   **Interface de gestion de base de données (PhpPgAdmin)** : `http://localhost:5050`
 
-<p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
+Pour arrêter les services, exécutez `docker-compose down` depuis la racine du projet.
 
-## 🗺️ Roadmap
+## Feuille de Route
 
-- [x] Création, synchronisation et administration d'un agenda
-- [x] Création d'un espace de dépôt de fichiers (documents)
-- [ ] Lecture automatique d'une ordonnance via OCR
-- [ ] Améliorer la documentation pour les développeurs
+Nos efforts de développement se concentrent actuellement sur les axes suivants :
 
-Consultez les [issues ouvertes](https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena/-/issues) pour une liste complète des fonctionnalités proposées (et des bugs connus).
+*   **Fonctionnalités finalisées :**
+    *   Gestion d'un agenda partagé avec synchronisation.
+    *   Espace de stockage et de classification de documents.
 
-<p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
+*   **Prochaines étapes :**
+    *   Implémentation d'un module OCR pour la lecture et l'interprétation automatique d'ordonnances médicales.
+    *   Enrichissement de la documentation technique pour faciliter l'intégration de nouveaux contributeurs.
 
-## 🤝 Contribuer
+Consultez les [issues ouvertes](https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena/-/issues) pour une liste complète des fonctionnalités proposées et des bugs connus.
 
-Les contributions sont ce qui fait de la communauté open source un endroit extraordinaire pour apprendre, inspirer et créer. Toutes vos contributions sont grandement appréciées.
+## Contribuer
 
-Si vous avez une suggestion pour améliorer ce projet, veuillez forker le repo et créer une pull request. Vous pouvez aussi simplement ouvrir une issue avec le tag "enhancement".
+Les contributions sont un pilier de la communauté open source. Toute contribution est la bienvenue.
 
-1.  Fork le projet
-2.  Créez votre branche de fonctionnalité (`git checkout -b feature/AmazingFeature`)
-3.  Commitez vos changements (`git commit -m 'Add some AmazingFeature'`)
-4.  Poussez vers la branche (`git push origin feature/AmazingFeature`)
-5.  Ouvrez une Pull Request
+Si vous avez une suggestion pour améliorer ce projet, veuillez forker le dépôt et créer une pull request. Vous pouvez aussi simplement ouvrir une issue avec le tag "enhancement".
 
-<p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
+1.  Fork le projet.
+2.  Créez votre branche de fonctionnalité (`git checkout -b feature/AmazingFeature`).
+3.  Commitez vos changements (`git commit -m 'Add some AmazingFeature'`).
+4.  Poussez vers la branche (`git push origin feature/AmazingFeature`).
+5.  Ouvrez une Pull Request.
 
-## 📄 Licence
+## Licence
 
-Distribué sous la licence MIT. Voir `LICENSE` pour plus d'informations.
+Ce projet est distribué sous la licence MIT. Consultez le fichier `LICENSE` pour plus d'informations.
 
-<p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
+## Contact
 
-## 📞 Contact
-
-Email : sere-na@alwaysdata.net
+Pour toute question, vous pouvez nous contacter à l'adresse suivante : `sere-na@alwaysdata.net`
 
 Lien du projet : [https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena](https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena)
-
-<p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [React-shield]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
