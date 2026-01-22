@@ -20,10 +20,15 @@
 <div align="center">
 
 [![React][React-shield]][React-url]
+&nbsp;
 [![PHP][PHP-shield]][PHP-url]
+&nbsp;
 [![PostgreSQL][PostgreSQL-shield]][PostgreSQL-url]
+&nbsp;
 [![Docker][Docker-shield]][Docker-url]
+&nbsp;
 [![HTML5][HTML5-shield]][HTML5-url]
+&nbsp;
 [![CSS3][CSS3-shield]][CSS3-url]
 
 </div>
@@ -31,7 +36,7 @@
 ---
 
 <details>
-  <summary>Sommaire</summary>
+  <summary><strong>Sommaire</strong></summary>
   <ol>
     <li>
       <a href="#-à-propos-du-projet">À propos du projet</a>
@@ -68,15 +73,15 @@ En France, le « grand âge » est un enjeu social et sanitaire majeur. Avec le 
 
 Ce projet est construit sur une architecture moderne et robuste, séparant clairement le frontend du backend.
 
-*   **Frontend :**
-    *   [React](https://reactjs.org/) (via Vite) pour une interface utilisateur réactive et dynamique.
-    *   HTML5 & CSS3 pour la structure et le style.
-*   **Backend :**
-    *   [PHP](https://www.php.net/) pour la logique serveur et l'API REST.
-*   **Base de données :**
-    *   [PostgreSQL](https://www.postgresql.org/) pour un stockage de données fiable et performant.
-*   **Infrastructure :**
-    *   [Docker](https://www.docker.com/) pour une conteneurisation complète de l'environnement, garantissant une installation et un déploiement cohérents.
+* **Frontend :**
+    * [React](https://reactjs.org/) (via Vite) pour une interface utilisateur réactive et dynamique.
+    * HTML5 & CSS3 pour la structure et le style.
+* **Backend :**
+    * [PHP](https://www.php.net/) pour la logique serveur et l'API REST.
+* **Base de données :**
+    * [PostgreSQL](https://www.postgresql.org/) pour un stockage de données fiable et performant.
+* **Infrastructure :**
+    * [Docker](https://www.docker.com/) pour une conteneurisation complète de l'environnement, garantissant une installation et un déploiement cohérents.
 
 <p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
 
@@ -88,18 +93,18 @@ Pour obtenir une copie locale du projet et la faire fonctionner, suivez ces éta
 
 Assurez-vous d'avoir les outils suivants installés sur votre machine :
 
-*   **Docker** et **Docker Compose** : Pour faire tourner l'environnement conteneurisé. L'installation de PHP ou PostgreSQL n'est pas nécessaire sur votre machine locale, Docker s'en charge.
-*   **Git** : Pour cloner le projet.
-*   **Node.js** et **npm** : Pour gérer les dépendances du frontend.
-    *   ```sh
-      npm install npm@latest -g
-      ```
+* **Docker** et **Docker Compose** : Pour faire tourner l'environnement conteneurisé. L'installation de PHP ou PostgreSQL n'est pas nécessaire sur votre machine locale, Docker s'en charge.
+* **Git** : Pour cloner le projet.
+* **Node.js** et **npm** : Pour gérer les dépendances du frontend.
+    ```sh
+    npm install npm@latest -g
+    ```
 
 ### Installation
 
 1.  **Clonez le projet**
     ```sh
-    git clone https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena.git
+    git clone [https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena.git](https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena.git)
     cd serena
     ```
 
@@ -129,7 +134,7 @@ Assurez-vous d'avoir les outils suivants installés sur votre machine :
     # Installez les packages npm
     npm install
     ```
-    Le frontend est configuré pour communiquer avec l'API via la variable `VITE_API_URL` dans les fichiers `.env.development` et `.env.production`. La valeur par défaut `http://localhost:8000` est correcte pour l'environnement Docker.
+    *Note : Le frontend est configuré pour communiquer avec l'API via la variable `VITE_API_URL`. La valeur par défaut `http://localhost:8000` est correcte pour l'environnement Docker.*
 
 4.  **Lancez l'application avec Docker**
     ```sh
@@ -140,13 +145,15 @@ Assurez-vous d'avoir les outils suivants installés sur votre machine :
     docker-compose up --build
     ```
 
-### Utilisation
+<p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
 
-Une fois les conteneurs démarrés :
+## Utilisation
 
-*   Le **Frontend** est accessible à l'adresse  **http://localhost:5173**
-*   Le **Backend** (API) est exposé sur  **http://localhost:8000**
-*   **PhpPgAdmin** (interface de gestion de la BDD) est accessible sur  **http://localhost:5050**
+Une fois les conteneurs démarrés, vous pouvez accéder aux services :
+
+* **Frontend** : [http://localhost:5173](http://localhost:5173)
+* **Backend (API)** : [http://localhost:8000](http://localhost:8000)
+* **PhpPgAdmin** (Gestion BDD) : [http://localhost:5050](http://localhost:5050)
 
 <p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
 
@@ -183,13 +190,12 @@ Distribué sous la licence MIT. Voir `LICENSE` pour plus d'informations.
 
 ## Contact
 
-Email : sere-na@alwaysdata.net
+**Équipe Serena** - sere-na@alwaysdata.net
 
-Lien du projet : [https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena](https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena)
+Lien du projet : [GitLab](https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena)
 
 <p align="right">(<a href="#readme-top">Retourner en haut</a>)</p>
 
-<!-- MARKDOWN LINKS & IMAGES -->
 [React-shield]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
 [PHP-shield]: https://img.shields.io/badge/php-%23777BB4.svg?style=for-the-badge&logo=php&logoColor=white
