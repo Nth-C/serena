@@ -29,7 +29,6 @@ $name        = filter_var($data['name'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
 $stock       = filter_var($data['stock'] ?? null, FILTER_VALIDATE_INT);
 $stockTotal  = filter_var($data['stockTotal'] ?? null, FILTER_VALIDATE_INT);
 
-$type        = filter_var($data['type'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
 $idCatalogue = filter_var($data['idCatalogueMedecine'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
 
 // --- 4. VALIDATION ET INSERTION ---
@@ -41,10 +40,6 @@ if ($stock === null || $stock === false) {
 if ($stockTotal === null || $stockTotal === false) {
     // Le stock total par défaut est au moins égal au stock actuel.
     $stockTotal = $stock;
-}
-if (empty($type)) {
-    // Si le type n'est pas fourni, on utilise une valeur par défaut.
-    $type = 'Comprimé';
 }
 
 if (empty($idCatalogue)) {
@@ -61,8 +56,7 @@ if (!empty($name) && $id_famille) {
             $name, 
             $stock, 
             $stockTotal, 
-            $idCatalogue,
-            $type
+            $idCatalogue
         );
 
         if ($success) {

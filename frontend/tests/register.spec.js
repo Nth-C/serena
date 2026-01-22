@@ -29,20 +29,17 @@ test.describe('Page Inscription', () => {
   test('Validation erreur mots de passe', async ({ page }) => {
     await page.goto('/create_account');
 
-    // --- CORRECTION : Remplir TOUS les champs requis pour passer la validation HTML5 ---
     await page.locator('input[name="mail"]').fill('test_erreur@test.com');
     await page.locator('input[name="nom"]').fill('Nom');
     await page.locator('input[name="prenom"]').fill('Prenom');
     await page.locator('input[name="date_naissance"]').fill('2000-01-01');
     await page.locator('input[name="username"]').fill('testuser_error');
 
-    // On met des mots de passe différents
     await page.locator('input[name="mdp"]').fill('123456');
     await page.locator('input[name="confirmMdp"]').fill('999999');
     
     await page.click('button[type="submit"]');
 
-    // Maintenant le formulaire est envoyé, et ton JS React peut afficher l'erreur
     const errorMsg = page.locator('p').filter({ hasText: /mots de passe ne correspondent pas/i });
     await expect(errorMsg).toBeVisible();
   });
