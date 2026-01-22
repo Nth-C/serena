@@ -2003,6 +2003,7 @@ progress.blue_bar::-moz-progress-bar {
 
 .last_report>div>div:first-child :is(p, h2) {
   color: var(--white);
+  overflow-wrap: anywhere;
 }
 
 .last_report>div>div:first-child svg {
