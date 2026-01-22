@@ -18,7 +18,6 @@ export const getFormatTime = (date) => {
     const hours = date.getHours();
     const minutes = date.getMinutes();
 
-    // Ajoute un "0" devant si le chiffre est inférieur à 10 pour avoir "08" au lieu de "8"
     const formattedHours = hours.toString().padStart(2, '0');
     const formattedMinutes = minutes.toString().padStart(2, '0');
 

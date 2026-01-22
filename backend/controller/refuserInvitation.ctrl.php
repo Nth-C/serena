@@ -28,6 +28,7 @@ try {
 
     if (!empty($id_famille)) {
         $daoFamille = new FamilleDAO();
+        // refuse l'invitation
         $reussi = $daoFamille->RefuserInvitation($app->personne->id, $id_famille);
 
         if ($reussi) {

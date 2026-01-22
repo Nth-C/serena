@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 $app = new App();
 
+// vérifie le role
 if (!$app->checkRole('Famille')) {
     http_response_code(403);
     echo json_encode([
@@ -20,6 +21,7 @@ if (!$app->checkRole('Famille')) {
 }
 
 try {
+    // récupère les information et filtre 
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
 
@@ -33,6 +35,7 @@ try {
     $role = filter_var($data['role'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
 
     $model = new CategorieDAO();
+    // met a jour la catégorie avec les nouvelles informations
     $success = $model->updateCategorie($id_categorie, $name, $role);
     
     echo json_encode([

@@ -33,6 +33,7 @@ if ($user) {
 
         $dao->updateResetToken($email, $token, $expiresAt);
 
+        //information du mail
         $mail = new PHPMailer(true);
         $mail->isSMTP();
         $mail->Host       = $config['SMTP_HOST'];
@@ -48,6 +49,7 @@ if ($user) {
         $mail->isHTML(true);
         $mail->Subject = 'Reinitialisation de votre mot de passe';
         
+        //lien pour reset le mdp
         $link = "https://sere-na.alwaysdata.net/reset-password?token=" . $token;
         
         $mail->Body    = "
@@ -61,6 +63,8 @@ if ($user) {
         
         $mail->AltBody = "Lien de réinitialisation : $link";
 
+
+        //envoie la mail
         $mail->send();
         
         echo json_encode(['success' => true, 'message' => 'Email de récupération envoyé.']);

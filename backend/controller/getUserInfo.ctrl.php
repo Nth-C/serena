@@ -29,7 +29,7 @@ try {
     $user = $model->findPersonneById($app->personne->id);
 
     if ($user) {
-        // On retourne l'objet utilisateur (le DAO devrait déjà masquer le mot de passe)
+        // On retourne l'objet utilisateur
         echo json_encode($user);
     } else {
         http_response_code(404);

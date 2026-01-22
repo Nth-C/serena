@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 $app = new App();
 
+//vérifie le role
 if (!$app->checkRole('Famille')) {
     http_response_code(403);
     echo json_encode([
@@ -20,6 +21,8 @@ if (!$app->checkRole('Famille')) {
 }
 
 try {
+
+//récupère les informations et filtre les données
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
 
@@ -32,11 +35,13 @@ try {
     $id_medicament = filter_var($data['id_medicament'], FILTER_SANITIZE_SPECIAL_CHARS);
     $nouveauStock = filter_var($data['nouveauStock'], FILTER_SANITIZE_NUMBER_INT);
 
-    if($nouveauStock < 0){
+    // si le nouveau stock est au moins égale a 0
+    if ($nouveauStock < 0){
         $nouveauStock = 0;
     }
 
     $model = new MedicamentDAO();
+    // met a jour les medicaments
     $success = $model->updateMedecine($id_famille, $nouveauStock, $id_medicament);
 
     echo json_encode([

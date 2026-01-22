@@ -31,10 +31,12 @@ $data = json_decode($json, true);
 
 $id_personne = filter_var($data['id_personne'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
 
+//filtre l'id_personne
 if (!empty($id_personne) && $app->id_famille) {
     $daoFamille = new FamilleDAO();    
     
     try {
+        //invite la personne dans la famille
         $reussi = $daoFamille->inviterPersonneDansFamille(
             $app->id_famille,
             $id_personne,

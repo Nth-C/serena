@@ -1,40 +1,54 @@
 import { test, expect } from '@playwright/test';
 
-test('Test de connexion avec c et c', async ({ page }) => {
-  await page.goto('/login');
+test.describe('Page Login - Mode Mock', () => {
 
-  await page.locator('input[name="username"]').fill('c');
-  await page.locator('input[name="mdp"]').fill('c');
+  test('Connexion réussie (Simulation API)', async ({ page }) => {
+    
+    await page.route('**/*route=login*', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ 
+          success: true, 
+          user: { id: 1, username: 'test_user', role: 'admin' }
+        })
+      });
+    });
 
-  // On clique et on attend la réponse réseau
-  await page.click('button[type="submit"]');
+    await page.goto('/login');
 
-  // Si le login échoue, un message d'erreur devrait apparaître
-  // On attend un peu pour voir si l'URL change
-  try {
-    await expect(page).toHaveURL(/.*acce_suivi/, { timeout: 5000 });
-  } catch (error) {
-    // Si ça échoue, on regarde s'il y a un message d'erreur class="error_message"
-    const errorMsg = await page.locator('.error_message').textContent();
-    console.log("Message d'erreur affiché à l'écran :", errorMsg);
-    throw error;
-  }
-});
+    await page.locator('input[name="username"]').fill('nimporte_quoi');
+    await page.locator('input[name="mdp"]').fill('mot_de_passe_bidon');
 
-test('Échec de connexion avec mauvais identifiants', async ({ page }) => {
-  await page.goto('/login');
+    await page.click('button[type="submit"]');
 
-  // On entre des identifiants bidon
-  await page.locator('input[name="username"]').fill('mauvais_user');
-  await page.locator('input[name="mdp"]').fill('mauvais_mdp');
-  await page.click('button[type="submit"]');
+    await expect(page).toHaveURL(/.*acce_suivi/, { timeout: 10000 });
+  });
 
-  // On vérifie qu'on est TOUJOURS sur la page de login (pas de redirection)
-  await expect(page).toHaveURL(/.*login/);
+  test('Échec de connexion (Simulation API)', async ({ page }) => {
+    
+    await page.route('**/*route=login*', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ 
+          success: false, 
+          message: "Identifiants incorrects" 
+        })
+      });
+    });
 
-  // On vérifie qu'un message d'erreur est bien affiché à l'utilisateur
-  // (Adapte le sélecteur .error_message si ta classe est différente)
-  const errorMessage = page.locator('.error_message');
-  await expect(errorMessage).toBeVisible();
-  console.log("Erreur détectée :", await errorMessage.textContent());
+    await page.goto('/login');
+
+    await page.locator('input[name="username"]').fill('mauvais_user');
+    await page.locator('input[name="mdp"]').fill('mauvais_mdp');
+    await page.click('button[type="submit"]');
+
+    await expect(page).toHaveURL(/.*login/);
+
+    const errorMessage = page.locator('.error_message');
+    await expect(errorMessage).toBeVisible();
+    await expect(errorMessage).toContainText("Identifiants incorrects");
+  });
+
 });

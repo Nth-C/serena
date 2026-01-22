@@ -2,7 +2,6 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Page Agenda - Mode Mock Complet', () => {
 
-  // Date fixe pour garantir la cohérence entre le test, le mock et l'affichage
   const MOCK_DATE = '2026-01-21'; 
 
   const mockMembres = {
@@ -22,7 +21,6 @@ test.describe('Page Agenda - Mode Mock Complet', () => {
         nom: "Rendez-vous Docteur",
         lieu: "Cabinet Médical",
         description: "Apporter carte vitale",
-        // L'événement est calé sur la date mockée, de 08h à 18h pour être bien visible
         date_deb: `${MOCK_DATE} 08:00:00`,
         date_fin: `${MOCK_DATE} 18:00:00`,
         accompagnant: { id_personne: 1, nom: "Dupont", prenom: "Jean" },
@@ -32,8 +30,6 @@ test.describe('Page Agenda - Mode Mock Complet', () => {
   };
 
   test.beforeEach(async ({ page }) => {
-    // 1. IMPORTANT : On fige l'horloge du navigateur à la date du mock (08:00 matin)
-    // Cela force l'Agenda à s'ouvrir sur le bon jour et affiche l'événement immédiatement
     await page.clock.install({ time: new Date(`${MOCK_DATE}T08:00:00`) });
 
     await page.goto('/');
@@ -57,8 +53,6 @@ test.describe('Page Agenda - Mode Mock Complet', () => {
   });
 
   test('Affichage initial et navigation jour/semaine', async ({ page }) => {
-    // On cherche le texte exact pour éviter de trouver les options cachées des selects
-    // Le regex ^...$ assure qu'on ne matche que "Rendez-vous Docteur" et pas "Rendez-vous Docteur (21/01...)"
     const event = page.getByText(/^Rendez-vous Docteur$/).first();
     await expect(event).toBeVisible();
 
@@ -85,7 +79,6 @@ test.describe('Page Agenda - Mode Mock Complet', () => {
     await slide.locator('input[name="titre"]').fill('Kiné');
     await slide.locator('input[name="lieu"]').fill('Centre Ville');
     
-    // On utilise la date mockée
     await slide.locator('input[name="debut"]').fill(`${MOCK_DATE}T10:00`);
     await slide.locator('input[name="fin"]').fill(`${MOCK_DATE}T11:00`);
     
@@ -101,7 +94,6 @@ test.describe('Page Agenda - Mode Mock Complet', () => {
       await route.fulfill({ status: 200, body: JSON.stringify({ success: true }) });
     });
 
-    // Clic précis sur l'événement dans le calendrier
     await page.getByText(/^Rendez-vous Docteur$/).first().click();
     
     const details = page.locator('.event_details');
@@ -130,7 +122,6 @@ test.describe('Page Agenda - Mode Mock Complet', () => {
     const formTrajet = page.locator('form.add_trajet');
     await expect(formTrajet).toBeVisible();
 
-    // Sélection de l'événement mocké via l'index (car le texte contient la date dynamique)
     await formTrajet.locator('select[name="id_event"]').selectOption({ index: 1 });
 
     await formTrajet.locator('input[name="lieuDepart"]').fill('Maison');

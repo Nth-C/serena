@@ -20,13 +20,14 @@ try {
     $data = json_decode($json, true); 
 
     $id_rapport = filter_var($data['id'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
-
+    // vérifie l'existance du rapport dans la requete
     if (empty($id_rapport)) {
         http_response_code(400);
         throw new Exception("ID du rapport manquant pour la suppression.");
     }
 
     $model = new RapportDAO();
+    // supprime les rapports
     $success = $model->deleteRapport($id_rapport, $app->id_famille);
 
     echo json_encode([

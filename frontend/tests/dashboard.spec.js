@@ -3,7 +3,6 @@ import { test, expect } from '@playwright/test';
 test.describe('Dashboard - Mode Mock Complet', () => {
 
   test.beforeEach(async ({ page }) => {
-    // 1. SESSION
     await page.goto('/');
     await page.evaluate(() => {
       sessionStorage.clear();
@@ -12,7 +11,6 @@ test.describe('Dashboard - Mode Mock Complet', () => {
       sessionStorage.setItem('user', JSON.stringify({ id: 999, nom: 'Robot', prenom: 'Test' }));
     });
 
-    // 2. MOCK API
     await page.route('**/*route=dashboard/view*', async (route) => {
       await route.fulfill({
         status: 200,
@@ -25,7 +23,6 @@ test.describe('Dashboard - Mode Mock Complet', () => {
       });
     });
 
-    // 3. NAVIGATION
     await page.goto('/home/dashboard');
     await expect(page.getByText(/Chargement des/)).toHaveCount(0, { timeout: 10000 });
   });
@@ -42,10 +39,8 @@ test.describe('Dashboard - Mode Mock Complet', () => {
     await listTrajet.locator('.alerte_dashbord').first().click();
 
     const slide = page.locator('.details_trajet');
-    // On vérifie qu'il rentre dans l'écran
     await expect(slide).toBeInViewport();
 
-    // MOCK + WAIT FOR RESPONSE
     await page.route('**/*route=trajet/accepter*', async (route) => {
       await route.fulfill({ status: 200, body: JSON.stringify({ success: true }) });
     });
@@ -54,10 +49,8 @@ test.describe('Dashboard - Mode Mock Complet', () => {
 
     await page.getByRole('button', { name: 'Accepter le trajet' }).click();
 
-    // On attend que le réseau réponde
     await responsePromise;
 
-    // CORRECTION : On vérifie qu'il sort de l'écran (au lieu de visible/hidden)
     await expect(slide).not.toBeInViewport();
   });
 

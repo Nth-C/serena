@@ -17,6 +17,7 @@ if (!$app->connected || !$app->personne) {
 }
 
 try {
+    // supprime le compte
     $model = new PersonneDAO();
     $success = $model->deleteUser($app->personne->id);
 

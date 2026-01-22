@@ -37,7 +37,7 @@ try {
     $currentStart = new DateTime($data['debut']);
     $currentEnd = new DateTime($data['fin']);
 
-    // Définition de l'intervalle selon le type
+    // Définition de l'intervalle selon le type de récurrence
     $interval = '';
     switch ($typeRecurrence) {
         case 'journalier':   $interval = '+1 day';   break;
