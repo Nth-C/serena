@@ -108,25 +108,9 @@ Assurez-vous d'avoir les outils suivants installés sur votre machine :
     cd serena
     ```
 
-2.  **Configuration du Backend**
-    Le backend nécessite un fichier `.env` pour les secrets et la configuration de la base de données.
-    ```sh
-    # Naviguez vers le dossier backend
-    cd backend
 
-    # Copiez le fichier d'exemple
-    cp .env.example .env
-    ```
-    Ouvrez le nouveau fichier `.env` et remplissez les variables. Les valeurs par défaut correspondent à la configuration de `docker-compose.yml`.
-    ```ini
-    DB_HOST=serena_db
-    DB_PORT=5432
-    DB_NAME=serena
-    DB_USER=user
-    DB_PASSWORD=password
-    ```
 
-3.  **Installation des dépendances Frontend**
+2.  **Installation des dépendances Frontend**
     ```sh
     # Revenez au dossier racine du projet, puis allez dans le frontend
     cd ../frontend
@@ -136,7 +120,7 @@ Assurez-vous d'avoir les outils suivants installés sur votre machine :
     ```
     *Note : Le frontend est configuré pour communiquer avec l'API via la variable `VITE_API_URL`. La valeur par défaut `http://localhost:8000` est correcte pour l'environnement Docker.*
 
-4.  **Lancez l'application avec Docker**
+3.  **Lancez l'application avec Docker**
     ```sh
     # Revenez à la racine du projet
     cd ..
@@ -162,7 +146,6 @@ Une fois les conteneurs démarrés, vous pouvez accéder aux services :
 - [x] Création, synchronisation et administration d'un agenda
 - [x] Création d'un espace de dépôt de fichiers (documents)
 - [x] Lecture automatique d'une ordonnance via OCR
-- [ ] Améliorer la documentation pour les développeurs
 
 Consultez les [issues ouvertes](https://gricad-gitlab.univ-grenoble-alpes.fr/iut2-info-stud/2025-s3/s3.01/team-14/serena/-/issues) pour une liste complète des fonctionnalités proposées (et des bugs connus).
 
