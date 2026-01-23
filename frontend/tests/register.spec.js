@@ -3,6 +3,15 @@ import { test, expect } from '@playwright/test';
 test.describe('Page Inscription', () => {
 
   test('Création de compte réussie et fermeture de la popup', async ({ page }) => {
+
+    await page.route(url => url.href.includes('route=register'), async (route) => {
+    await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true }),
+    });
+});
+
     await page.goto('/create_account');
 
     const uniqueUser = `user_${Date.now()}`;

@@ -91,7 +91,7 @@ test.describe('Page Documents - Mode Mock Complet', () => {
     await expect(slideForm).toBeVisible();
 
     const fileChooserPromise = page.waitForEvent('filechooser');
-    await page.locator('label.drop_zone').click();
+    await slideForm.locator('label.drop_zone').click();
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles({
       name: 'test.pdf',

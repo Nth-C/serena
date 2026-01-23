@@ -71,8 +71,7 @@ test.describe('Page Agenda - Mode Mock Complet', () => {
       await route.fulfill({ status: 200, body: JSON.stringify({ success: true }) });
     });
 
-    await page.locator('.btn_add_agenda').first().click();
-
+    await page.locator('div.btn_add_container').getByText('Ajouter un rendez-vous').click();    
     const slide = page.locator('form.add_event');
     await expect(slide).toBeVisible();
 
